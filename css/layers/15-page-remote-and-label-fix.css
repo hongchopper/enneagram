@@ -93,12 +93,7 @@
   background:var(--app-primary);
 }
 
-/* 리모콘이 본문을 덮지 않도록 데스크톱에서 본문 영역 확보 */
-@media(min-width:1100px){
-  .page-panel:not(#page-home){
-    padding-left:176px!important;
-  }
-}
+/* 왼쪽 리모콘은 26 레이어에서 제거됨 → 본문 왼쪽 176px 확보 규칙 삭제 (좌우 여백 대칭) */
 @media(max-width:1099px){
   .page-remote{display:none!important}
 }

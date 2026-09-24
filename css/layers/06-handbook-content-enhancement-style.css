@@ -84,7 +84,7 @@
   background:var(--color-surface)!important;
 }
 #page-handbook .auto-pattern-step:not(:last-child)::after{
-  content:"&gt;"!important;
+  content:">"!important;
   position:absolute!important;
   z-index:2!important;
   right:-9px!important;

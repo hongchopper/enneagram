@@ -320,7 +320,7 @@ button,.btn{font-family:inherit}
 #page-home main{display:block}
 #page-home .wrap{width:min(var(--app-max),calc(100% - 40px));margin:0 auto}
 #page-home section{padding:88px 0}
-#page-home .hero{padding:92px 0 72px;overflow:hidden}
+#page-home .hero{padding:var(--harness-page-top) 0 72px;overflow:hidden} /* 다른 메뉴와 같은 상단 간격 */
 #page-home .hero-grid{
   display:grid;
   grid-template-columns:1.1fr .9fr;
@@ -411,7 +411,7 @@ button,.btn{font-family:inherit}
 #page-home .type-card h3{margin:0;font-size:var(--text-lg);letter-spacing:-.02em}
 #page-home .type-card p{margin:0;color:var(--color-text-secondary);font-size:var(--text-sm);word-break:keep-all}
 #page-home .type-card::after{
-  content:"&gt;";position:absolute;right:18px;top:18px;color:#AAB5C4;font-weight:700}
+  content:">";position:absolute;right:18px;top:18px;color:var(--color-text-tertiary);font-weight:700}
 #page-home .instinct .type-no{background:var(--app-instinct)}
 #page-home .emotion .type-no{background:var(--app-emotion)}
 #page-home .thinking .type-no{background:var(--app-thinking)}
@@ -458,7 +458,6 @@ button,.btn{font-family:inherit}
   padding-top:24px;border-top:1px solid var(--app-line)}
 
 @media(max-width:920px){
-  #page-home .hero{padding-top:58px}
   #page-home .hero-grid{grid-template-columns:1fr;gap:42px}
   #page-home .hero-visual{min-height:380px}
   #page-home .note-1{left:4px;top:36px}

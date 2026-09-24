@@ -46,9 +46,7 @@ button,a{
   .page-remote{
     display:block;
   }
-  .page-panel:not(#page-home){
-    padding-left:176px!important;
-  }
+  /* 리모콘 제거(26 레이어) 후 본문 왼쪽 176px 확보 규칙 삭제 */
 }
 @media (max-width:1199px){
   .page-remote{
@@ -135,7 +133,7 @@ button,a{
 
   /* Home */
   #page-home .hero{
-    padding:64px 0 56px!important;
+    padding:var(--harness-page-top) 0 56px!important; /* 다른 메뉴와 같은 상단 간격 */
   }
   #page-home .hero-grid{
     grid-template-columns:minmax(0,1fr) minmax(300px,.85fr)!important;
@@ -396,7 +394,7 @@ button,a{
 
   /* Home */
   #page-home .hero{
-    padding:42px 0 46px!important;
+    padding:var(--harness-page-top) 0 46px!important;
   }
   #page-home .hero-grid{
     grid-template-columns:1fr!important;
