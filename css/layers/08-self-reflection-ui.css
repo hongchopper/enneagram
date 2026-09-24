@@ -22,8 +22,7 @@
 }
 #page-sharing .topin{min-height:52px!important}
 #page-sharing .tools{margin-left:auto!important}
-#page-sharing .wrap{padding-top:40px!important}
-#page-sharing .topic{max-width:900px!important;margin:0 auto!important}
+#page-sharing .topic{margin:0 auto!important} /* 폭 제한(900px) 제거: 다른 메뉴와 같은 컨테이너 폭 */
 
 #page-sharing .reflection-hero{margin-bottom:28px!important}
 #page-sharing .reflection-category{
@@ -449,7 +448,6 @@
 @media(max-width:760px){
   #sharingGroup .reflection-menu-label{margin-left:22px!important}
   #sharingGroup .shell-sharing-topic{padding-left:22px!important}
-  #page-sharing .wrap{padding-top:28px!important}
   #page-sharing .reflection-hero h2{font-size:var(--text-page-title-mobile)!important}
   #page-sharing .reflection-intro{margin-bottom:36px!important}
   #page-sharing .reflect-section{padding:36px 0!important}

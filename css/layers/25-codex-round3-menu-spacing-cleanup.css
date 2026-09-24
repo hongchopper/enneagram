@@ -16,7 +16,8 @@
     padding-top:24px !important;
   }
 
-  #page-handbook .wrap {
+  #page-handbook .wrap,
+  #page-sharing .wrap {
     display:block !important;
     grid-template-columns:none !important;
     gap:0 !important;
@@ -82,7 +83,8 @@
       padding-top:18px !important;
     }
 
-    #page-handbook .wrap {
+    #page-handbook .wrap,
+    #page-sharing .wrap {
       padding-top:0 !important;
     }
 

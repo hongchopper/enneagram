@@ -121,11 +121,15 @@
     font-weight:800 !important;
   }
 
-  #page-handbook .hero.hero-wide-copy > div:not(.number),
-  #page-handbook .type-page > .hero > div:not(.number) {
-    display:block !important;
-    grid-column:2 !important;
-    min-width:0 !important;
+  /* 768px 이상에서만 본문을 2번째 칸에 고정. 모바일은 00·01 레이어의 display:contents로
+     제목만 번호 옆에 두고 목록·태그는 카드 전체 폭을 쓴다 (28 레이어 IA 개편 블록) */
+  @media (min-width: 768px) {
+    #page-handbook .hero.hero-wide-copy > div:not(.number),
+    #page-handbook .type-page > .hero > div:not(.number) {
+      display:block !important;
+      grid-column:2 !important;
+      min-width:0 !important;
+    }
   }
 
   #page-handbook .type-hero-animal {

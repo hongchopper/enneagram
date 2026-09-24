@@ -12,6 +12,7 @@
     --harness-muted:var(--color-text-secondary);
     --harness-radius:var(--radius-sm);
     --harness-card-radius:var(--radius-md);
+    --harness-page-top:calc(var(--space-5) + var(--space-8)); /* 2Depth 탭 아래 ~ 첫 콘텐츠: 다른 메뉴 wrap 24 + panel 48 */
   }
 
   html,
@@ -152,11 +153,12 @@
   }
 
   #page-handbook .type-page,
-  #page-handbook .type-page:not(.hidden) {
+  #page-handbook .type-page:not(.hidden),
+  #page-sharing .topic {
     display:block !important;
     flex-direction:initial !important;
     min-width:0 !important;
-    padding-top:16px !important;
+    padding-top:var(--harness-page-top) !important; /* 다른 메뉴와 같은 상단 간격 */
   }
 
   #page-handbook .type-page.hidden {
@@ -997,6 +999,10 @@
 }
 
 @media (max-width: 767px) {
+  :root {
+    --harness-page-top:calc(var(--space-2) + var(--space-8)); /* 모바일 다른 메뉴 약 54px */
+  }
+
   .page-subnav-inner {
     width:100%;
     padding:0 var(--space-2);
