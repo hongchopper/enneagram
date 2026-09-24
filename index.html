@@ -35,8 +35,9 @@
 <nav aria-label="주요 메뉴" class="top-global-nav">
 <button class="top-home-link active" data-top-home="" type="button">홈</button>
 <div class="top-nav-item"><button class="top-nav-main" data-top-page="overview" type="button">에니어그램 이해</button></div>
-<div class="top-nav-item"><button class="top-nav-main" data-top-page="check" type="button">유형 체크</button></div>
+<div class="top-nav-item"><button class="top-nav-main" data-top-page="check" type="button">유형 검사</button></div>
 <div class="top-nav-item"><button class="top-nav-main" data-top-page="handbook" type="button">유형 탐구</button></div>
+<div class="top-nav-item"><button class="top-nav-main" data-top-page="diary" type="button">다이어리</button></div>
 <div class="top-nav-item"><button class="top-nav-main" data-top-page="myspace" type="button">나의 공간</button></div>
 </nav>
 <button aria-controls="globalSearchLayer" aria-haspopup="dialog" aria-label="검색" class="top-search-open" id="globalSearchOpen" title="검색" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-width="2" viewBox="0 0 24 24" width="20"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></button>
@@ -79,7 +80,7 @@
 <div class="shell-submenu shell-overview-submenu"><button class="shell-submenu-btn shell-overview-target active" data-overview-target="basics" type="button"><strong>에니어그램이란?</strong></button><button class="shell-submenu-btn shell-overview-target" data-overview-target="core" type="button"><strong>유형을 만드는 핵심</strong></button><button class="shell-submenu-btn shell-overview-target" data-overview-target="centers" type="button"><strong>세 중심</strong></button><button class="shell-submenu-btn shell-overview-target" data-overview-target="variation" type="button"><strong>같은 유형이 다른 이유</strong></button><button class="shell-submenu-btn shell-overview-target" data-overview-target="growth" type="button"><strong>변화와 성장</strong></button><button class="shell-submenu-btn shell-overview-target" data-overview-target="use" type="button"><strong>활용과 주의점</strong></button></div></div>
 <div class="shell-menu-group" id="checkGroup">
 <button class="shell-menu-btn" data-page="check" type="button">
-<span class="shell-menu-copy"><strong>유형 체크</strong></span>
+<span class="shell-menu-copy"><strong>유형 검사</strong></span>
 </button>
 </div>
 <div class="shell-menu-group" id="handbookGroup">
@@ -88,6 +89,7 @@
 <span aria-label="하위 메뉴 접기 또는 펼치기" class="shell-menu-arrow" title="하위 메뉴 접기 또는 펼치기"></span>
 </button>
 <div class="shell-submenu">
+<button class="shell-submenu-btn shell-explore-link" data-explore="compare" type="button"><strong>전체 유형</strong></button>
 <button class="shell-submenu-btn shell-handbook-type active" data-type="1" type="button"><strong>1번</strong></button>
 <button class="shell-submenu-btn shell-handbook-type" data-type="2" type="button"><strong>2번</strong></button>
 <button class="shell-submenu-btn shell-handbook-type" data-type="3" type="button"><strong>3번</strong></button>
@@ -97,8 +99,6 @@
 <button class="shell-submenu-btn shell-handbook-type" data-type="7" type="button"><strong>7번</strong></button>
 <button class="shell-submenu-btn shell-handbook-type" data-type="8" type="button"><strong>8번</strong></button>
 <button class="shell-submenu-btn shell-handbook-type" data-type="9" type="button"><strong>9번</strong></button>
-<button class="shell-submenu-btn shell-explore-link" data-explore="compare" type="button"><strong>9유형 비교</strong></button>
-<button class="shell-submenu-btn shell-explore-link" data-explore="sharing" type="button"><strong>유형 없이 돌아보기</strong></button>
 </div>
 </div>
 <div class="shell-menu-source" hidden="" id="compareGroup">
@@ -112,18 +112,15 @@
 <span aria-label="하위 메뉴 접기 또는 펼치기" class="shell-menu-arrow" title="하위 메뉴 접기 또는 펼치기"></span>
 </button>
 <div class="shell-submenu shell-sharing-submenu"><button class="shell-submenu-btn shell-sharing-topic" data-topic-index="0" type="button"><strong>일상 속 나</strong></button><button class="shell-submenu-btn shell-sharing-topic" data-topic-index="1" type="button"><strong>사람 사이의 나</strong></button><button class="shell-submenu-btn shell-sharing-topic" data-topic-index="2" type="button"><strong>사랑하는 나</strong></button><button class="shell-submenu-btn shell-sharing-topic" data-topic-index="3" type="button"><strong>가족 속의 나</strong></button><button class="shell-submenu-btn shell-sharing-topic" data-topic-index="4" type="button"><strong>일하는 나</strong></button><button class="shell-submenu-btn shell-sharing-topic" data-topic-index="5" type="button"><strong>돈을 대하는 나</strong></button><button class="shell-submenu-btn shell-sharing-topic" data-topic-index="6" type="button"><strong>이끄는 나</strong></button><button class="shell-submenu-btn shell-sharing-topic" data-topic-index="7" type="button"><strong>쉬고 즐기는 나</strong></button><button class="shell-submenu-btn shell-sharing-topic" data-topic-index="8" type="button"><strong>시간을 대하는 나</strong></button></div>
+</div><div class="shell-menu-group" id="diaryGroup">
+<button class="shell-menu-btn" data-page="diary" type="button">
+<span class="shell-menu-copy"><strong>다이어리</strong></span>
+</button>
 </div><div class="shell-menu-group" id="myspaceGroup">
 <button class="shell-menu-btn" data-page="myspace" type="button">
 <span class="shell-menu-copy"><strong>나의 공간</strong></span>
 <span aria-label="하위 메뉴 접기 또는 펼치기" class="shell-menu-arrow" title="하위 메뉴 접기 또는 펼치기"></span>
 </button>
-<div class="shell-submenu shell-myspace-submenu">
-<button class="shell-submenu-btn shell-myspace-target active" data-myspace-target="dashboard" type="button"><strong>나의 대시보드</strong></button>
-<button class="shell-submenu-btn shell-myspace-target" data-myspace-target="ai" type="button"><strong>AI 유형 탐색</strong></button>
-<button class="shell-submenu-btn shell-myspace-target" data-myspace-target="reflection" type="button"><strong>성찰 기록</strong></button>
-<button class="shell-submenu-btn shell-myspace-target" data-myspace-target="library" type="button"><strong>라이브러리</strong></button>
-<button class="shell-submenu-btn shell-myspace-target" data-myspace-target="community" type="button"><strong>커뮤니티</strong></button>
-</div>
 </div>
 </nav>
 <div class="shell-note">메뉴를 선택하면 해당 화면으로 이동합니다.</div>
@@ -217,14 +214,14 @@
 </section>
 <section class="home-continue" hidden="" id="home-continue">
 <div class="wrap">
-<div class="section-kicker">Continue</div>
+<div class="section-kicker">이어서</div>
 <h2 class="section-title">이어서 보기</h2>
 <div class="continue-grid" id="homeContinueList"></div>
 </div>
 </section>
 <section id="home-intro">
 <div class="wrap">
-<div class="section-kicker">Start here</div>
+<div class="section-kicker">처음이라면</div>
 <h2 class="section-title">에니어그램을 처음 만났다면<br>이 세 가지만 기억해도 충분해요.</h2>
 <p class="section-desc">
           에니어그램은 “나는 이런 사람이야”라고 고정하는 방식보다,
@@ -252,16 +249,16 @@
 </section>
 <section class="profiles-section" id="home-profiles">
 <div class="wrap">
-<div class="section-kicker">9 Profiles</div>
+<div class="section-kicker">9가지 유형</div>
 <h2 class="section-title">9장의 프로필 카드</h2>
-<p class="section-desc">대표 말투가 익숙하게 들리는 카드를 눌러보세요. 유형 체크 결과가 있으면 내 카드에 '나의 프로필' 표시가 붙어요.</p>
+<p class="section-desc">대표 말투가 익숙하게 들리는 카드를 눌러보세요. 유형 검사 결과가 있으면 내 카드에 '나의 프로필' 표시가 붙어요.</p>
 <div class="home-profile-mine" hidden="" id="homeProfileMine"></div>
 <div class="profile-grid" id="homeProfileGrid"></div>
 </div>
 </section>
 <section id="home-lenses">
 <div class="wrap">
-<div class="section-kicker">Patterns</div>
+<div class="section-kicker">세 가지 렌즈</div>
 <h2 class="section-title">유형 번호만 보면<br>사람이 평면적으로 보입니다.</h2>
 <p class="section-desc">
           에니어그램은 한 가지 기준만 보는 체계가 아닙니다.
@@ -293,27 +290,27 @@
 </section>
 <section class="journey" id="home-journey">
 <div class="wrap">
-<div class="section-kicker">Guide</div>
+<div class="section-kicker">읽는 순서</div>
 <h2 class="section-title">어디서부터 보면 좋을까요?</h2>
 <p class="section-desc">처음부터 모든 개념을 한꺼번에 볼 필요 없습니다. 아래 순서로 보면 덜 헷갈립니다.</p>
 <div class="journey-list">
 <a class="journey-item" data-home-route="overview-basics" href="#overview-basics">
-<div class="journey-step">STEP 01</div>
+<div class="journey-step">1단계</div>
 <div><h3>에니어그램 관점 이해하기</h3><p>번호 맞히기보다 반복되는 반응과 그 이유를 보는 관점을 먼저 익힙니다.</p></div>
 <div class="journey-arrow">&gt;</div>
 </a>
 <a class="journey-item" data-home-route="compare-glance" href="#compare-glance">
-<div class="journey-step">STEP 02</div>
+<div class="journey-step">2단계</div>
 <div><h3>9가지 유형 빠르게 비교하기</h3><p>핵심 두려움과 욕망, 반복 반응을 보며 내가 자주 보이는 패턴의 후보를 찾습니다.</p></div>
 <div class="journey-arrow">&gt;</div>
 </a>
 <a class="journey-item" data-home-route="compare-centers" href="#compare-centers">
-<div class="journey-step">STEP 03</div>
+<div class="journey-step">3단계</div>
 <div><h3>반응 패턴을 입체적으로 보기</h3><p>중심 유형과 호니비언, 하모닉으로 같은 유형 안에서도 다른 반응 방식을 이해합니다.</p></div>
 <div class="journey-arrow">&gt;</div>
 </a>
 <a class="journey-item" data-home-route="overview-growth" href="#overview-growth">
-<div class="journey-step">STEP 04</div>
+<div class="journey-step">4단계</div>
 <div><h3>성장 방향으로 연결하기</h3><p>내 자동반응을 고치기보다, 그 순간 한 번 다른 선택을 해보는 방식으로 연결합니다.</p></div>
 <div class="journey-arrow">&gt;</div>
 </a>
@@ -343,7 +340,7 @@
 <section class="check-mode-panel check-flow-panel active" data-check-mode-panel="start">
 <div class="check-flow-wrap">
 <div class="check-flow-head">
-<div class="check-flow-eyebrow">TYPE CHECK</div>
+<div class="check-flow-eyebrow">유형 검사</div>
 <h1>어떤 방식으로 확인해볼까요?</h1>
 <p>처음이라면 간편 검사로 후보를 좁히고, 헷갈리는 유형이 있다면 정식 검사로 그 유형만 자세히 확인해보세요.</p>
 </div>
@@ -367,7 +364,7 @@
 <div class="check-flow-wrap">
 <button class="check-flow-back" data-check-go="start" type="button">검사 방식 다시 고르기</button>
 <div class="check-flow-head">
-<div class="check-flow-eyebrow">FULL CHECK · STEP 1</div>
+<div class="check-flow-eyebrow">정식 검사 · 1단계</div>
 <h1>헷갈리는 유형을 골라주세요</h1>
 <p>나와 비슷하다고 느끼는 유형을 여러 개 고를 수 있어요. 잘 모르겠다면 9개 모두 검사해도 괜찮아요.</p>
 </div>
@@ -396,7 +393,7 @@
 <div class="quick-check-wrap">
 <button class="check-flow-back" data-check-go="start" type="button">검사 방식 다시 고르기</button>
 <div class="quick-intro">
-<div class="quick-intro-badge">QUICK CHECK</div>
+<div class="quick-intro-badge">간편 검사</div>
 <h2>평소 나의 태도와 행동을 가장 잘 반영하는 것을 골라주세요</h2>
 <p>A·B·C 중 하나와 1·2·3 중 하나를 선택합니다. ‘되고 싶은 모습’보다 평소 반복되는 모습에 가깝게 골라주세요.</p>
 </div>
@@ -512,30 +509,35 @@
 </div>
 </div>
 <div class="quick-result-content" hidden="" id="quickResultContent">
-<div class="quick-result-label">빠른 유형 체크 결과</div>
-<div class="quick-result-main">
-<div class="quick-result-type"><span id="quickResultType">-</span>번</div>
+<div class="quick-result-icon">✓</div>
 <div>
-<h3 id="quickResultName">-</h3>
-<p><b id="quickResultCombo">-</b> 조합으로 확인되었습니다.</p>
+<strong>두 그룹을 모두 골랐어요</strong>
+<p>결과 보기를 누르면 가장 가까운 유형의 프로필 카드를 보여줘요.</p>
 </div>
-</div>
-<div class="quick-result-note">
-          이 결과는 유형을 확정하는 검사가 아니라 <strong>탐색할 유형을 좁히는 빠른 체크</strong>입니다. 핸드북에서 행동보다 동기와 두려움이 실제로 맞는지 함께 확인해보세요.
-        </div>
 <div class="quick-result-actions">
-<button class="quick-primary" id="quickGoHandbook" type="button">이 유형 핸드북 보기</button>
-<button class="quick-secondary" id="quickReset" type="button">다시 선택하기</button>
+<button class="ui-btn ui-btn-primary" data-check-go="quick-result" type="button">결과 보기</button>
+<button class="ui-btn ui-btn-ghost" id="quickReset" type="button">다시 선택하기</button>
 </div>
 </div>
 </section>
+</div>
+</section>
+<section class="check-mode-panel check-flow-panel" data-check-mode-panel="quick-result">
+<div class="check-flow-wrap">
+<button class="check-flow-back" data-check-go="quick" type="button">간편 검사로 돌아가기</button>
+<div class="check-flow-head">
+<div class="check-flow-eyebrow">간편 검사 · 결과</div>
+<h1>나와 가장 가까운 유형이에요</h1>
+<p>카드를 읽으며 “행동”보다 “왜 그렇게 반응하는지”가 나와 맞는지 살펴보세요.</p>
+</div>
+<div class="check-result-cards" id="quickResultCards"></div>
 </div>
 </section>
 <section class="check-mode-panel" data-check-mode-panel="detail">
 <div class="wrap">
 <button class="check-flow-back" data-check-go="select" type="button">검사할 유형 다시 고르기</button>
 <header class="hero">
-<h1>에니어그램 1~9번 유형 체크</h1>
+<h1>정식 검사</h1>
 <p>각 문항에서 나와 가까운 정도를 1~5점으로 선택하세요. 유형별 총점과 책의 점수 해석을 자동으로 보여줍니다.</p>
 <span class="count">총 135문항 · 유형별 15문항 · 최대 75점</span>
 </header>
@@ -4797,15 +4799,16 @@
     <div class="interpretation" id="interpretation9"><div class="pending">15문항이 남았습니다. 모두 선택하면 점수 해석이 표시됩니다.</div></div>
   </div></section></main>
 <div class="check-detail-pager" id="checkDetailPager"></div>
-<section class="summary" id="summary">
-<h2>점수 결과</h2>
-<p class="summary-desc">15문항을 모두 응답한 유형에 대해 점수 구간 해석을 표시합니다.</p>
-<div class="overall">
+<section class="check-summary" id="summary">
+<h2>검사 결과</h2>
+<p class="check-summary-desc">15문항을 모두 답한 유형의 프로필 카드예요. 점수가 높은 순서로 보여줘요.</p>
+<div class="check-result-cards" id="checkResultCards"></div>
+<div class="check-overall">
       전체 응답 <strong id="overallAnswered">0</strong> / 135문항 ·
       완료 유형 <strong id="completedTypes">0</strong> / 9 ·
       입력 내용은 이 브라우저에 자동 저장됩니다.
     </div>
-<div class="result-grid" id="resultGrid"><div class="result-card" id="resultCard1">
+<div class="result-grid" id="resultGrid" hidden=""><div class="result-card" id="resultCard1">
     <div class="label">1번 유형</div>
     <div class="score-big"><span id="total1">0</span> / 75</div>
     <div class="small">평균 <span id="avg1">0.00</span> · 응답 <span id="answered1">0</span>/15</div>
@@ -4853,7 +4856,7 @@
   </div></div>
 <div class="rank-box">
 <div class="rank-title">완료된 유형 점수 순위</div>
-<div class="rank-text" id="rankText">아직 15문항을 모두 완료한 유형이 없습니다.</div>
+<div class="check-rank-text" id="rankText">아직 15문항을 모두 완료한 유형이 없습니다.</div>
 <div class="boundary-note">책의 구간 표기가 겹치는 경계값은 30점 &gt; 15~30, 45점 &gt; 30~45, 60점 &gt; 45~60 구간으로 적용했습니다.</div>
 <div class="notice">※ 점수는 자기 탐색을 위한 참고 자료입니다. 가장 높은 점수만으로 유형을 확정하지 않습니다.</div>
 </div>
@@ -4869,28 +4872,10 @@
 <main class="overview-wrap">
 <section class="overview-panel active" data-overview-key="basics" data-overview-panel="basics">
 <header class="overview-hero">
-<div class="overview-hero-layout"><div class="overview-hero-copy"><div class="overview-kicker">ENNEAGRAM BASICS · 01</div><h1>에니어그램이란?</h1><p>사람을 아홉 칸에 끼워 맞추는 분류표보다, 내가 반복해서 사용하는 성격 패턴과 그 안의 동기를 관찰하는 틀에 가깝습니다.</p><div class="overview-easy-box"><strong>쉽게 말하면</strong><p>나는 어떤 사람이냐보다 어떤 상황에서 무엇을 반복하는지 보는 도구예요.</p></div></div><div class="overview-hero-visual"><div class="overview-visual-card">
-<svg aria-hidden="true" class="edu-svg" viewBox="0 0 420 280">
-<defs><linearGradient id="bg1" x1="0" x2="1"><stop offset="0%" stop-color="#F8FBFF"></stop><stop offset="100%" stop-color="#EEF4FD"></stop></linearGradient></defs>
-<rect fill="url(#bg1)" height="240" rx="24" stroke="#DDE5EF" width="380" x="20" y="20"></rect>
-<circle cx="210" cy="140" fill="none" r="88" stroke="#BFD0EA" stroke-width="2"></circle>
-<circle cx="210" cy="140" fill="#FFFFFF" r="50" stroke="#DDE5EF"></circle>
-<text fill="#18212F" font-size="16" font-weight="800" text-anchor="middle" x="210" y="136">반복 패턴</text>
-<text fill="#5E6A79" font-size="12" text-anchor="middle" x="210" y="158">행동보다 동기</text>
-<circle cx="210" cy="44" fill="#4F7FD7" r="16"></circle><text fill="#fff" font-size="12" font-weight="800" text-anchor="middle" x="210" y="49">1</text>
-<circle cx="264" cy="60" fill="#4F7FD7" opacity=".92" r="16"></circle><text fill="#fff" font-size="12" font-weight="800" text-anchor="middle" x="264" y="65">2</text>
-<circle cx="305" cy="100" fill="#4F7FD7" opacity=".9" r="16"></circle><text fill="#fff" font-size="12" font-weight="800" text-anchor="middle" x="305" y="105">3</text>
-<circle cx="320" cy="156" fill="#4F7FD7" opacity=".88" r="16"></circle><text fill="#fff" font-size="12" font-weight="800" text-anchor="middle" x="320" y="161">4</text>
-<circle cx="290" cy="212" fill="#4F7FD7" opacity=".86" r="16"></circle><text fill="#fff" font-size="12" font-weight="800" text-anchor="middle" x="290" y="217">5</text>
-<circle cx="210" cy="236" fill="#4F7FD7" opacity=".84" r="16"></circle><text fill="#fff" font-size="12" font-weight="800" text-anchor="middle" x="210" y="241">6</text>
-<circle cx="130" cy="212" fill="#4F7FD7" opacity=".86" r="16"></circle><text fill="#fff" font-size="12" font-weight="800" text-anchor="middle" x="130" y="217">7</text>
-<circle cx="100" cy="156" fill="#4F7FD7" opacity=".88" r="16"></circle><text fill="#fff" font-size="12" font-weight="800" text-anchor="middle" x="100" y="161">8</text>
-<circle cx="115" cy="100" fill="#4F7FD7" opacity=".9" r="16"></circle><text fill="#fff" font-size="12" font-weight="800" text-anchor="middle" x="115" y="105">9</text>
-<path d="M210 60L264 76L300 112L290 196L210 220L130 196L120 112L156 76Z" fill="none" stroke="#8FB0E0" stroke-dasharray="4 5" stroke-width="2"></path>
-</svg></div></div></div></header>
+<div class="overview-hero-layout"><div class="overview-hero-copy"><div class="overview-kicker">에니어그램 이해 · 1</div><h1>에니어그램이란?</h1><p>사람을 아홉 칸에 끼워 맞추는 분류표보다, 내가 반복해서 사용하는 성격 패턴과 그 안의 동기를 관찰하는 틀에 가깝습니다.</p><div class="overview-easy-box"><strong>쉽게 말하면</strong><p>나는 어떤 사람이냐보다 어떤 상황에서 무엇을 반복하는지 보는 도구예요.</p></div></div></div></header>
 <section class="overview-section learning-map">
 <div class="overview-section-head">
-<span>HOW TO READ</span>
+<span>읽는 법</span>
 <h2>이 사이트에서는 이렇게 이해해요</h2>
 </div>
 <div class="learning-steps">
@@ -4902,7 +4887,7 @@
 </section>
 <section class="overview-section">
 <div class="overview-section-head">
-<span>WHAT IT IS / ISN'T</span>
+<span>이런 것 · 이런 것은 아님</span>
 <h2>에니어그램은 무엇이고, 무엇은 아닐까요?</h2>
 </div>
 <div class="meaning-compare-grid">
@@ -4960,7 +4945,7 @@
 </div>
 <section class="overview-section">
 <div class="overview-section-head">
-<span>READ FIRST</span>
+<span>먼저 읽기</span>
 <h2>유형을 보기 전에 기억할 것</h2>
 </div>
 <div class="overview-rule-list">
@@ -4972,25 +4957,7 @@
 </section>
 </section><section class="overview-panel" data-overview-key="core" data-overview-panel="core">
 <header class="overview-hero">
-<div class="overview-hero-layout"><div class="overview-hero-copy"><div class="overview-kicker">ENNEAGRAM BASICS · CORE</div><h1>유형을 만드는 핵심</h1><p>유형은 겉으로 보이는 행동 목록보다, 여러 상황에서 반복되는 <b>동기·두려움·욕구·자동 해석</b>의 패턴으로 이해하는 편이 쉽습니다.</p><div class="overview-easy-box"><strong>쉽게 말하면</strong><p>겉으로 보이는 행동 뒤에 있는 걱정, 욕구, 익숙한 해석 습관을 같이 보는 거예요.</p></div></div><div class="overview-hero-visual"><div class="overview-visual-card">
-<svg aria-hidden="true" class="edu-svg" viewBox="0 0 420 280">
-<rect fill="#F8FBFF" height="240" rx="24" stroke="#DDE5EF" width="380" x="20" y="20"></rect>
-<rect fill="#EAF1FC" height="44" rx="14" stroke="#DDE5EF" width="92" x="34" y="60"></rect>
-<rect fill="#F0F5FB" height="44" rx="14" stroke="#DDE5EF" width="92" x="106" y="142"></rect>
-<rect fill="#FFF4E6" height="44" rx="14" stroke="#DDE5EF" width="92" x="178" y="60"></rect>
-<rect fill="#FFF0ED" height="44" rx="14" stroke="#DDE5EF" width="92" x="250" y="142"></rect>
-<rect fill="#EEF8F2" height="44" rx="14" stroke="#DDE5EF" width="64" x="322" y="60"></rect>
-<text fill="#18212F" font-size="12" font-weight="700" text-anchor="middle" x="80" y="87">상황</text>
-<text fill="#18212F" font-size="12" font-weight="700" text-anchor="middle" x="152" y="169">주의</text>
-<text fill="#18212F" font-size="12" font-weight="700" text-anchor="middle" x="224" y="87">해석</text>
-<text fill="#18212F" font-size="12" font-weight="700" text-anchor="middle" x="296" y="169">욕구·두려움</text>
-<text fill="#18212F" font-size="12" font-weight="700" text-anchor="middle" x="354" y="87">반응</text>
-<path d="M126 82 C146 82, 142 164, 170 164" fill="none" stroke="#8FB0E0" stroke-width="2"></path>
-<path d="M198 164 C218 164, 214 82, 242 82" fill="none" stroke="#8FB0E0" stroke-width="2"></path>
-<path d="M270 82 C290 82, 286 164, 314 164" fill="none" stroke="#8FB0E0" stroke-width="2"></path>
-<path d="M342 164 C352 164, 346 82, 322 82" fill="none" stroke="#8FB0E0" stroke-width="2"></path>
-<circle cx="210" cy="226" fill="#4F7FD7" r="20"></circle><text fill="#fff" font-size="12" font-weight="800" text-anchor="middle" x="210" y="231">반복</text>
-</svg></div></div></div></header>
+<div class="overview-hero-layout"><div class="overview-hero-copy"><div class="overview-kicker">에니어그램 이해 · 2</div><h1>유형을 만드는 핵심</h1><p>유형은 겉으로 보이는 행동 목록보다, 여러 상황에서 반복되는 <b>동기·두려움·욕구·자동 해석</b>의 패턴으로 이해하는 편이 쉽습니다.</p><div class="overview-easy-box"><strong>쉽게 말하면</strong><p>겉으로 보이는 행동 뒤에 있는 걱정, 욕구, 익숙한 해석 습관을 같이 보는 거예요.</p></div></div></div></header>
 <div aria-label="에니어그램 패턴이 만들어지는 흐름" class="concept-flow">
 <div><span>01</span><b>상황</b><p>무슨 일이 있었나요?</p></div>
 <i>&gt;</i>
@@ -5002,7 +4969,7 @@
 </div>
 <section class="overview-section">
 <div class="overview-section-head">
-<span>KEY TERMS</span>
+<span>핵심 용어</span>
 <h2>처음 볼 때 헷갈리는 용어부터</h2>
 </div>
 <div class="term-card-grid">
@@ -5038,7 +5005,7 @@
 </div>
 <section class="overview-section">
 <div class="overview-section-head">
-<span>EXAMPLE</span>
+<span>예시</span>
 <h2>같이 야근해도 이유는 다를 수 있어요</h2>
 </div>
 <div class="motive-examples expanded">
@@ -5053,7 +5020,7 @@
 </section>
 <section class="overview-section">
 <div class="overview-section-head">
-<span>PATTERN</span>
+<span>패턴</span>
 <h2>한 번의 행동보다 ‘반복되는 고리’를 봅니다</h2>
 </div>
 <div class="pattern-detail-grid">
@@ -5067,7 +5034,7 @@
 </section>
 <section class="overview-section">
 <div class="overview-section-head">
-<span>TYPE FINDING</span>
+<span>유형 찾기</span>
 <h2>내 유형을 찾을 때는 이 순서가 더 도움이 됩니다</h2>
 </div>
 <div class="typefinding-list">
@@ -5077,7 +5044,7 @@
 <div><b>04</b><p><strong>검사 점수보다 실제 경험을 더 오래 봅니다.</strong><br>검사는 출발점이 될 수 있지만, 여러 상황에서 반복되는 동기가 더 중요한 단서가 됩니다.</p></div>
 </div>
 </section>
-<section class="overview-section overview-merged-section"><div class="overview-section-head"><span>WHY MOTIVE MATTERS</span><h2>행동이 같아도 이유는 다를 수 있어요</h2></div><div class="overview-callout blue">
+<section class="overview-section overview-merged-section"><div class="overview-section-head"><span>동기가 중요한 이유</span><h2>행동이 같아도 이유는 다를 수 있어요</h2></div><div class="overview-callout blue">
 <strong>같은 행동도 이유는 다를 수 있습니다</strong>
 <p>예를 들어 모두 ‘일을 열심히 한다’고 해도 각자가 그 행동을 선택하는 이유는 다르게 설명될 수 있습니다.</p>
 </div><div class="motive-examples">
@@ -5086,7 +5053,7 @@
 <article><span>3번</span><h3>성과를 내고 인정받고 싶어서</h3><p>결과와 성취를 통해 자신의 가치를 확인하려 합니다.</p></article>
 <article><span>6번</span><h3>문제가 생기지 않게 대비하려고</h3><p>불확실성을 줄이고 안전하게 준비하려 합니다.</p></article>
 </div><section class="overview-section">
-<div class="overview-section-head"><span>CORE IDEA</span><h2>성격은 자동 반응을 알아차리는 도구</h2></div>
+<div class="overview-section-head"><span>핵심 생각</span><h2>성격은 자동 반응을 알아차리는 도구</h2></div>
 <div class="overview-split">
 <div class="overview-soft-card">
 <h3>행동을 정의하는 딱지가 아닙니다</h3>
@@ -5099,20 +5066,7 @@
 </div>
 </section></section></section><section class="overview-panel" data-overview-key="centers" data-overview-panel="centers">
 <header class="overview-hero">
-<div class="overview-hero-layout"><div class="overview-hero-copy"><div class="overview-kicker">ENNEAGRAM BASICS · 04</div><h1>세 중심</h1><p>우리 모두 본능·감정·사고를 사용하지만, 즉각적으로 반응할 때 무엇을 먼저 확인하는지에 우선순위가 다르다고 봅니다.</p><div class="overview-easy-box"><strong>쉽게 말하면</strong><p>사람은 몸·감정·생각 중 어디를 먼저 쓰는지에 따라 반응 방식이 달라져요.</p></div></div><div class="overview-hero-visual"><div class="overview-visual-card">
-<svg aria-hidden="true" class="edu-svg" viewBox="0 0 420 280">
-<rect fill="#F8FBFF" height="240" rx="24" stroke="#DDE5EF" width="380" x="20" y="20"></rect>
-<circle cx="118" cy="145" fill="#FDEDE7" r="52" stroke="#F5C3B7"></circle>
-<circle cx="210" cy="110" fill="#FFF3DF" r="52" stroke="#F2D097"></circle>
-<circle cx="302" cy="145" fill="#EAF4FC" r="52" stroke="#BDD7EE"></circle>
-<text fill="#18212F" font-size="16" font-weight="800" text-anchor="middle" x="118" y="132">본능</text>
-<text fill="#5E6A79" font-size="12" text-anchor="middle" x="118" y="154">8 · 9 · 1</text>
-<text fill="#18212F" font-size="16" font-weight="800" text-anchor="middle" x="210" y="97">감정</text>
-<text fill="#5E6A79" font-size="12" text-anchor="middle" x="210" y="119">2 · 3 · 4</text>
-<text fill="#18212F" font-size="16" font-weight="800" text-anchor="middle" x="302" y="132">사고</text>
-<text fill="#5E6A79" font-size="12" text-anchor="middle" x="302" y="154">5 · 6 · 7</text>
-<path d="M170 126 L158 132 L165 118 Z" fill="#B1C6E6"></path><path d="M250 126 L262 132 L255 118 Z" fill="#B1C6E6"></path>
-</svg></div></div></div></header>
+<div class="overview-hero-layout"><div class="overview-hero-copy"><div class="overview-kicker">에니어그램 이해 · 3</div><h1>세 중심</h1><p>우리 모두 본능·감정·사고를 사용하지만, 즉각적으로 반응할 때 무엇을 먼저 확인하는지에 우선순위가 다르다고 봅니다.</p><div class="overview-easy-box"><strong>쉽게 말하면</strong><p>사람은 몸·감정·생각 중 어디를 먼저 쓰는지에 따라 반응 방식이 달라져요.</p></div></div></div></header>
 <div class="overview-note strong">
 <b>‘감정 중심 = 감정 기복이 큰 사람’이라는 뜻이 아닙니다.</b>
 <span>중심은 그 기능만 쓴다는 의미가 아니라, 상황을 받아들일 때 먼저 주의를 두는 정보의 우선순위를 설명합니다.</span>
@@ -5139,7 +5093,7 @@
 </div>
 <section class="overview-section">
 <div class="overview-section-head">
-<span>THREE CENTERS</span>
+<span>세 중심</span>
 <h2>세 중심은 ‘무엇을 가지고 있느냐’가 아니라 ‘어디를 통해 반응하기 쉬운가’를 봅니다</h2>
 </div>
 <div class="center-deep-grid">
@@ -5184,18 +5138,7 @@
 </section>
 </section><section class="overview-panel" data-overview-key="variation" data-overview-panel="variation">
 <header class="overview-hero">
-<div class="overview-hero-layout"><div class="overview-hero-copy"><div class="overview-kicker">ENNEAGRAM BASICS · VARIATION</div><h1>같은 유형이 다른 이유</h1><p>기본 유형이 같아도 사람의 모습은 똑같지 않습니다. 에니어그램 전통에서는 <b>날개, 본능적 변형, 발달 수준</b> 같은 요소로 차이를 설명합니다.</p><div class="overview-easy-box"><strong>쉽게 말하면</strong><p>같은 번호여도 날개와 본능, 발달 수준이 다르면 분위기와 행동이 꽤 달라 보여요.</p></div></div><div class="overview-hero-visual"><div class="overview-visual-card">
-<svg aria-hidden="true" class="edu-svg" viewBox="0 0 420 280">
-<rect fill="#F8FBFF" height="240" rx="24" stroke="#DDE5EF" width="380" x="20" y="20"></rect>
-<rect fill="#EAF1FC" height="38" rx="12" stroke="#DDE5EF" width="228" x="96" y="62"></rect>
-<rect fill="#F3F7FD" height="38" rx="12" stroke="#DDE5EF" width="252" x="84" y="110"></rect>
-<rect fill="#FFF6E8" height="38" rx="12" stroke="#DDE5EF" width="276" x="72" y="158"></rect>
-<rect fill="#EEF8F2" height="38" rx="12" stroke="#DDE5EF" width="300" x="60" y="206"></rect>
-<text fill="#18212F" font-size="14" font-weight="800" text-anchor="middle" x="210" y="86">기본 유형</text>
-<text fill="#18212F" font-size="14" font-weight="800" text-anchor="middle" x="210" y="134">날개</text>
-<text fill="#18212F" font-size="14" font-weight="800" text-anchor="middle" x="210" y="182">본능적 변형</text>
-<text fill="#18212F" font-size="14" font-weight="800" text-anchor="middle" x="210" y="230">발달 수준 · 환경</text>
-</svg></div></div></div></header>
+<div class="overview-hero-layout"><div class="overview-hero-copy"><div class="overview-kicker">에니어그램 이해 · 4</div><h1>같은 유형이 다른 이유</h1><p>기본 유형이 같아도 사람의 모습은 똑같지 않습니다. 에니어그램 전통에서는 <b>날개, 본능적 변형, 발달 수준</b> 같은 요소로 차이를 설명합니다.</p><div class="overview-easy-box"><strong>쉽게 말하면</strong><p>같은 번호여도 날개와 본능, 발달 수준이 다르면 분위기와 행동이 꽤 달라 보여요.</p></div></div></div></header>
 <div class="overview-grid three">
 <article class="overview-card">
 <div class="overview-card-no">01</div>
@@ -5223,16 +5166,16 @@
 <h2>같은 유형이 다르게 보이는 이유를 층으로 나눠보면 쉬워요</h2>
 </div>
 <div class="variation-layers">
-<div><span>BASE</span><b>기본 유형</b><p>가장 반복되는 핵심 동기와 자동 패턴</p></div>
-<div><span>WING</span><b>날개</b><p>옆 유형의 특성이 표현 방식에 더해지는 정도</p></div>
-<div><span>INSTINCT</span><b>본능적 변형</b><p>안전·집단·강한 연결 중 어디에 주의가 먼저 향하는지</p></div>
-<div><span>LEVEL</span><b>발달 수준</b><p>유연하고 건강한 상태인지, 자동 패턴에 강하게 사로잡힌 상태인지</p></div>
-<div><span>CONTEXT</span><b>환경과 경험</b><p>직업, 문화, 가족, 성별 역할, 학습 경험 등 실제 삶의 맥락</p></div>
+<div><span>기본</span><b>기본 유형</b><p>가장 반복되는 핵심 동기와 자동 패턴</p></div>
+<div><span>날개</span><b>날개</b><p>옆 유형의 특성이 표현 방식에 더해지는 정도</p></div>
+<div><span>본능</span><b>본능적 변형</b><p>안전·집단·강한 연결 중 어디에 주의가 먼저 향하는지</p></div>
+<div><span>발달 수준</span><b>발달 수준</b><p>유연하고 건강한 상태인지, 자동 패턴에 강하게 사로잡힌 상태인지</p></div>
+<div><span>맥락</span><b>환경과 경험</b><p>직업, 문화, 가족, 성별 역할, 학습 경험 등 실제 삶의 맥락</p></div>
 </div>
 </section>
 <section class="overview-section">
 <div class="overview-section-head">
-<span>EXAMPLE</span>
+<span>예시</span>
 <h2>예를 들어 같은 3번도 이렇게 달라 보일 수 있습니다</h2>
 </div>
 <div class="variation-example-grid">
@@ -5245,32 +5188,20 @@
 <p>겉모습보다 여러 상황에서 반복되는 핵심 동기가 더 일관된지 살펴보세요.</p>
 </div>
 </section>
-<section class="overview-section overview-merged-section"><div class="overview-section-head"><span>DETAIL · WINGS</span><h2>날개</h2></div><div class="wing-diagram">
+<section class="overview-section overview-merged-section"><div class="overview-section-head"><span>자세히 · 날개</span><h2>날개</h2></div><div class="wing-diagram">
 <div class="wing-side">왼쪽 날개</div>
-<div class="wing-core"><span>내 유형</span><b>CORE</b></div>
+<div class="wing-core"><span>내 유형</span><b>핵심</b></div>
 <div class="wing-side">오른쪽 날개</div>
 </div><div class="overview-grid two">
 <article class="overview-card"><div class="overview-card-no">01</div><h3>한쪽 날개가 더 강할 수 있습니다</h3><p>양옆 유형 중 한쪽의 성향이 더 자주 드러나는 경우가 있습니다.</p></article>
 <article class="overview-card"><div class="overview-card-no">02</div><h3>양쪽 날개가 모두 나타날 수도 있습니다</h3><p>날개는 본 유형을 바꾸는 것이 아니라 기본 유형 안에서 드러나는 결을 조금 다르게 만듭니다.</p></article>
-</div><div class="overview-note"><b>예: 3번의 날개는 2번과 4번입니다.</b><span>3번이라는 기본 동기는 유지하면서 2번 또는 4번의 특성이 함께 나타날 수 있습니다.</span></div></section><section class="overview-section overview-merged-section"><div class="overview-section-head"><span>DETAIL · INSTINCTS</span><h2>본능적 변형</h2></div><div class="instinct-grid">
-<article class="instinct-card"><div class="instinct-icon">SP</div><h2>자기보존 본능</h2><p class="instinct-question">“내가 안전하고 편안해야 해.”</p><ul><li>건강·돈·집·생활환경과 안전에 관심</li><li>에너지와 자원을 관리하려 함</li><li>편안한 생활과 자기관리를 중요하게 봄</li></ul></article>
-<article class="instinct-card"><div class="instinct-icon">SO</div><h2>사회적 본능</h2><p class="instinct-question">“나는 이 집단에서 어떻게 연결되어 있지?”</p><ul><li>사람들 사이 관계·소속·역할에 관심</li><li>공동체에서 자신의 위치와 기여를 확인</li><li>사회적 관계와 소속감 유지를 중요하게 봄</li></ul></article>
-<article class="instinct-card"><div class="instinct-icon">SX</div><h2>성적 본능</h2><p class="instinct-question">“무엇이 나를 강하게 끌어당기지?”</p><ul><li>특정 사람이나 대상과의 강한 끌림에 관심</li><li>깊은 연결·자극·에너지 교류를 추구</li><li>평범한 안정감보다 강렬한 생동감에 끌리기 쉬움</li></ul></article>
+</div><div class="overview-note"><b>예: 3번의 날개는 2번과 4번입니다.</b><span>3번이라는 기본 동기는 유지하면서 2번 또는 4번의 특성이 함께 나타날 수 있습니다.</span></div></section><section class="overview-section overview-merged-section"><div class="overview-section-head"><span>자세히 · 본능 변형</span><h2>본능적 변형</h2></div><div class="instinct-grid">
+<article class="instinct-card"><div class="instinct-icon">자기보존</div><h2>자기보존 본능</h2><p class="instinct-question">“내가 안전하고 편안해야 해.”</p><ul><li>건강·돈·집·생활환경과 안전에 관심</li><li>에너지와 자원을 관리하려 함</li><li>편안한 생활과 자기관리를 중요하게 봄</li></ul></article>
+<article class="instinct-card"><div class="instinct-icon">사회적</div><h2>사회적 본능</h2><p class="instinct-question">“나는 이 집단에서 어떻게 연결되어 있지?”</p><ul><li>사람들 사이 관계·소속·역할에 관심</li><li>공동체에서 자신의 위치와 기여를 확인</li><li>사회적 관계와 소속감 유지를 중요하게 봄</li></ul></article>
+<article class="instinct-card"><div class="instinct-icon">성적</div><h2>성적 본능</h2><p class="instinct-question">“무엇이 나를 강하게 끌어당기지?”</p><ul><li>특정 사람이나 대상과의 강한 끌림에 관심</li><li>깊은 연결·자극·에너지 교류를 추구</li><li>평범한 안정감보다 강렬한 생동감에 끌리기 쉬움</li></ul></article>
 </div><div class="overview-note strong"><b>‘성적 본능’은 성생활만을 뜻하는 표현이 아닙니다.</b><span>이 자료에서는 특정 사람이나 대상과의 강한 끌림, 몰입, 에너지 교류에 주목하는 본능으로 설명합니다.</span></div></section></section><section class="overview-panel" data-overview-key="growth" data-overview-panel="growth">
 <header class="overview-hero">
-<div class="overview-hero-layout"><div class="overview-hero-copy"><div class="overview-kicker">ENNEAGRAM BASICS · GROWTH</div><h1>변화와 성장</h1><p>에니어그램은 유형을 고정된 성격 상자로 보기보다, 같은 유형 안에서도 더 자동적으로 반응할 때와 더 유연하게 선택할 때가 있다고 설명합니다.</p><div class="overview-easy-box"><strong>쉽게 말하면</strong><p>성장은 성격을 없애는 게 아니라 자동반응을 알아차리고 다른 선택을 늘리는 거예요.</p></div></div><div class="overview-hero-visual"><div class="overview-visual-card">
-<svg aria-hidden="true" class="edu-svg" viewBox="0 0 420 280">
-<rect fill="#F8FBFF" height="240" rx="24" stroke="#DDE5EF" width="380" x="20" y="20"></rect>
-<circle cx="118" cy="142" fill="#FFF1EE" r="34" stroke="#F5C3B7"></circle>
-<circle cx="210" cy="142" fill="#EAF1FC" r="34" stroke="#BFD0EA"></circle>
-<circle cx="302" cy="142" fill="#EEF8F2" r="34" stroke="#CFE7D8"></circle>
-<text fill="#18212F" font-size="13" font-weight="800" text-anchor="middle" x="118" y="138">자동</text><text fill="#5E6A79" font-size="11" text-anchor="middle" x="118" y="156">반응</text>
-<text fill="#18212F" font-size="13" font-weight="800" text-anchor="middle" x="210" y="138">멈춤</text><text fill="#5E6A79" font-size="11" text-anchor="middle" x="210" y="156">관찰</text>
-<text fill="#18212F" font-size="13" font-weight="800" text-anchor="middle" x="302" y="138">다른</text><text fill="#5E6A79" font-size="11" text-anchor="middle" x="302" y="156">선택</text>
-<path d="M152 142 H176" stroke="#8FB0E0" stroke-width="3"></path><path d="M244 142 H268" stroke="#8FB0E0" stroke-width="3"></path>
-<path d="M302 194 C262 228, 156 228, 118 194" fill="none" stroke="#D7E3F5" stroke-dasharray="6 6" stroke-width="3"></path>
-<text fill="#5E6A79" font-size="12" text-anchor="middle" x="210" y="220">반복 루프에서 조금씩 벗어나기</text>
-</svg></div></div></div></header>
+<div class="overview-hero-layout"><div class="overview-hero-copy"><div class="overview-kicker">에니어그램 이해 · 5</div><h1>변화와 성장</h1><p>에니어그램은 유형을 고정된 성격 상자로 보기보다, 같은 유형 안에서도 더 자동적으로 반응할 때와 더 유연하게 선택할 때가 있다고 설명합니다.</p><div class="overview-easy-box"><strong>쉽게 말하면</strong><p>성장은 성격을 없애는 게 아니라 자동반응을 알아차리고 다른 선택을 늘리는 거예요.</p></div></div></div></header>
 <div class="overview-split">
 <div class="overview-soft-card green">
 <div class="direction-label">통합 방향</div>
@@ -5284,7 +5215,7 @@
 </div>
 </div>
 <section class="overview-section">
-<div class="overview-section-head"><span>DIRECTION MAP</span><h2>유형별 방향</h2></div>
+<div class="overview-section-head"><span>방향 지도</span><h2>유형별 방향</h2></div>
 <div class="direction-table">
 <div class="direction-head"><span>유형</span><span>통합</span><span>비통합</span></div>
 <div><b>1번</b><span>&gt; 7번</span><span>&gt; 4번</span></div>
@@ -5301,7 +5232,7 @@
 <div class="overview-note"><b>핵심은 ‘좋은 번호로 이동한다’가 아닙니다.</b><span>내 기본 유형을 유지한 채 고착된 반응을 알아차리고 더 넓은 선택을 할 수 있는지에 초점을 둡니다.</span></div>
 <section class="overview-section">
 <div class="overview-section-head">
-<span>GROWTH PROCESS</span>
+<span>성장 과정</span>
 <h2>성장은 ‘다른 유형이 되는 것’보다 자동 반응과 거리를 만드는 과정에 가깝습니다</h2>
 </div>
 <div class="growth-process">
@@ -5313,7 +5244,7 @@
 </section>
 <section class="overview-section">
 <div class="overview-section-head">
-<span>ARROWS</span>
+<span>화살표</span>
 <h2>통합·비통합 방향은 이렇게 읽어보세요</h2>
 </div>
 <div class="arrow-reading-grid">
@@ -5333,23 +5264,10 @@
 </section>
 </section><section class="overview-panel" data-overview-key="use" data-overview-panel="use">
 <header class="overview-hero">
-<div class="overview-hero-layout"><div class="overview-hero-copy"><div class="overview-kicker">ENNEAGRAM BASICS · USE</div><h1>활용과 주의점</h1><p>목표는 번호를 빨리 맞히는 것이 아니라, 평소에는 잘 보이지 않던 <b>나의 자동 패턴을 알아차리고 선택의 폭을 넓히는 것</b>에 가깝습니다.</p><div class="overview-easy-box"><strong>쉽게 말하면</strong><p>타인을 재단하는 도구보다 나를 이해하고 대화를 돕는 도구로 쓸 때 가장 좋아요.</p></div></div><div class="overview-hero-visual"><div class="overview-visual-card">
-<svg aria-hidden="true" class="edu-svg" viewBox="0 0 420 280">
-<rect fill="#F8FBFF" height="240" rx="24" stroke="#DDE5EF" width="380" x="20" y="20"></rect>
-<rect fill="#EEF8F2" height="150" rx="18" stroke="#CFE7D8" width="138" x="54" y="68"></rect>
-<rect fill="#FFF1EE" height="150" rx="18" stroke="#F5C3B7" width="138" x="228" y="68"></rect>
-<text fill="#18212F" font-size="16" font-weight="800" text-anchor="middle" x="123" y="96">이렇게 사용</text>
-<text fill="#5E6A79" font-size="12" text-anchor="middle" x="123" y="126">• 자기관찰</text>
-<text fill="#5E6A79" font-size="12" text-anchor="middle" x="123" y="148">• 반복 패턴 점검</text>
-<text fill="#5E6A79" font-size="12" text-anchor="middle" x="123" y="170">• 대화의 언어</text>
-<text fill="#18212F" font-size="16" font-weight="800" text-anchor="middle" x="297" y="96">이렇게 단정 X</text>
-<text fill="#5E6A79" font-size="12" text-anchor="middle" x="297" y="126">• 사람 낙인찍기</text>
-<text fill="#5E6A79" font-size="12" text-anchor="middle" x="297" y="148">• 행동 하나로 확정</text>
-<text fill="#5E6A79" font-size="12" text-anchor="middle" x="297" y="170">• 만능 진단처럼 보기</text>
-</svg></div></div></div></header>
+<div class="overview-hero-layout"><div class="overview-hero-copy"><div class="overview-kicker">에니어그램 이해 · 6</div><h1>활용과 주의점</h1><p>목표는 번호를 빨리 맞히는 것이 아니라, 평소에는 잘 보이지 않던 <b>나의 자동 패턴을 알아차리고 선택의 폭을 넓히는 것</b>에 가깝습니다.</p><div class="overview-easy-box"><strong>쉽게 말하면</strong><p>타인을 재단하는 도구보다 나를 이해하고 대화를 돕는 도구로 쓸 때 가장 좋아요.</p></div></div></div></header>
 <div class="usage-do-dont">
 <section class="usage-block good">
-<span>USE IT LIKE THIS</span>
+<span>이렇게 써요</span>
 <h2>이렇게 활용해보세요</h2>
 <ul>
 <li>검사 결과를 정답보다 <b>탐색할 후보</b>로 봅니다.</li>
@@ -5359,7 +5277,7 @@
 </ul>
 </section>
 <section class="usage-block caution">
-<span>DON'T USE IT LIKE THIS</span>
+<span>이렇게 쓰지 마세요</span>
 <h2>이렇게 단정하지 마세요</h2>
 <ul>
 <li>“너는 8번이니까 공격적이야”처럼 타인을 행동 하나로 규정하기</li>
@@ -5371,7 +5289,7 @@
 </div>
 <section class="overview-section">
 <div class="overview-section-head">
-<span>EVIDENCE</span>
+<span>근거</span>
 <h2>연구에서는 어떻게 보고 있을까요?</h2>
 </div>
 <div class="research-note">
@@ -5382,19 +5300,19 @@
 </section>
 <section class="overview-section">
 <div class="overview-section-head">
-<span>SELF OBSERVATION</span>
+<span>자기 관찰</span>
 <h2>실제로는 이렇게 사용하면 됩니다</h2>
 </div>
 <div class="selfobserve-grid">
 <article><b>하루 1장면</b><h3>사건을 적습니다</h3><p>“회의에서 내 의견이 받아들여지지 않았다.”처럼 해석 없이 장면부터 잡습니다.</p></article>
 <article><b>반응</b><h3>내가 실제로 한 일을 봅니다</h3><p>더 설명했는지, 조용해졌는지, 다른 사람 반응을 살폈는지 확인합니다.</p></article>
-<article><b>WHY</b><h3>왜 그랬는지 묻습니다</h3><p>한 번의 이유에서 멈추지 말고 “그게 왜 중요했지?”를 두세 번 더 묻습니다.</p></article>
-<article><b>PATTERN</b><h3>반복되는 주제를 찾습니다</h3><p>다른 상황에서도 비슷한 욕구·두려움·주의 방향이 나타나는지 비교합니다.</p></article>
+<article><b>이유</b><h3>왜 그랬는지 묻습니다</h3><p>한 번의 이유에서 멈추지 말고 “그게 왜 중요했지?”를 두세 번 더 묻습니다.</p></article>
+<article><b>패턴</b><h3>반복되는 주제를 찾습니다</h3><p>다른 상황에서도 비슷한 욕구·두려움·주의 방향이 나타나는지 비교합니다.</p></article>
 </div>
 </section>
 <section class="overview-section">
 <div class="overview-section-head">
-<span>WHEN NOT TO USE</span>
+<span>쓰지 말아야 할 때</span>
 <h2>이런 판단에는 사용하지 않는 것이 좋습니다</h2>
 </div>
 <div class="warning-list">
@@ -5415,7 +5333,7 @@
 <main class="all-types-compare-page-wrap">
 <section class="compare-panel active" data-compare-panel="glance">
 <header class="compare-section-hero">
-<span>COMPARE · START</span>
+<span>비교 · 시작</span>
 <h1>9유형 한눈에</h1>
 <p>유형을 외우기보다, 각 유형의 주의가 어디로 향하기 쉬운지를 먼저 보면 전체 구조를 이해하기 쉽습니다.</p>
 </header><div class="compare-quick-guide">
@@ -5425,7 +5343,7 @@
 </div>
 <div class="glance-grid">
 <article class="glance-type-card">
-<div class="glance-type-top"><b>1</b><span>개혁자</span></div>
+<div class="glance-type-top"><b>1</b><span>개혁가</span></div>
 <h3>기준과 개선</h3>
 <p>“무엇이 옳고 더 나아질 수 있지?”</p>
 <div class="glance-detail">
@@ -5433,7 +5351,7 @@
 <div><span>먼저 보는 것</span><b>오류·개선점</b></div>
 </div></article>
 <article class="glance-type-card">
-<div class="glance-type-top"><b>2</b><span>조력자</span></div>
+<div class="glance-type-top"><b>2</b><span>조력가</span></div>
 <h3>관계와 필요</h3>
 <p>“누구에게 무엇이 필요하지?”</p>
 <div class="glance-detail">
@@ -5502,7 +5420,7 @@
 </div>
 <section class="compare-explainer">
 <div class="compare-explainer-head">
-<span>HOW TO COMPARE</span><h2>이 화면은 이렇게 보세요</h2>
+<span>비교하는 법</span><h2>이 화면은 이렇게 보세요</h2>
 </div>
 <div class="compare-reading-grid">
 <article><b>① 먼저 보는 것</b><p>같은 상황에서 어떤 정보에 시선이 먼저 꽂히는지 봅니다.</p></article>
@@ -5512,7 +5430,7 @@
 </section>
 </section><section class="compare-panel compare-motives" data-compare-panel="motives" id="all-types-comparison">
 <div class="all-types-compare-head">
-<span>COMPARE · CORE</span>
+<span>비교 · 핵심 동기</span>
 <h2>핵심 동기 비교</h2><p class="compare-head-desc">1~9번을 같은 기준으로 놓고, 무엇을 두려워하고 무엇을 얻으려 하는지 비교합니다. 행동보다 반복되는 이유를 보는 페이지입니다.</p>
 </div><div class="motive-simple-banner">
 <div class="motive-simple-card"><strong>핵심만 보면</strong><p>각 유형은 “무엇을 얻고 싶고, 무엇을 피하고 싶은가”에서 차이가 납니다.</p></div>
@@ -5520,7 +5438,7 @@
 </div>
 <section class="compare-explainer motive-map">
 <div class="compare-explainer-head">
-<span>CORE MAP</span><h2>핵심 동기를 네 축으로 한 번 더 비교해보세요</h2>
+<span>핵심 지도</span><h2>핵심 동기를 네 축으로 한 번 더 비교해보세요</h2>
 <p>‘두려움’만 보거나 ‘욕망’만 보면 비슷한 유형이 많습니다. 주의의 방향과 함께 묶어볼 때 차이가 더 선명해집니다.</p>
 </div>
 <div class="compare-table-wrap">
@@ -5609,7 +5527,7 @@
 </div></article></div>
 </section><section class="compare-panel" data-compare-panel="centers">
 <header class="compare-section-hero">
-<span>COMPARE · CENTERS</span>
+<span>비교 · 세 중심</span>
 <h1>세 중심으로 비교</h1>
 <p>모두 생각하고 느끼고 행동하지만, 에니어그램에서는 어떤 영역을 중심으로 경험을 조직하는지에 따라 9유형을 세 그룹으로 묶습니다.</p>
 </header>
@@ -5645,7 +5563,7 @@
 <div class="compare-guide-note"><b>오해하지 마세요.</b><p>감정 중심이 감정 기복이 심하다는 뜻도, 사고 중심만 생각을 많이 한다는 뜻도 아닙니다.</p></div>
 <section class="compare-explainer">
 <div class="compare-explainer-head">
-<span>WITHIN EACH CENTER</span><h2>같은 중심 안에서도 정서를 다루는 방식이 다릅니다</h2>
+<span>중심 안의 차이</span><h2>같은 중심 안에서도 정서를 다루는 방식이 다릅니다</h2>
 </div>
 <div class="center-strategy-grid">
 <article><h3>본능 중심 · 분노</h3><p><b>8</b>은 직접 드러내고 밀어붙이기 쉽고, <b>9</b>는 자신의 분노와 우선순위를 흐리기 쉽고, <b>1</b>은 분노를 통제해 기준과 개선으로 돌리기 쉽습니다.</p></article>
@@ -5655,7 +5573,7 @@
 </section>
 </section><section class="compare-panel" data-compare-panel="hornevian">
 <header class="compare-section-hero">
-<span>COMPARE · HORNEVIAN</span>
+<span>비교 · 호니비언</span>
 <h1>사람을 대하는 방식</h1>
 <p>관계와 환경 속에서 원하는 것을 얻기 위해 에너지가 어느 방향으로 움직이는지를 비교합니다. 이 분류는 호나비언 그룹(Hornevian Groups)으로 불립니다.</p>
 </header>
@@ -5693,7 +5611,7 @@
 </section>
 </section><section class="compare-panel" data-compare-panel="harmonic">
 <header class="compare-section-hero">
-<span>COMPARE · HARMONIC</span>
+<span>비교 · 하모닉</span>
 <h1>문제를 대하는 방식</h1>
 <p>문제가 생겼을 때 불편한 감정을 어떻게 다루고 해결하려 하는지가 비슷한 유형을 묶습니다. 이 분류는 하모닉 그룹(Harmonic Groups)으로 불립니다.</p>
 </header>
@@ -5719,7 +5637,7 @@
 </div>
 <section class="compare-explainer">
 <div class="compare-explainer-head">
-<span>WHEN SOMETHING GOES WRONG</span><h2>문제가 생겼을 때 ‘어떤 방식으로 정상화하려 하는가’를 봅니다</h2>
+<span>일이 어긋날 때</span><h2>문제가 생겼을 때 ‘어떤 방식으로 정상화하려 하는가’를 봅니다</h2>
 </div>
 <div class="harmonic-example-grid">
 <article>
@@ -5738,45 +5656,45 @@
 </section>
 </section><section class="compare-panel" data-compare-panel="situations">
 <header class="compare-section-hero">
-<span>COMPARE · SAME SCENE</span>
+<span>비교 · 같은 상황</span>
 <h1>같은 상황, 다른 이유</h1>
 <p>행동만 보면 비슷해도 무엇에 먼저 주의를 두고 무엇을 지키려 하는지는 다를 수 있습니다. 아래 문장은 유형 판별표가 아니라 <b>동기의 차이를 이해하기 위한 예시</b>입니다.</p>
 </header>
 <div class="scenario-list">
 <article class="scenario-card">
-<div class="scenario-no">SCENE 01</div>
+<div class="scenario-no">장면 1</div>
 <h2>마감 하루 전, 일이 많이 남았다</h2>
 <div class="scenario-grid"><div class="scenario-row"><b>1</b><p>기준에 맞지 않는 부분을 다시 확인하고 고치려 한다.</p></div><div class="scenario-row"><b>2</b><p>누가 힘들어하는지 보고 필요한 일을 더 맡으려 한다.</p></div><div class="scenario-row"><b>3</b><p>목표 달성에 필요한 일만 추려 속도를 높이려 한다.</p></div><div class="scenario-row"><b>4</b><p>내가 중요하게 생각한 의미나 완성도가 사라지지 않는지 신경 쓴다.</p></div><div class="scenario-row"><b>5</b><p>범위를 줄이고 필요한 정보와 혼자 집중할 시간을 확보하려 한다.</p></div><div class="scenario-row"><b>6</b><p>누락·위험·역할 분담을 다시 확인하고 대비책을 찾으려 한다.</p></div><div class="scenario-row"><b>7</b><p>더 빠르거나 새로운 해결책을 찾아 답답함을 벗어나려 한다.</p></div><div class="scenario-row"><b>8</b><p>누가 결정할지 정하고 직접 밀어붙여 상황을 장악하려 한다.</p></div><div class="scenario-row"><b>9</b><p>충돌을 줄이며 급한 것부터 맞춰가지만 내 우선순위는 뒤로 밀릴 수 있다.</p></div></div>
 </article>
 <article class="scenario-card">
-<div class="scenario-no">SCENE 02</div>
+<div class="scenario-no">장면 2</div>
 <h2>친구가 약속 직전에 취소했다</h2>
 <div class="scenario-grid"><div class="scenario-row"><b>1</b><p>약속과 책임을 가볍게 여긴 건 아닌지 불편할 수 있다.</p></div><div class="scenario-row"><b>2</b><p>무슨 일이 생겼는지 걱정하면서도 내가 중요하지 않은가 서운할 수 있다.</p></div><div class="scenario-row"><b>3</b><p>일정을 빠르게 다시 짜고 다음 계획으로 넘어가려 할 수 있다.</p></div><div class="scenario-row"><b>4</b><p>나와의 약속이 어떤 의미였는지 생각하며 감정이 오래 남을 수 있다.</p></div><div class="scenario-row"><b>5</b><p>갑작스러운 변경은 불편하지만 혼자 쓸 시간이 생긴 점은 편할 수도 있다.</p></div><div class="scenario-row"><b>6</b><p>왜 취소했는지, 다음에도 믿을 수 있는지 이유와 신뢰를 확인하고 싶을 수 있다.</p></div><div class="scenario-row"><b>7</b><p>아쉽지만 바로 다른 재미있는 계획을 찾으려 할 수 있다.</p></div><div class="scenario-row"><b>8</b><p>존중받지 못했다고 느끼면 이유를 직접 묻고 선을 분명히 할 수 있다.</p></div><div class="scenario-row"><b>9</b><p>괜찮다고 말하고 넘어가면서 실제 서운함은 뒤늦게 알아차릴 수 있다.</p></div></div>
 </article>
 <article class="scenario-card">
-<div class="scenario-no">SCENE 03</div>
+<div class="scenario-no">장면 3</div>
 <h2>처음 들어간 팀에서 첫 회의를 한다</h2>
 <div class="scenario-grid"><div class="scenario-row"><b>1</b><p>일하는 기준과 역할이 명확한지 본다.</p></div><div class="scenario-row"><b>2</b><p>누가 어떤 도움을 필요로 하는지 사람을 먼저 본다.</p></div><div class="scenario-row"><b>3</b><p>이 팀의 목표와 성과 기준이 무엇인지 본다.</p></div><div class="scenario-row"><b>4</b><p>이 팀에서 나답게 기여할 수 있는지 분위기와 의미를 본다.</p></div><div class="scenario-row"><b>5</b><p>내가 알아야 할 정보와 맡을 범위가 무엇인지 본다.</p></div><div class="scenario-row"><b>6</b><p>누구를 믿을 수 있고 어떤 위험이 있는지 분위기와 규칙을 본다.</p></div><div class="scenario-row"><b>7</b><p>새롭게 해볼 수 있는 것과 재미있는 가능성을 본다.</p></div><div class="scenario-row"><b>8</b><p>누가 결정권을 갖고 어떻게 힘이 움직이는지 본다.</p></div><div class="scenario-row"><b>9</b><p>사람들 사이 분위기와 내가 무리 없이 들어갈 자리를 본다.</p></div></div>
 </article>
 <article class="scenario-card">
-<div class="scenario-no">SCENE 04</div>
+<div class="scenario-no">장면 4</div>
 <h2>상사가 내 아이디어를 바로 반려했다</h2>
 <div class="scenario-grid"><div class="scenario-row"><b>1</b><p>근거와 기준이 무엇인지 확인하고, 무엇이 잘못됐는지 고치려 할 수 있습니다.</p></div><div class="scenario-row"><b>2</b><p>상대가 원하는 것이 무엇인지 파악하고 관계를 해치지 않게 다시 제안하려 할 수 있습니다.</p></div><div class="scenario-row"><b>3</b><p>승인될 수 있는 방향으로 빠르게 수정해 결과를 만들려 할 수 있습니다.</p></div><div class="scenario-row"><b>4</b><p>내 아이디어의 의미가 충분히 이해되지 않았다고 느끼며 감정이 남을 수 있습니다.</p></div><div class="scenario-row"><b>5</b><p>반려 이유와 필요한 정보를 더 모은 뒤 다시 제안하려 할 수 있습니다.</p></div><div class="scenario-row"><b>6</b><p>숨은 위험이나 우려가 무엇인지 확인하고, 다음 거절 가능성까지 대비하려 할 수 있습니다.</p></div><div class="scenario-row"><b>7</b><p>다른 아이디어나 우회 방법을 바로 찾으려 할 수 있습니다.</p></div><div class="scenario-row"><b>8</b><p>결정 근거가 납득되지 않으면 직접 이의를 제기하고 토론하려 할 수 있습니다.</p></div><div class="scenario-row"><b>9</b><p>일단 받아들이고 분위기를 맞추지만, 내 의견을 다시 꺼내는 것은 늦어질 수 있습니다.</p></div></div>
 </article>
 <article class="scenario-card">
-<div class="scenario-no">SCENE 05</div>
+<div class="scenario-no">장면 5</div>
 <h2>친한 사람이 내 메시지에 오래 답하지 않는다</h2>
 <div class="scenario-grid"><div class="scenario-row"><b>1</b><p>예의나 약속의 기준에 어긋난 건 아닌지 불편할 수 있습니다.</p></div><div class="scenario-row"><b>2</b><p>상대에게 무슨 일이 있는지 걱정하면서 내가 덜 중요해진 건 아닌지 신경 쓸 수 있습니다.</p></div><div class="scenario-row"><b>3</b><p>바쁜가 보다 하고 다른 일에 집중하지만 관계의 반응성이 계속 낮으면 거리를 둘 수 있습니다.</p></div><div class="scenario-row"><b>4</b><p>관계의 의미가 달라진 것인지 생각하며 감정적으로 깊게 해석할 수 있습니다.</p></div><div class="scenario-row"><b>5</b><p>답할 공간이 필요하다고 생각해 기다리며 나도 거리를 둘 수 있습니다.</p></div><div class="scenario-row"><b>6</b><p>무슨 문제가 생긴 건지 여러 가능성을 떠올리고 확인하고 싶어질 수 있습니다.</p></div><div class="scenario-row"><b>7</b><p>답답함을 오래 붙잡기보다 다른 활동이나 사람에게 주의를 옮길 수 있습니다.</p></div><div class="scenario-row"><b>8</b><p>계속 반복되면 상대가 나를 존중하는지 직접 확인할 수 있습니다.</p></div><div class="scenario-row"><b>9</b><p>상대가 바쁜가 보다 하고 넘기지만 서운함을 뒤늦게 알아차릴 수 있습니다.</p></div></div>
 </article>
 <article class="scenario-card">
-<div class="scenario-no">SCENE 06</div>
+<div class="scenario-no">장면 6</div>
 <h2>휴가 하루를 아무 계획 없이 보내게 됐다</h2>
 <div class="scenario-grid"><div class="scenario-row"><b>1</b><p>해야 할 일이나 미뤄둔 일을 정리해야 마음이 편할 수 있습니다.</p></div><div class="scenario-row"><b>2</b><p>주변 사람과 시간을 보내거나 누군가 필요한 일이 없는지 떠올릴 수 있습니다.</p></div><div class="scenario-row"><b>3</b><p>의미 있게 보냈다는 느낌이 들도록 운동·공부·정리 같은 목표를 만들 수 있습니다.</p></div><div class="scenario-row"><b>4</b><p>그날의 기분에 맞는 음악·공간·창작 같은 경험을 찾을 수 있습니다.</p></div><div class="scenario-row"><b>5</b><p>방해받지 않고 혼자 관심사를 파고들거나 쉬는 시간을 반길 수 있습니다.</p></div><div class="scenario-row"><b>6</b><p>미리 정한 게 없으면 약간 불안해져 안전하고 익숙한 선택지를 찾을 수 있습니다.</p></div><div class="scenario-row"><b>7</b><p>즉흥적으로 새로운 장소나 재미있는 일을 찾아 나설 수 있습니다.</p></div><div class="scenario-row"><b>8</b><p>내가 원하는 대로 시간을 완전히 통제할 수 있다는 점을 즐길 수 있습니다.</p></div><div class="scenario-row"><b>9</b><p>편한 활동을 하며 쉬다가 시간이 자연스럽게 흘러갈 수 있습니다.</p></div></div>
 </article>
 </div>
 <section class="compare-explainer">
 <div class="compare-explainer-head">
-<span>CHECK YOURSELF</span><h2>예시를 읽을 때 ‘어느 문장이 나와 비슷한가’에서 멈추지 마세요</h2>
+<span>스스로 확인하기</span><h2>예시를 읽을 때 ‘어느 문장이 나와 비슷한가’에서 멈추지 마세요</h2>
 </div>
 <div class="compare-reading-grid">
 <article><b>행동</b><p>실제로 나는 무엇을 했는가?</p></article>
@@ -5786,7 +5704,7 @@
 </section>
 </section><section class="compare-panel" data-compare-panel="confused">
 <header class="compare-section-hero">
-<span>COMPARE · LOOK-ALIKE</span>
+<span>비교 · 헷갈리는 유형</span>
 <h1>헷갈리는 유형</h1>
 <p>유형을 구분하기 어려울 때는 “둘 다 무엇을 하는가?”보다 <b>왜 그 행동을 하는가?</b>를 비교하면 도움이 됩니다.</p>
 </header>
@@ -5996,7 +5914,7 @@
 <main class="myspace-wrap">
 <header class="myspace-page-head">
 <div>
-<div class="myspace-kicker">MY ENNEAGRAM</div>
+<div class="myspace-kicker">나의 공간</div>
 <h1>나를 알아가는 공간</h1>
 <p>유형을 맞히는 것에서 끝내지 않고, 실제 경험을 기록하면서 반복되는 나의 패턴을 찾아갑니다.</p>
 </div>
@@ -6009,15 +5927,15 @@
 <section class="myspace-panel active" data-myspace-panel="dashboard">
 <div class="feature-hero compact-feature-hero">
 <div>
-<span class="feature-eyebrow">MY DASHBOARD</span>
-<h2>지금까지 발견한 나</h2>
-<p>유형 하나로 나를 단정하기보다, 내가 남긴 기록과 반복 단서를 모아서 보여줍니다.</p>
+<span class="feature-eyebrow">최근 흐름</span>
+<h2>나의 변화</h2>
+<p>다이어리에 쌓인 기록으로 요즘 나의 흐름을 보여줘요. 유형 하나로 나를 단정하기보다, 반복되는 장면과 감정을 함께 봐요.</p>
 </div>
 <div class="mytype-setting">
 <label for="dashboardMyType">내가 탐색 중인 유형</label>
 <select id="dashboardMyType">
 <option value="">아직 정하지 않았어요</option>
-<option value="1">1번 · 개혁자</option><option value="2">2번 · 조력자</option>
+<option value="1">1번 · 개혁가</option><option value="2">2번 · 조력가</option>
 <option value="3">3번 · 성취자</option><option value="4">4번 · 개인주의자</option>
 <option value="5">5번 · 탐구자</option><option value="6">6번 · 충실가</option>
 <option value="7">7번 · 열정가</option><option value="8">8번 · 도전자</option>
@@ -6025,259 +5943,132 @@
 </select>
 </div>
 </div>
+<div class="change-toolbar">
+<div aria-label="기간" class="diary-chips change-period" id="changePeriod" role="group"><button aria-pressed="true" class="diary-chip active" data-change-period="30" type="button">최근 30일</button><button aria-pressed="false" class="diary-chip" data-change-period="all" type="button">전체</button></div>
+<div class="change-actions">
+<button class="text-action" data-share-open="" type="button">링크로 공유하기 ›</button>
+<button class="text-action" data-myspace-jump="reflection" type="button">다이어리 쓰기 ›</button>
+</div>
+</div>
 <div class="dashboard-stat-grid">
-<article class="dashboard-stat"><span>성찰 기록</span><strong id="dashReflectionCount">0</strong><p>개의 장면을 돌아봤어요.</p></article>
-<article class="dashboard-stat"><span>자주 등장한 단서</span><strong id="dashTopMotive">—</strong><p id="dashTopMotiveSub">기록이 쌓이면 보여드려요.</p></article>
-<article class="dashboard-stat"><span>가장 많이 본 영역</span><strong id="dashTopCategory">—</strong><p id="dashTopCategorySub">아직 기록이 없어요.</p></article>
-<article class="dashboard-stat"><span>저장한 자료</span><strong id="dashBookmarkCount">0</strong><p>개의 자료를 북마크했어요.</p></article>
+<article class="dashboard-stat"><span>기록</span><strong id="dashReflectionCount">0</strong><p id="dashReflectionSub">개의 장면을 돌아봤어요.</p></article>
+<article class="dashboard-stat"><span>연속 기록</span><strong id="dashStreak">0</strong><p>일째 이어서 기록 중이에요.</p></article>
+<article class="dashboard-stat"><span>성장 실험</span><strong id="dashExperiment">0 / 0</strong><p>개를 해봤어요.</p></article>
 </div>
-<div class="dashboard-main-grid">
-<section class="feature-card">
-<div class="feature-card-head">
-<div><span>REPEATED CLUES</span><h3>반복해서 등장한 단서</h3></div>
-<button class="text-action" data-myspace-jump="reflection" type="button">기록 추가하기 &gt;</button>
-</div>
-<div class="motive-bars" id="dashMotiveBars"><div class="empty-state small"><strong>아직 보여줄 패턴이 없어요.</strong><p>성찰 기록을 2~3개 남기면 반복 단서를 비교할 수 있어요.</p></div></div>
-</section>
-<section class="feature-card">
-<div class="feature-card-head">
-<div><span>RECENT NOTES</span><h3>최근 성찰</h3></div>
-<button class="text-action" data-myspace-jump="reflection" type="button">전체 기록 &gt;</button>
-</div>
-<div class="recent-reflection-list" id="dashRecentReflection"><div class="empty-state small"><strong>첫 기록을 남겨보세요.</strong><p>오늘 기억에 남은 장면 하나면 충분합니다.</p></div></div>
-</section>
-</div>
-<section class="feature-card dashboard-insight">
-<div class="feature-card-head">
-<div><span>PATTERN SUMMARY</span><h3>현재 기록에서 보이는 흐름</h3></div>
-</div>
-<div class="pattern-summary" id="dashPatternSummary">기록이 생기면 <b>어떤 상황에서 무엇을 중요하게 보고 어떤 방식으로 반응하는지</b>를 여기에 정리합니다.</div>
-</section>
-</section>
-<!-- AI Type Explorer -->
-<section class="myspace-panel" data-myspace-panel="ai">
-<div class="feature-hero">
-<div>
-<span class="feature-eyebrow">TYPE EXPLORER</span>
-<h2>헷갈리는 유형, 질문하면서 비교해보기</h2>
-<p>지금은 서버 없이 작동하는 <b>로컬 탐색 모드</b>예요. 두 유형의 동기 차이를 기준으로 질문을 이어갑니다. 나중에 AI 서버를 연결하면 같은 화면에서 자유 대화를 확장할 수 있어요.</p>
-</div>
-<div class="local-mode-badge">LOCAL MODE</div>
-</div>
-<div class="type-pair-picker feature-card">
-<div class="pair-select">
-<label for="aiTypeA">첫 번째 후보</label>
-<select id="aiTypeA"><option value="1">1번 · 개혁자</option><option value="2">2번 · 조력자</option><option value="3" selected="">3번 · 성취자</option><option value="4">4번 · 개인주의자</option><option value="5">5번 · 탐구자</option><option value="6">6번 · 충실가</option><option value="7">7번 · 열정가</option><option value="8">8번 · 도전자</option><option value="9">9번 · 평화주의자</option></select>
-</div>
-<div class="pair-vs">VS</div>
-<div class="pair-select">
-<label for="aiTypeB">두 번째 후보</label>
-<select id="aiTypeB"><option value="1">1번 · 개혁자</option><option value="2">2번 · 조력자</option><option value="3">3번 · 성취자</option><option value="4">4번 · 개인주의자</option><option value="5">5번 · 탐구자</option><option value="6" selected="">6번 · 충실가</option><option value="7">7번 · 열정가</option><option value="8">8번 · 도전자</option><option value="9">9번 · 평화주의자</option></select>
-</div>
-<button class="primary-action" id="aiStartCompare" type="button">비교 시작</button>
-</div>
-<div class="chat-shell feature-card">
-<div class="chat-head">
-<div><span>GUIDED CHAT</span><strong id="chatPairTitle">두 유형을 선택해주세요</strong></div>
-<button class="text-action" id="aiResetChat" type="button">대화 초기화</button>
-</div>
-<div class="chat-messages" id="aiChatMessages">
-<div class="chat-message bot">
-<div class="chat-avatar">AI</div>
-<div class="chat-bubble">
-<strong>어떤 두 유형이 헷갈리나요?</strong>
-<p>위에서 두 유형을 고른 뒤 비교를 시작해주세요. 행동보다 “왜 그렇게 했는지”를 함께 살펴볼게요.</p>
-</div>
-</div>
-</div>
-<div class="chat-quick" id="aiQuickReplies"></div>
-<div class="chat-input-row">
-<textarea id="aiChatInput" placeholder="최근 실제 상황이나 내 생각을 자유롭게 적어보세요." rows="2"></textarea>
-<button class="primary-action" id="aiChatSend" type="button">보내기</button>
-</div>
-<p class="feature-footnote">현재 로컬 모드는 정해진 비교 데이터와 키워드를 이용해 질문을 이어갑니다. 유형을 확정하지 않으며, 서버 연결 후 실제 AI 응답으로 교체할 수 있게 구성했습니다.</p>
-</div>
-</section>
-<!-- Reflection -->
-<section class="myspace-panel" data-myspace-panel="reflection">
-<div class="feature-hero">
-<div>
-<span class="feature-eyebrow">REFLECTION JOURNAL</span>
-<h2>다이어리 + 5 Why로 한 장면 깊게 보기</h2>
-<p>무슨 일이 있었는지부터 시작해서 “그게 왜 중요했지?”를 반복해 묻습니다. 정답을 찾기보다 내 반응 아래에 있던 욕구와 두려움을 발견하는 기록입니다.</p>
-</div>
-</div>
-<div class="reflection-workspace">
-<form class="feature-card reflection-form" id="reflectionForm">
-<div class="form-row two">
-<label><span>기록 제목</span><input id="reflectionTitle" placeholder="예: 회의에서 내 의견이 반려된 날" type="text"></label>
-<label><span>영역</span>
-<select id="reflectionCategory">
-<option value="일상">일상</option><option value="관계">사람 사이</option>
-<option value="연애">연애</option><option value="가족">가족</option>
-<option value="일">일</option><option value="돈">돈</option>
-<option value="리더십">리더십</option><option value="취미">취미·쉼</option>
-</select>
-</label>
-</div>
-<label><span>01. 무슨 일이 있었나요?</span><textarea id="reflectionSituation" placeholder="해석보다 실제 장면을 적어보세요." rows="3"></textarea></label>
-<label><span>02. 나는 어떻게 반응했나요?</span><textarea id="reflectionReaction" placeholder="생각·감정·행동 중 먼저 떠오르는 것을 적어보세요." rows="3"></textarea></label>
-<div class="fivewhy-block">
-<div class="fivewhy-head"><span>5 WHY</span><h3>한 단계씩 더 깊게</h3></div>
-<label><span>왜 그렇게 반응했을까요?</span><textarea id="why1" placeholder="첫 번째 이유" rows="2"></textarea></label>
-<label><span>그게 왜 나에게 중요했을까요?</span><textarea id="why2" placeholder="한 단계 더" rows="2"></textarea></label>
-<label><span>그게 충족되지 않으면 무엇이 불편하거나 두려울까요?</span><textarea id="why3" placeholder="두려움이나 불편함" rows="2"></textarea></label>
-<label><span>그 순간 나는 무엇을 지키거나 얻고 싶었을까요?</span><textarea id="why4" placeholder="욕구나 가치" rows="2"></textarea></label>
-<label><span>결국 내게 정말 중요했던 것은 무엇 같나요?</span><textarea id="why5" placeholder="가장 깊은 이유" rows="2"></textarea></label>
-</div>
-<fieldset class="motive-fieldset">
-<legend>이번 기록과 가까운 단서</legend>
-<p>정답이 아니라, 내가 지금 느끼기에 가까운 것을 골라주세요. 여러 개 선택할 수 있어요.</p>
-<div class="motive-chip-grid" id="reflectionMotiveChips">
-<label><input type="checkbox" value="올바름"><span>올바름</span></label>
-<label><input type="checkbox" value="사랑·필요됨"><span>사랑·필요됨</span></label>
-<label><input type="checkbox" value="인정·가치"><span>인정·가치</span></label>
-<label><input type="checkbox" value="정체성·의미"><span>정체성·의미</span></label>
-<label><input type="checkbox" value="유능함·이해"><span>유능함·이해</span></label>
-<label><input type="checkbox" value="안전·신뢰"><span>안전·신뢰</span></label>
-<label><input type="checkbox" value="자유·가능성"><span>자유·가능성</span></label>
-<label><input type="checkbox" value="자율성·통제"><span>자율성·통제</span></label>
-<label><input type="checkbox" value="평화·조화"><span>평화·조화</span></label>
-</div>
-</fieldset>
-<label><span>다음에 비슷한 상황이 오면 한 번 다르게 해볼 수 있는 것은?</span><textarea id="reflectionNext" placeholder="아주 작은 행동 하나면 충분해요." rows="2"></textarea></label>
-<div class="local-analysis" hidden="" id="reflectionLocalAnalysis"></div>
-<div class="form-actions">
-<button class="secondary-action" id="reflectionAnalyze" type="button">기록 먼저 분석해보기</button>
-<button class="primary-action" type="submit">기록 저장</button>
-</div>
-</form>
-<aside class="feature-card reflection-history">
-<div class="feature-card-head">
-<div><span>MY NOTES</span><h3>나의 성찰 기록</h3></div>
-<span class="count-badge" id="reflectionCountBadge">0</span>
-</div>
-<div class="reflection-history-list" id="reflectionHistoryList"><div class="empty-state"><strong>아직 기록이 없어요.</strong><p>한 장면을 저장하면 이곳에 쌓입니다.</p></div></div>
-</aside>
-</div>
-</section>
-<!-- Library -->
-<section class="myspace-panel" data-myspace-panel="library">
-<div class="feature-hero">
-<div>
-<span class="feature-eyebrow">LIBRARY</span>
-<h2>에니어그램 자료 모아보기</h2>
-<p>논문, 대표 기관의 설명, 유형 비교 자료를 한곳에 모아두고 필요한 자료를 북마크할 수 있습니다.</p>
-</div>
-</div>
-<div class="library-toolbar">
-<div class="library-search"><input id="librarySearch" placeholder="제목, 주제, 태그로 검색" type="search"></div>
-<div class="library-filter" id="libraryFilter">
-<button class="active" data-library-filter="전체" type="button">전체</button>
-<button data-library-filter="논문" type="button">논문</button>
-<button data-library-filter="공식자료" type="button">공식자료</button>
-<button data-library-filter="아티클" type="button">아티클</button>
-<button data-library-filter="북마크" type="button">북마크</button>
-</div>
-</div>
-<div class="library-grid" id="libraryGrid">
-      <article class="library-card">
-        <div class="library-card-top">
-          <span class="library-type">논문</span>
-          <button type="button" class="bookmark-btn " data-bookmark="paper-review-2021" aria-label="북마크">☆</button>
-        </div>
-        <h3>The Enneagram: A systematic review of the literature and directions for future research</h3>
-        <p>에니어그램 연구의 신뢰도와 타당도, 연구 현황을 체계적으로 검토한 논문입니다.</p>
-        <div class="library-source">Journal of Clinical Psychology · 2021</div>
-        <div class="library-tags"><span>연구</span><span>타당도</span><span>체계적 문헌고찰</span></div>
-        <a class="library-open" href="https://pubmed.ncbi.nlm.nih.gov/33332604/" target="_blank" rel="noopener noreferrer">원문 열기 &gt;</a>
-      </article>
-      <article class="library-card">
-        <div class="library-card-top">
-          <span class="library-type">공식자료</span>
-          <button type="button" class="bookmark-btn " data-bookmark="ei-system" aria-label="북마크">☆</button>
-        </div>
-        <h3>How the Enneagram System Works</h3>
-        <p>9유형 구조, 세 중심, 날개, 발달 수준, 성장·스트레스 방향, 본능 등을 한 번에 볼 수 있는 대표 설명 자료입니다.</p>
-        <div class="library-source">The Enneagram Institute</div>
-        <div class="library-tags"><span>Riso-Hudson</span><span>세 중심</span><span>날개</span><span>발달 수준</span></div>
-        <a class="library-open" href="https://www.enneagraminstitute.com/how-the-enneagram-system-works/" target="_blank" rel="noopener noreferrer">원문 열기 &gt;</a>
-      </article>
-      <article class="library-card">
-        <div class="library-card-top">
-          <span class="library-type">공식자료</span>
-          <button type="button" class="bookmark-btn " data-bookmark="narrative-tour" aria-label="북마크">☆</button>
-        </div>
-        <h3>Tour the Nine Types</h3>
-        <p>각 유형의 주의 초점과 삶의 교훈, 실제 유형 당사자의 설명을 함께 볼 수 있는 입문 자료입니다.</p>
-        <div class="library-source">The Narrative Enneagram</div>
-        <div class="library-tags"><span>9유형</span><span>주의의 방향</span><span>Narrative</span></div>
-        <a class="library-open" href="https://www.narrativeenneagram.org/tour-the-nine-types/" target="_blank" rel="noopener noreferrer">원문 열기 &gt;</a>
-      </article>
-      <article class="library-card">
-        <div class="library-card-top">
-          <span class="library-type">아티클</span>
-          <button type="button" class="bookmark-btn " data-bookmark="narrative-discover" aria-label="북마크">☆</button>
-        </div>
-        <h3>Discover Your Type · An Inside Job</h3>
-        <p>행동만으로 다른 사람의 유형을 정하기보다 자신의 내적 동기와 세계관을 관찰해야 한다는 관점을 설명합니다.</p>
-        <div class="library-source">The Narrative Enneagram</div>
-        <div class="library-tags"><span>유형 찾기</span><span>동기</span><span>자기관찰</span></div>
-        <a class="library-open" href="https://www.narrativeenneagram.org/discover-your-type/" target="_blank" rel="noopener noreferrer">원문 열기 &gt;</a>
-      </article>
-      <article class="library-card">
-        <div class="library-card-top">
-          <span class="library-type">아티클</span>
-          <button type="button" class="bookmark-btn " data-bookmark="narrative-explore" aria-label="북마크">☆</button>
-        </div>
-        <h3>Explore the Enneagram</h3>
-        <p>세 중심, 유형 비교, 본능과 서브타입 등 에니어그램의 주요 개념을 주제별로 탐색할 수 있습니다.</p>
-        <div class="library-source">The Narrative Enneagram</div>
-        <div class="library-tags"><span>세 중심</span><span>유형 비교</span><span>본능</span></div>
-        <a class="library-open" href="https://www.narrativeenneagram.org/explore-the-enneagram/" target="_blank" rel="noopener noreferrer">원문 열기 &gt;</a>
-      </article></div>
-<p class="feature-footnote">현재는 검토하기 좋은 대표 자료로 시작했습니다. 서버를 연결하면 새 자료 수집, 관리자 등록, 사용자별 북마크 동기화 기능으로 확장할 수 있습니다.</p>
-</section>
-<!-- Community -->
-<section class="myspace-panel" data-myspace-panel="community">
-<div class="feature-hero">
-<div>
-<span class="feature-eyebrow">COMMUNITY · PREVIEW</span>
-<h2>다른 사람의 경험도 들어보기</h2>
-<p>커뮤니티는 후순위 기능으로 두되, 화면과 흐름은 미리 만들어뒀어요. 지금 작성한 글은 서버에 공개되지 않고 <b>내 브라우저에서만</b> 보입니다.</p>
-</div>
-<div class="local-mode-badge">LOCAL PREVIEW</div>
-</div>
-<div class="community-layout">
-<form class="feature-card community-compose" id="communityForm">
-<div class="feature-card-head"><div><span>WRITE</span><h3>경험 남겨보기</h3></div></div>
-<div class="form-row two">
-<label><span>이름</span><input id="communityName" maxlength="20" placeholder="익명" type="text" value="익명"></label>
-<label><span>유형 (선택)</span>
-<select id="communityType">
-<option value="">모름/비공개</option>
-<option value="1">1번</option><option value="2">2번</option><option value="3">3번</option>
-<option value="4">4번</option><option value="5">5번</option><option value="6">6번</option>
-<option value="7">7번</option><option value="8">8번</option><option value="9">9번</option>
-</select>
-</label>
-</div>
-<label><span>주제</span>
-<select id="communityCategory">
-<option value="유형 탐색">유형 탐색</option><option value="관계">관계</option>
-<option value="일">일</option><option value="성장">성장</option><option value="질문">질문</option>
-</select>
-</label>
-<label><span>내용</span><textarea id="communityContent" placeholder="내가 경험한 패턴이나 궁금한 점을 적어보세요." rows="5"></textarea></label>
-<button class="primary-action" type="submit">내 기기에 글 추가</button>
-</form>
-<section class="community-feed">
-<div class="community-preview-note">서버 연결 전이라 다른 사용자에게 공개되지 않습니다.</div>
-<div class="community-feed-list" id="communityFeedList"><div class="empty-state"><strong>아직 글이 없어요.</strong><p>커뮤니티 UI를 미리 확인하려면 글을 하나 작성해보세요.</p></div></div>
-</section>
+<div class="change-grid" id="changeGrid">
+<section class="feature-card change-card"><h3>기록한 날</h3><p class="change-sub">최근 5주 · 칸이 진할수록 많이 기록한 날</p><div class="change-calendar" id="changeCalendar"></div></section>
+<section class="feature-card change-card"><h3>주별 기록</h3><p class="change-sub">최근 8주</p><div class="change-weeks" id="changeWeeks"></div></section>
+<section class="feature-card change-card"><h3>자주 느낀 감정</h3><p class="change-sub" id="changeEmotionSub">상위 5개</p><div class="change-bars" id="changeEmotions"></div></section>
+<section class="feature-card change-card"><h3>자주 나온 단서</h3><p class="change-sub">상위 5개</p><div class="change-bars" id="dashMotiveBars"></div></section>
+<section class="feature-card change-card"><h3>장면별 기록</h3><p class="change-sub">어떤 장면을 자주 돌아봤나요</p><div class="change-bars" id="changeScenes"></div></section>
+<section class="feature-card change-card dashboard-insight"><h3>현재 기록에서 보이는 흐름</h3><div class="pattern-summary" id="dashPatternSummary"></div></section>
 </div>
 </section>
 </main>
+</section><section class="page-panel" data-page-panel="diary" id="page-diary">
+<main class="page-wrap diary-wrap">
+<header class="ui-page-head diary-head">
+<div>
+<span class="ui-kicker">다이어리</span>
+<h1>오늘의 장면을 남겨요</h1>
+<p>기억에 남은 장면 하나를 적고 “왜 그랬을까?”를 따라가요. 마지막에 적은 <b>다음엔</b>은 <b>해보기로 한 것</b>에 모여요. 해보고 나면 다시 기록해요.</p>
+</div>
+<span class="diary-storage">현재 기록은 이 브라우저에 저장돼요</span>
+</header>
+<div class="diary-layout">
+<form class="ui-card diary-form" id="diaryForm" novalidate="">
+<div class="diary-form-head">
+<div class="ui-label">언제 있었던 일인가요?</div>
+<div class="ui-chips" id="diaryDateChips"></div>
+<input aria-label="날짜 직접 고르기" class="ui-field diary-date-input" id="diaryDateInput" type="date">
+</div>
+
+<section class="diary-q" data-q="situation">
+<label class="ui-label" for="diarySituation">1. 무슨 일이 있었나요? <span class="diary-required">필수</span></label>
+<p class="ui-help">해석보다 실제로 있었던 일을 적어보세요. 언제, 누구와, 어떤 상황이었는지.</p>
+<div class="ui-chips" id="diaryCategoryChips"></div>
+<textarea class="ui-field" id="diarySituation" placeholder="예: 회의에서 내 의견이 바로 반려됐다" rows="3"></textarea>
+<p class="diary-error" hidden="" id="diarySituationError"></p>
+</section>
+
+<section class="diary-q" data-q="emotions">
+<div class="ui-label">2. 그때 어떤 감정이 들었나요?</div>
+<p class="ui-help">여러 개 골라도 괜찮아요. 없는 감정은 ‘기타’로 적어요.</p>
+<div class="ui-chips" id="diaryEmotionChips"></div>
+<input aria-label="기타 감정" class="ui-field diary-other" hidden="" id="diaryEmotionOther" maxlength="12" placeholder="기타 감정을 적어주세요" type="text">
+</section>
+
+<section class="diary-q" data-q="reaction">
+<label class="ui-label" for="diaryReaction">3. 나는 어떻게 반응했나요?</label>
+<p class="ui-help">가까운 것을 고르고, 직접 쓰기에 더 적어도 돼요.</p>
+<div class="ui-chips" id="diaryReactionChips"></div>
+<textarea class="ui-field" id="diaryReaction" placeholder="직접 쓰기: 예) 괜찮은 척 웃고 넘어갔다" rows="2"></textarea>
+</section>
+
+<section class="diary-q" data-q="why">
+<div class="ui-label">4. 왜 그랬을까요?</div>
+<p class="ui-help" id="diaryWhyHelp">한 번의 “왜?”로 끝내지 말고 한 단계씩 내려가요. 내 유형에서 자주 보이는 이유를 골라도 좋아요.</p>
+<div class="diary-why-list" id="diaryWhyList"></div>
+</section>
+
+<section class="diary-q" data-q="motives">
+<div class="ui-label">5. 이번 기록과 가까운 단서</div>
+<p class="ui-help">정답이 아니라, 지금 느끼기에 가까운 것을 골라주세요.</p>
+<div class="ui-chips" id="diaryMotiveChips"></div>
+</section>
+
+<section class="diary-q" data-q="next">
+<label class="ui-label" for="diaryNext">6. 다음에 비슷한 상황이 오면, 한 번 다르게 해볼 것은?</label>
+<p class="ui-help" id="diaryNextHelp">저장하면 ‘해보기로 한 것’에 들어가요. 아주 작은 행동 하나면 충분해요.</p>
+<div class="ui-chips" id="diaryNextChips"></div>
+<textarea class="ui-field" id="diaryNext" placeholder="직접 쓰기: 예) “생각해보고 알려줄게”라고 말해보기" rows="2"></textarea>
+</section>
+
+<section class="diary-q" data-q="title">
+<label class="ui-label" for="diaryTitle">7. 이 기록의 제목 <span class="diary-optional">선택</span></label>
+<input class="ui-field" id="diaryTitle" maxlength="40" placeholder="비워 두면 첫 문장으로 정해요" type="text">
+</section>
+
+<div class="diary-form-actions">
+<p class="diary-notice" hidden="" id="diaryNotice" role="status"></p>
+<div class="ui-btn-row">
+<button class="ui-btn ui-btn-ghost" id="diaryClear" type="button">비우기</button>
+<button class="ui-btn ui-btn-primary" type="submit">기록 저장</button>
+</div>
+</div>
+</form>
+
+<aside class="diary-side">
+<section class="ui-card diary-exp" aria-labelledby="diaryExpTitle">
+<div class="diary-card-head">
+<h2 id="diaryExpTitle">해보기로 한 것</h2>
+<span class="count-badge" id="experimentCountBadge">0 / 0</span>
+</div>
+<p class="ui-help">기록의 ‘다음엔’이 모이는 곳이에요. 해봤다면 동그라미를 누르고, 어땠는지 한 줄 남겨요.</p>
+<div class="ui-chips diary-exp-filter" id="experimentFilter" role="group" aria-label="보기"></div>
+<div class="experiment-list" id="experimentList"></div>
+<div class="diary-exp-reco" id="experimentReco"></div>
+<form class="experiment-add" id="experimentAddForm">
+<input aria-label="직접 추가" class="ui-field" id="experimentAddInput" maxlength="80" placeholder="직접 추가: 예) 근거를 한 번 더 말해보기" type="text">
+<button class="ui-btn ui-btn-secondary" type="submit">추가</button>
+</form>
+<p class="diary-error" hidden="" id="experimentAddError"></p>
+</section>
+</aside>
+</div>
+
+<section class="diary-list" aria-labelledby="diaryListTitle">
+<div class="diary-list-head">
+<h2 id="diaryListTitle">나의 기록</h2>
+<span class="count-badge" id="reflectionCountBadge">0</span>
+</div>
+<div aria-label="장면별로 보기" class="ui-chips" id="diaryFilter" role="group"></div>
+<p class="diary-insight" id="diaryInsight"></p>
+<div class="diary-timeline" id="reflectionHistoryList"></div>
+</section>
+</main>
+</section><section class="page-panel" data-page-panel="share" id="page-share">
+<main class="share-wrap" id="shareApp"></main>
 </section>
 </main>
 </div>

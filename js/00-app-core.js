@@ -41,30 +41,30 @@ function getInterpretation(type, score) {
   if (score === 15) {
     return {
       range: "15점",
-      message: `당신은 아마 ${info.group}이 아닐 것이다.`
+      message: `${info.group} 그룹과는 거리가 있어 보여요.`
     };
   }
   if (score <= 30) {
     return {
       range: "15~30점",
-      message: `당신은 아마 ${type}번 유형이 아닐 것이다.`
+      message: `${type}번 유형과는 거리가 있어 보여요.`
     };
   }
   if (score <= 45) {
     return {
       range: "30~45점",
-      message: `당신은 아마 ${type}번 유형과 비슷한 특성을 가지고 있거나 ${type}번 유형의 부모를 가지고 있을 것이다.`
+      message: `${type}번 유형과 비슷한 면이 조금 있어요. ${type}번 유형인 부모의 영향일 수도 있어요.`
     };
   }
   if (score <= 60) {
     return {
       range: "45~60점",
-      message: `당신은 ${type}번 유형의 성격을 가지고 있는 것 같다.`
+      message: `${type}번 유형의 성격에 가까워 보여요.`
     };
   }
   return {
     range: "60~75점",
-    message: `당신은 ${type}번 유형일 가능성이 가장 많다. 그러나 당신이 ${type}번 유형에 대해 충분한 이해를 하고 있지 않다면 다른 유형일 수도 있다.`
+    message: `${type}번 유형에 가장 가까워 보여요. 다만 ${type}번을 충분히 이해한 뒤에도 같은 느낌인지 확인해보세요.`
   };
 }
 
@@ -122,11 +122,11 @@ Object.entries(data).forEach(([type, questions]) => {
   inline.className = "inline-result";
   inline.innerHTML = `
     <div class="inline-score-row">
-      <strong>${type}번 현재 점수 <span id="inlineTotal${type}">0</span> / 75</strong>
-      <div class="inline-meta">응답 <b id="inlineAnswered${type}">0</b>/15 · 평균 <b id="inlineAvg${type}">0.00</b></div>
+      <strong>${type}번 유형 · 응답 <span id="inlineAnswered${type}">0</span> / 15</strong>
+      <div class="inline-meta" hidden>점수 <b id="inlineTotal${type}">0</b> · 평균 <b id="inlineAvg${type}">0.00</b></div>
     </div>
     <div class="interpretation" id="interpretation${type}">
-      <div class="pending">15문항을 모두 선택하면 점수 해석이 표시됩니다.</div>
+      <div class="pending">15문항을 모두 답하면 결과 보기가 열려요.</div>
     </div>
   `;
   section.appendChild(inline);
@@ -208,16 +208,13 @@ function calculate() {
     const interpretationBox = document.getElementById(`interpretation${type}`);
     const resultCopy = document.getElementById(`resultCopy${type}`);
 
+    /* 해석은 '결과 보기'(프로필 카드)에서만 보여준다 */
     if (complete) {
       const interpreted = getInterpretation(type, total);
-      interpretationBox.innerHTML = `
-        <span class="range">${interpreted.range}</span>
-        <span class="message">${interpreted.message}</span>
-        ${confusionHTML(type)}
-      `;
+      interpretationBox.innerHTML = `<div class="inline-done"><span>15문항을 모두 답했어요.</span><button class="ui-btn ui-btn-primary" type="button" data-check-go="result">결과 보기</button></div>`;
       resultCopy.innerHTML = `<span class="result-range">${interpreted.range}</span><br>${interpreted.message}`;
     } else {
-      interpretationBox.innerHTML = `<div class="pending">${15 - answered}문항이 남았습니다. 모두 선택하면 점수 해석이 표시됩니다.</div>`;
+      interpretationBox.innerHTML = `<div class="pending">${15 - answered}문항이 남았어요. 모두 답하면 결과 보기가 열려요.</div>`;
       resultCopy.textContent = answered ? `${15 - answered}문항 남음` : "완료 후 해석 표시";
     }
 
@@ -257,6 +254,7 @@ restoreAnswers();
 calculate();
 
 
+  realWindow.getInterpretation=getInterpretation; /* 결과 카드(메인 스코프)에서 씀 */
   }catch(err){ console.error('embedded check init failed', err); }
 })(document, window);
 
@@ -329,6 +327,7 @@ const HB_TABS=[
 ];
 const hbText=el=>(el?el.textContent:'').replace(/\s+/g,' ').trim();
 const hbEsc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+realWindow.hbText=hbText; realWindow.hbEsc=hbEsc; /* 유형 프로필 카드(메인 스코프)에서 씀 */
 let hbPending=null;
 
 function hbChildTitle(el){
@@ -435,21 +434,15 @@ function hbSplitLife(chapter,tab,doc,n){
 }
 
 function hbSummaryHTML(page,n){
-  const q=s=>page.querySelector(s);
-  const qa=s=>[...page.querySelectorAll(s)];
-  const prof=(typeof HOME_PROFILES!=='undefined' && HOME_PROFILES[n])||{desc:'',quote:'',tags:[]};
-  const name=(typeof CHECK_TYPE_NAMES!=='undefined' && CHECK_TYPE_NAMES[n])||'';
-  const coreP=qa('.core > div');
-  const coreVal=label=>hbText((coreP.find(d=>hbText(d.querySelector('b')).startsWith(label))||{}).querySelector?.('p'));
-  const motive=label=>hbText(qa('.motivation-summary-item').find(d=>hbText(d.querySelector('span'))===label)?.querySelector('p'));
-  const procon=qa('.procon > div');
-  const list=div=>div?[...div.querySelectorAll('li')].slice(0,5).map(li=>`<div role="listitem" class="hb-li">${hbEsc(hbText(li))}</div>`).join(''):'';
-  const envH=qa('h4').find(h=>hbText(h)==='잘 맞기 쉬운 업무 환경');
-  const env=hbText(envH?.nextElementSibling);
-  const theme=hbText(qa('h3').find(h=>hbText(h).startsWith('삶을 움직이는 핵심 주제'))).split(' · ')[1]||'';
-  const wings=qa('.style-wings article.card h4').map(h=>{const [a,b]=hbText(h).split(' · ');return {no:(a.match(/^(\d)/)||[])[1],title:'날개',desc:b||a};});
-  const arrow=cls=>{const card=q('.arrow-card.'+cls);if(!card)return null;return {no:(hbText(card.querySelector('h4')).match(/^(\d)/)||[])[1],title:cls==='growth'?'건강할 때':'스트레스일 때',desc:hbText(card.querySelector('.sentence-highlight')||card.querySelector('li'))};};
-  const links=[...wings,arrow('growth'),arrow('stress')].filter(x=>x&&x.no);
+  const d=typeProfileFromRoot(page,n);
+  const prof={desc:d.desc,quote:d.quote,tags:d.tags};
+  const name=d.name;
+  const coreVal=label=>label==='기본적인 두려움'?d.fear:d.desire;
+  const motive=label=>label==='반복되는 생각'?d.thought:d.lost;
+  const listOf=arr=>arr.map(x=>`<div role="listitem" class="hb-li">${hbEsc(x)}</div>`).join('');
+  const procon=[d.strengths,d.cautions];
+  const list=arr=>listOf(arr||[]);
+  const env=d.env, theme=d.theme, links=d.links;
   /* 9점 도형: 내 번호만 강조 (핸드북 레이어가 svg를 display:none !important로 숨겨서 div + CSS 마스크로 그림) */
   const pts={9:[180,52],1:[262,82],2:[306,154],3:[285,238],4:[222,299],5:[138,299],6:[75,238],7:[54,154],8:[98,82]};
   const figure=`<div aria-hidden="true" class="hb-sum-figure"><span class="hb-fig-lines"></span>`
@@ -457,7 +450,7 @@ function hbSummaryHTML(page,n){
   const box=(label,val)=>val?`<div class="hb-sum-box"><div class="hb-sum-label">${label}</div><div class="hb-sum-value">${hbEsc(val)}</div></div>`:'';
 
   return `<div class="hb-summary">`
-    +`<div class="hb-sum-hero"><div class="hb-sum-hero-copy"><div class="hb-sum-kicker">ENNEAGRAM TYPE</div>`
+    +`<div class="hb-sum-hero"><div class="hb-sum-hero-copy"><div class="hb-sum-kicker">유형 요약</div>`
     +`<div class="hb-sum-title"><span class="hb-sum-no">${n}</span><div><h2 class="hb-sum-name">${hbEsc(name)}</h2><div class="hb-sum-desc">${hbEsc(prof.desc)}</div></div></div>`
     +`<div class="hb-sum-tags">${prof.tags.map(t=>'#'+hbEsc(t)).join(' ')}</div>`
     +(prof.quote?`<div class="hb-sum-quote">“${hbEsc(prof.quote)}”</div>`:'')+`</div>${figure}</div>`
@@ -709,6 +702,8 @@ async function printCurrent(){
 }
 
 
+/* 다른 화면(링크로 공유·비교)에서 유형별 핸드북 원문 HTML 읽기 */
+realWindow.getHandbookTypeHTML=async n=>{ const store=await getHandbookStore(); return store[String(n)]||''; };
 root.__showType = (typeof showType==='function') ? showType : null;
 root.__printCurrent = (typeof printCurrent==='function') ? printCurrent : null;
 
@@ -875,7 +870,7 @@ function typePickerHTML(t,sel){
   return `<div class="reflection-type-picker">
     <div class="reflection-type-picker-head">
       <strong>내가 알고 있는 유형을 기준으로 읽어보세요</strong>
-      <p>${quick?`유형 체크에서 ${quick}번이 나왔다면 우선 그 설명부터 읽어보세요. 다만 행동이 비슷하다는 이유보다 ‘왜 그렇게 했는지’가 맞는지를 확인하는 것이 더 중요합니다.`:'아직 유형을 확정하지 않았다면 여러 유형을 비교해 읽어도 괜찮습니다. 행동보다 동기·두려움·욕구가 실제 나와 맞는지를 확인해보세요.'}</p>
+      <p>${quick?`유형 검사에서 ${quick}번이 나왔다면 우선 그 설명부터 읽어보세요. 다만 행동이 비슷하다는 이유보다 ‘왜 그렇게 했는지’가 맞는지를 확인하는 것이 더 중요합니다.`:'아직 유형을 확정하지 않았다면 여러 유형을 비교해 읽어도 괜찮습니다. 행동보다 동기·두려움·욕구가 실제 나와 맞는지를 확인해보세요.'}</p>
     </div>
     <div class="reflection-type-buttons">
       ${Object.keys(t.types).map(n=>`<button type="button" class="reflection-type-btn ${String(sel)===String(n)?'selected':''}" data-reflection-type="${n}" aria-pressed="${String(sel)===String(n)?'true':'false'}"><b>${n}</b><span>${safeHTML(TYPES[n].name)}</span></button>`).join('')}
@@ -1055,13 +1050,13 @@ const QUICK_TYPE_MAP={
   C1:2,C2:6,C3:1
 };
 const QUICK_TYPE_NAMES={
-  1:'개혁자',2:'조력자',3:'성취자',4:'개인주의자',5:'탐구자',
+  1:'개혁가',2:'조력가',3:'성취자',4:'개인주의자',5:'탐구자',
   6:'충실가',7:'열정가',8:'도전자',9:'평화주의자'
 };
 let quickChoice={alpha:null,number:null};
 
 function setCheckMode(mode,push=false){
-  if(!['start','select','quick','detail'].includes(mode)) mode='start';
+  if(!['start','select','quick','quick-result','detail'].includes(mode)) mode='start';
   document.querySelectorAll('#page-check .check-mode-tab').forEach(btn=>{
     const on=btn.dataset.checkMode===mode;
     btn.classList.toggle('active',on);
@@ -1125,12 +1120,6 @@ function updateQuickResult(){
     return;
   }
 
-  const combo=quickChoice.alpha+quickChoice.number;
-  const type=QUICK_TYPE_MAP[combo];
-  document.getElementById('quickResultType').textContent=type;
-  document.getElementById('quickResultName').textContent=`${QUICK_TYPE_NAMES[type]} 유형`;
-  document.getElementById('quickResultCombo').textContent=combo;
-  document.getElementById('quickGoHandbook').dataset.type=type;
   empty.hidden=true;
   content.hidden=false;
 }
@@ -1173,7 +1162,7 @@ document.getElementById('quickReset')?.addEventListener('click',resetQuickCheck)
 restoreQuickCheck();
 
 
-const TYPE_LABELS={1:'1번 · 개혁자',2:'2번 · 조력자',3:'3번 · 성취자',4:'4번 · 개인주의자',5:'5번 · 탐구자',6:'6번 · 충실가',7:'7번 · 열정가',8:'8번 · 도전자',9:'9번 · 평화주의자'};
+const TYPE_LABELS={1:'1번 · 개혁가',2:'2번 · 조력가',3:'3번 · 성취자',4:'4번 · 개인주의자',5:'5번 · 탐구자',6:'6번 · 충실가',7:'7번 · 열정가',8:'8번 · 도전자',9:'9번 · 평화주의자'};
 const SHARING_TITLES=["일상 속 나", "사람 사이의 나", "사랑하는 나", "가족 속의 나", "일하는 나", "돈을 대하는 나", "이끄는 나", "쉬고 즐기는 나", "시간을 대하는 나"];
 
 let currentType=1;
@@ -1204,11 +1193,10 @@ function openShellMenu(){
 /* 2Depth 탭: GNB 아래 고정 노출. 사이드바(모바일 드로어) 세부 메뉴 버튼을 원본으로 삼아 같은 동작을 공유한다. */
 const PAGE_SUBNAV_CONFIG={
   overview:"#overviewGroup .shell-overview-target",
-  /* 유형 탐구: 핸드북·비교·돌아보기가 같은 2Depth(1~9번 · 9유형 비교 · 유형 없이 돌아보기)를 쓴다 */
+  /* 유형 탐구: 핸드북·전체 유형 비교가 같은 2Depth(전체 유형 · 1~9번)를 쓴다.
+     나를 돌아보기(삶의 장면)는 다이어리에서 열고, 다이어리·나의 공간은 2Depth 없는 한 페이지 */
   handbook:"#handbookGroup .shell-handbook-type, #handbookGroup .shell-explore-link",
-  compare:"#handbookGroup .shell-handbook-type, #handbookGroup .shell-explore-link",
-  sharing:"#handbookGroup .shell-handbook-type, #handbookGroup .shell-explore-link",
-  myspace:"#myspaceGroup .shell-myspace-target"
+  compare:"#handbookGroup .shell-handbook-type, #handbookGroup .shell-explore-link"
 };
 
 function renderPageSubnav(pageName){
@@ -1255,9 +1243,11 @@ function activateBasePage(name){
   document.querySelectorAll('.shell-menu-btn[data-page]').forEach(b=>{
     b.classList.toggle('active',b.dataset.page===name);
   });
-  const exploreGroup=['handbook','compare','sharing'].includes(name);
+  const exploreGroup=['handbook','compare'].includes(name);
   document.querySelectorAll('.top-nav-main[data-top-page]').forEach(b=>{
-    b.classList.toggle('active',b.dataset.topPage===name || (exploreGroup && b.dataset.topPage==='handbook'));
+    b.classList.toggle('active',b.dataset.topPage===name
+      || (exploreGroup && b.dataset.topPage==='handbook')
+      || (name==='sharing' && b.dataset.topPage==='diary'));
   });
   document.querySelectorAll('.shell-explore-link').forEach(b=>b.classList.toggle('active',b.dataset.explore===name));
   if(name!=='handbook') document.querySelectorAll('.shell-handbook-type').forEach(b=>b.classList.remove('active'));
@@ -1294,6 +1284,14 @@ function renderExploreChips(name){
     host.prepend(bar);
   }
   bar.innerHTML='';
+  if(name==='sharing'){
+    const back=document.createElement('button');
+    back.type='button';
+    back.className='explore-chip explore-back';
+    back.textContent='‹ 다이어리';
+    back.addEventListener('click',()=>{ if(typeof showDiaryPage==='function') showDiaryPage(); });
+    bar.appendChild(back);
+  }
   document.querySelectorAll(cfg.source).forEach(src=>{
     const b=document.createElement('button');
     b.type='button';
@@ -1324,7 +1322,7 @@ function showHomePage(push=true){
 }
 
 /* =========================================================
-   유형 체크 흐름: 시작(검사 선택) > 간편 검사
+   유형 검사 흐름: 시작(검사 선택) > 간편 검사
                           > 헷갈리는 유형 고르기 > 선택 유형 문항 > 결과
    ========================================================= */
 const CHECK_TYPE_NAMES={1:'개혁가',2:'조력가',3:'성취자',4:'개인주의자',5:'탐구자',6:'충실가',7:'열정가',8:'도전자',9:'평화주의자'};
@@ -1474,6 +1472,7 @@ function applyDetailedCheckTarget(target){
       if(card) card.hidden=visible.size>0 && !visible.has(t);
     }
     renderCheckDetailSteps(target);
+    renderCheckResultCards();
     return;
   }
 
@@ -1487,7 +1486,7 @@ function applyDetailedCheckTarget(target){
 }
 
 function showCheckTarget(target='start',push=true){
-  if(!/^detail-[1-9]$/.test(target) && !['start','select','quick','result'].includes(target)) target='start';
+  if(!/^detail-[1-9]$/.test(target) && !['start','select','quick','quick-result','result'].includes(target)) target='start';
 
   /* 선택 없이 문항/결과로 바로 들어오면(직접 링크 등) 해당 유형이나 완료 유형을 선택에 넣는다 */
   const direct=String(target).match(/^detail-([1-9])$/);
@@ -1503,8 +1502,9 @@ function showCheckTarget(target='start',push=true){
   activateBasePage('check');
 
   const mobileTitle=document.getElementById('shellMobileTitle');
-  if(target==='start' || target==='select' || target==='quick'){
+  if(target==='start' || target==='select' || target==='quick' || target==='quick-result'){
     setCheckMode(target,false);
+    if(target==='quick-result') renderQuickResultCard();
     if(target==='select'){
       const hint=document.getElementById('checkSelectHint');
       const quickType=getSavedQuickType();
@@ -1520,11 +1520,11 @@ function showCheckTarget(target='start',push=true){
       }
       renderCheckSelect();
     }
-    mobileTitle.textContent={start:'유형 체크',select:'유형 체크 · 유형 고르기',quick:'유형 체크 · 간편 검사'}[target];
+    mobileTitle.textContent={start:'유형 검사',select:'유형 검사 · 유형 고르기',quick:'유형 검사 · 간편 검사','quick-result':'유형 검사 · 간편 검사 결과'}[target];
   }else{
     setCheckMode('detail',false);
     applyDetailedCheckTarget(target);
-    mobileTitle.textContent=target==='result' ? '유형 체크 · 점수 결과' : `유형 체크 · 정식 검사 ${target.split('-')[1]}번`;
+    mobileTitle.textContent=target==='result' ? '유형 검사 · 결과' : `유형 검사 · 정식 검사 ${target.split('-')[1]}번`;
   }
   document.getElementById('page-check')?.scrollTo({top:0});
 
@@ -1630,7 +1630,7 @@ function showCompareSection(key='glance',push=true){
     panel.classList.toggle('active',panel.dataset.comparePanel===key);
   });
 
-  document.getElementById('shellMobileTitle').textContent='유형 탐구 · 9유형 비교 · '+COMPARE_TITLES[key];
+  document.getElementById('shellMobileTitle').textContent='유형 탐구 · 전체 유형 · '+COMPARE_TITLES[key];
   document.getElementById('page-compare')?.scrollTo({top:0});
   if(push) history.replaceState(null,'',`#compare-${key}`);
   closeShellMenu();
@@ -1651,7 +1651,7 @@ function showSharingTopic(index=0,push=true){
   const root=document.getElementById('page-sharing');
   if(root && typeof root.__showTopic==='function') root.__showTopic(index);
 
-  document.getElementById('shellMobileTitle').textContent='유형 탐구 · 돌아보기 · '+SHARING_TITLES[index];
+  document.getElementById('shellMobileTitle').textContent='다이어리 · 돌아보기 · '+SHARING_TITLES[index];
   if(push) history.replaceState(null,'',`#sharing-${index+1}`);
   closeShellMenu();
 }
@@ -1705,10 +1705,7 @@ document.getElementById('shellOverlay').addEventListener('click',closeShellMenu)
 document.addEventListener('keydown',e=>{if(e.key==='Escape') closeShellMenu()});
 
 /* 기존 간편 체크 결과 &gt; 핸드북 이동은 유지 */
-document.getElementById('quickGoHandbook')?.addEventListener('click',e=>{
-  const type=Number(e.currentTarget.dataset.type);
-  if(type) showHandbookType(type);
-});
+
 
 
 
@@ -1752,7 +1749,7 @@ document.querySelectorAll('#page-home .home-type-link[data-type]').forEach(card=
 document.getElementById('topMobileMenu')?.addEventListener('click',openShellMenu);
 
 
-/* 홈 CTA: 나의 유형 찾기 > 유형 체크 시작 화면 / 내 결과 보기 > 저장된 결과
+/* 홈 CTA: 나의 유형 찾기 > 유형 검사 시작 화면 / 내 결과 보기 > 저장된 결과
    결과가 없으면 두 번째 버튼은 홈의 9가지 유형 섹션으로 안내한다. */
 function getSavedCheckState(){
   const detailDone=getCompletedDetailTypes();
@@ -1805,6 +1802,164 @@ function renderHomeContinue(){
     `<button class="continue-card" data-home-continue="${esc(c.action)}" type="button">`
     +`<span class="continue-label">${esc(c.label)}</span><strong>${esc(c.title)}</strong><span class="continue-desc">${esc(c.desc)}</span></button>`
   ).join('');
+}
+
+/* =========================================================
+   유형 프로필 카드 (유형 검사 결과 · 간편 검사 결과 · 홈 · 공유에서 같이 씀)
+   데이터는 핸드북 원문(HTML)에서 뽑는다: 마운트된 페이지(Element)든 DOMParser 문서든 같은 함수.
+   ========================================================= */
+function typeProfileFromRoot(root,n){
+  const q=s=>root.querySelector(s);
+  const qa=s=>[...root.querySelectorAll(s)];
+  const prof=(typeof HOME_PROFILES!=='undefined' && HOME_PROFILES[n])||{desc:'',quote:'',tags:[]};
+  const coreP=qa('.core > div');
+  const coreVal=label=>hbText((coreP.find(d=>hbText(d.querySelector('b')).startsWith(label))||{}).querySelector?.('p'));
+  const motive=label=>hbText(qa('.motivation-summary-item').find(d=>hbText(d.querySelector('span'))===label)?.querySelector('p'));
+  const procon=qa('.procon > div');
+  const list=div=>div?[...div.querySelectorAll('li')].slice(0,5).map(li=>hbText(li)):[];
+  const envH=qa('h4').find(h=>hbText(h)==='잘 맞기 쉬운 업무 환경');
+  const wings=qa('.style-wings article.card h4').map(h=>{const [a,b]=hbText(h).split(' · ');return {no:(a.match(/^(\d)/)||[])[1],title:'날개',desc:b||a};}).filter(w=>w.no);
+  const arrow=(cls,title)=>{const card=q('.arrow-card.'+cls);if(!card)return null;const no=(hbText(card.querySelector('h4')).match(/^(\d)/)||[])[1];return no?{no,title,desc:hbText(card.querySelector('.sentence-highlight')||card.querySelector('li'))}:null;};
+  const center=homeCenterOf(n);
+  return {
+    n, name:CHECK_TYPE_NAMES[n]||'', desc:prof.desc, quote:prof.quote, tags:prof.tags,
+    fear:coreVal('기본적인 두려움'), desire:coreVal('기본적인 욕망'),
+    thought:motive('반복되는 생각'), lost:motive('잃어버린 메시지'),
+    strengths:list(procon[0]), cautions:list(procon[1]),
+    env:hbText(envH?.nextElementSibling),
+    theme:hbText(qa('h3').find(h=>hbText(h).startsWith('삶을 움직이는 핵심 주제'))).split(' · ')[1]||'',
+    links:[...wings,arrow('growth','건강할 때'),arrow('stress','스트레스일 때')].filter(Boolean),
+    center:center[1], hornevian:homeGroupName('hornevian',n), harmonic:homeGroupName('harmonic',n),
+    actions:qa('.action-list .action').map(a=>hbText(a).replace(/^\d+\.\s*/,'')),
+    autoPattern:qa('.style-pattern > ul > li').map(li=>hbText(li))
+  };
+}
+const typeProfileCache={};
+async function getTypeProfile(n){
+  n=Number(n);
+  if(typeProfileCache[n]) return typeProfileCache[n];
+  let html='';
+  try{ html=typeof window.getHandbookTypeHTML==='function'?await window.getHandbookTypeHTML(n):''; }catch(e){}
+  const doc=new DOMParser().parseFromString(html,'text/html');
+  return (typeProfileCache[n]=typeProfileFromRoot(doc,n));
+}
+window.getTypeProfile=getTypeProfile;
+
+/* 마케팅 카드처럼 보이는 유형 프로필 카드.
+   opts: {kicker, badge, score:{total,range,message}, note, actions:[{label,attr,primary}], compact} */
+function typeCardHTML(d,opts={}){
+  const n=d.n;
+  const li=(arr,cls)=>`<div role="list" class="tcp-list${cls?' '+cls:''}">${arr.map(x=>`<div role="listitem">${hbEsc(x)}</div>`).join('')}</div>`;
+  const box=(label,val)=>val?`<div class="tcp-box"><span class="tcp-label">${label}</span><div class="tcp-text">${hbEsc(val)}</div></div>`:'';
+  const actions=(opts.actions||[]).map(a=>`<button class="ui-btn${a.primary?' ui-btn-primary':' ui-btn-secondary'}" type="button" ${a.attr}>${hbEsc(a.label)}</button>`).join('');
+  const banner=`<div class="tcp-banner">
+      <div class="tcp-banner-top"><span class="tcp-kicker">${hbEsc(opts.kicker||'나의 유형')}</span>${opts.badge?`<span class="tcp-badge">${hbEsc(opts.badge)}</span>`:''}</div>
+      <div class="tcp-title"><span class="tcp-no">${n}</span><div><div class="tcp-name" role="heading" aria-level="2">${hbEsc(d.name)}</div><div class="tcp-desc">${hbEsc(d.desc)}</div></div></div>
+      <div class="tcp-groups"><span>${hbEsc(d.center)}</span><span>${hbEsc(d.hornevian)}</span><span>${hbEsc(d.harmonic)}</span></div>
+      ${d.tags.length?`<div class="tcp-tags">${d.tags.map(t=>'#'+hbEsc(t)).join(' ')}</div>`:''}
+      ${d.quote?`<div class="tcp-quote">“${hbEsc(d.quote)}”</div>`:''}
+    </div>`;
+  const score=opts.score?`<div class="tcp-score"><div class="tcp-score-main"><span class="tcp-label">정식 검사 점수</span><strong>${opts.score.total}<small> / 75</small></strong><span class="tcp-range">${hbEsc(opts.score.range)}</span></div><div class="tcp-text">${hbEsc(opts.score.message)}</div></div>`:'';
+  if(opts.compact){
+    return `<article class="type-card-pro is-compact" data-type="${n}">${banner}<div class="tcp-body">${score}${opts.note?`<div class="tcp-note">${opts.note}</div>`:''}${actions?`<div class="tcp-actions">${actions}</div>`:''}</div></article>`;
+  }
+  return `<article class="type-card-pro" data-type="${n}">${banner}
+    <div class="tcp-body">
+      ${score}
+      <div class="tcp-grid3">${box('핵심 두려움',d.fear)}${box('핵심 욕망',d.desire)}${box('반복되는 생각',d.thought)}</div>
+      <div class="tcp-grid2">
+        <div class="tcp-box"><span class="tcp-label">이런 모습이 멋져요</span>${li(d.strengths)}</div>
+        <div class="tcp-box"><span class="tcp-label">이런 점은 주의해요</span>${li(d.cautions,'is-caution')}</div>
+      </div>
+      <div class="tcp-grid2">
+        ${box('이런 환경에서 빛나요',d.env)}
+        <div class="tcp-box"><span class="tcp-label">연결된 유형</span><div class="tcp-links">${d.links.map(l=>`<div class="tcp-link"><span class="tcp-link-no">${l.no}</span><span class="tcp-link-title">${hbEsc(l.title)}</span><span class="tcp-link-desc">${hbEsc(l.desc)}</span></div>`).join('')}</div></div>
+      </div>
+      ${d.theme||d.lost?`<div class="tcp-line">${d.theme?`<div class="tcp-line-main">${n}번의 삶을 움직이는 주제는 ‘${hbEsc(d.theme)}’예요.</div>`:''}${d.lost?`<div class="tcp-line-sub">기억하면 좋은 말 · ${hbEsc(d.lost)}</div>`:''}</div>`:''}
+      ${opts.note?`<div class="tcp-note">${opts.note}</div>`:''}
+      ${actions?`<div class="tcp-actions">${actions}</div>`:''}
+    </div>
+  </article>`;
+}
+
+/* 카드 공통 동작: 핸드북 보기 · 내 유형으로 저장 · 링크로 공유 · 이미지 저장 */
+document.addEventListener('click',e=>{
+  const card=e.target.closest('.type-card-pro');
+  if(!card) return;
+  const n=Number(card.dataset.type);
+  if(e.target.closest('[data-tcp-handbook]')){ showHandbookType(n); return; }
+  if(e.target.closest('[data-tcp-share]')){ showSharePage(); const b=document.querySelector(`#shareApp [data-share-type="${n}"]`); b?.click(); return; }
+  if(e.target.closest('[data-tcp-image]')){ saveTypeCardImage(n,card.dataset.source||'유형 검사'); return; }
+  if(e.target.closest('[data-tcp-save]')){
+    try{ localStorage.setItem('enneagram_my_type_v1',JSON.stringify(String(n))); }catch(err){}
+    const btn=e.target.closest('[data-tcp-save]');
+    btn.textContent='내 유형으로 저장했어요';
+    btn.disabled=true;
+    if(typeof refreshHome==='function') refreshHome();
+    const sel=document.getElementById('dashboardMyType'); if(sel) sel.value=String(n);
+  }
+});
+
+/* ---------- 유형 검사 결과: 완료한 유형의 프로필 카드 ---------- */
+async function renderCheckResultCards(){
+  const host=document.getElementById('checkResultCards');
+  if(!host) return;
+  let saved={};
+  try{ saved=JSON.parse(localStorage.getItem(CHECK_ANSWERS_KEY)||'{}'); }catch(e){}
+  const total=t=>{let s=0;for(let q=1;q<=15;q++) s+=Number(saved[`t${t}q${q}`])||0;return s;};
+  const done=getCompletedDetailTypes().sort((a,b)=>total(b)-total(a)||a-b);
+  const selected=checkSelection.filter(t=>!done.includes(t));
+  if(!done.length){
+    host.innerHTML=`<div class="ui-empty"><strong>아직 15문항을 모두 답한 유형이 없어요.</strong><p>고른 유형의 문항을 끝까지 답하면 여기에 결과 카드가 나와요.</p>${checkSelection.length?`<button class="ui-btn ui-btn-primary" type="button" data-check-go="detail-${checkSelection[0]}">${checkSelection[0]}번 문항 이어서 답하기</button>`:''}</div>`;
+    return;
+  }
+  host.innerHTML='<p class="ui-loading">결과 카드를 준비하고 있어요…</p>';
+  const profiles=await Promise.all(done.map(getTypeProfile));
+  const cards=profiles.map((d,i)=>{
+    const t=d.n, score=total(t), it=getInterpretation(t,score);
+    const actions=[
+      {label:`${t}번 핸드북 보기`,attr:'data-tcp-handbook',primary:i===0},
+      {label:'내 유형으로 저장하기',attr:'data-tcp-save'},
+      {label:'링크로 공유하기',attr:'data-tcp-share'},
+      {label:'이미지로 저장하기',attr:'data-tcp-image'}
+    ];
+    return typeCardHTML(d,{
+      kicker:i===0?'가장 가까운 유형':'함께 검사한 유형',
+      badge:`${done.length>1?`${i+1}위 · `:''}${score}점`,
+      score:{total:score,range:it.range,message:it.message},
+      note:i===0?'점수는 유형을 확정하지 않아요. 행동보다 <b>왜 그렇게 반응하는지</b>가 실제로 맞는지 핸드북에서 확인해보세요.':'',
+      actions:i===0?actions:actions.slice(0,1).concat(actions.slice(2)),
+      compact:i>0
+    }).replace('<article class="type-card-pro','<article data-source="정식 검사 결과" class="type-card-pro');
+  });
+  host.innerHTML=cards.join('')
+    +(selected.length?`<div class="ui-note">아직 답하지 않은 유형: ${selected.map(t=>`<button class="ui-btn ui-btn-ghost" type="button" data-check-go="detail-${t}">${t}번 ${CHECK_TYPE_NAMES[t]} 이어서 답하기</button>`).join('')}</div>`:'');
+}
+
+/* ---------- 간편 검사 결과 화면 ---------- */
+async function renderQuickResultCard(){
+  const host=document.getElementById('quickResultCards');
+  if(!host) return;
+  const t=getSavedQuickType();
+  if(!t){
+    host.innerHTML='<div class="ui-empty"><strong>아직 간편 검사 결과가 없어요.</strong><p>두 그룹에서 하나씩 고르면 결과 카드가 나와요.</p><button class="ui-btn ui-btn-primary" type="button" data-check-go="quick">간편 검사 하기</button></div>';
+    return;
+  }
+  host.innerHTML='<p class="ui-loading">결과 카드를 준비하고 있어요…</p>';
+  const d=await getTypeProfile(t);
+  host.innerHTML=typeCardHTML(d,{
+    kicker:'간편 검사 결과',
+    badge:'가장 가까운 유형',
+    note:'간편 검사는 유형을 확정하는 검사가 아니라 <b>탐색할 유형을 좁히는 빠른 검사</b>예요. 헷갈리는 유형이 있다면 정식 검사로 그 유형만 자세히 확인해보세요.',
+    actions:[
+      {label:'정식 검사로 확인하기',attr:'data-check-go="select"',primary:true},
+      {label:`${t}번 핸드북 보기`,attr:'data-tcp-handbook'},
+      {label:'내 유형으로 저장하기',attr:'data-tcp-save'},
+      {label:'링크로 공유하기',attr:'data-tcp-share'},
+      {label:'이미지로 저장하기',attr:'data-tcp-image'},
+      {label:'다시 선택하기',attr:'data-check-go="quick"'}
+    ]
+  }).replace('<article class="type-card-pro','<article data-source="간편 검사 결과" class="type-card-pro');
 }
 
 /* =========================================================
@@ -1877,15 +2032,18 @@ function renderHomeProfiles(){
   bar.innerHTML=profile
     ? `<p class="home-profile-mine-text">나의 프로필 <strong>${profile.type}번 ${homeEsc(CHECK_TYPE_NAMES[profile.type])}</strong> · ${homeEsc(profile.source)}</p>`
       +`<div class="home-profile-mine-actions"><button class="btn secondary" data-profile-open="${profile.type}" type="button">핸드북 보기</button>`
-      +'<button class="btn primary" data-profile-save type="button">카드 이미지로 저장</button></div>'
+      +'<button class="btn secondary" data-share-open-home type="button">링크로 공유하기</button>'
+      +'<button class="btn primary" data-profile-save type="button">이미지로 저장하기</button></div>'
     : '';
 }
 
 /* 나의 프로필 카드를 PNG로 저장 (canvas에 직접 그림, 색은 tokens.css 값을 읽어 씀) */
 async function saveHomeProfileImage(){
   const profile=getHomeProfile();
-  if(!profile) return;
-  const t=profile.type, p=HOME_PROFILES[t], center=homeCenterOf(t);
+  if(profile) saveTypeCardImage(profile.type,profile.source);
+}
+async function saveTypeCardImage(t,source){
+  const p=HOME_PROFILES[t], center=homeCenterOf(t);
   const css=getComputedStyle(document.documentElement);
   const v=name=>css.getPropertyValue(name).trim();
   const font=v('--font-sans');
@@ -1935,7 +2093,7 @@ async function saveHomeProfileImage(){
   ctx.fillStyle=v('--color-text-tertiary');
   ctx.font=`500 32px ${font}`;
   ctx.fillText(`${center[1]} · ${homeGroupName('hornevian',t)} · ${homeGroupName('harmonic',t)}`,pad+24,H-pad-80);
-  ctx.fillText(`${profile.source} · Enneagram`,pad+24,H-pad-30);
+  ctx.fillText(`${source} · Enneagram`,pad+24,H-pad-30);
 
   cv.toBlob(blob=>{
     if(!blob) return;
@@ -1954,6 +2112,7 @@ document.getElementById('page-home')?.addEventListener('keydown',e=>{
 
 document.getElementById('page-home')?.addEventListener('click',e=>{
   if(e.target.closest('[data-profile-save]')){ saveHomeProfileImage(); return; }
+  if(e.target.closest('[data-share-open-home]')){ showSharePage(); return; }
   const open=e.target.closest('[data-profile-open]');
   if(open){ showHandbookType(Number(open.dataset.profileOpen)); return; }
 
@@ -1990,10 +2149,234 @@ function refreshHome(){
 }
 refreshHome();
 
+/* =========================================================
+   링크로 공유·비교 (서버 없음)
+   주소 #share=<base64url(JSON)>, JSON {v:1, t:유형 번호, n:이름(선택, 12자까지)}.
+   링크에는 이 두 값만 들어가고 기록은 공유하지 않는다.
+   비교는 궁합 점수 없이 '서로 다르게 반응하는 지점'만 보여준다.
+   ========================================================= */
+const SHARE_VERSION=1;
+const SHARE_LENS=[
+  {key:'center',title:'힘들 때 먼저 커지는 것',pick:t=>homeCenterOf(t)[0],
+   desc:{instinct:'몸과 본능 — 불편함을 먼저 몸으로 느끼고 바로 반응해요',emotion:'관계와 이미지 — 상대가 나를 어떻게 볼지가 먼저 신경 쓰여요',thinking:'생각과 불안 — 머릿속으로 먼저 따지고 대비해요'}},
+  {key:'hornevian',title:'문제 앞에서',pick:t=>homeGroupName('hornevian',t),
+   desc:{'주장형':'앞으로 나가 직접 바꾸려 해요','순응형':'해야 할 일과 기준을 먼저 봐요','후퇴형':'한발 물러나 생각하고 거리를 둬요'}},
+  {key:'harmonic',title:'힘든 감정 앞에서',pick:t=>homeGroupName('harmonic',t),
+   desc:{'긍정형':'좋게 보며 넘기려 해요','능력형':'감정을 잠시 떼어 두고 해결부터 해요','반응형':'감정을 바로 드러내며 반응해요'}}
+];
+let shareState={data:null,me:null,compare:null,link:'',name:'',type:null};
+/* 받침 있으면 a(은·이), 없으면 b(는·가) */
+const josa=(w,a,b)=>{const c=String(w).charCodeAt(String(w).length-1);return w+(c>=0xAC00&&c<=0xD7A3&&(c-0xAC00)%28?a:b);};
+
+function encodeShare(obj){
+  let bin='';
+  new TextEncoder().encode(JSON.stringify(obj)).forEach(b=>{bin+=String.fromCharCode(b);});
+  return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function decodeShare(str){
+  try{
+    const b64=str.replace(/-/g,'+').replace(/_/g,'/');
+    const bin=atob(b64+'==='.slice((b64.length+3)%4));
+    const o=JSON.parse(new TextDecoder().decode(Uint8Array.from(bin,c=>c.charCodeAt(0))));
+    const t=Number(o&&o.t);
+    if(!Number.isInteger(t)||t<1||t>9) return null;
+    return {t,n:String(o.n||'').trim().slice(0,12)};
+  }catch(e){ return null; }
+}
+const shareLinkFor=(t,n)=>`${location.origin}${location.pathname}#share=${encodeShare({v:SHARE_VERSION,t,...(n?{n}:{})})}`;
+
+/* 핸드북 원문에서 핵심 두려움·욕망, '이렇게 말해주면 좋아요' */
+const shareDetailCache={};
+async function shareTypeDetail(n){
+  if(shareDetailCache[n]) return shareDetailCache[n];
+  let html='';
+  try{ html=typeof window.getHandbookTypeHTML==='function'?await window.getHandbookTypeHTML(n):''; }catch(e){}
+  const doc=new DOMParser().parseFromString(html,'text/html');
+  const txt=el=>(el?el.textContent:'').replace(/\s+/g,' ').trim();
+  const core=[...doc.querySelectorAll('.core > div')];
+  const coreVal=label=>txt(core.find(d=>txt(d.querySelector('b')).startsWith(label))?.querySelector('p'));
+  /* 성장 대화 카드는 유형마다 모양이 다르다:
+     'N번과 대화할 때'(목록) + '이런 식으로 말해볼 수 있습니다'(예시 문장), 또는 '누군가 N번에게 이렇게 말해주면 좋습니다'(예시 문장) */
+  const cards=[...doc.querySelectorAll('.speech-card')];
+  const byTitle=w=>cards.find(c=>txt(c.querySelector('h4')).includes(w));
+  const sayCard=byTitle('말해주면')||byTitle('말해볼 수');
+  const tipCard=byTitle('대화할 때');
+  const unquote=v=>v.replace(/^[“"‘']+|[”"’']+$/g,'').trim();
+  return (shareDetailCache[n]={
+    fear:coreVal('기본적인 두려움'),
+    desire:coreVal('기본적인 욕망'),
+    say:sayCard?[...sayCard.querySelectorAll('.say > div')].map(el=>unquote(txt(el))).filter(Boolean).slice(0,3):[],
+    tips:tipCard?[...tipCard.querySelectorAll('li')].map(txt).filter(Boolean).slice(0,3):[]
+  });
+}
+
+function shareCardHTML(t,label){
+  const p=HOME_PROFILES[t];
+  return `<article class="share-card">
+    <div class="share-card-top"><span class="share-card-no">${t}</span><span class="share-card-badge">${homeEsc(label)}</span></div>
+    <h3 class="share-card-name">${homeEsc(CHECK_TYPE_NAMES[t])}</h3>
+    <p class="share-card-desc">${homeEsc(p.desc)}</p>
+    <p class="share-card-quote">“${homeEsc(p.quote)}”</p>
+    <p class="share-card-tags">${p.tags.map(k=>'#'+homeEsc(k)).join(' ')}</p>
+  </article>`;
+}
+const shareTypeChips=(sel,attr)=>`<div class="share-chips" role="group">${[1,2,3,4,5,6,7,8,9].map(n=>`<button type="button" class="share-chip${sel===n?' active':''}" ${attr}="${n}" aria-pressed="${sel===n?'true':'false'}"><b>${n}</b><span>${homeEsc(CHECK_TYPE_NAMES[n])}</span></button>`).join('')}</div>`;
+
+function renderShareComposer(){
+  const t=shareState.type;
+  return `<header class="share-head">
+      <p class="share-kicker">공유하기</p>
+      <h1>내 유형 카드를 링크로 보내요</h1>
+      <p>받은 사람은 내 카드를 보고, 자기 유형과 <b>서로 다르게 반응하는 지점</b>을 비교해볼 수 있어요.</p>
+    </header>
+    <section class="share-panel">
+      <h2 class="share-panel-title">어떤 유형으로 보낼까요?</h2>
+      ${shareTypeChips(t,'data-share-type')}
+      <label class="share-label" for="shareName">보내는 사람 이름 (선택)</label>
+      <input class="share-input" id="shareName" maxlength="12" placeholder="예: 선미" type="text" value="${homeEsc(shareState.name)}">
+      <p class="share-note">링크에는 <b>유형 번호와 적은 이름만</b> 들어가요. 다이어리 기록은 공유되지 않아요.</p>
+      <p class="share-error" id="shareError" hidden></p>
+      <div class="share-actions"><button class="share-btn is-primary" data-share-make type="button">링크 만들기</button></div>
+      ${shareState.link?`<div class="share-result">
+        <input aria-label="공유 링크" class="share-input" id="shareLink" readonly type="text" value="${homeEsc(shareState.link)}">
+        <div class="share-actions">
+          <button class="share-btn" data-share-copy type="button">링크 복사</button>
+          ${navigator.share?'<button class="share-btn" data-share-native type="button">공유하기</button>':''}
+          <a class="share-btn is-ghost" href="${homeEsc(shareState.link.slice(shareState.link.indexOf('#')))}">받는 사람 화면 미리 보기</a>
+        </div>
+        <p class="share-status" id="shareStatus" role="status"></p>
+      </div>`:''}
+    </section>
+    ${t?`<section class="share-panel"><h2 class="share-panel-title">받는 사람에게 보이는 카드</h2>${shareCardHTML(t,shareState.name?`${shareState.name}님의 카드`:'내 카드')}</section>`:''}`;
+}
+
+function renderShareViewer(){
+  const {t,n}=shareState.data;
+  const who=n?`${n}님`:'친구';
+  const me=shareState.me;
+  return `<header class="share-head">
+      <p class="share-kicker">받은 카드</p>
+      <h1>${homeEsc(josa(who,'은','는'))} ${t}번 ${homeEsc(CHECK_TYPE_NAMES[t])}에 가까워요</h1>
+      <p>유형은 사람을 단정하는 이름표가 아니라, 반복되는 반응을 이해하는 지도예요.</p>
+    </header>
+    <section class="share-panel">${shareCardHTML(t,`${who}의 카드`)}
+      <div class="share-actions"><button class="share-btn is-ghost" data-share-handbook="${t}" type="button">${t}번 핸드북 보기</button></div>
+    </section>
+    <section class="share-panel">
+      <h2 class="share-panel-title">나와 비교해볼까요?</h2>
+      <p class="share-panel-desc">${me?`내 카드는 <b>${me}번 ${homeEsc(CHECK_TYPE_NAMES[me])}</b>예요. 다른 유형으로 바꿔 볼 수도 있어요.`:'내 유형을 골라보세요. 아직 모르면 유형 검사부터 해도 좋아요.'}</p>
+      ${shareTypeChips(shareState.compare,'data-share-compare')}
+      <div class="share-actions">${me?'':'<button class="share-btn" data-share-check type="button">내 유형 찾기</button>'}<button class="share-btn is-ghost" data-share-own type="button">내 카드도 링크로 보내기</button></div>
+    </section>
+    <div id="shareCompare">${shareState.compare?shareCompareHTML(t,shareState.compare,who,null,null):''}</div>`;
+}
+
+function shareCompareHTML(a,b,whoA,detailA,detailB){
+  const na=`${a}번 ${CHECK_TYPE_NAMES[a]}`, nb=`${b}번 ${CHECK_TYPE_NAMES[b]}`;
+  const rows=SHARE_LENS.map(l=>{
+    const ga=l.pick(a), gb=l.pick(b);
+    const same=ga===gb;
+    return `<div class="share-lens">
+      <h3>${homeEsc(l.title)}</h3>
+      <div class="share-lens-cols">
+        <div><span class="share-who">${homeEsc(whoA)} · ${homeEsc(na)}</span><p>${homeEsc(l.desc[ga])}</p></div>
+        <div><span class="share-who">나 · ${homeEsc(nb)}</span><p>${homeEsc(l.desc[gb])}</p></div>
+      </div>
+      <p class="share-lens-note">${same?'비슷한 방식이라 서로 편하게 느끼기 쉬워요. 대신 같은 곳에서 함께 막힐 수 있어요.':'이 차이에서 오해가 생기기 쉬워요. 상대의 방식이 나와 다를 뿐, 틀린 게 아니에요.'}</p>
+    </div>`;}).join('');
+  const detail=(d,who)=>d?`<div class="share-core">
+      <div><span>${homeEsc(josa(who,'이','가'))} 민감하게 느끼는 것</span><p>${homeEsc(d.fear||'—')}</p></div>
+      <div><span>${homeEsc(josa(who,'이','가'))} 바라는 것</span><p>${homeEsc(d.desire||'—')}</p></div>
+    </div>`:'<p class="share-loading">불러오는 중…</p>';
+  const say=(d,who)=>d?`${d.tips.length?`<div class="share-say"><h4>${homeEsc(josa(who,'과','와'))} 대화할 때</h4><ul>${d.tips.map(x=>`<li>${homeEsc(x)}</li>`).join('')}</ul></div>`:''}${d.say.length?`<div class="share-say"><h4>${homeEsc(who)}에게 이렇게 말해보세요</h4><ul>${d.say.map(x=>`<li>“${homeEsc(x)}”</li>`).join('')}</ul></div>`:''}`:'';
+  return `<section class="share-panel share-compare">
+      <h2 class="share-panel-title">${homeEsc(whoA)}(${a}번)과 나(${b}번)가 다르게 반응하는 지점</h2>
+      ${rows}
+      <div class="share-lens-cols">
+        <div>${detail(detailA,whoA)}${say(detailA,whoA)}</div>
+        <div>${detail(detailB,'나')}${say(detailB,'나')}</div>
+      </div>
+      <p class="share-note">유형은 관계의 좋고 나쁨을 정하지 않아요. 다르게 반응하는 지점을 알면 서로의 반응을 덜 오해할 수 있어요.</p>
+    </section>`;
+}
+
+async function fillShareCompare(){
+  const box=document.getElementById('shareCompare');
+  if(!box||!shareState.data||!shareState.compare) return;
+  const a=shareState.data.t, b=shareState.compare, whoA=shareState.data.n?`${shareState.data.n}님`:'친구';
+  box.innerHTML=shareCompareHTML(a,b,whoA,null,null);
+  const [da,db]=await Promise.all([shareTypeDetail(a),shareTypeDetail(b)]);
+  if(shareState.compare!==b) return;
+  box.innerHTML=shareCompareHTML(a,b,whoA,da,db);
+}
+
+function renderShare(){
+  const app=document.getElementById('shareApp');
+  if(!app) return;
+  app.innerHTML=shareState.data?renderShareViewer():renderShareComposer();
+  if(shareState.data && shareState.compare) fillShareCompare();
+}
+
+function showSharePage(hashArg,push=true){
+  activateBasePage('share');
+  const m=typeof hashArg==='string'?hashArg.match(/^share=(.+)$/):null;
+  const data=m?decodeShare(m[1]):null;
+  const me=getHomeProfile()?.type||null;
+  shareState={data,me,compare:data?me:null,link:'',name:'',type:me};
+  renderShare();
+  document.getElementById('shellMobileTitle').textContent=data?'받은 카드':'공유하기';
+  if(push) history.replaceState(null,'','#share');
+  document.getElementById('page-share')?.scrollTo({top:0});
+  closeShellMenu();
+}
+
+document.getElementById('shareApp')?.addEventListener('click',e=>{
+  const typeBtn=e.target.closest('[data-share-type]');
+  if(typeBtn){ shareState.type=Number(typeBtn.dataset.shareType); shareState.name=document.getElementById('shareName')?.value.trim()||''; shareState.link=''; renderShare(); return; }
+  if(e.target.closest('[data-share-make]')){
+    const err=document.getElementById('shareError');
+    shareState.name=document.getElementById('shareName')?.value.trim().slice(0,12)||'';
+    if(!shareState.type){ if(err){ err.textContent='보낼 유형을 하나 골라주세요.'; err.hidden=false; } return; }
+    shareState.link=shareLinkFor(shareState.type,shareState.name);
+    renderShare();
+    document.getElementById('shareLink')?.select();
+    return;
+  }
+  if(e.target.closest('[data-share-copy]')){
+    const input=document.getElementById('shareLink'), status=document.getElementById('shareStatus');
+    const done=()=>{ if(status) status.textContent='링크를 복사했어요.'; };
+    if(navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(shareState.link).then(done,()=>{ input.select(); document.execCommand('copy'); done(); });
+    else { input.select(); document.execCommand('copy'); done(); }
+    return;
+  }
+  if(e.target.closest('[data-share-native]')){
+    navigator.share({title:'나의 에니어그램 카드',text:`${shareState.type}번 ${CHECK_TYPE_NAMES[shareState.type]} 카드를 보냈어요. 나와 비교해보세요.`,url:shareState.link}).catch(()=>{});
+    return;
+  }
+  const cmp=e.target.closest('[data-share-compare]');
+  if(cmp){
+    shareState.compare=Number(cmp.dataset.shareCompare);
+    cmp.parentElement.querySelectorAll('[data-share-compare]').forEach(b=>{const on=b===cmp;b.classList.toggle('active',on);b.setAttribute('aria-pressed',on?'true':'false');});
+    fillShareCompare();
+    return;
+  }
+  if(e.target.closest('[data-share-own]')){ showSharePage(); return; }
+  if(e.target.closest('[data-share-check]')){ showCheckTarget('start'); return; }
+  const hb=e.target.closest('[data-share-handbook]');
+  if(hb){ showHandbookType(Number(hb.dataset.shareHandbook)); return; }
+});
+/* '받는 사람 화면 미리 보기' 링크처럼 같은 페이지에서 #share=… 로 바뀔 때 */
+window.addEventListener('hashchange',()=>{
+  const h=location.hash.slice(1);
+  if(/^share=/.test(h)) showSharePage(h,false);
+});
+
 /* 직접 링크 */
 const hash=location.hash.slice(1);
 let match=null;
-if(hash==='home' || hash===''){
+if(/^share(=|$)/.test(hash)){
+  showSharePage(hash,false);
+}else if(hash==='home' || hash===''){
   showHomePage(false);
 }else if((match=hash.match(/^overview-(basics|core|centers|variation|growth|use)$/))){
   showOverviewSection(match[1],false);
@@ -2012,6 +2395,8 @@ if(hash==='home' || hash===''){
   showCheckTarget('detail-'+match[1],false);
 }else if(hash==='check-result'){
   showCheckTarget('result',false);
+}else if(hash==='check-quick-result'){
+  showCheckTarget('quick-result',false);
 }else if(hash==='check-quick'){
   showCheckTarget('quick',false);
 }else if(hash==='check-select' || hash==='check-detail'){

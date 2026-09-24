@@ -12,10 +12,10 @@
   const labels={
     home:'홈',
     overview:'에니어그램 이해',
-    check:'유형 체크',
+    check:'유형 검사',
     handbook:'유형 탐구',
-    compare:'유형 탐구 · 9유형 비교',
-    sharing:'유형 탐구 · 돌아보기',
+    compare:'유형 탐구 · 전체 유형',
+    sharing:'다이어리 · 돌아보기',
     myspace:'나의 공간'
   };
   const clean=value=>String(value||'').replace(/\s+/g,' ').trim();
@@ -82,7 +82,7 @@
       addEntry({
         category:'check',
         pageTitle:labels.check,
-        title:titleFrom(section,`${type}번 유형 체크`),
+        title:titleFrom(section,`${type}번 유형 검사`),
         text:section.innerText,
         route:{type:'check',target:`detail-${type}`,anchor:section.id}
       });
@@ -130,12 +130,13 @@
       });
     });
 
-    document.querySelectorAll('#page-myspace .myspace-panel[data-myspace-panel]').forEach(panel=>{
+    document.querySelectorAll('#page-myspace .myspace-panel[data-myspace-panel], #page-diary .myspace-panel[data-myspace-panel]').forEach(panel=>{
       const key=panel.dataset.myspacePanel;
       addEntry({
         category:'myspace',
-        pageTitle:labels.myspace,
-        title:titleFrom(panel,labels.myspace),
+        /* 성찰 기록은 다이어리 페이지에 있음 */
+        pageTitle:key==='reflection'?'다이어리':labels.myspace,
+        title:titleFrom(panel,key==='reflection'?'다이어리':labels.myspace),
         text:panel.innerText,
         route:{type:'myspace',key}
       });
