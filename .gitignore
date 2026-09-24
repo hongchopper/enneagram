@@ -1,0 +1,10 @@
+# 화면 회귀 캡처 결과
+shots_*/
+*.png.tmp
+# OS / 에디터
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+node_modules/

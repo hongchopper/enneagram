@@ -1,0 +1,388 @@
+  :root {
+    --blue:var(--color-primary);
+    --blue-light:var(--color-border);
+    --sky:var(--color-primary-soft);
+    --ink:var(--color-text-primary);
+    --sub:var(--color-text-secondary);
+    --faint:var(--color-text-tertiary);
+    --line:var(--color-border);
+    --line2:var(--color-border-subtle);
+    --navy:var(--color-text-primary);
+    --navy2:var(--color-text-primary);
+  }
+
+  a,
+  a:visited,
+  a:hover,
+  a:active,
+  .btn,
+  .journey-item,
+  .hero-actions a,
+  [class*="btn"],
+  [class*="link"] {
+    text-decoration:none !important;
+  }
+
+  button,
+  a,
+  input,
+  textarea {
+    -webkit-tap-highlight-color:rgba(79, 127, 215, 0.16);
+  }
+
+  /* Keep the remaining legacy violet tints inside the agreed blue system. */
+  #page-overview .overview-callout.blue,
+  #page-overview .overview-soft-card,
+  #page-overview .overview-note.strong,
+  #page-overview .center-question,
+  #page-overview .instinct-question,
+  #page-handbook .motive-row.current,
+  #page-handbook .state,
+  #page-handbook .wake,
+  #page-handbook .chapter-2 .group-card,
+  #page-handbook .chapter-2 .card,
+  #page-handbook .chapter-3 .life-card,
+  #page-handbook .chapter-3 .love-card,
+  #page-handbook .chapter-3 .normal-talk-card.meaning,
+  #page-sharing .solo,
+  #page-sharing .helper,
+  #page-sharing .script,
+  #page-sharing .core-note,
+  #page-sharing .deep-explain,
+  #page-sharing .intent {
+    background:var(--sky) !important;
+  }
+
+  #page-handbook {
+    --blue-100:var(--color-primary-soft) !important;
+    --blue-075:var(--color-surface-subtle) !important;
+    --blue-050:var(--color-bg) !important;
+    --blue-line:var(--color-border) !important;
+  }
+
+  #page-sharing {
+    --accent:var(--etax-blue, var(--color-primary)) !important;
+    --accent-strong:var(--etax-blue, var(--color-primary)) !important;
+    --accent-soft:var(--etax-sky, var(--color-primary-soft)) !important;
+  }
+
+  /* Remove type portrait/illustration slots while preserving the handbook content. */
+  #page-handbook [class*="photo"],
+  #page-handbook [class*="portrait"],
+  #page-handbook [class*="profile"],
+  #page-handbook [class*="image"],
+  #page-handbook [class*="picture"],
+  #page-handbook [class*="avatar"],
+  #page-handbook [class*="thumb"],
+  #page-handbook [class*="character-visual"],
+  #page-handbook [class*="type-visual"],
+  #page-handbook [class*="type-illust"],
+  #page-handbook [class*="type-figure"] {
+    display:none !important;
+  }
+
+  #page-handbook .type-page,
+  #page-handbook .chapter-body,
+  #page-handbook .type-hero,
+  #page-handbook .hero,
+  #page-handbook .title {
+    grid-template-columns:1fr !important;
+  }
+
+  /* Clear repeated career/interview handbook utility sections; this topic lives in 나를 돌아보기 > 일하는 나. */
+  #page-handbook .job,
+  #page-handbook .jobs,
+  #page-handbook .career,
+  #page-handbook .interview,
+  #page-handbook [class*="job"],
+  #page-handbook [class*="career"],
+  #page-handbook [class*="interview"] {
+    display:none !important;
+  }
+
+  .page-panel,
+  .shell-main,
+  #page-home,
+  #page-overview,
+  #page-check,
+  #page-handbook,
+  #page-compare,
+  #page-sharing,
+  #page-myspace {
+    overflow-x:hidden !important;
+  }
+
+  .shell-menu-btn,
+  .shell-submenu-btn,
+  .top-nav-main,
+  .top-home-link,
+  .top-mega,
+  .top-dropdown button,
+  .type-card,
+  .journey-item,
+  .quick-choice-card,
+  .glance-type-card,
+  .type-summary,
+  .q,
+  .field,
+  .deep-item {
+    min-width:0 !important;
+  }
+
+  #page-home .home-top h1,
+  #page-home .hero-copy h1,
+  #page-overview .overview-hero h1,
+  #page-handbook h1,
+  #page-compare h1,
+  #page-myspace h1,
+  #page-sharing .hero h1 {
+    font-size:clamp(var(--text-3xl), 4vw, var(--text-4xl)) !important;
+    line-height:1.24 !important;
+    letter-spacing:0 !important;
+    font-weight:800 !important;
+  }
+
+  #page-home h2,
+  #page-overview .overview-section-head h2,
+  #page-check .quick-intro h2,
+  #page-handbook h2,
+  #page-compare h2,
+  #page-myspace h2,
+  #page-sharing .topic h2 {
+    font-size:clamp(var(--text-2xl), 2.8vw, var(--text-3xl)) !important;
+    line-height:1.32 !important;
+    letter-spacing:0 !important;
+    font-weight:800 !important;
+  }
+
+  #page-home h3,
+  #page-overview h3,
+  #page-check h3,
+  #page-handbook h3,
+  #page-compare h3,
+  #page-myspace h3,
+  #page-sharing h3 {
+    line-height:1.42 !important;
+    letter-spacing:0 !important;
+  }
+
+  #page-home p,
+  #page-overview p,
+  #page-check p,
+  #page-handbook p,
+  #page-compare p,
+  #page-myspace p,
+  #page-sharing p {
+    line-height:1.72 !important;
+  }
+
+  .shell-submenu-btn strong,
+  .shell-mobile-title,
+  .top-nav-main,
+  .top-home-link {
+    white-space:normal !important;
+    overflow:visible !important;
+    text-overflow:clip !important;
+  }
+
+  .top-nav-item {
+    position:relative !important;
+  }
+
+  .top-mega {
+    max-width:min(430px, calc(100vw - 32px)) !important;
+    right:0 !important;
+    left:auto !important;
+  }
+
+  @media (max-width: 1000px) {
+    .shell-mobile-top {
+      min-height:64px !important;
+      padding:10px 16px !important;
+      gap:8px !important;
+    }
+
+    .shell-mobile-menu {
+      width:42px !important;
+      height:42px !important;
+      flex:0 0 42px !important;
+    }
+
+    .shell-main {
+      padding-top:64px !important;
+    }
+
+    .page-panel {
+      top:64px !important;
+    }
+
+    .shell-sidebar {
+      width:min(360px, 88vw) !important;
+      padding:44px 22px 34px !important;
+    }
+
+    .shell-menu-btn {
+      grid-template-columns:minmax(0, 1fr) 32px !important; /* FIX: 아이콘 요소가 없는데 30px 아이콘 칸을 잡아 메뉴명이 세로로 쪼개지던 문제 */
+      padding:14px 12px !important;
+    }
+
+    .shell-submenu {
+      margin-left:30px !important;
+      padding-left:10px !important;
+    }
+
+    .shell-submenu-btn {
+      align-items:flex-start !important;
+      min-height:40px !important;
+      padding:9px 8px !important;
+    }
+
+    #page-home .home-wrap,
+    #page-home .home-section,
+    #page-overview .overview-wrap,
+    #page-check .quick-check-wrap,
+    #page-handbook .wrap,
+    #page-compare .all-types-compare-page-wrap,
+    #page-myspace .myspace-wrap,
+    #page-sharing .wrap {
+      width:min(100% - 32px, 1040px) !important;
+      max-width:calc(100% - 32px) !important;
+      padding-left:0 !important;
+      padding-right:0 !important;
+    }
+
+    #page-home .home-top,
+    #page-home .hero,
+    #page-overview .overview-grid.three,
+    #page-overview .overview-grid.two,
+    #page-overview .overview-rule-list,
+    #page-overview .motive-examples,
+    #page-overview .overview-split,
+    #page-overview .center-grid,
+    #page-overview .triad-grid,
+    #page-overview .instinct-grid,
+    #page-check .quick-choice-grid,
+    #page-compare .glance-grid,
+    #page-compare .compare-quick-guide,
+    #page-myspace .feature-grid,
+    #page-sharing .h-overview-grid,
+    #page-sharing .h-type-grid {
+      grid-template-columns:1fr !important;
+    }
+
+    #page-home .hero-visual,
+    #page-home .visual-card {
+      min-height:0 !important;
+      max-width:360px !important;
+      margin-inline:auto !important;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .shell-mobile-top {
+      min-height:60px !important;
+      padding:9px 12px !important;
+    }
+
+    .shell-main {
+      padding-top:60px !important;
+    }
+
+    .page-panel {
+      top:60px !important;
+    }
+
+    .shell-mobile-title {
+      font-size:var(--text-md) !important;
+      line-height:1.35 !important;
+    }
+
+    #page-home .home-wrap,
+    #page-home .home-section,
+    #page-overview .overview-wrap,
+    #page-check .quick-check-wrap,
+    #page-handbook .wrap,
+    #page-compare .all-types-compare-page-wrap,
+    #page-myspace .myspace-wrap,
+    #page-sharing .wrap {
+      width:min(100% - 24px, 1040px) !important;
+      max-width:calc(100% - 24px) !important;
+      padding-top:28px !important;
+      padding-bottom:68px !important;
+    }
+
+    #page-home .home-top h1,
+    #page-home .hero-copy h1,
+    #page-overview .overview-hero h1,
+    #page-handbook h1,
+    #page-compare h1,
+    #page-myspace h1,
+    #page-sharing .hero h1 {
+      font-size:var(--text-page-title-mobile) !important;
+    }
+
+    #page-home h2,
+    #page-overview .overview-section-head h2,
+    #page-check .quick-intro h2,
+    #page-handbook h2,
+    #page-compare h2,
+    #page-myspace h2,
+    #page-sharing .topic h2 {
+      font-size:var(--text-2xl) !important;
+    }
+
+    .overview-callout,
+    .compare-table > div,
+    #page-sharing .fields,
+    #page-sharing .summary-grid,
+    #page-sharing .questions {
+      grid-template-columns:1fr !important;
+    }
+
+    .overview-callout,
+    #page-sharing .topic,
+    #page-sharing .hero,
+    #page-handbook .type-page,
+    #page-check .quick-result {
+      padding:20px 16px !important;
+    }
+
+    #page-check .quick-result-main,
+    #page-check .quick-result-empty,
+    #page-sharing .topichead,
+    #page-sharing .sharelead {
+      flex-direction:column !important;
+      align-items:flex-start !important;
+    }
+
+    .chat-input-row {
+      grid-template-columns:1fr !important;
+    }
+
+    .chat-message {
+      max-width:100% !important;
+    }
+
+    #page-handbook .handbook-section-nav,
+    #page-myspace .myspace-tabs {
+      display:flex !important;
+      flex-wrap:wrap !important;
+      gap:8px !important;
+      overflow:visible !important;
+      width:100% !important;
+      margin-left:0 !important;
+      margin-right:0 !important;
+      padding-left:0 !important;
+      padding-right:0 !important;
+    }
+
+    #page-handbook .handbook-section-tab,
+    #page-myspace .myspace-tab {
+      flex:1 1 calc(50% - 8px) !important;
+      min-width:0 !important;
+      justify-content:center !important;
+      white-space:normal !important;
+      text-align:center !important;
+      line-height:1.35 !important;
+    }
+  }

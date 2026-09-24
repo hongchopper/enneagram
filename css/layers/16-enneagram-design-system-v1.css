@@ -1,0 +1,415 @@
+:root{
+  /* Typography */
+  ;
+
+  /* Color */
+  --ds-bg:var(--color-bg);
+  --ds-surface:var(--color-surface);
+  --ds-surface-soft:var(--color-primary-soft);
+  --ds-text:var(--color-text-primary);
+  --ds-text-secondary:var(--color-text-secondary);
+  --ds-text-muted:var(--color-text-secondary);
+  --ds-line:var(--color-border);
+
+  --ds-primary:var(--color-primary);
+  --ds-primary-dark:var(--color-primary-hover);
+  --ds-primary-soft:var(--color-primary-soft);
+
+  --ds-instinct:#F59E8B;
+  --ds-emotion:#F2B35E;
+  --ds-thinking:var(--color-primary);
+
+  /* Type scale */
+  ;
+  ;
+  ;
+  ;
+  --title-sm:var(--text-xl);
+  --title-md:var(--text-page-title-mobile);
+  --title-lg:var(--text-4xl);
+  --hero-title:var(--text-4xl);
+
+  /* Spacing */
+  ;
+  ;
+  ;
+  ;
+  ;
+  ;
+  ;
+  ;
+  ;
+
+  /* Radius */
+  ;
+  ;
+  ;
+  ;
+
+  /* Layout */
+  --content-max:1180px;
+  --reading-max:820px;
+
+  /* Shadow */
+  --shadow-hover:var(--shadow-md);
+}
+
+/* ========== Global typography ========== */
+html,body,button,input,textarea,select{
+  font-family:var(--font-sans) !important;
+}
+body{
+  color:var(--ds-text)!important;
+  background:var(--ds-bg)!important;
+  font-size:var(--text-md)!important;
+  line-height:1.75!important;
+  letter-spacing:-.015em!important;
+}
+button,input,textarea,select{font-size:inherit}
+p,li,dd,td{
+  line-height:1.75!important;
+}
+strong,b{font-weight:700}
+h1,h2,h3,h4,h5,h6{
+  color:var(--ds-text)!important;
+  letter-spacing:-.035em!important;
+  word-break:keep-all;
+}
+h1{font-weight:800!important}
+h2,h3{font-weight:700!important}
+
+/* 읽어야 하는 본문은 14px 아래로 내려가지 않음 */
+.page-panel p,
+.page-panel li,
+.page-panel dd,
+.page-panel td,
+.page-panel .description,
+.page-panel .helper,
+.page-panel .body-copy{
+  font-size:max(14px,1em);
+}
+
+/* ========== Global layout ========== */
+.page-panel{
+  background:var(--ds-bg)!important;
+}
+#page-overview .overview-wrap,
+#page-compare .all-types-compare-page-wrap,
+#page-sharing .wrap,
+#page-sharing .reflection-page,
+#page-handbook .wrap,
+#page-handbook .handbook-app,
+#page-check .check-mode-top,
+#page-check .quick-check-wrap,
+#page-check [data-check-mode-panel="detail"]>.wrap{
+  width:min(var(--content-max),calc(100% - 64px))!important;
+  max-width:var(--content-max)!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+
+/* 설명 텍스트는 너무 길게 늘어나지 않게 */
+#page-overview .overview-hero>p,
+#page-overview .overview-body-copy,
+#page-overview .overview-section-head+p,
+#page-compare .compare-section-hero>p,
+#page-compare .compare-head-desc,
+#page-sharing .reflection-hero>p,
+#page-handbook .handbook-intro>p,
+#page-check .quick-intro>p{
+  max-width:var(--reading-max)!important;
+}
+
+/* ========== Type hierarchy ========== */
+#page-overview .overview-hero h1,
+#page-compare .compare-section-hero h1,
+#page-sharing .reflection-hero h1{
+  font-size:var(--title-lg)!important;
+  line-height:1.28!important;
+  font-weight:800!important;
+}
+#page-overview .overview-section-head h2,
+#page-compare .compare-explainer-head h2,
+#page-sharing .reflect-section h2,
+#page-handbook .handbook-section h2{
+  font-size:var(--title-md)!important;
+  line-height:1.4!important;
+  font-weight:700!important;
+}
+#page-overview h3,
+#page-compare h3,
+#page-sharing h3,
+#page-handbook h3,
+#page-check h3{
+  font-size:var(--text-lg)!important;
+  line-height:1.5!important;
+  font-weight:700!important;
+}
+
+/* Kicker/label은 작은 텍스트 예외 */
+#page-overview .overview-kicker,
+#page-overview .overview-section-head>span,
+#page-compare .compare-section-hero>span,
+#page-compare .compare-explainer-head>span,
+#page-sharing .reflection-kicker,
+#page-handbook .eyebrow,
+#page-check .check-mode-eyebrow,
+.section-kicker,
+.top-mega-head>span,
+.page-remote-eyebrow{
+  font-size:var(--text-xs)!important;
+  line-height:1.4!important;
+  font-weight:800!important;
+  letter-spacing:.06em!important;
+  color:var(--ds-primary)!important;
+  background:transparent!important;
+  padding:0!important;
+  border-radius:0!important;
+}
+
+/* ========== Body text ========== */
+#page-overview p,
+#page-overview li,
+#page-compare p,
+#page-compare li,
+#page-sharing p,
+#page-sharing li,
+#page-handbook p,
+#page-handbook li,
+#page-check p,
+#page-check li{
+  font-size:var(--text-md)!important;
+  color:var(--ds-text-secondary)!important;
+}
+#page-overview .overview-note,
+#page-overview .overview-note span,
+#page-compare .compare-guide-note,
+#page-compare .compare-guide-note p,
+#page-sharing .reflection-guide,
+#page-sharing .reflection-helper,
+#page-handbook .subtle,
+#page-check .helper-text{
+  font-size:var(--text-sm)!important;
+}
+
+/* ========== Cards ========== */
+#page-overview .overview-card,
+#page-overview .term-card,
+#page-overview .meaning-card,
+#page-overview .usage-block,
+#page-overview .pattern-detail-grid article,
+#page-overview .learning-steps article,
+#page-overview .selfobserve-grid article,
+#page-overview .growth-process article,
+#page-overview .variation-example-grid article,
+#page-overview .arrow-reading-grid article,
+#page-compare .glance-type-card,
+#page-compare .scenario-card,
+#page-compare .confuse-card,
+#page-compare .compare-triad-card,
+#page-compare .center-strategy-grid article,
+#page-compare .harmonic-example-grid article,
+#page-sharing .reflection-card,
+#page-sharing .reflection-type-card,
+#page-sharing .reflection-guide,
+#page-handbook .card,
+#page-check .quick-choice-card{
+  background:var(--ds-surface)!important;
+  border:1px solid var(--ds-line)!important;
+  border-radius:var(--radius-lg)!important;
+  box-shadow:none!important;
+}
+
+/* 기본 카드 내부 여백 */
+#page-overview .overview-card,
+#page-overview .term-card,
+#page-overview .meaning-card,
+#page-overview .usage-block,
+#page-overview .pattern-detail-grid article,
+#page-overview .learning-steps article,
+#page-overview .selfobserve-grid article,
+#page-overview .growth-process article,
+#page-overview .variation-example-grid article,
+#page-overview .arrow-reading-grid article,
+#page-compare .glance-type-card,
+#page-compare .scenario-card,
+#page-compare .confuse-card,
+#page-compare .compare-triad-card,
+#page-compare .center-strategy-grid article,
+#page-compare .harmonic-example-grid article{
+  padding:var(--space-5)!important;
+}
+
+/* Hover 가능한 카드만 shadow */
+#page-home .type-card:hover,
+#page-check .quick-choice-card:hover,
+#page-compare .confuse-card:hover{
+  box-shadow:var(--shadow-hover)!important;
+  transform:translateY(-2px);
+}
+
+/* ========== Buttons ========== */
+.btn,
+button.primary,
+button.secondary,
+#page-check .quick-action,
+#page-sharing .reflection-action{
+  min-height:44px;
+  border-radius:var(--radius-md)!important;
+  font-weight:700!important;
+}
+.btn.primary,
+button.primary{
+  background:var(--ds-primary)!important;
+  color:var(--color-on-primary)!important;
+}
+.btn.secondary,
+button.secondary{
+  background:var(--color-surface)!important;
+  color:var(--ds-text)!important;
+  border:1px solid var(--ds-line)!important;
+}
+
+/* ========== Top navigation ========== */
+.top-site-header{
+  background:rgba(247,249,252,.96)!important;
+  border-color:var(--ds-line)!important;
+}
+.top-brand,
+.top-home-link,
+.top-nav-main,
+.top-submenu-btn{
+  font-family:var(--font-sans) !important;
+}
+.top-home-link,.top-nav-main{
+  font-size:var(--text-sm)!important;
+  font-weight:700!important;
+}
+.top-submenu-btn strong{
+  font-size:var(--text-sm)!important;
+  font-weight:700!important;
+}
+.top-submenu-btn span{
+  font-size:var(--text-xs)!important;
+}
+.top-home-link.active::after,
+.top-nav-main.active::after{
+  background:var(--ds-primary)!important;
+}
+.top-submenu-btn:hover,
+.top-submenu-btn:focus{
+  background:var(--ds-primary-soft)!important;
+  color:var(--ds-primary-dark)!important;
+}
+
+/* ========== Left remote ========== */
+.page-remote-inner{
+  border-color:var(--ds-line)!important;
+  border-radius:var(--radius-lg)!important;
+  background:rgba(255,255,255,.97)!important;
+}
+.page-remote-title{
+  font-size:var(--text-sm)!important;
+  font-weight:800!important;
+}
+.page-remote-btn{
+  min-height:36px!important;
+  padding:8px 10px!important;
+  border-radius:var(--radius-sm)!important;
+  color:var(--ds-text-muted)!important;
+  font-size:var(--text-xs)!important;
+  font-weight:700!important;
+}
+.page-remote-btn.active{
+  color:var(--ds-primary-dark)!important;
+  background:var(--ds-primary-soft)!important;
+}
+
+/* ========== Section rhythm ========== */
+#page-overview .overview-section,
+#page-compare .compare-explainer,
+#page-sharing .reflect-section,
+#page-handbook .handbook-section{
+  margin-top:var(--space-8)!important;
+}
+#page-overview .overview-section-head,
+#page-compare .compare-explainer-head{
+  margin-bottom:var(--space-5)!important;
+}
+#page-overview .overview-panel,
+#page-compare .compare-panel{
+  padding-top:var(--space-8)!important;
+  padding-bottom:var(--space-9)!important;
+}
+
+/* 카드/그리드 간격 */
+#page-overview .term-card-grid,
+#page-overview .learning-steps,
+#page-overview .pattern-detail-grid,
+#page-overview .center-deep-grid,
+#page-overview .variation-example-grid,
+#page-overview .selfobserve-grid,
+#page-compare .glance-grid,
+#page-compare .confuse-grid,
+#page-compare .center-strategy-grid,
+#page-compare .harmonic-example-grid{
+  gap:var(--space-4)!important;
+}
+
+/* ========== Home ========== */
+#page-home{
+  font-family:var(--font-sans) !important;
+}
+#page-home .hero h1{
+  font-size:clamp(var(--text-3xl), 4vw, var(--text-4xl)))!important;
+  font-weight:800!important;
+}
+#page-home .hero-copy,
+#page-home .section-desc{
+  font-size:var(--text-lg)!important;
+  line-height:1.75!important;
+}
+#page-home .principle,
+#page-home .type-card,
+#page-home .lens-card{
+  border-color:var(--ds-line)!important;
+  box-shadow:none!important;
+}
+#page-home .principle,
+#page-home .type-card{
+  border-radius:var(--radius-lg)!important;
+}
+#page-home .lens-card{
+  border-radius:var(--radius-xl)!important;
+}
+#page-home .principle p,
+#page-home .type-card p,
+#page-home .lens-card p,
+#page-home .journey-item p{
+  font-size:var(--text-md)!important;
+  line-height:1.75!important;
+}
+
+/* ========== Responsive ========== */
+@media(max-width:760px){
+  :root{
+    --title-lg:var(--text-3xl);
+    --title-md:var(--text-2xl);
+    --hero-title:var(--text-4xl);
+  }
+  #page-overview .overview-wrap,
+  #page-compare .all-types-compare-page-wrap,
+  #page-sharing .wrap,
+  #page-sharing .reflection-page,
+  #page-handbook .wrap,
+  #page-check .check-mode-top,
+  #page-check .quick-check-wrap,
+  #page-check [data-check-mode-panel="detail"]>.wrap{
+    width:calc(100% - 40px)!important;
+  }
+  #page-overview .overview-panel,
+  #page-compare .compare-panel{
+    padding-top:var(--space-7)!important;
+    padding-bottom:var(--space-8)!important;
+  }
+}

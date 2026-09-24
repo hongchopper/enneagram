@@ -1,0 +1,50 @@
+  [class*="quick-menu" i],
+  [id*="quick-menu" i],
+  [class*="quickMenu"],
+  [id*="quickMenu"],
+  body.codex-quick-clean .codex-remove-quick-menu,
+  body.codex-quick-clean .codex-remove-empty-media {
+    display:none !important;
+  }
+
+  #page-handbook .hero-with-image,
+  #page-handbook .hero-no-image,
+  #page-handbook .hero-no-media,
+  #page-handbook .type-hero,
+  #page-handbook .type-page > .hero,
+  #page-handbook .type-page > section:first-child,
+  #page-handbook .type-page > div:first-child {
+    overflow:visible !important;
+  }
+
+  #page-handbook [class*="visual" i],
+  #page-handbook [class*="image" i],
+  #page-handbook [class*="photo" i],
+  #page-handbook [class*="portrait" i],
+  #page-handbook [class*="avatar" i],
+  #page-handbook [class*="thumb" i],
+  #page-handbook [class*="illust" i],
+  #page-handbook [class*="media" i],
+  #page-handbook .codex-remove-empty-media {
+    display:none !important;
+    width:0 !important;
+    height:0 !important;
+    min-width:0 !important;
+    min-height:0 !important;
+    margin:0 !important;
+    padding:0 !important;
+    border:0 !important;
+  }
+
+  #page-handbook .handbook-type-tabs {
+    top:0 !important;
+    margin-top:0 !important;
+  }
+
+  #page-handbook .wrap {
+    padding-top:0 !important;
+  }
+
+  #page-handbook .type-page {
+    margin-top:0 !important;
+  }

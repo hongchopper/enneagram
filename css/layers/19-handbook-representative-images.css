@@ -1,0 +1,45 @@
+#page-handbook .hero-no-media{
+  display:grid!important;
+  grid-template-columns:92px minmax(0,1fr) 220px;
+  gap:24px;
+  align-items:center;
+}
+#page-handbook .hero-no-media > .type-hero-animal{
+  justify-self:end;
+  width:220px;
+}
+#page-handbook .type-hero-animal-card{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:220px;
+  padding:18px;
+  border:1px solid var(--ds-line, var(--color-border));
+  border-radius:var(--radius-xl);
+  background:linear-gradient(180deg,var(--color-surface) 0%, var(--color-bg) 100%);
+}
+#page-handbook .type-hero-animal-card img{
+  display:block;
+  width:100%;
+  max-width:170px;
+  height:auto;
+  object-fit:contain;
+}
+@media (max-width: 900px){
+  #page-handbook .hero-no-media{
+    grid-template-columns:72px 1fr;
+    gap:18px;
+  }
+  #page-handbook .hero-no-media > .type-hero-animal{
+    grid-column:1 / -1;
+    justify-self:start;
+    width:100%;
+  }
+  #page-handbook .type-hero-animal-card{
+    min-height:auto;
+    padding:16px;
+  }
+  #page-handbook .type-hero-animal-card img{
+    max-width:140px;
+  }
+}

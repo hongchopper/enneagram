@@ -1,0 +1,447 @@
+  :root {
+    --app-max:1120px !important;
+    --content-max:1120px;
+    --content-gutter:24px;
+    --app-bg:var(--color-bg);
+    --app-surface:var(--color-surface);
+    --app-surface-2:var(--color-surface-subtle);
+    --app-text:var(--color-text-primary);
+    --app-muted:var(--color-text-secondary);
+    --app-line:var(--color-border);
+    --app-primary:var(--color-primary);
+    --app-primary-dark:var(--color-primary-hover);
+    --app-primary-soft:var(--color-primary-soft);
+  }
+
+  html,
+  body,
+  button,
+  input,
+  textarea,
+  select {
+    font-family:var(--font-sans) !important;
+  }
+
+  .top-site-header {
+    position:sticky !important;
+    top:0 !important;
+  }
+
+  .top-nav-item {
+    position:relative !important;
+  }
+
+  .top-mega,
+  .top-mega-wide {
+    top:calc(100% - 1px) !important;
+    left:0 !important;
+    right:auto !important;
+    transform:translateY(0) !important;
+    width:min(430px, calc(100vw - 32px)) !important;
+    max-width:calc(100vw - 32px) !important;
+    border-radius:0 0 var(--radius-md) var(--radius-md) !important;
+    padding:22px !important;
+  }
+
+  .top-nav-item:nth-last-child(-n + 2) .top-mega {
+    left:auto !important;
+    right:0 !important;
+  }
+
+  .top-mega-wide {
+    width:min(610px, calc(100vw - 32px)) !important;
+  }
+
+  .top-nav-item:hover .top-mega,
+  .top-nav-item:focus-within .top-mega {
+    transform:translateY(0) !important;
+  }
+
+  .top-submenu-btn {
+    min-height:48px !important;
+    padding:16px 18px !important;
+    border-radius:var(--radius-sm) !important;
+    overflow:visible !important;
+  }
+
+  .top-submenu-btn.compact {
+    min-height:44px !important;
+    padding:12px 16px !important;
+  }
+
+  .top-submenu-btn strong,
+  .top-submenu-btn span {
+    white-space:normal !important;
+    overflow:visible !important;
+    text-overflow:clip !important;
+  }
+
+  .page-panel > main,
+  #page-home .home-wrap,
+  #page-home .home-section,
+  #page-overview .overview-wrap,
+  #page-check .quick-check-wrap,
+  #page-handbook .wrap,
+  #page-compare .all-types-compare-page-wrap,
+  #page-sharing .wrap,
+  #page-myspace .myspace-wrap {
+    width:min(var(--content-max), calc(100% - (var(--content-gutter) * 2))) !important;
+    max-width:min(var(--content-max), calc(100% - (var(--content-gutter) * 2))) !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+  }
+
+  #page-overview .overview-hero,
+  #page-check .quick-intro,
+  #page-sharing .hero,
+  #page-myspace .feature-hero,
+  #page-handbook .hero,
+  #page-handbook .type-page .hero {
+    width:100% !important;
+    max-width:100% !important;
+  }
+
+  #page-overview .hero-visual,
+  #page-overview .visual-card,
+  #page-check .hero-visual,
+  #page-check .visual-card,
+  #page-compare .hero-visual,
+  #page-compare .visual-card,
+  #page-sharing .hero-visual,
+  #page-sharing .visual-card,
+  #page-myspace .hero-visual,
+  #page-myspace .visual-card,
+  #page-handbook [class*="visual"],
+  #page-handbook [class*="image"],
+  #page-handbook [class*="photo"],
+  #page-handbook [class*="portrait"],
+  #page-handbook [class*="avatar"],
+  #page-handbook [class*="thumb"],
+  #page-handbook [class*="illust"],
+  #page-handbook svg[role="img"],
+  #page-handbook svg,
+  #page-handbook img {
+    display:none !important;
+  }
+
+  #page-handbook,
+  #page-handbook * {
+    font-family:var(--font-sans) !important;
+  }
+
+  #page-handbook {
+    --blue-900:var(--color-text-primary) !important;
+    --blue-800:var(--color-primary-hover) !important;
+    --blue-700:var(--color-primary-hover) !important;
+    --blue-600:var(--color-primary) !important;
+    --blue-500:var(--color-primary) !important;
+    --blue-100:var(--color-primary-soft) !important;
+    --blue-075:var(--color-surface-subtle) !important;
+    --blue-050:var(--color-bg) !important;
+    --blue-025:var(--color-bg) !important;
+    --blue-line:var(--color-border) !important;
+    --blue-line-strong:var(--color-border) !important;
+    --bg:var(--color-bg) !important;
+    --paper:var(--color-surface) !important;
+    --line:var(--color-border) !important;
+  }
+
+  #page-handbook .type-page,
+  #page-handbook .card,
+  #page-handbook .group-card,
+  #page-handbook .life-card,
+  #page-handbook .love-card,
+  #page-handbook .talk-card,
+  #page-handbook .speech-card,
+  #page-handbook .grow-card,
+  #page-handbook .arrow-card,
+  #page-handbook .affect-card,
+  #page-handbook .normal-talk-card,
+  #page-handbook .feedback-card,
+  #page-handbook .energy-card,
+  #page-handbook .check-box,
+  #page-handbook .superego-box,
+  #page-handbook .warning-card,
+  #page-handbook .conflict-card,
+  #page-handbook .feedback-tip,
+  #page-handbook .mbti-note,
+  #page-handbook .self-speech,
+  #page-handbook .motive-row.current,
+  #page-handbook .state,
+  #page-handbook .wake {
+    background:var(--color-surface) !important;
+    border-color:var(--color-border) !important;
+    color:var(--color-text-primary) !important;
+  }
+
+  #page-handbook .unified-subsection-badge,
+  #page-handbook .chapter-badge,
+  #page-handbook .number,
+  #page-handbook .type-no,
+  #page-handbook .pill.active,
+  #page-handbook .handbook-type-tab.active {
+    background:var(--color-primary) !important;
+    border-color:var(--color-primary) !important;
+    color:var(--color-on-primary) !important;
+  }
+
+  #page-handbook .top {
+    display:none !important;
+  }
+
+  #page-handbook .wrap {
+    display:grid !important;
+    grid-template-columns:196px minmax(0, 1fr) !important;
+    gap:24px !important;
+    padding-top:0 !important;
+  }
+
+  #page-handbook .handbook-type-tabs {
+    position:sticky !important;
+    top:72px !important;
+    z-index:var(--z-sticky) !important;
+    grid-column:1 / -1 !important;
+    display:grid !important;
+    grid-template-columns:repeat(9, minmax(0, 1fr)) !important;
+    gap:6px !important;
+    margin:0 0 16px !important;
+    padding:12px 0 !important;
+    background:rgba(247, 249, 252, .96) !important;
+    backdrop-filter:blur(10px) !important;
+    border-bottom:1px solid var(--color-border) !important;
+  }
+
+  #page-handbook .handbook-type-tab {
+    min-height:42px !important;
+    border:1px solid var(--color-border) !important;
+    border-radius:var(--radius-sm) !important;
+    background:var(--color-surface) !important;
+    color:var(--color-text-primary) !important;
+    font-weight:800 !important;
+    cursor:pointer !important;
+  }
+
+  #page-handbook .handbook-outline {
+    position:sticky !important;
+    top:146px !important;
+    align-self:start !important;
+    max-height:calc(100dvh - 170px) !important;
+    overflow:auto !important;
+    padding:14px !important;
+    border:1px solid var(--color-border) !important;
+    border-radius:var(--radius-md) !important;
+    background:var(--color-surface) !important;
+  }
+
+  #page-handbook .handbook-outline-title {
+    margin:0 0 10px !important;
+    color:var(--color-primary) !important;
+    font-size:var(--text-xs) !important;
+    font-weight:800 !important;
+    letter-spacing:.04em !important;
+  }
+
+  #page-handbook .handbook-outline-link {
+    width:100% !important;
+    display:grid !important;
+    grid-template-columns:42px minmax(0, 1fr) !important;
+    gap:8px !important;
+    align-items:start !important;
+    padding:8px 6px !important;
+    border:0 !important;
+    border-radius:var(--radius-sm) !important;
+    background:transparent !important;
+    color:var(--color-text-primary) !important;
+    text-align:left !important;
+    cursor:pointer !important;
+  }
+
+  #page-handbook .handbook-outline-link:hover {
+    background:var(--color-primary-soft) !important;
+    color:var(--color-primary-hover) !important;
+  }
+
+  #page-handbook .handbook-outline-no {
+    color:var(--color-primary) !important;
+    font-weight:800 !important;
+    font-size:var(--text-xs) !important;
+  }
+
+  #page-handbook #handbookTypeHost {
+    min-width:0 !important;
+  }
+
+  #page-handbook .handbook-section-nav {
+    position:sticky !important;
+    top:134px !important;
+    z-index:var(--z-sticky) !important;
+    grid-template-columns:repeat(4, minmax(0, 1fr)) !important;
+    margin:0 0 18px !important;
+    padding:8px 0 !important;
+    background:rgba(247, 249, 252, .95) !important;
+    backdrop-filter:blur(8px) !important;
+  }
+
+  #page-check .quick-choice-card {
+    padding:44px 40px 40px !important;
+    border-radius:var(--radius-sm) !important;
+    overflow:visible !important;
+  }
+
+  #page-check .quick-choice-card.selected {
+    padding:43px 39px 39px !important;
+  }
+
+  #page-check .quick-choice-card li,
+  #page-check .quick-choice-card p,
+  #page-check .quick-choice-state,
+  #page-check .quick-choice-key {
+    overflow:visible !important;
+    white-space:normal !important;
+  }
+
+  #page-check .check-diagnosis-panel {
+    margin:28px 0 34px !important;
+    padding:28px !important;
+    border:1px solid var(--color-border) !important;
+    border-radius:var(--radius-md) !important;
+    background:var(--color-surface) !important;
+    box-shadow:var(--shadow-sm) !important;
+  }
+
+  #page-check .check-diagnosis-panel h3 {
+    margin:0 0 8px !important;
+    font-size:var(--text-xl) !important;
+    color:var(--color-text-primary) !important;
+  }
+
+  #page-check .check-diagnosis-panel p {
+    margin:0 0 18px !important;
+    color:var(--color-text-secondary) !important;
+  }
+
+  #page-check .check-diagnosis-grid {
+    display:grid !important;
+    grid-template-columns:repeat(9, minmax(0, 1fr)) !important;
+    gap:8px !important;
+  }
+
+  #page-check .check-diagnosis-type {
+    min-height:44px !important;
+    border:1px solid var(--color-border) !important;
+    border-radius:var(--radius-sm) !important;
+    background:var(--color-bg) !important;
+    color:var(--color-primary-hover) !important;
+    font-weight:800 !important;
+    cursor:pointer !important;
+  }
+
+  #page-check .check-diagnosis-type.active,
+  #page-check .check-diagnosis-complete {
+    background:var(--color-primary) !important;
+    border-color:var(--color-primary) !important;
+    color:var(--color-on-primary) !important;
+  }
+
+  #page-check .check-diagnosis-complete {
+    margin-top:14px !important;
+    min-height:44px !important;
+    padding:0 16px !important;
+    border-radius:var(--radius-sm) !important;
+    font-weight:800 !important;
+    cursor:pointer !important;
+  }
+
+  #page-check .shell-result-link,
+  #page-check [data-check-target="result"] {
+    display:none !important;
+  }
+
+  body.check-result-ready #page-check .shell-result-link,
+  body.check-result-ready #page-check [data-check-target="result"] {
+    display:flex !important;
+  }
+
+  #page-sharing .hero-note,
+  #page-sharing .tools,
+  #page-sharing .detail-controls,
+  #page-sharing [data-font],
+  #page-sharing [id*="Font"],
+  #page-sharing [id*="font"],
+  .font-size-controls,
+  .font-controls,
+  [class*="font-size"],
+  [class*="text-size"] {
+    display:none !important;
+  }
+
+  #page-sharing .wrap,
+  #page-sharing .topin,
+  #page-sharing .navgroups {
+    max-width:var(--content-max) !important;
+    width:min(var(--content-max), calc(100% - (var(--content-gutter) * 2))) !important;
+    padding-left:0 !important;
+    padding-right:0 !important;
+  }
+
+  #page-sharing .hero,
+  #page-sharing .topic {
+    width:100% !important;
+    border-left:0 !important;
+  }
+
+  @media (max-width: 920px) {
+    .top-site-header {
+      position:sticky !important;
+      top:0 !important;
+    }
+
+    #page-handbook .wrap {
+      display:block !important;
+    }
+
+    #page-handbook .handbook-type-tabs {
+      top:64px !important;
+      grid-template-columns:repeat(3, minmax(0, 1fr)) !important;
+    }
+
+    #page-handbook .handbook-outline {
+      position:relative !important;
+      top:auto !important;
+      max-height:none !important;
+      margin-bottom:14px !important;
+    }
+
+    #page-handbook .handbook-section-nav {
+      top:168px !important;
+      grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    #page-check .check-diagnosis-grid {
+      grid-template-columns:repeat(3, minmax(0, 1fr)) !important;
+    }
+  }
+
+  @media (max-width: 560px) {
+    :root {
+      --content-gutter:16px;
+    }
+
+    #page-check .quick-choice-card,
+    #page-check .quick-choice-card.selected {
+      padding:32px 26px !important;
+    }
+
+    #page-check .check-diagnosis-panel {
+      padding:22px !important;
+    }
+
+    #page-handbook .handbook-type-tabs {
+      top:60px !important;
+      gap:5px !important;
+    }
+
+    #page-handbook .handbook-type-tab {
+      min-height:38px !important;
+    }
+  }

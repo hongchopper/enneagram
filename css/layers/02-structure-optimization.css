@@ -1,0 +1,11 @@
+/* 구조 최적화 */
+#handbookTypeHost{
+  display:block;
+  width:100%;
+}
+#page-handbook .chapter{
+  content-visibility:auto;
+  contain-intrinsic-size:auto 900px;
+}
+@media print{
+}

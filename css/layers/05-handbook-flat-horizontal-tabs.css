@@ -1,0 +1,119 @@
+/* =========================================================
+   HANDBOOK TOP TABS — flat horizontal style
+   콘텐츠/문구/순서/기능 변경 없음
+   ========================================================= */
+#page-handbook .handbook-section-nav{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:0!important;
+  width:100%!important;
+  margin:0 0 32px!important;
+  padding:0!important;
+  border:0!important;
+  border-bottom:1px solid var(--color-border)!important;
+  background:transparent!important;
+  overflow:visible!important;
+}
+
+#page-handbook .handbook-section-tab{
+  position:relative!important;
+  min-width:0!important;
+  min-height:48px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+  padding:10px 8px 11px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:var(--color-text-secondary)!important;
+  box-shadow:none!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+}
+
+#page-handbook .handbook-section-tab::after{
+  content:""!important;
+  position:absolute!important;
+  left:12px!important;
+  right:12px!important;
+  bottom:-1px!important;
+  height:2px!important;
+  background:transparent!important;
+  border-radius:0!important;
+  transition:background .15s ease!important;
+}
+
+#page-handbook .handbook-section-tab:hover,
+#page-handbook .handbook-section-tab:focus-visible{
+  background:var(--color-bg)!important;
+  color:var(--color-text-primary)!important;
+}
+
+#page-handbook .handbook-section-tab:hover::after,
+#page-handbook .handbook-section-tab:focus-visible::after{
+  background:#D8E3F1!important;
+}
+
+#page-handbook .handbook-section-tab-num{
+  flex:none!important;
+  color:var(--color-primary)!important;
+  font-size:var(--text-xs)!important;
+  line-height:1!important;
+  font-weight:800!important;
+}
+
+#page-handbook .handbook-section-tab-title{
+  min-width:0!important;
+  color:inherit!important;
+  font-size:var(--text-sm)!important;
+  line-height:1.4!important;
+  font-weight:600!important;
+  white-space:nowrap!important;
+}
+
+/* 모바일도 2x2가 아니라 4개를 한 줄에 유지 */
+@media(max-width:760px){
+  #page-handbook .handbook-section-nav{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    margin:0 0 24px!important;
+  }
+
+  #page-handbook .handbook-section-tab{
+    min-height:46px!important;
+    gap:4px!important;
+    padding:9px 3px 10px!important;
+  }
+
+  #page-handbook .handbook-section-tab::after{
+    left:6px!important;
+    right:6px!important;
+  }
+
+  #page-handbook .handbook-section-tab-num{
+    font-size:var(--text-xs)!important;
+  }
+
+  #page-handbook .handbook-section-tab-title{
+    font-size:var(--text-xs)!important;
+    letter-spacing:-.025em!important;
+  }
+}
+
+@media(max-width:390px){
+  #page-handbook .handbook-section-tab{
+    gap:3px!important;
+    padding-left:1px!important;
+    padding-right:1px!important;
+  }
+
+  #page-handbook .handbook-section-tab-num{
+    font-size:var(--text-xs)!important;
+  }
+
+  #page-handbook .handbook-section-tab-title{
+    font-size:var(--text-xs)!important;
+  }
+}

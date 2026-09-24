@@ -1,0 +1,28 @@
+/* 홈 9유형: 중심별 3색 대신 유형별 개별 컬러 */
+#page-home .type-card[data-type="1"]{--type-color:var(--type-1);--type-soft:var(--type-1-soft);}
+#page-home .type-card[data-type="2"]{--type-color:var(--type-2);--type-soft:var(--type-2-soft);}
+#page-home .type-card[data-type="3"]{--type-color:var(--type-3);--type-soft:var(--type-3-soft);}
+#page-home .type-card[data-type="4"]{--type-color:var(--type-4);--type-soft:var(--type-4-soft);}
+#page-home .type-card[data-type="5"]{--type-color:var(--type-5);--type-soft:var(--type-5-soft);}
+#page-home .type-card[data-type="6"]{--type-color:var(--type-6);--type-soft:var(--type-6-soft);}
+#page-home .type-card[data-type="7"]{--type-color:var(--type-7);--type-soft:var(--type-7-soft);}
+#page-home .type-card[data-type="8"]{--type-color:var(--type-8);--type-soft:var(--type-8-soft);}
+#page-home .type-card[data-type="9"]{--type-color:var(--type-9);--type-soft:var(--type-9-soft);}
+
+#page-home .type-card .type-no{
+  background:var(--type-color)!important;
+}
+#page-home .type-card::after{
+  color:var(--type-color)!important;
+}
+#page-home .type-card:hover{
+  border-color:color-mix(in srgb,var(--type-color) 42%, var(--color-border))!important;
+  background:linear-gradient(180deg,var(--color-surface) 0%,var(--type-soft) 140%)!important;
+}
+
+/* 기존 중심별 색상 규칙보다 유형별 컬러가 우선 */
+#page-home .type-card.instinct .type-no,
+#page-home .type-card.emotion .type-no,
+#page-home .type-card.thinking .type-no{
+  background:var(--type-color)!important;
+}

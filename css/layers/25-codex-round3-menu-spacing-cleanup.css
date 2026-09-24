@@ -1,0 +1,108 @@
+  :root {
+    --content-max:1120px !important;
+    --content-gutter:24px !important;
+  }
+
+  #page-overview .overview-wrap,
+  #page-check .quick-check-wrap,
+  #page-handbook .wrap,
+  #page-compare .all-types-compare-page-wrap,
+  #page-sharing .wrap,
+  #page-myspace .myspace-wrap {
+    width:min(var(--content-max), calc(100% - (var(--content-gutter) * 2))) !important;
+    max-width:min(var(--content-max), calc(100% - (var(--content-gutter) * 2))) !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+    padding-top:24px !important;
+  }
+
+  #page-handbook .wrap {
+    display:block !important;
+    grid-template-columns:none !important;
+    gap:0 !important;
+    padding-top:0 !important;
+  }
+
+  #page-handbook .handbook-type-tabs {
+    position:sticky !important;
+    top:72px !important;
+    z-index:var(--z-sticky) !important;
+    width:100% !important;
+    margin:0 0 14px !important;
+    padding:8px 0 !important;
+    background:rgba(247, 249, 252, .98) !important;
+    border-bottom:1px solid var(--color-border) !important;
+  }
+
+  #page-handbook .handbook-outline,
+  #page-handbook .handbook-outline *,
+  #page-check .check-diagnosis-panel {
+    display:none !important;
+  }
+
+  #page-handbook #handbookTypeHost {
+    width:100% !important;
+    max-width:100% !important;
+  }
+
+  #page-handbook .handbook-section-nav {
+    top:132px !important;
+  }
+
+  #page-check [data-check-mode-panel="detail"] > .wrap {
+    width:min(var(--content-max), calc(100% - (var(--content-gutter) * 2))) !important;
+    max-width:min(var(--content-max), calc(100% - (var(--content-gutter) * 2))) !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+    padding-top:24px !important;
+  }
+
+  @media (max-width: 1000px) {
+    .shell-main {
+      padding-top:0 !important;
+    }
+
+    .page-panel {
+      top:0 !important;
+    }
+  }
+
+  @media (max-width: 920px) {
+    :root {
+      --content-gutter:18px !important;
+    }
+
+    #page-overview .overview-wrap,
+    #page-check .quick-check-wrap,
+    #page-handbook .wrap,
+    #page-compare .all-types-compare-page-wrap,
+    #page-sharing .wrap,
+    #page-myspace .myspace-wrap,
+    #page-check [data-check-mode-panel="detail"] > .wrap {
+      padding-top:18px !important;
+    }
+
+    #page-handbook .wrap {
+      padding-top:0 !important;
+    }
+
+    #page-handbook .handbook-type-tabs {
+      top:0 !important;
+      padding:8px 0 !important;
+      margin-bottom:12px !important;
+    }
+
+    #page-handbook .handbook-section-nav {
+      top:88px !important;
+    }
+  }
+
+  @media (max-width: 560px) {
+    :root {
+      --content-gutter:14px !important;
+    }
+
+    #page-handbook .handbook-type-tabs {
+      top:0 !important;
+    }
+  }

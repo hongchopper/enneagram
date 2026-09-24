@@ -1,0 +1,264 @@
+/* 메뉴 내 카테고리 구분 제거 후 간격 통일 */
+#sharingGroup .shell-submenu{
+  padding-top:6px!important;
+}
+#sharingGroup .shell-sharing-topic{
+  padding-left:34px!important;
+}
+
+/* 01 예시는 선택지가 아니라 참고 표현 */
+#page-sharing .reflection-example-block{
+  margin-top:24px!important;
+}
+#page-sharing .reflection-example-block:first-of-type{
+  margin-top:0!important;
+}
+#page-sharing .reflection-example-label{
+  margin-bottom:10px!important;
+  color:var(--color-text-primary)!important;
+  font-size:var(--text-md)!important;
+  line-height:1.5!important;
+  font-weight:700!important;
+}
+#page-sharing .reflection-example-chips{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:8px!important;
+}
+#page-sharing .reflection-example-chips span{
+  display:inline-flex!important;
+  align-items:center!important;
+  min-height:34px!important;
+  padding:7px 10px!important;
+  border:1px solid var(--color-border)!important;
+  border-radius:var(--radius-sm)!important;
+  background:var(--color-bg)!important;
+  color:var(--color-text-secondary)!important;
+  font-size:var(--text-xs)!important;
+  line-height:1.45!important;
+}
+
+/* 02 질문은 입력폼 없이 읽는 카드 */
+#page-sharing .reflection-prompt-card{
+  display:grid!important;
+  grid-template-columns:34px minmax(0,1fr)!important;
+  gap:12px!important;
+  align-items:start!important;
+  padding:18px 0!important;
+  border-bottom:1px solid var(--color-border)!important;
+}
+#page-sharing .reflection-prompt-card:first-child{
+  padding-top:0!important;
+}
+#page-sharing .reflection-prompt-card:last-child{
+  padding-bottom:0!important;
+  border-bottom:0!important;
+}
+#page-sharing .reflection-prompt-no{
+  display:grid!important;
+  place-items:center!important;
+  width:30px!important;
+  height:30px!important;
+  border-radius:50%!important;
+  background:var(--color-primary-soft)!important;
+  color:var(--color-primary)!important;
+  font-size:var(--text-xs)!important;
+  font-weight:800!important;
+}
+#page-sharing .reflection-prompt-card .reflection-question{
+  margin-top:2px!important;
+}
+#page-sharing .reflection-prompt-card p{
+  margin:5px 0 0!important;
+  color:var(--color-text-secondary)!important;
+  font-size:var(--text-sm)!important;
+  line-height:1.7!important;
+}
+
+/* 03 5Why 스타일 */
+#page-sharing .why-ladder{
+  position:relative!important;
+  display:grid!important;
+  gap:0!important;
+  margin:0 0 24px!important;
+}
+#page-sharing .why-step{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:42px minmax(0,1fr)!important;
+  gap:14px!important;
+  padding:0 0 22px!important;
+}
+#page-sharing .why-step:not(:last-child)::before{
+  content:""!important;
+  position:absolute!important;
+  left:17px!important;
+  top:34px!important;
+  bottom:0!important;
+  width:1px!important;
+  background:#D9DDE6!important;
+}
+#page-sharing .why-step>span{
+  position:relative!important;
+  z-index:1!important;
+  display:grid!important;
+  place-items:center!important;
+  width:34px!important;
+  height:34px!important;
+  border-radius:50%!important;
+  background:var(--color-surface)!important;
+  border:1px solid var(--color-border)!important;
+  color:var(--color-primary)!important;
+  font-size:var(--text-xs)!important;
+  font-weight:800!important;
+}
+#page-sharing .why-step strong{
+  display:block!important;
+  margin:2px 0 4px!important;
+  color:var(--color-text-primary)!important;
+  font-size:var(--text-md)!important;
+  line-height:1.5!important;
+}
+#page-sharing .why-step p{
+  margin:0!important;
+  color:var(--color-text-secondary)!important;
+  font-size:var(--text-sm)!important;
+  line-height:1.7!important;
+}
+#page-sharing .why-step-deep>span{
+  background:var(--color-primary)!important;
+  border-color:var(--color-primary)!important;
+  color:var(--color-on-primary)!important;
+}
+#page-sharing .why-step-deep>div{
+  padding:14px 16px!important;
+  margin-top:-4px!important;
+  border-radius:var(--radius-md)!important;
+  background:var(--color-primary-soft)!important;
+}
+
+/* 04 유형 설명 강화 */
+#page-sharing .reflection-type-reading-guide{
+  margin:18px 0 0!important;
+  padding:14px 16px!important;
+  border-left:3px solid var(--color-border)!important;
+  background:var(--color-bg)!important;
+}
+#page-sharing .reflection-type-reading-guide strong{
+  display:block!important;
+  margin-bottom:3px!important;
+  color:var(--color-text-primary)!important;
+  font-size:var(--text-xs)!important;
+}
+#page-sharing .reflection-type-reading-guide p{
+  margin:0!important;
+  color:var(--color-text-secondary)!important;
+  font-size:var(--text-sm)!important;
+  line-height:1.7!important;
+}
+#page-sharing .reflection-type-reading-guide b{
+  color:var(--color-primary)!important;
+}
+#page-sharing .reflection-type-deeper-title{
+  margin-top:24px!important;
+  color:var(--color-text-primary)!important;
+  font-size:var(--text-md)!important;
+  font-weight:700!important;
+}
+#page-sharing .reflection-type-why{
+  margin-top:20px!important;
+  padding:18px 20px!important;
+  border:1px solid var(--color-border)!important;
+  border-radius:var(--radius-md)!important;
+  background:var(--color-surface-subtle)!important;
+}
+#page-sharing .reflection-type-why>strong{
+  color:var(--color-primary)!important;
+  font-size:var(--text-sm)!important;
+}
+#page-sharing .reflection-type-why ol{
+  margin:10px 0 0!important;
+  padding-left:20px!important;
+}
+#page-sharing .reflection-type-why li{
+  margin:7px 0!important;
+  color:var(--color-text-primary)!important;
+  font-size:var(--text-sm)!important;
+  line-height:1.7!important;
+}
+#page-sharing .reflection-type-why b{
+  color:var(--color-text-primary)!important;
+}
+
+/* 06 입력 대신 사고 가이드 */
+#page-sharing .reflection-summary-sentence{
+  padding:18px 20px!important;
+  border:1px solid var(--color-border)!important;
+  border-radius:var(--radius-md)!important;
+  background:var(--color-surface-subtle)!important;
+}
+#page-sharing .reflection-summary-sentence>span{
+  display:block!important;
+  margin-bottom:7px!important;
+  color:var(--color-primary)!important;
+  font-size:var(--text-xs)!important;
+  font-weight:800!important;
+}
+#page-sharing .reflection-summary-sentence p{
+  margin:0!important;
+  color:var(--color-text-primary)!important;
+  font-size:var(--text-md)!important;
+  line-height:1.85!important;
+}
+#page-sharing .reflection-summary-sentence b{
+  color:var(--color-primary)!important;
+}
+#page-sharing .reflection-final-questions{
+  margin-top:18px!important;
+  display:grid!important;
+  gap:0!important;
+}
+#page-sharing .reflection-final-questions p{
+  margin:0!important;
+  padding:12px 0!important;
+  border-bottom:1px solid var(--color-border)!important;
+  color:var(--color-text-primary)!important;
+  font-size:var(--text-sm)!important;
+  line-height:1.7!important;
+}
+#page-sharing .reflection-final-questions p:last-child{
+  border-bottom:0!important;
+}
+
+/* 사용하지 않는 저장/입력 UI가 남아도 표시 안 함 */
+#page-sharing .reflection-note,
+#page-sharing .reflection-closing-input,
+#page-sharing .reflection-choice{
+  display:none!important;
+}
+
+@media(max-width:760px){
+  #sharingGroup .shell-sharing-topic{
+    padding-left:22px!important;
+  }
+  #page-sharing .reflection-example-chips{
+    gap:6px!important;
+  }
+  #page-sharing .reflection-example-chips span{
+    font-size:var(--text-xs)!important;
+  }
+  #page-sharing .why-step{
+    grid-template-columns:38px minmax(0,1fr)!important;
+    gap:10px!important;
+  }
+  #page-sharing .why-step:not(:last-child)::before{
+    left:15px!important;
+  }
+  #page-sharing .why-step>span{
+    width:31px!important;
+    height:31px!important;
+  }
+  #page-sharing .reflection-type-why{
+    padding:16px!important;
+  }
+}

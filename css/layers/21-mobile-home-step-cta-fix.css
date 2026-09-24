@@ -1,0 +1,73 @@
+/* 홈 journey 링크/버튼의 밑줄 제거 */
+#page-home .journey-item,
+#page-home .journey-item:hover,
+#page-home .journey-item:focus,
+#page-home .journey-item:active,
+#page-home .cta .btn,
+#page-home .cta .btn:hover,
+#page-home .cta .btn:focus,
+#page-home .cta .btn:active{
+  text-decoration:none!important;
+}
+
+/* CTA: 배경과 텍스트 대비 명확하게 */
+#page-home .cta-box{
+  background:#16243A!important;
+  color:var(--color-on-primary)!important;
+}
+#page-home .cta-box h2,
+#page-home .cta-box h2 *,
+#page-home .cta-box strong{
+  color:var(--color-on-primary)!important;
+}
+#page-home .cta-box p,
+#page-home .cta-box p *{
+  color:#DCE6F4!important;
+}
+#page-home .cta-box::after{
+  opacity:.35!important;
+}
+#page-home .cta .btn{
+  background:var(--color-surface)!important;
+  color:var(--color-text-primary)!important;
+  border:0!important;
+  font-weight:800!important;
+}
+#page-home .cta .btn:hover,
+#page-home .cta .btn:focus{
+  background:var(--color-surface-subtle)!important;
+  color:var(--color-text-primary)!important;
+}
+
+/* 모바일에서는 CTA 장식이 글을 방해하지 않도록 뒤로 보내고 약하게 */
+@media(max-width:767px){
+  #page-home .cta-box{
+    isolation:isolate;
+    overflow:hidden!important;
+  }
+  #page-home .cta-box::after{
+    z-index:-1!important;
+    opacity:.18!important;
+    right:-110px!important;
+    top:-120px!important;
+  }
+  #page-home .cta-box > *{
+    position:relative;
+    z-index:1;
+  }
+  #page-home .cta-box h2{
+    color:var(--color-on-primary)!important;
+    text-shadow:none!important;
+  }
+  #page-home .cta-box p{
+    color:#E5ECF5!important;
+  }
+}
+
+/* Journey는 링크처럼 보이되 밑줄 없이 카드/목록 스타일 유지 */
+#page-home .journey-item{
+  text-decoration:none!important;
+}
+#page-home .journey-item h3{
+  text-decoration:none!important;
+}

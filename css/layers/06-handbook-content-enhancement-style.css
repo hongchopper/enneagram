@@ -1,0 +1,243 @@
+/* =========================================================
+   HANDBOOK CONTENT ENHANCEMENTS
+   2.1 핵심 동기 / 2.2 패턴 루프 / 4.3 성장 메시지
+   ========================================================= */
+#page-handbook .enhance-card-head{
+  display:flex!important;
+  align-items:baseline!important;
+  gap:10px!important;
+  margin-bottom:16px!important;
+}
+#page-handbook .enhance-card-head>span{
+  flex:none!important;
+  color:var(--color-primary)!important;
+  font-size:var(--text-xs)!important;
+  line-height:1.4!important;
+  font-weight:800!important;
+  letter-spacing:.04em!important;
+}
+#page-handbook .enhance-card-head>strong{
+  color:var(--color-text-primary)!important;
+  font-size:var(--text-md)!important;
+  line-height:1.5!important;
+  font-weight:700!important;
+}
+
+/* 2.1 */
+#page-handbook .motivation-summary-card{
+  margin-top:24px!important;
+  padding:20px!important;
+  border:1px solid var(--color-border-subtle)!important;
+  border-radius:var(--radius-md)!important;
+  background:var(--color-bg)!important;
+  box-shadow:none!important;
+}
+#page-handbook .motivation-summary-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:0 24px!important;
+}
+#page-handbook .motivation-summary-item{
+  min-width:0!important;
+  padding:13px 0!important;
+  border-top:1px solid var(--color-border)!important;
+}
+#page-handbook .motivation-summary-item:nth-child(-n+2){
+  border-top:0!important;
+  padding-top:0!important;
+}
+#page-handbook .motivation-summary-item>span{
+  display:block!important;
+  margin-bottom:4px!important;
+  color:var(--color-primary)!important;
+  font-size:var(--text-xs)!important;
+  line-height:1.45!important;
+  font-weight:700!important;
+}
+#page-handbook .motivation-summary-item>p{
+  margin:0!important;
+  color:var(--color-text-primary)!important;
+  font-size:var(--text-sm)!important;
+  line-height:1.65!important;
+  font-weight:500!important;
+}
+
+/* 2.2 */
+#page-handbook .auto-pattern-loop{
+  margin-top:24px!important;
+  padding:20px!important;
+  border:1px solid var(--color-border)!important;
+  border-radius:var(--radius-md)!important;
+  background:var(--color-surface-subtle)!important;
+}
+#page-handbook .auto-pattern-flow{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:8px!important;
+}
+#page-handbook .auto-pattern-step{
+  position:relative!important;
+  min-width:0!important;
+  padding:14px!important;
+  border:1px solid var(--color-border-subtle)!important;
+  border-radius:var(--radius-md)!important;
+  background:var(--color-surface)!important;
+}
+#page-handbook .auto-pattern-step:not(:last-child)::after{
+  content:"&gt;"!important;
+  position:absolute!important;
+  z-index:2!important;
+  right:-9px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  display:grid!important;
+  place-items:center!important;
+  width:18px!important;
+  height:18px!important;
+  border-radius:50%!important;
+  background:#D8E3F1!important;
+  color:var(--color-text-primary)!important;
+  font-size:var(--text-xs)!important;
+  font-weight:800!important;
+}
+#page-handbook .auto-pattern-step>b{
+  display:block!important;
+  margin-bottom:7px!important;
+  color:var(--color-primary)!important;
+  font-size:var(--text-xs)!important;
+  line-height:1!important;
+  font-weight:800!important;
+}
+#page-handbook .auto-pattern-step span{
+  display:block!important;
+  margin-bottom:5px!important;
+  color:var(--color-text-primary)!important;
+  font-size:var(--text-xs)!important;
+  line-height:1.45!important;
+  font-weight:700!important;
+}
+#page-handbook .auto-pattern-step p{
+  margin:0!important;
+  color:var(--color-text-secondary)!important;
+  font-size:var(--text-xs)!important;
+  line-height:1.6!important;
+}
+
+/* 4.3 */
+#page-handbook .growth-message-card{
+  margin-top:24px!important;
+  padding:20px!important;
+  border:1px solid var(--color-border)!important;
+  border-radius:var(--radius-md)!important;
+  background:var(--color-surface-subtle)!important;
+}
+#page-handbook .growth-message-compare{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 32px minmax(0,1fr)!important;
+  align-items:stretch!important;
+  gap:10px!important;
+}
+#page-handbook .growth-message-before,
+#page-handbook .growth-message-after{
+  min-width:0!important;
+  padding:16px!important;
+  border-radius:var(--radius-md)!important;
+  background:var(--color-surface)!important;
+}
+#page-handbook .growth-message-before{
+  border:1px solid var(--color-border-subtle)!important;
+}
+#page-handbook .growth-message-after{
+  border:1px solid var(--color-border)!important;
+}
+#page-handbook .growth-message-before>span,
+#page-handbook .growth-message-after>span{
+  display:block!important;
+  margin-bottom:6px!important;
+  font-size:var(--text-xs)!important;
+  line-height:1.45!important;
+  font-weight:700!important;
+}
+#page-handbook .growth-message-before>span{
+  color:var(--color-text-secondary)!important;
+}
+#page-handbook .growth-message-after>span{
+  color:var(--color-primary)!important;
+}
+#page-handbook .growth-message-before>p,
+#page-handbook .growth-message-after>p{
+  margin:0!important;
+  font-size:var(--text-md)!important;
+  line-height:1.65!important;
+  font-weight:600!important;
+}
+#page-handbook .growth-message-before>p{
+  color:var(--color-text-primary)!important;
+}
+#page-handbook .growth-message-after>p{
+  color:var(--color-text-primary)!important;
+}
+#page-handbook .growth-message-arrow{
+  display:grid!important;
+  place-items:center!important;
+  color:var(--color-primary)!important;
+  font-size:var(--text-xl)!important;
+  font-weight:800!important;
+}
+
+@media(max-width:760px){
+  #page-handbook .motivation-summary-card,
+  #page-handbook .auto-pattern-loop,
+  #page-handbook .growth-message-card{
+    padding:16px!important;
+  }
+
+  #page-handbook .motivation-summary-grid{
+    grid-template-columns:1fr!important;
+  }
+  #page-handbook .motivation-summary-item{
+    padding:12px 0!important;
+    border-top:1px solid var(--color-border)!important;
+  }
+  #page-handbook .motivation-summary-item:first-child{
+    border-top:0!important;
+    padding-top:0!important;
+  }
+  #page-handbook .motivation-summary-item:nth-child(2){
+    border-top:1px solid var(--color-border)!important;
+    padding-top:12px!important;
+  }
+
+  /* 모바일에서는 가로스크롤 없이 세로 흐름 */
+  #page-handbook .auto-pattern-flow{
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+  }
+  #page-handbook .auto-pattern-step{
+    display:grid!important;
+    grid-template-columns:28px minmax(0,1fr)!important;
+    gap:10px!important;
+    align-items:start!important;
+    padding:13px 14px!important;
+  }
+  #page-handbook .auto-pattern-step>b{
+    margin:3px 0 0!important;
+  }
+  #page-handbook .auto-pattern-step:not(:last-child)::after{
+    content:"↓"!important;
+    right:auto!important;
+    left:19px!important;
+    top:auto!important;
+    bottom:-12px!important;
+    transform:none!important;
+  }
+
+  #page-handbook .growth-message-compare{
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+  }
+  #page-handbook .growth-message-arrow{
+    height:22px!important;
+    transform:rotate(90deg)!important;
+  }
+}

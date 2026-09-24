@@ -1,0 +1,32 @@
+/* =========================================================
+   HANDBOOK TOP TABS — sticky
+   콘텐츠/기능 변경 없이 상단 탭만 스크롤 고정
+   ========================================================= */
+#page-handbook .handbook-section-nav{
+  position:sticky!important;
+  top:0!important;
+  z-index:var(--z-sticky) !important;
+  margin:0 0 32px!important;
+  padding:6px 0 0!important;
+  background:rgba(246,247,251,.96)!important;
+  border-bottom:1px solid var(--color-border)!important;
+  box-shadow:var(--shadow-md) !important;
+  backdrop-filter:blur(10px)!important;
+  -webkit-backdrop-filter:blur(10px)!important;
+}
+
+/* 기존 탭 하단선은 그대로 살리고, 고정 상태에서도 깔끔하게 */
+#page-handbook .handbook-section-tab{
+  min-height:48px!important;
+  background:transparent!important;
+}
+
+/* 모바일도 page-panel 안에서 상단 0에 고정됨
+   (모바일 헤더는 page-panel 바깥 64px 영역에 이미 위치) */
+@media(max-width:760px){
+  #page-handbook .handbook-section-nav{
+    top:0!important;
+    margin:0 0 24px!important;
+    padding-top:4px!important;
+  }
+}
