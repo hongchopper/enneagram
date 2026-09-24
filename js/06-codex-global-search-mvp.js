@@ -13,9 +13,9 @@
     home:'홈',
     overview:'에니어그램 이해',
     check:'유형 체크',
-    handbook:'유형별 핸드북',
-    compare:'전체 유형 비교',
-    sharing:'나를 돌아보기',
+    handbook:'유형 탐구',
+    compare:'유형 탐구 · 9유형 비교',
+    sharing:'유형 탐구 · 돌아보기',
     myspace:'나의 공간'
   };
   const clean=value=>String(value||'').replace(/\s+/g,' ').trim();
@@ -94,7 +94,8 @@
         category:'handbook',
         pageTitle:labels.handbook,
         title:titleFrom(page,`${type}번 핸드북`),
-        text:page.innerText,
+        /* 핸드북은 탭으로 나뉘어 숨은 내용이 있으므로 innerText 대신 textContent */
+        text:page.textContent,
         route:{type:'handbook',n:type}
       });
       page.querySelectorAll('.chapter[id], section[id]').forEach(chapter=>{
@@ -102,7 +103,7 @@
           category:'handbook',
           pageTitle:labels.handbook,
           title:titleFrom(chapter,`${type}번 세부 내용`),
-          text:chapter.innerText,
+          text:chapter.textContent,
           route:{type:'handbook',n:type,anchor:chapter.id}
         });
       });
@@ -236,7 +237,11 @@
     if(route.type==='home') window.showHomePage?.();
     if(route.type==='overview') window.showOverviewSection?.(route.key);
     if(route.type==='check') window.showCheckTarget?.(route.target);
-    if(route.type==='handbook') window.showHandbookType?.(route.n);
+    if(route.type==='handbook'){
+      window.showHandbookType?.(route.n);
+      /* 핸드북 본문은 탭·소주제 안에 있을 수 있어 해당 탭을 연 뒤 스크롤 */
+      if(route.anchor && window.revealHandbookAnchor){ window.revealHandbookAnchor(route.anchor); return; }
+    }
     if(route.type==='compare') window.showCompareSection?.(route.key);
     if(route.type==='sharing') window.showSharingTopic?.(route.index);
     if(route.type==='myspace') window.showMySpaceSection?.(route.key);

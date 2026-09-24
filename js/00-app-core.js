@@ -303,7 +303,349 @@ function normalizeMountedPages(){
      - 소제목 번호 배지의 인라인 보라색(#8458B3 !important): 제거해 공통 Primary 스타일을 따르게 함 */
   handbookTypeHost.querySelectorAll('.handbook-section-nav, .type-hero-animal').forEach(el=>el.remove());
   handbookTypeHost.querySelectorAll('.unified-subsection-badge[style]').forEach(el=>el.removeAttribute('style'));
+  handbookTypeHost.querySelectorAll('.type-page').forEach(layoutHandbookPage);
 }
+
+/* =========================================================
+   핸드북 읽기 구조: [요약 | 유형 이해 | 핵심 패턴 | 실제 모습 | 성장] 탭
+   - 요약: 본문에서 핵심만 뽑아 한 장으로 + 요즘 나의 상태 / 고민 분야 / 더 알아보기
+   - 장 탭: 소주제 칩으로 한 번에 한 주제 + 이전/다음
+   본문 HTML은 지우지 않고 위치만 옮긴다. 소주제는 h3 제목으로 찾는다(9개 유형 구조 동일).
+   ========================================================= */
+const HB_TABS=[
+  {key:'summary',label:'요약'},
+  {key:'basic',label:'유형 이해',chapter:1,topics:[
+    ['기본 특징','기본 성격 특징'],['장점과 주의점','장점과 주의점'],['같은 행동, 다른 동기','같은 행동, 다른 동기'],
+    ['헷갈리는 유형','혼동하기 쉬운 유형'],['미성숙할 때','미성숙할 때의 모습'],['MBTI와 함께 보기','MBTI와 함께 보기']]},
+  {key:'pattern',label:'핵심 패턴',chapter:2,topics:[
+    ['핵심 주제','삶을 움직이는 핵심 주제'],['고착과 정서','핵심 고착과 정서'],['어린 시절','어린 시절 패턴'],
+    ['날개와 본능','같은 유형이 달라 보이는 이유'],['발달 수준','발달 수준']]},
+  {key:'life',label:'삶의 장면',chapter:3,topics:[
+    ['일상 속 나'],['사람 사이의 나'],['사랑하는 나'],['가족 속의 나'],['일하는 나'],
+    ['돈을 대하는 나'],['이끄는 나'],['쉬고 즐기는 나'],['시간을 대하는 나']]},
+  {key:'growth',label:'성장',chapter:4,topics:[
+    ['알아차릴 신호','알아차려야 할 신호'],['통합과 스트레스','통합과 스트레스'],['성격과 성장','성격과 성장'],
+    ['성장을 돕는 방법','성장을 돕는 방법'],['성장 대화','성장 대화']]}
+];
+const hbText=el=>(el?el.textContent:'').replace(/\s+/g,' ').trim();
+const hbEsc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let hbPending=null;
+
+function hbChildTitle(el){
+  const h=el.matches('h3')?el:el.querySelector('h3');
+  return h?hbText(h).split(' · ')[0]:'';
+}
+
+/* 장 본문을 소주제 묶음(.hb-topic)으로 나눈다 */
+function hbSplitChapter(chapter,tab,doc){
+  const body=chapter.querySelector('.chapter-body');
+  if(!body) return;
+  const kids=[...body.children];
+  const topics=tab.topics.map(([label],i)=>{
+    const t=doc.createElement('div');
+    t.className='hb-topic';
+    t.dataset.topic=String(i);
+    t.dataset.label=label;
+    return t;
+  });
+  let cur=0;
+  kids.forEach(el=>{
+    const title=hbChildTitle(el);
+    const hit=tab.topics.findIndex(([,start])=>title && title===start);
+    if(hit>=cur) cur=hit;
+    topics[cur].appendChild(el);
+  });
+  const chips=doc.createElement('div');
+  chips.className='hb-chips';
+  chips.setAttribute('role','tablist');
+  chips.setAttribute('aria-label',tab.label+' 소주제');
+  chips.innerHTML=tab.topics.map(([label],i)=>`<button class="hb-chip" data-hb-topic="${i}" role="tab" type="button">${hbEsc(label)}</button>`).join('');
+  const pager=doc.createElement('div');
+  pager.className='hb-pager';
+  body.append(chips,...topics,pager);
+}
+
+/* 핸드북 '실제 모습' 소제목(h3) > 삶의 장면 칩 번호 (나를 돌아보기 주제 순서와 같음)
+   '시간과 돈'은 카드(h4 시간/돈)별로 나눠 시간(8)·돈(5)에 넣는다. 표에 없는 소제목은 바로 앞 소제목과 같은 칩으로. */
+const HB_LIFE_MAP={
+  '결정 방식':0,
+  '관계와 커뮤니케이션':1,'평소 화법':1,'칭찬과 피드백':1,'관계에서 보이는 모습':1,'갈등 반응':1,
+  '연애':2,'양육':3,
+  '업무에서 보이는 모습':4,'직업과 업무':4,'취업과 면접':4,
+  '리더십':6,'에너지 충전과 소진':7
+};
+
+function hbSplitLife(chapter,tab,doc,n){
+  const body=chapter.querySelector('.chapter-body');
+  if(!body) return;
+  const topics=tab.topics.map(([label],i)=>{
+    const t=doc.createElement('div');
+    t.className='hb-topic hb-life-topic';
+    t.dataset.topic=String(i);
+    t.dataset.label=label;
+    const head=doc.createElement('div');
+    head.className='hb-life-label';
+    head.textContent=`${n}번에게 자주 보이는 모습`;
+    t.appendChild(head);
+    return t;
+  });
+  let last=0;
+  [...body.children].forEach(el=>{
+    /* 소제목 묶음 머리글('소통과 관계' 등)은 칩이 대신한다 */
+    if(el.classList.contains('handbook-subgroup-head')){ el.remove(); return; }
+    const title=hbChildTitle(el);
+    if(title==='시간과 돈'){
+      el.querySelectorAll('.life-card').forEach(card=>{
+        const which=hbText(card.querySelector('h4'));
+        const part=el.cloneNode(false);
+        part.innerHTML=`<div class="title"><h3>${which==='돈'?'돈을 대하는 방식':'시간을 대하는 방식'}</h3></div>`;
+        const grid=doc.createElement('div');
+        grid.className='life-grid';
+        grid.appendChild(card);
+        part.appendChild(grid);
+        topics[which==='돈'?5:8].appendChild(part);
+      });
+      [...el.children].forEach(rest=>{ if(!rest.matches('.title') && rest.textContent.trim()) topics[8].appendChild(rest); });
+      el.remove();
+      return;
+    }
+    const hit=HB_LIFE_MAP[title];
+    if(hit===undefined && title) console.warn('삶의 장면 배치표에 없는 소제목:',title);
+    last=hit===undefined?last:hit;
+    topics[last].appendChild(el);
+  });
+  /* 각 장면 아래에 나를 돌아보기 6단계 (이 유형으로 미리 선택, 다른 유형으로 바꿔 볼 수 있음) */
+  const sharing=realDocument.getElementById('page-sharing');
+  topics.forEach((t,i)=>{
+    if(!sharing || typeof sharing.__topicHTML!=='function') return;
+    const box=doc.createElement('div');
+    box.className='hb-reflect';
+    box.dataset.reflectTopic=String(i);
+    box.innerHTML=`<div class="hb-life-label">직접 돌아보기</div>`+sharing.__topicHTML(i,n);
+    t.appendChild(box);
+  });
+  const chips=doc.createElement('div');
+  chips.className='hb-chips';
+  chips.setAttribute('role','tablist');
+  chips.setAttribute('aria-label',tab.label+' 소주제');
+  chips.innerHTML=tab.topics.map(([label],i)=>`<button class="hb-chip" data-hb-topic="${i}" role="tab" type="button">${hbEsc(label)}</button>`).join('');
+  const pager=doc.createElement('div');
+  pager.className='hb-pager';
+  body.append(chips,...topics,pager);
+}
+
+function hbSummaryHTML(page,n){
+  const q=s=>page.querySelector(s);
+  const qa=s=>[...page.querySelectorAll(s)];
+  const prof=(typeof HOME_PROFILES!=='undefined' && HOME_PROFILES[n])||{desc:'',quote:'',tags:[]};
+  const name=(typeof CHECK_TYPE_NAMES!=='undefined' && CHECK_TYPE_NAMES[n])||'';
+  const coreP=qa('.core > div');
+  const coreVal=label=>hbText((coreP.find(d=>hbText(d.querySelector('b')).startsWith(label))||{}).querySelector?.('p'));
+  const motive=label=>hbText(qa('.motivation-summary-item').find(d=>hbText(d.querySelector('span'))===label)?.querySelector('p'));
+  const procon=qa('.procon > div');
+  const list=div=>div?[...div.querySelectorAll('li')].slice(0,5).map(li=>`<div role="listitem" class="hb-li">${hbEsc(hbText(li))}</div>`).join(''):'';
+  const envH=qa('h4').find(h=>hbText(h)==='잘 맞기 쉬운 업무 환경');
+  const env=hbText(envH?.nextElementSibling);
+  const theme=hbText(qa('h3').find(h=>hbText(h).startsWith('삶을 움직이는 핵심 주제'))).split(' · ')[1]||'';
+  const wings=qa('.style-wings article.card h4').map(h=>{const [a,b]=hbText(h).split(' · ');return {no:(a.match(/^(\d)/)||[])[1],title:'날개',desc:b||a};});
+  const arrow=cls=>{const card=q('.arrow-card.'+cls);if(!card)return null;return {no:(hbText(card.querySelector('h4')).match(/^(\d)/)||[])[1],title:cls==='growth'?'건강할 때':'스트레스일 때',desc:hbText(card.querySelector('.sentence-highlight')||card.querySelector('li'))};};
+  const links=[...wings,arrow('growth'),arrow('stress')].filter(x=>x&&x.no);
+  /* 9점 도형: 내 번호만 강조 (핸드북 레이어가 svg를 display:none !important로 숨겨서 div + CSS 마스크로 그림) */
+  const pts={9:[180,52],1:[262,82],2:[306,154],3:[285,238],4:[222,299],5:[138,299],6:[75,238],7:[54,154],8:[98,82]};
+  const figure=`<div aria-hidden="true" class="hb-sum-figure"><span class="hb-fig-lines"></span>`
+    +Object.entries(pts).map(([k,[x,y]])=>`<span class="hb-fig-node${Number(k)===n?' is-me':''}" style="left:${(x/3.6).toFixed(1)}%;top:${(y/3.6).toFixed(1)}%">${k}</span>`).join('')+`</div>`;
+  const box=(label,val)=>val?`<div class="hb-sum-box"><div class="hb-sum-label">${label}</div><div class="hb-sum-value">${hbEsc(val)}</div></div>`:'';
+
+  return `<div class="hb-summary">`
+    +`<div class="hb-sum-hero"><div class="hb-sum-hero-copy"><div class="hb-sum-kicker">ENNEAGRAM TYPE</div>`
+    +`<div class="hb-sum-title"><span class="hb-sum-no">${n}</span><div><h2 class="hb-sum-name">${hbEsc(name)}</h2><div class="hb-sum-desc">${hbEsc(prof.desc)}</div></div></div>`
+    +`<div class="hb-sum-tags">${prof.tags.map(t=>'#'+hbEsc(t)).join(' ')}</div>`
+    +(prof.quote?`<div class="hb-sum-quote">“${hbEsc(prof.quote)}”</div>`:'')+`</div>${figure}</div>`
+    +`<div class="hb-sum-grid3">${box('핵심 두려움',coreVal('기본적인 두려움'))}${box('핵심 욕망',coreVal('기본적인 욕망'))}${box('반복되는 생각',motive('반복되는 생각'))}</div>`
+    +`<div class="hb-sum-grid2"><div class="hb-sum-box"><div class="hb-sum-label">이런 모습이 멋져요</div><div role="list" class="hb-sum-list">${list(procon[0])}</div></div>`
+    +`<div class="hb-sum-box"><div class="hb-sum-label">이런 점은 주의해요</div><div role="list" class="hb-sum-list is-caution">${list(procon[1])}</div></div></div>`
+    +`<div class="hb-sum-grid2">${box('이런 환경에서 빛나요',env)}`
+    +`<div class="hb-sum-box"><div class="hb-sum-label">연결된 유형</div><div class="hb-sum-links">${links.map(l=>`<button class="hb-sum-link" data-hb-go="${l.title==='날개'?'pattern:3':'growth:1'}" type="button"><span class="hb-sum-link-no">${l.no}</span><span class="hb-sum-link-title">${l.title}</span><span class="hb-sum-link-desc">${hbEsc(l.desc)}</span></button>`).join('')}</div></div></div>`
+    +(theme||motive('잃어버린 메시지')?`<div class="hb-sum-line"><div class="hb-sum-label">한 줄 요약</div>${theme?`<div class="hb-sum-line-main">${n}번의 삶을 움직이는 주제는 ‘${hbEsc(theme)}’예요.</div>`:''}${motive('잃어버린 메시지')?`<div class="hb-sum-line-sub">기억하면 좋은 말 · ${hbEsc(motive('잃어버린 메시지'))}</div>`:''}</div>`:'')
+    +hbStateHTML()
+    +`<section class="hb-concern"><h3 class="hb-block-title">고민되는 분야가 있나요?</h3><div class="hb-concern-list">`
+    +[['사람 사이','life:1'],['사랑','life:2'],['가족','life:3'],['일','life:4'],['돈','life:5'],['시간','life:8'],['나에게 해줄 말','growth:4']]
+      .map(([l,go])=>`<button class="hb-concern-btn" data-hb-go="${go}" type="button">${l}</button>`).join('')+`</div></section>`
+    +`<section class="hb-more"><h3 class="hb-block-title">더 알아보기</h3><div class="hb-more-grid">`
+    +HB_TABS.slice(1).map(t=>`<button class="hb-more-card" data-hb-go="${t.key}:0" type="button"><strong>${t.label}</strong><span>${t.topics.map(x=>x[0]).join(' · ')}</span></button>`).join('')
+    +`</div></section></div>`;
+}
+
+/* 요즘 나의 상태 → 이미 있는 성장 장 내용으로 안내 (선택은 저장하지 않음) */
+function hbStateHTML(){
+  return `<section class="hb-state"><h3 class="hb-block-title">요즘 나는 어떤가요?</h3>`
+    +`<div class="hb-block-desc">지금 상태에 맞는 다음 걸음을 보여드려요.</div>`
+    +`<div class="hb-state-options" role="group" aria-label="요즘 나의 상태">`
+    +[['low','요즘 힘들어요'],['mid','그럭저럭이에요'],['high','꽤 괜찮아요']].map(([k,l])=>`<button aria-pressed="false" class="hb-state-btn" data-hb-state="${k}" type="button">${l}</button>`).join('')
+    +`</div><div class="hb-state-panel" hidden></div></section>`;
+}
+
+function hbStatePanelHTML(page,state){
+  const qa=s=>[...page.querySelectorAll(s)];
+  const items=(els,max)=>els.slice(0,max).map(el=>`<div role="listitem" class="hb-li">${hbEsc(hbText(el).replace(/^\d+\.\s*/,''))}</div>`).join('');
+  if(state==='low'){
+    const stress=page.querySelector('.arrow-card.stress');
+    const lis=stress?[...stress.querySelectorAll('li')]:[];
+    return `<div class="hb-state-title">최악을 면하려면</div>`
+      +(lis[0]?`<div class="hb-state-text">${hbEsc(hbText(lis[0]))}</div>`:'')
+      +`<div class="hb-state-sub">이런 신호가 보이면 잠깐 멈춰 주세요</div><div role="list" class="hb-sum-list is-caution">${items(qa('.unified-risk-section li'),3)}</div>`
+      +(lis.length>1?`<div class="hb-state-text is-strong">${hbEsc(hbText(lis[lis.length-1]))}</div>`:'')
+      +`<div class="hb-state-note">${hbEsc(hbText(page.querySelector('.unified-risk-intro')))}</div>`
+      +`<div class="hb-state-actions"><button class="btn secondary" data-hb-go="growth:0" type="button">알아차릴 신호 전체 보기</button><button class="btn secondary" data-hb-go="growth:1" type="button">스트레스 방향 보기</button></div>`;
+  }
+  if(state==='mid'){
+    const wake=page.querySelector('.style-wakeup .wake strong');
+    return `<div class="hb-state-title">자동 패턴을 알아차리기</div>`
+      +(wake?`<div class="hb-state-text">이 생각이 커지고 있다면 신호예요. ${hbEsc(hbText(wake))}</div>`:'')
+      +`<div class="hb-state-sub">스스로 물어보세요</div><div role="list" class="hb-sum-list">${items(qa('.style-wakeup .read-bullets li'),4)}</div>`
+      +`<div class="hb-state-actions"><button class="btn secondary" data-hb-go="growth:0" type="button">알아차릴 신호 보기</button><button class="btn secondary" data-hb-go="pattern:0" type="button">자동 패턴 보기</button></div>`;
+  }
+  const growth=page.querySelector('.arrow-card.growth');
+  return `<div class="hb-state-title">더 건강해지려면</div>`
+    +(growth?`<div class="hb-state-text">${hbEsc(hbText(growth.querySelector('li')))}</div>`:'')
+    +`<div class="hb-state-sub">이번 주에 해볼 것</div><div role="list" class="hb-sum-list">${items(qa('.action-list .action'),3)}</div>`
+    +`<div class="hb-state-actions"><button class="btn secondary" data-hb-go="growth:3" type="button">성장을 돕는 방법 전체 보기</button><button class="btn secondary" data-hb-go="growth:2" type="button">성격과 성장 보기</button></div>`;
+}
+
+function layoutHandbookPage(page){
+  if(page.dataset.hbLayout) return;
+  page.dataset.hbLayout='1';
+  const doc=page.ownerDocument;
+  const n=Number(page.dataset.type||String(page.id).replace(/\D/g,''));
+  const hero=page.querySelector(':scope > header');
+
+  /* 1.1 · 3.4.4 같은 번호 배지는 탭·칩이 위치를 대신하므로 뺀다 (레거시 CSS가 display를 잠가서 요소째 제거) */
+  page.querySelectorAll('.unified-subsection-badge, .subsection-no, .chapter-badge').forEach(el=>el.remove());
+
+  /* 'MBTI와 함께 보기'는 삶의 장면이 아니라 '유형 이해' 끝으로 */
+  const mbti=[...page.querySelectorAll(`#type-${n}-chapter-3 .chapter-body > section`)].find(sec=>hbChildTitle(sec)==='MBTI와 함께 보기');
+  const basicBody=page.querySelector(`#type-${n}-chapter-1 .chapter-body`);
+  if(mbti && basicBody) basicBody.appendChild(mbti);
+
+  /* 장마다 소주제 칩 구조로 */
+  HB_TABS.forEach(tab=>{
+    if(!tab.chapter) return;
+    const ch=page.querySelector(`#type-${n}-chapter-${tab.chapter}`);
+    if(!ch) return;
+    ch.dataset.hbTab=tab.key;
+    ch.classList.add('hb-panel');
+    /* 장 머리(번호·영문 라벨·제목)는 탭 이름과 겹쳐 빼고, 장 설명 문장만 짧은 소개로 남긴다 */
+    const head=ch.querySelector(':scope > .chapter-head');
+    if(head){
+      const intro=doc.createElement('div');
+      intro.className='hb-chapter-intro';
+      intro.textContent=[...head.querySelectorAll('p')].map(hbText).join(' ');
+      head.replaceWith(intro);
+      if(!intro.textContent) intro.remove();
+    }
+    if(tab.key==='life') hbSplitLife(ch,tab,doc,n);
+    else hbSplitChapter(ch,tab,doc);
+  });
+  /* 원래 머리말(설명·키워드)은 '유형 이해 > 기본 특징' 맨 위로 */
+  const firstTopic=page.querySelector('[data-hb-tab="basic"] .hb-topic[data-topic="0"]');
+  if(hero && firstTopic) firstTopic.prepend(hero);
+
+  const top=doc.createElement('div');
+  top.className='hb-top';
+  top.innerHTML=`<div class="hb-tabs" role="tablist" aria-label="${n}번 핸드북">`
+    +HB_TABS.map(t=>`<button class="hb-tab" data-hb-tab-btn="${t.key}" role="tab" type="button">${t.label}</button>`).join('')+`</div>`;
+  const summary=doc.createElement('section');
+  summary.className='hb-panel';
+  summary.dataset.hbTab='summary';
+  summary.innerHTML=hbSummaryHTML(page,n);
+  page.prepend(top,summary);
+
+  page.addEventListener('click',e=>{
+    const tabBtn=e.target.closest('[data-hb-tab-btn]');
+    if(tabBtn){ hbShow(page,tabBtn.dataset.hbTabBtn,0,true); return; }
+    const chip=e.target.closest('[data-hb-topic]');
+    if(chip){ hbShow(page,chip.closest('.hb-panel').dataset.hbTab,Number(chip.dataset.hbTopic),true); return; }
+    const go=e.target.closest('[data-hb-go]');
+    if(go){ const [t,i]=go.dataset.hbGo.split(':'); hbShow(page,t,Number(i)||0,true); return; }
+    const rt=e.target.closest('.hb-reflect .reflection-type-btn');
+    if(rt){
+      const box=rt.closest('.hb-reflect');
+      const sharing=realDocument.getElementById('page-sharing');
+      box.querySelectorAll('.reflection-type-btn').forEach(b=>{
+        const on=b===rt;
+        b.classList.toggle('selected',on);
+        b.setAttribute('aria-pressed',on?'true':'false');
+      });
+      const host=box.querySelector('.reflection-type-detail-host');
+      if(host && sharing && typeof sharing.__typeDetailHTML==='function') host.innerHTML=sharing.__typeDetailHTML(Number(box.dataset.reflectTopic),rt.dataset.reflectionType);
+      return;
+    }
+    const st=e.target.closest('[data-hb-state]');
+    if(st){
+      const wrap=st.closest('.hb-state');
+      wrap.querySelectorAll('[data-hb-state]').forEach(b=>{b.setAttribute('aria-pressed',b===st?'true':'false');b.classList.toggle('active',b===st);});
+      const panel=wrap.querySelector('.hb-state-panel');
+      panel.innerHTML=hbStatePanelHTML(page,st.dataset.hbState);
+      panel.hidden=false;
+    }
+  });
+
+  const want=hbPending && hbPending.type===n ? hbPending : null;
+  hbPending=null;
+  hbShow(page,want?want.tab:'summary',want?want.topic:0,false);
+}
+
+function hbShow(page,tabKey,topic,scroll){
+  const tab=HB_TABS.find(t=>t.key===tabKey)||HB_TABS[0];
+  page.querySelectorAll('.hb-panel').forEach(p=>{p.hidden=p.dataset.hbTab!==tab.key;});
+  page.querySelectorAll('[data-hb-tab-btn]').forEach(b=>{
+    const on=b.dataset.hbTabBtn===tab.key;
+    b.classList.toggle('active',on);
+    b.setAttribute('aria-selected',on?'true':'false');
+  });
+  if(tab.topics){
+    const panel=page.querySelector(`.hb-panel[data-hb-tab="${tab.key}"]`);
+    const i=Math.min(Math.max(topic||0,0),tab.topics.length-1);
+    panel.querySelectorAll('.hb-topic').forEach(t=>{t.hidden=Number(t.dataset.topic)!==i;});
+    panel.querySelectorAll('[data-hb-topic]').forEach(b=>{
+      const on=Number(b.dataset.hbTopic)===i;
+      b.classList.toggle('active',on);
+      b.setAttribute('aria-selected',on?'true':'false');
+    });
+    /* 이전 / 다음: 장 끝에서는 다음 장으로 */
+    const idx=HB_TABS.indexOf(tab);
+    const prev=i>0?[`${tab.key}:${i-1}`,tab.topics[i-1][0]]:(HB_TABS[idx-1].topics?[`${HB_TABS[idx-1].key}:${HB_TABS[idx-1].topics.length-1}`,HB_TABS[idx-1].label]:['summary:0','요약']);
+    const next=i<tab.topics.length-1?[`${tab.key}:${i+1}`,tab.topics[i+1][0]]:(HB_TABS[idx+1]?[`${HB_TABS[idx+1].key}:0`,HB_TABS[idx+1].label]:null);
+    panel.querySelector('.hb-pager').innerHTML=`<button class="hb-pager-btn" data-hb-go="${prev[0]}" type="button"><span>이전</span><strong>‹ ${hbEsc(prev[1])}</strong></button>`
+      +(next?`<button class="hb-pager-btn is-next" data-hb-go="${next[0]}" type="button"><span>다음</span><strong>${hbEsc(next[1])} ›</strong></button>`:'');
+  }
+  const n=page.dataset.type||String(page.id).replace(/\D/g,'');
+  try{ realWindow.history.replaceState(null,'',`#handbook-${n}`+(tab.key==='summary'?'':`-${tab.key}`)); }catch(e){}
+  if(scroll){
+    const bar=page.querySelector('.hb-top');
+    const panelEl=bar && bar.closest('.page-panel');
+    if(bar && panelEl && bar.getBoundingClientRect().top<panelEl.getBoundingClientRect().top) bar.scrollIntoView({block:'start'});
+  }
+}
+
+/* 다른 화면(검색·링크)에서 특정 탭/주제로 열기 */
+realWindow.openHandbookTab=function(n,tabKey,topic){
+  n=Number(n);
+  const page=handbookTypeHost && handbookTypeHost.querySelector(`.type-page[data-hb-layout][id="type-${n}"]`);
+  if(page && handbookTypeHost.dataset.type===String(n)) hbShow(page,tabKey,topic||0,false);
+  else hbPending={type:n,tab:tabKey,topic:topic||0};
+};
+
+/* 검색 결과 등 본문 안 요소 id로 열기: 해당 탭·주제를 보이게 한 뒤 스크롤 */
+realWindow.revealHandbookAnchor=function(id,tries=0){
+  const el=handbookTypeHost && handbookTypeHost.querySelector('#'+CSS.escape(id));
+  if(!el){ if(tries<20) setTimeout(()=>realWindow.revealHandbookAnchor(id,tries+1),100); return; }
+  const page=el.closest('.type-page');
+  const panel=el.closest('.hb-panel');
+  const topicEl=el.closest('.hb-topic');
+  if(page && panel) hbShow(page,panel.dataset.hbTab,topicEl?Number(topicEl.dataset.topic):0,false);
+  (el.classList.contains('hb-panel')?page.querySelector('.hb-top'):el).scrollIntoView({behavior:'smooth',block:'start'});
+};
 
 async function mountType(n,token){
   if(!handbookTypeHost)return;
@@ -524,8 +866,11 @@ function whyLadderHTML(t){
       </div>
     </div>`;
 }
-function typePickerHTML(t){
-  if(!reflectionType) reflectionType=inferQuickType();
+function typePickerHTML(t,sel){
+  if(sel===undefined){
+    if(!reflectionType) reflectionType=inferQuickType();
+    sel=reflectionType;
+  }
   const quick=inferQuickType();
   return `<div class="reflection-type-picker">
     <div class="reflection-type-picker-head">
@@ -533,7 +878,7 @@ function typePickerHTML(t){
       <p>${quick?`유형 체크에서 ${quick}번이 나왔다면 우선 그 설명부터 읽어보세요. 다만 행동이 비슷하다는 이유보다 ‘왜 그렇게 했는지’가 맞는지를 확인하는 것이 더 중요합니다.`:'아직 유형을 확정하지 않았다면 여러 유형을 비교해 읽어도 괜찮습니다. 행동보다 동기·두려움·욕구가 실제 나와 맞는지를 확인해보세요.'}</p>
     </div>
     <div class="reflection-type-buttons">
-      ${Object.keys(t.types).map(n=>`<button type="button" class="reflection-type-btn ${String(reflectionType)===String(n)?'selected':''}" data-reflection-type="${n}" aria-pressed="${String(reflectionType)===String(n)?'true':'false'}"><b>${n}</b><span>${safeHTML(TYPES[n].name)}</span></button>`).join('')}
+      ${Object.keys(t.types).map(n=>`<button type="button" class="reflection-type-btn ${String(sel)===String(n)?'selected':''}" data-reflection-type="${n}" aria-pressed="${String(sel)===String(n)?'true':'false'}"><b>${n}</b><span>${safeHTML(TYPES[n].name)}</span></button>`).join('')}
     </div>
   </div>`;
 }
@@ -581,8 +926,8 @@ function typeDetailHTML(t,n){
 }
 
 
-function render(){
-  const t=TOPICS[current];
+/* 주제 하나의 전체 HTML. embedded=true면 다른 화면(유형 탐구 > 삶의 장면) 안에 넣는 용도로 id를 쓰지 않는다 */
+function topicHTML(t,sel,embedded){
   const contrasts=(t.teach&&t.teach.contrasts||[]).map(c=>`<div class="reflection-contrast"><strong>${safeHTML(c[0])}</strong><p>${safeHTML(c[1])}</p></div>`).join('');
 
   const hornevianCompare=t.id==="room"?`
@@ -601,7 +946,7 @@ function render(){
   const category='나를 돌아보기';
   const closingText=String(t.closing||'').replace(/^나눔을 마무리하며:\s*/,'');
 
-  topicEl.innerHTML=`
+  return `
     <header class="reflection-hero">
       <div class="reflection-category">${category}</div>
       <h2>${safeHTML(t.title)}</h2>
@@ -636,8 +981,8 @@ function render(){
 
     <section class="reflect-section">
       <div class="reflect-section-head"><span>04</span><div><h3>내 유형의 렌즈로 다시 보기</h3><p>내 유형을 정답처럼 맞히는 것이 아니라, 방금 떠올린 행동의 ‘이유’를 유형 설명과 대조해봅니다.</p></div></div>
-      ${typePickerHTML(t)}
-      <div id="reflectionTypeDetail">${typeDetailHTML(t,reflectionType)}</div>
+      ${typePickerHTML(t,embedded?sel:undefined)}
+      ${embedded?`<div class="reflection-type-detail-host">${typeDetailHTML(t,sel)}</div>`:`<div id="reflectionTypeDetail">${typeDetailHTML(t,reflectionType)}</div>`}
     </section>
 
     <section class="reflect-section">
@@ -658,7 +1003,10 @@ function render(){
         <p>다음에 비슷한 상황이 오면 무엇을 한 번 다르게 해볼 수 있을까요?</p>
       </div>
     </section>`;
+}
 
+function render(){
+  topicEl.innerHTML=topicHTML(TOPICS[current]);
   prev.disabled=current===0;
   next.disabled=current===TOPICS.length-1;
   window.scrollTo({top:0,behavior:'smooth'});
@@ -690,6 +1038,9 @@ root.__showTopic=(index)=>{
   render();
 };
 root.__topicTitles=TOPICS.map(t=>t.title);
+/* 유형 탐구 > 삶의 장면: 주제 i를 유형 n 기준으로 */
+root.__topicHTML=(i,n)=>topicHTML(TOPICS[i],String(n||''),true);
+root.__typeDetailHTML=(i,n)=>typeDetailHTML(TOPICS[i],String(n||''));
 
 
 
@@ -853,9 +1204,10 @@ function openShellMenu(){
 /* 2Depth 탭: GNB 아래 고정 노출. 사이드바(모바일 드로어) 세부 메뉴 버튼을 원본으로 삼아 같은 동작을 공유한다. */
 const PAGE_SUBNAV_CONFIG={
   overview:"#overviewGroup .shell-overview-target",
-  handbook:"#handbookGroup .shell-handbook-type",
-  compare:"#compareGroup .shell-compare-target",
-  sharing:"#sharingGroup .shell-sharing-topic",
+  /* 유형 탐구: 핸드북·비교·돌아보기가 같은 2Depth(1~9번 · 9유형 비교 · 유형 없이 돌아보기)를 쓴다 */
+  handbook:"#handbookGroup .shell-handbook-type, #handbookGroup .shell-explore-link",
+  compare:"#handbookGroup .shell-handbook-type, #handbookGroup .shell-explore-link",
+  sharing:"#handbookGroup .shell-handbook-type, #handbookGroup .shell-explore-link",
   myspace:"#myspaceGroup .shell-myspace-target"
 };
 
@@ -903,22 +1255,63 @@ function activateBasePage(name){
   document.querySelectorAll('.shell-menu-btn[data-page]').forEach(b=>{
     b.classList.toggle('active',b.dataset.page===name);
   });
+  const exploreGroup=['handbook','compare','sharing'].includes(name);
   document.querySelectorAll('.top-nav-main[data-top-page]').forEach(b=>{
-    b.classList.toggle('active',b.dataset.topPage===name);
+    b.classList.toggle('active',b.dataset.topPage===name || (exploreGroup && b.dataset.topPage==='handbook'));
   });
+  document.querySelectorAll('.shell-explore-link').forEach(b=>b.classList.toggle('active',b.dataset.explore===name));
+  if(name!=='handbook') document.querySelectorAll('.shell-handbook-type').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.top-home-link[data-top-home]').forEach(b=>{
     b.classList.toggle('active',name==='home');
   });
 
   document.getElementById('checkGroup')?.classList.toggle('open',name==='check');
   document.getElementById('overviewGroup')?.classList.toggle('open',name==='overview');
-  document.getElementById('handbookGroup')?.classList.toggle('open',name==='handbook');
+  document.getElementById('handbookGroup')?.classList.toggle('open',exploreGroup);
   document.getElementById('sharingGroup')?.classList.toggle('open',name==='sharing');
   document.getElementById('compareGroup')?.classList.toggle('open',name==='compare');
 
   /* show* 함수가 세부 메뉴 active를 바꾼 뒤(같은 호출 안) 그리도록 microtask로 미룬다 */
-  queueMicrotask(()=>renderPageSubnav(name));
+  queueMicrotask(()=>{ renderPageSubnav(name); renderExploreChips(name); });
 }
+
+/* 9유형 비교 · 유형 없이 돌아보기: 세부 화면(7개 · 9개)은 화면 안 칩으로. 원본은 숨긴 사이드 메뉴 버튼 */
+const EXPLORE_CHIPS={
+  compare:{host:'#page-compare .all-types-compare-page-wrap',source:'#compareGroup .shell-compare-target',label:'9유형 비교 기준'},
+  sharing:{host:'#page-sharing #app',source:'#sharingGroup .shell-sharing-topic',label:'돌아볼 삶의 장면'}
+};
+function renderExploreChips(name){
+  const cfg=EXPLORE_CHIPS[name];
+  if(!cfg) return;
+  const host=document.querySelector(cfg.host);
+  if(!host) return;
+  let bar=host.querySelector(':scope > .explore-chips');
+  if(!bar){
+    bar=document.createElement('div');
+    bar.className='explore-chips';
+    bar.setAttribute('role','tablist');
+    bar.setAttribute('aria-label',cfg.label);
+    host.prepend(bar);
+  }
+  bar.innerHTML='';
+  document.querySelectorAll(cfg.source).forEach(src=>{
+    const b=document.createElement('button');
+    b.type='button';
+    b.className='explore-chip'+(src.classList.contains('active')?' active':'');
+    b.setAttribute('role','tab');
+    b.setAttribute('aria-selected',src.classList.contains('active')?'true':'false');
+    b.textContent=(src.querySelector('strong')||src).textContent.trim();
+    b.addEventListener('click',()=>src.click());
+    bar.appendChild(b);
+  });
+}
+
+document.querySelectorAll('.shell-explore-link').forEach(b=>{
+  b.addEventListener('click',()=>{
+    if(b.dataset.explore==='compare') showCompareSection(typeof currentCompare==='string'?currentCompare:'glance');
+    else showSharingTopic(typeof currentSharingTopic==='number'?currentSharingTopic:0);
+  });
+});
 
 
 function showHomePage(push=true){
@@ -1216,7 +1609,7 @@ document.querySelectorAll('.shell-handbook-type').forEach(b=>{
     });
   }
 
-  document.getElementById('shellMobileTitle').textContent='유형별 핸드북 · '+TYPE_LABELS[n];
+  document.getElementById('shellMobileTitle').textContent='유형 탐구 · '+TYPE_LABELS[n];
   if(push) history.replaceState(null,'','#handbook-'+n);
   closeShellMenu();
 }
@@ -1237,7 +1630,7 @@ function showCompareSection(key='glance',push=true){
     panel.classList.toggle('active',panel.dataset.comparePanel===key);
   });
 
-  document.getElementById('shellMobileTitle').textContent='전체 유형 비교 · '+COMPARE_TITLES[key];
+  document.getElementById('shellMobileTitle').textContent='유형 탐구 · 9유형 비교 · '+COMPARE_TITLES[key];
   document.getElementById('page-compare')?.scrollTo({top:0});
   if(push) history.replaceState(null,'',`#compare-${key}`);
   closeShellMenu();
@@ -1258,7 +1651,7 @@ function showSharingTopic(index=0,push=true){
   const root=document.getElementById('page-sharing');
   if(root && typeof root.__showTopic==='function') root.__showTopic(index);
 
-  document.getElementById('shellMobileTitle').textContent='나를 돌아보기 · '+SHARING_TITLES[index];
+  document.getElementById('shellMobileTitle').textContent='유형 탐구 · 돌아보기 · '+SHARING_TITLES[index];
   if(push) history.replaceState(null,'',`#sharing-${index+1}`);
   closeShellMenu();
 }
@@ -1371,14 +1764,14 @@ function openSavedResult(){
   const state=getSavedCheckState();
   if(state.detailDone.length) showCheckTarget('result');
   else if(state.quickType) showCheckTarget('quick');
-  else document.getElementById('home-types')?.scrollIntoView({behavior:'smooth',block:'start'});
+  else document.getElementById('home-profiles')?.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function syncHomeResultButtons(){
   const {hasResult}=getSavedCheckState();
   document.querySelectorAll('#page-home [data-home-action="result"]').forEach(btn=>{
     btn.textContent=hasResult ? '내 결과 보기' : '9가지 유형 둘러보기';
-    btn.setAttribute('href',hasResult ? '#check-result' : '#home-types');
+    btn.setAttribute('href',hasResult ? '#check-result' : '#home-profiles');
   });
 }
 
@@ -1414,7 +1807,156 @@ function renderHomeContinue(){
   ).join('');
 }
 
+/* =========================================================
+   홈 프로필 카드: 9장 카드 목록 + 나의 프로필 카드(이미지 저장)
+   ========================================================= */
+const HOME_PROFILES={
+  1:{desc:'더 올바르고 좋은 방향을 찾는 사람',quote:'이왕 하는 거, 제대로 하자',tags:['원칙','책임감','꼼꼼함']},
+  2:{desc:'사랑받고 필요한 사람이 되고 싶은 사람',quote:'필요한 거 있으면 말해, 내가 도와줄게',tags:['배려','다정함','관계']},
+  3:{desc:'유능함과 결과로 자신을 증명하려는 사람',quote:'일단 해내고, 이야기는 그다음에',tags:['목표','효율','인정']},
+  4:{desc:'나다움과 특별한 정체성을 찾는 사람',quote:'왜 나만 이렇게 느끼는 걸까?',tags:['나다움','감수성','깊이']},
+  5:{desc:'충분히 알고 준비되어 있고 싶은 사람',quote:'조금만 더 알아보고 말할게',tags:['관찰','지식','독립']},
+  6:{desc:'안전과 확실함을 찾는 사람',quote:'혹시 모르니까, 한 번만 더 확인하자',tags:['신뢰','대비','의리']},
+  7:{desc:'자유롭고 즐거운 가능성을 찾는 사람',quote:'재밌겠다! 일단 가보자',tags:['호기심','자유','아이디어']},
+  8:{desc:'강하게 주도하고 통제력을 갖고 싶은 사람',quote:'돌려 말하지 마, 내가 책임질게',tags:['추진력','보호','솔직함']},
+  9:{desc:'편안함과 조화를 유지하고 싶은 사람',quote:'난 다 괜찮아, 편한 대로 하자',tags:['편안함','수용','조화']}
+};
+const HOME_GROUPS={
+  center:[['instinct','본능 중심',[8,9,1]],['emotion','감정 중심',[2,3,4]],['thinking','사고 중심',[5,6,7]]],
+  hornevian:[['주장형',[3,7,8]],['순응형',[1,2,6]],['후퇴형',[4,5,9]]],
+  harmonic:[['긍정형',[2,7,9]],['능력형',[1,3,5]],['반응형',[4,6,8]]]
+};
+const homeCenterOf=t=>HOME_GROUPS.center.find(g=>g[2].includes(t));
+const homeGroupName=(key,t)=>HOME_GROUPS[key].find(g=>g[1].includes(t))[0];
+const homeEsc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* 나의 프로필 유형: 내가 고른 유형 > 정식 검사 최고 점수 > 간편 검사 결과 */
+function getHomeProfile(){
+  try{
+    const myType=Number(JSON.parse(localStorage.getItem('enneagram_my_type_v1')||'""'));
+    if(myType>=1 && myType<=9) return {type:myType,source:'내가 고른 유형'};
+  }catch(e){}
+  const {detailDone,quickType}=getSavedCheckState();
+  if(detailDone.length){
+    let saved={};
+    try{ saved=JSON.parse(localStorage.getItem(CHECK_ANSWERS_KEY)||'{}'); }catch(e){}
+    const total=t=>{let s=0;for(let q=1;q<=15;q++) s+=Number(saved[`t${t}q${q}`])||0;return s;};
+    const best=detailDone.reduce((a,b)=>total(b)>total(a)?b:a);
+    return {type:best,source:'정식 검사 결과'};
+  }
+  if(quickType) return {type:quickType,source:'간편 검사 결과'};
+  return null;
+}
+
+function homeProfileCardHTML(t,{mine=null,link=false}={}){
+  const p=HOME_PROFILES[t];
+  const center=homeCenterOf(t);
+  const attrs=link
+    ? ` role="button" tabindex="0" data-profile-open="${t}" aria-label="${t}번 ${CHECK_TYPE_NAMES[t]} 핸드북 보기"`
+    : '';
+  return `<article class="profile-card type-${t}${mine?' is-mine':''}" data-center="${center[0]}"${attrs}>`
+    +`<div class="profile-card-top"><span class="profile-no">${t}</span>`
+    +`<span class="profile-badge">${mine?'나의 프로필':homeEsc(center[1])}</span></div>`
+    +`<h3 class="profile-name">${homeEsc(CHECK_TYPE_NAMES[t])}</h3>`
+    +`<p class="profile-quote">“${homeEsc(p.quote)}”</p>`
+    +`<p class="profile-desc">${homeEsc(p.desc)}</p>`
+    +`<p class="profile-tags">${p.tags.map(k=>'#'+homeEsc(k)).join(' ')}</p>`
+    +(mine?`<p class="profile-meta">${homeEsc(mine.source)} · ${homeEsc(center[1])} · ${homeGroupName('hornevian',t)} · ${homeGroupName('harmonic',t)}</p>`:'')
+    +`</article>`;
+}
+
+/* 9장 카드 목록. 저장된 유형이 있으면 그 카드에 '나의 프로필'을 붙이고 위에 저장·핸드북 버튼을 보여준다. */
+function renderHomeProfiles(){
+  const grid=document.getElementById('homeProfileGrid');
+  const bar=document.getElementById('homeProfileMine');
+  if(!grid) return;
+  const profile=getHomeProfile();
+  grid.innerHTML=[1,2,3,4,5,6,7,8,9].map(t=>homeProfileCardHTML(t,{link:true,mine:profile && profile.type===t ? profile : null})).join('');
+  if(!bar) return;
+  bar.hidden=!profile;
+  bar.innerHTML=profile
+    ? `<p class="home-profile-mine-text">나의 프로필 <strong>${profile.type}번 ${homeEsc(CHECK_TYPE_NAMES[profile.type])}</strong> · ${homeEsc(profile.source)}</p>`
+      +`<div class="home-profile-mine-actions"><button class="btn secondary" data-profile-open="${profile.type}" type="button">핸드북 보기</button>`
+      +'<button class="btn primary" data-profile-save type="button">카드 이미지로 저장</button></div>'
+    : '';
+}
+
+/* 나의 프로필 카드를 PNG로 저장 (canvas에 직접 그림, 색은 tokens.css 값을 읽어 씀) */
+async function saveHomeProfileImage(){
+  const profile=getHomeProfile();
+  if(!profile) return;
+  const t=profile.type, p=HOME_PROFILES[t], center=homeCenterOf(t);
+  const css=getComputedStyle(document.documentElement);
+  const v=name=>css.getPropertyValue(name).trim();
+  const font=v('--font-sans');
+  try{ await document.fonts.ready; }catch(e){}
+
+  const W=1080, H=1350, pad=96, cv=document.createElement('canvas');
+  cv.width=W; cv.height=H;
+  const ctx=cv.getContext('2d');
+  const box=(x,y,w,h,r,fill)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=fill;ctx.fill();};
+  const wrap=(text,x,y,maxW,lh)=>{
+    let line='';
+    for(const ch of text){
+      if(ctx.measureText(line+ch).width>maxW && line){ctx.fillText(line,x,y);line=ch.trimStart();y+=lh;}
+      else line+=ch;
+    }
+    ctx.fillText(line,x,y);
+    return y+lh;
+  };
+
+  box(0,0,W,H,0,v('--color-primary-soft'));
+  box(pad/2,pad/2,W-pad,H-pad,48,v('--color-surface'));
+  box(pad/2,pad/2,W-pad,24,[48,48,0,0],v('--color-primary'));
+
+  ctx.textBaseline='alphabetic';
+  ctx.fillStyle=v('--color-text-tertiary');
+  ctx.font=`700 34px ${font}`;
+  ctx.fillText('나의 에니어그램 프로필',pad+24,pad+110);
+
+  ctx.fillStyle=v('--color-text-primary');
+  ctx.font=`800 260px ${font}`;
+  ctx.fillText(String(t),pad+10,pad+380);
+  ctx.font=`800 88px ${font}`;
+  ctx.fillText(CHECK_TYPE_NAMES[t],pad+24,pad+510);
+
+  ctx.fillStyle=v('--color-text-primary');
+  ctx.font=`700 52px ${font}`;
+  let y=wrap(`“${p.quote}”`,pad+24,pad+650,W-pad*2-48,72);
+
+  ctx.fillStyle=v('--color-text-secondary');
+  ctx.font=`500 40px ${font}`;
+  y=wrap(p.desc,pad+24,y+24,W-pad*2-48,60);
+
+  ctx.fillStyle=v('--color-primary');
+  ctx.font=`700 40px ${font}`;
+  ctx.fillText(p.tags.map(k=>'#'+k).join('  '),pad+24,y+40);
+
+  ctx.fillStyle=v('--color-text-tertiary');
+  ctx.font=`500 32px ${font}`;
+  ctx.fillText(`${center[1]} · ${homeGroupName('hornevian',t)} · ${homeGroupName('harmonic',t)}`,pad+24,H-pad-80);
+  ctx.fillText(`${profile.source} · Enneagram`,pad+24,H-pad-30);
+
+  cv.toBlob(blob=>{
+    if(!blob) return;
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=`enneagram-type-${t}.png`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  },'image/png');
+}
+
+document.getElementById('page-home')?.addEventListener('keydown',e=>{
+  const open=e.target.closest('[data-profile-open][role="button"]');
+  if(open && (e.key==='Enter' || e.key===' ')){e.preventDefault();showHandbookType(Number(open.dataset.profileOpen));}
+});
+
 document.getElementById('page-home')?.addEventListener('click',e=>{
+  if(e.target.closest('[data-profile-save]')){ saveHomeProfileImage(); return; }
+  const open=e.target.closest('[data-profile-open]');
+  if(open){ showHandbookType(Number(open.dataset.profileOpen)); return; }
+
   const action=e.target.closest('[data-home-action]');
   if(action){
     e.preventDefault();
@@ -1444,6 +1986,7 @@ document.getElementById('page-home')?.addEventListener('click',e=>{
 function refreshHome(){
   syncHomeResultButtons();
   renderHomeContinue();
+  renderHomeProfiles();
 }
 refreshHome();
 
@@ -1461,6 +2004,9 @@ if(hash==='home' || hash===''){
 }else if(hash==='compare'){
   showCompareSection('glance',false);
 }else if((match=hash.match(/^handbook-([1-9])$/))){
+  showHandbookType(Number(match[1]),false);
+}else if((match=hash.match(/^handbook-([1-9])-(basic|pattern|life|real|growth)$/))){
+  window.openHandbookTab?.(Number(match[1]),match[2]==='real'?'life':match[2],0);
   showHandbookType(Number(match[1]),false);
 }else if((match=hash.match(/^check-detail-([1-9])$/))){
   showCheckTarget('detail-'+match[1],false);

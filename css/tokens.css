@@ -44,6 +44,13 @@
   --color-border: #DDE5EF;
   --color-border-subtle: #ECF0F5;
 
+  /* Banner — 홈 상단 어두운 배너 영역 */
+  --color-banner: #13254A;
+  --color-banner-deep: #0B1733;
+  --color-on-banner: #FFFFFF;
+  --color-on-banner-muted: #C5D3EC; /* banner 위 대비 약 10:1 */
+  --color-banner-accent: #8DB0F5;   /* banner 위 대비 약 7:1 */
+
   /* Status */
   --color-success: #0F9B5C;
   --color-success-soft: #EDF8F3;
