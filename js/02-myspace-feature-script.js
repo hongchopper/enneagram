@@ -109,7 +109,6 @@
   // ---- Myspace nav ----
   document.querySelector('.top-nav-main[data-top-page="myspace"]')?.addEventListener('click',()=>showMySpaceSection('dashboard'));
   document.querySelector('.shell-menu-btn[data-page="myspace"]')?.addEventListener('click',()=>showMySpaceSection('dashboard'));
-  document.querySelectorAll('[data-top-myspace]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();showMySpaceSection(b.dataset.topMyspace);b.blur();}));
   document.querySelectorAll('.shell-myspace-target').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();showMySpaceSection(b.dataset.myspaceTarget);}));
   document.querySelectorAll('.myspace-tab').forEach(b=>b.addEventListener('click',()=>showMySpaceSection(b.dataset.myspaceTab)));
   document.querySelectorAll('[data-myspace-jump]').forEach(b=>b.addEventListener('click',()=>showMySpaceSection(b.dataset.myspaceJump)));
