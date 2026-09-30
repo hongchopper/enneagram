@@ -45,8 +45,8 @@ body{overflow:hidden!important}
   z-index:var(--z-dropdown);
   flex:none;
   height:72px;
-  border-bottom:1px solid rgba(221,229,239,.9);
-  background:rgba(247,249,252,.94);
+  border-bottom:1px solid color-mix(in srgb, var(--color-border-subtle) 90%, transparent);
+  background:color-mix(in srgb, var(--color-bg) 94%, transparent);
   backdrop-filter:blur(14px);
   -webkit-backdrop-filter:blur(14px);
 }
@@ -261,7 +261,7 @@ body{overflow:hidden!important}
     position:fixed!important;
     inset:0!important;
     z-index:var(--z-overlay) !important;
-    background:rgba(15,23,42,.26)!important;
+    background:color-mix(in srgb, var(--color-text-primary) 26%, transparent)!important;
   }
   .shell-brand .eyebrow{color:var(--app-primary)!important}
   .shell-brand h1{color:var(--app-text)!important}
@@ -355,12 +355,12 @@ button,.btn{font-family:inherit}
 #page-home .hero-visual{position:relative;min-height:480px;display:grid;place-items:center}
 #page-home .visual-card{
   position:relative;width:min(450px,100%);aspect-ratio:1/1;border-radius:var(--radius-xl);
-  background:radial-gradient(circle at 28% 24%,rgba(255,255,255,.98),rgba(255,255,255,.78) 32%,rgba(234,241,252,.95) 100%);
+  background:radial-gradient(circle at 28% 24%,rgba(255,255,255,.98),rgba(255,255,255,.78) 32%,color-mix(in srgb, var(--color-primary-soft) 95%, transparent) 100%);
   border:1px solid var(--color-border);
   box-shadow:var(--shadow-lg);
   display:grid;place-items:center;overflow:hidden}
 #page-home .visual-card::before,#page-home .visual-card::after{
-  content:"";position:absolute;border-radius:50%;border:1px solid rgba(79,127,215,.12)}
+  content:"";position:absolute;border-radius:50%;border:1px solid color-mix(in srgb, var(--color-primary) 12%, transparent)}
 #page-home .visual-card::before{width:360px;height:360px}
 #page-home .visual-card::after{width:280px;height:280px}
 #page-home .ennea-svg{width:74%;height:auto;position:relative;z-index:2}
@@ -439,10 +439,10 @@ button,.btn{font-family:inherit}
 #page-home .journey-step{color:var(--app-primary);font-weight:800;font-size:var(--text-sm)}
 #page-home .journey-item h3{margin:0 0 6px;font-size:var(--text-xl);letter-spacing:-.025em}
 #page-home .journey-item p{margin:0;color:var(--app-muted);font-size:var(--text-sm)}
-#page-home .journey-arrow{font-size:var(--text-xl);color:#A7B2C0}
+#page-home .journey-arrow{font-size:var(--text-xl);color:var(--color-text-tertiary)}
 #page-home .cta{padding:84px 0 100px}
 #page-home .cta-box{
-  background:#16243A;color:white;border-radius:var(--radius-xl);padding:52px;
+  background:var(--color-text-primary);color:white;border-radius:var(--radius-xl);padding:52px;
   display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center;
   overflow:hidden;position:relative}
 #page-home .cta-box::after{
@@ -450,7 +450,7 @@ button,.btn{font-family:inherit}
   border:1px solid rgba(255,255,255,.12);right:-60px;top:-100px;
   box-shadow:0 0 0 40px rgba(255,255,255,.03),0 0 0 80px rgba(255,255,255,.02)}
 #page-home .cta h2{margin:0;font-size:var(--text-3xl);letter-spacing:-.04em}
-#page-home .cta p{margin:12px 0 0;color:#B8C4D4;max-width:670px}
+#page-home .cta p{margin:12px 0 0;color:var(--color-border);max-width:670px}
 #page-home .cta .btn{position:relative;z-index:2;background:white;color:var(--color-text-primary)}
 #page-home .home-footer{padding:34px 0 48px;color:var(--color-text-tertiary);font-size:var(--text-xs)}
 #page-home .footer-inner{

@@ -1254,6 +1254,11 @@ function activateBasePage(name){
   document.querySelectorAll('.top-home-link[data-top-home]').forEach(b=>{
     b.classList.toggle('active',name==='home');
   });
+  document.querySelectorAll('.bottom-tab[data-tab]').forEach(b=>{
+    const on=b.dataset.tab===name || (exploreGroup && b.dataset.tab==='handbook') || (name==='sharing' && b.dataset.tab==='diary');
+    b.classList.toggle('active',on);
+    if(on) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current');
+  });
 
   document.getElementById('checkGroup')?.classList.toggle('open',name==='check');
   document.getElementById('overviewGroup')?.classList.toggle('open',name==='overview');
@@ -1721,6 +1726,18 @@ document.querySelectorAll('#page-home .journey-item[data-home-route]').forEach(i
   });
 });
 
+/* 모바일 하단 탭: 상단 메뉴와 같은 동작을 그대로 쓴다 */
+document.getElementById('bottomTabbar')?.addEventListener('click',e=>{
+  const tab=e.target.closest('.bottom-tab[data-tab]');
+  if(!tab) return;
+  const key=tab.dataset.tab;
+  const target=key==='home'
+    ? document.querySelector('.top-home-link[data-top-home]')
+    : document.querySelector(`.top-nav-main[data-top-page="${key}"]`);
+  target?.click();
+  window.scrollTo({top:0});
+});
+
 /* 상단 글로벌 메뉴 */
 document.querySelectorAll('[data-top-home]').forEach(b=>{
   b.addEventListener('click',e=>{
@@ -1893,7 +1910,7 @@ document.addEventListener('click',e=>{
   if(e.target.closest('[data-tcp-save]')){
     try{ localStorage.setItem('enneagram_my_type_v1',JSON.stringify(String(n))); }catch(err){}
     const btn=e.target.closest('[data-tcp-save]');
-    btn.textContent='내 유형으로 저장했어요';
+    btn.textContent='내 유형으로 저장됨';
     btn.disabled=true;
     if(typeof refreshHome==='function') refreshHome();
     const sel=document.getElementById('dashboardMyType'); if(sel) sel.value=String(n);
@@ -1919,9 +1936,9 @@ async function renderCheckResultCards(){
     const t=d.n, score=total(t), it=getInterpretation(t,score);
     const actions=[
       {label:`${t}번 핸드북 보기`,attr:'data-tcp-handbook',primary:i===0},
-      {label:'내 유형으로 저장하기',attr:'data-tcp-save'},
-      {label:'링크로 공유하기',attr:'data-tcp-share'},
-      {label:'이미지로 저장하기',attr:'data-tcp-image'}
+      {label:'내 유형으로 저장',attr:'data-tcp-save'},
+      {label:'링크 공유',attr:'data-tcp-share'},
+      {label:'이미지 저장',attr:'data-tcp-image'}
     ];
     return typeCardHTML(d,{
       kicker:i===0?'가장 가까운 유형':'함께 검사한 유형',
@@ -1966,15 +1983,24 @@ async function renderQuickResultCard(){
    홈 프로필 카드: 9장 카드 목록 + 나의 프로필 카드(이미지 저장)
    ========================================================= */
 const HOME_PROFILES={
-  1:{desc:'더 올바르고 좋은 방향을 찾는 사람',quote:'이왕 하는 거, 제대로 하자',tags:['원칙','책임감','꼼꼼함']},
-  2:{desc:'사랑받고 필요한 사람이 되고 싶은 사람',quote:'필요한 거 있으면 말해, 내가 도와줄게',tags:['배려','다정함','관계']},
-  3:{desc:'유능함과 결과로 자신을 증명하려는 사람',quote:'일단 해내고, 이야기는 그다음에',tags:['목표','효율','인정']},
-  4:{desc:'나다움과 특별한 정체성을 찾는 사람',quote:'왜 나만 이렇게 느끼는 걸까?',tags:['나다움','감수성','깊이']},
-  5:{desc:'충분히 알고 준비되어 있고 싶은 사람',quote:'조금만 더 알아보고 말할게',tags:['관찰','지식','독립']},
-  6:{desc:'안전과 확실함을 찾는 사람',quote:'혹시 모르니까, 한 번만 더 확인하자',tags:['신뢰','대비','의리']},
-  7:{desc:'자유롭고 즐거운 가능성을 찾는 사람',quote:'재밌겠다! 일단 가보자',tags:['호기심','자유','아이디어']},
-  8:{desc:'강하게 주도하고 통제력을 갖고 싶은 사람',quote:'돌려 말하지 마, 내가 책임질게',tags:['추진력','보호','솔직함']},
-  9:{desc:'편안함과 조화를 유지하고 싶은 사람',quote:'난 다 괜찮아, 편한 대로 하자',tags:['편안함','수용','조화']}
+  1:{desc:'더 올바르고 좋은 방향을 찾는 사람',quote:'이왕 하는 거, 제대로 하자',tags:['원칙','책임감','꼼꼼함'],
+    animal:'비버',gem:'루비',nick:'제대로 짓는',traits:[['📏','기준이 분명하고 스스로에게 엄격해요.'],['🛠️','대충 넘어가는 걸 잘 못 참아요.'],['✅','맡은 일은 끝까지 책임져요.']]},
+  2:{desc:'사랑받고 필요한 사람이 되고 싶은 사람',quote:'필요한 거 있으면 말해, 내가 도와줄게',tags:['배려','다정함','관계'],
+    animal:'리트리버',gem:'앰버',nick:'먼저 다가가는',traits:[['🤝','누가 필요로 하면 먼저 움직여요.'],['💌','작은 변화도 금방 알아차려요.'],['💛','고맙다는 말에 힘이 나요.']]},
+  3:{desc:'유능함과 결과로 자신을 증명하려는 사람',quote:'일단 해내고, 이야기는 그다음에',tags:['목표','효율','인정'],
+    animal:'치타',gem:'토파즈',nick:'목표를 향해 달리는',traits:[['🏁','목표가 생기면 속도가 붙어요.'],['📈','결과로 보여주는 게 편해요.'],['✨','인정받을 때 가장 빛나요.']]},
+  4:{desc:'나다움과 특별한 정체성을 찾는 사람',quote:'왜 나만 이렇게 느끼는 걸까?',tags:['나다움','감수성','깊이'],
+    animal:'고양이',gem:'자수정',nick:'나만의 결을 가진',traits:[['🎨','나다운 게 가장 중요해요.'],['🌙','감정을 깊고 섬세하게 느껴요.'],['🔍','평범한 건 조금 심심해요.']]},
+  5:{desc:'충분히 알고 준비되어 있고 싶은 사람',quote:'조금만 더 알아보고 말할게',tags:['관찰','지식','독립'],
+    animal:'부엉이',gem:'사파이어',nick:'조용히 파고드는',traits:[['📚','궁금한 건 끝까지 알아봐요.'],['🔭','한 발 떨어져서 관찰해요.'],['🔋','혼자만의 시간으로 충전해요.']]},
+  6:{desc:'안전과 확실함을 찾는 사람',quote:'혹시 모르니까, 한 번만 더 확인하자',tags:['신뢰','대비','의리'],
+    animal:'미어캣',gem:'라피스라줄리',nick:'먼저 살피는',traits:[['👀','위험 신호를 누구보다 빨리 알아채요.'],['🛡️','믿는 사람에게 끝까지 의리를 지켜요.'],['📋','플랜 B가 있어야 마음이 놓여요.']]},
+  7:{desc:'자유롭고 즐거운 가능성을 찾는 사람',quote:'재밌겠다! 일단 가보자',tags:['호기심','자유','아이디어'],
+    animal:'수달',gem:'아쿠아마린',nick:'신나는 걸 찾는',traits:[['🎈','새로운 계획이 떠오르면 설레요.'],['🌈','힘든 일도 재밌는 쪽으로 돌려봐요.'],['🚀','지루한 건 오래 못 버텨요.']]},
+  8:{desc:'강하게 주도하고 통제력을 갖고 싶은 사람',quote:'돌려 말하지 마, 내가 책임질게',tags:['추진력','보호','솔직함'],
+    animal:'사자',gem:'가넷',nick:'앞장서는',traits:[['🔥','결정이 빠르고 추진력이 있어요.'],['🦁','내 사람은 확실하게 지켜요.'],['💬','돌려 말하기보다 솔직하게 말해요.']]},
+  9:{desc:'편안함과 조화를 유지하고 싶은 사람',quote:'난 다 괜찮아, 편한 대로 하자',tags:['편안함','수용','조화'],
+    animal:'판다',gem:'에메랄드',nick:'느긋한',traits:[['☁️','갈등보다 편안한 분위기가 좋아요.'],['👂','여러 사람의 입장을 잘 들어줘요.'],['🍃','내 속도로 천천히 가도 괜찮아요.']]}
 };
 const HOME_GROUPS={
   center:[['instinct','본능 중심',[8,9,1]],['emotion','감정 중심',[2,3,4]],['thinking','사고 중심',[5,6,7]]],
@@ -2003,38 +2029,305 @@ function getHomeProfile(){
   return null;
 }
 
-function homeProfileCardHTML(t,{mine=null,link=false}={}){
+/* 젤리 캐릭터: 같은 몸통(구미 젤리)에 귀·무늬만 바꾼 9마리. 몸 색은 유형 색(--type-N), 광택·그림자는 color-mix로 만든다. */
+function pcJellySVG(t,pre='pc'){
+  const id=pre+t, TC=`var(--type-${t})`, W='var(--color-surface)', K='var(--color-text-primary)';
+  const mix=(a,p,b)=>`color-mix(in srgb, ${a} ${p}%, ${b})`;
+  const DEEP=mix(TC,70,K), LIGHT=mix(TC,32,W), ACC='var(--color-accent)';
+  const E=(cx,cy,rx,ry,fill,x='')=>`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${fill}" ${x}/>`;
+  const C=(cx,cy,r,fill,x='')=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" ${x}/>`;
+  const P=(d,fill,x='')=>`<path d="${d}" fill="${fill}" ${x}/>`;
+  const S=(d,color,w,x='')=>`<path d="${d}" fill="none" stroke="${color}" stroke-width="${w}" stroke-linecap="round" ${x}/>`;
+  const grad=(gid,c)=>`<radialGradient id="${id}-${gid}" cx=".42" cy=".36" r=".72">`
+    +`<stop offset="0" style="stop-color:${mix(c,42,W)}"/><stop offset=".5" style="stop-color:${mix(c,86,W)}"/>`
+    +`<stop offset=".86" style="stop-color:${c}"/><stop offset="1" style="stop-color:${mix(c,80,K)}"/></radialGradient>`;
+  const J=`url(#${id}-j)`, JD=`url(#${id}-jd)`, JL=`url(#${id}-jl)`, JA=`url(#${id}-ja)`;
+  const rot=(a,x,y)=>`transform="rotate(${a} ${x} ${y})"`;
+  const gloss=(x,y,rx,ry)=>E(x,y,rx,ry,W,`opacity=".7" filter="url(#${id}-b1)"`);
+  const eye=(x,y,r=6.5)=>C(x,y,r,K)+C(x+2.3,y-2.4,r*.34,W);
+  let eyes=`<g class="pc-eyes">${eye(82,92)}${eye(118,92)}</g>`;
+  const cheeks=E(68,108,9,5.5,'var(--char-blush)','opacity=".55"')+E(132,108,9,5.5,'var(--char-blush)','opacity=".55"');
+  let back='', over='', face='', arms=E(42,124,12,22,J,rot(22,42,124))+E(158,124,12,22,J,rot(-22,158,124));
+  let feet=E(78,180,17,8,J)+E(122,180,17,8,J);
+  let belly=E(100,140,35,33,JL,'opacity=".9"');
+  const muzzle=(ry=13)=>E(100,110,21,ry,JL);
+  const whiskers=S('M66 108 L46 104 M66 113 L46 115 M134 108 L154 104 M134 113 L154 115',K,1.6,'opacity=".55"');
+  const body='M100 30 C140 30 162 68 162 112 C162 158 136 182 100 182 C64 182 38 158 38 112 C38 68 60 30 100 30Z';
+  switch(t){
+    case 1: /* 비버 */
+      back=E(152,168,28,12,JD,rot(-24,152,168))+C(68,42,12,J)+C(132,42,12,J)+C(68,42,6,DEEP,'opacity=".45"')+C(132,42,6,DEEP,'opacity=".45"');
+      face=muzzle(12)+E(100,102,7.5,5.5,K)+`<rect x="93.5" y="111" width="6" height="9" rx="1.6" fill="${W}"/><rect x="100.5" y="111" width="6" height="9" rx="1.6" fill="${W}"/>`;
+      break;
+    case 2: /* 리트리버 */
+      over=E(50,92,13,27,JD,rot(18,50,92))+E(150,92,13,27,JD,rot(-18,150,92));
+      face=muzzle(14)+E(100,103,8,6,K)+S('M100 109 Q94 116 89 113 M100 109 Q106 116 111 113',K,1.8)+E(100,121,5.5,6.5,'var(--char-blush)');
+      break;
+    case 3: /* 치타 */
+      back=C(68,44,11,J)+C(132,44,11,J)+C(68,44,5,DEEP,'opacity=".6"')+C(132,44,5,DEEP,'opacity=".6"');
+      over=[[56,122,5,4],[62,142,4,3.5],[146,120,5,4],[140,144,4,3.5],[70,162,4,3],[130,164,4,3],[60,80,3.5,3],[141,80,3.5,3],[100,56,4,3]].map(([x,y,rx,ry])=>E(x,y,rx,ry,DEEP,'opacity=".75"')).join('');
+      face=S('M78 99 Q80 110 90 117 M122 99 Q120 110 110 117',DEEP,3)+E(100,112,14,9,JL)+P('M94 104 L106 104 L100 111Z',K);
+      break;
+    case 4: /* 고양이 */
+      back=P('M56 64 L62 20 L94 42Z',J)+P('M144 64 L138 20 L106 42Z',J)+P('M64 54 L66 32 L84 44Z','var(--char-blush)','opacity=".7"')+P('M136 54 L134 32 L116 44Z','var(--char-blush)','opacity=".7"')
+        +S('M152 170 C186 160 188 118 168 102',J,12);
+      face=P('M96 104 L104 104 L100 109Z','var(--char-blush)')+S('M100 109 Q96 115 91 112 M100 109 Q104 115 109 112',K,1.8)+whiskers;
+      break;
+    case 5: /* 부엉이 */
+      back=P('M60 54 L56 18 L86 40Z',JD)+P('M140 54 L144 18 L114 40Z',JD);
+      face=C(82,92,17,JL)+C(118,92,17,JL)+P('M100 100 L108 110 L100 123 L92 110Z',JA);
+      eyes=`<g class="pc-eyes">${eye(82,92,7.5)}${eye(118,92,7.5)}</g>`;
+      over=['M86 132 q5 6 10 0','M104 132 q5 6 10 0','M95 146 q5 6 10 0','M86 160 q5 6 10 0','M104 160 q5 6 10 0'].map(d=>S(d,DEEP,2,'opacity=".55"')).join('');
+      arms=E(42,126,13,26,JD,rot(18,42,126))+E(158,126,13,26,JD,rot(-18,158,126));
+      feet=E(84,181,11,6,JA)+E(116,181,11,6,JA);
+      break;
+    case 6: /* 미어캣 */
+      back=C(56,62,11,JD)+C(144,62,11,JD)+C(56,62,5,DEEP,'opacity=".5"')+C(144,62,5,DEEP,'opacity=".5"');
+      face=E(82,94,11,14,DEEP,rot(-16,82,94))+E(118,94,11,14,DEEP,rot(16,118,94))+muzzle(10)+E(100,105,6,4.5,K);
+      eyes=`<g class="pc-eyes">${C(82,93,5.5,W)+C(82,93,3.6,K)+C(83.4,91.6,1.3,W)+C(118,93,5.5,W)+C(118,93,3.6,K)+C(119.4,91.6,1.3,W)}</g>`;
+      arms='';
+      over=E(86,134,9,15,J,rot(12,86,134))+E(114,134,9,15,J,rot(-12,114,134))+E(84,127,4,2.5,W,'opacity=".6"')+E(112,127,4,2.5,W,'opacity=".6"');
+      break;
+    case 7: /* 수달 */
+      back=E(152,168,24,10,J,rot(-32,152,168))+C(64,48,9,J)+C(136,48,9,J);
+      face=muzzle(14)+E(100,103,8,5.5,K)+S('M100 108 Q96 114 91 112 M100 108 Q104 114 109 112',K,1.8)+whiskers;
+      arms='';
+      over=C(100,146,12,JA)+E(96,141,4,2.5,W,'opacity=".75"')+E(84,142,9,13,J,rot(30,84,142))+E(116,142,9,13,J,rot(-30,116,142));
+      break;
+    case 8: /* 사자 */
+      back=Array.from({length:16},(_,i)=>{const a=(i/16)*Math.PI*2;return C((100+62*Math.cos(a)).toFixed(1),(90+58*Math.sin(a)).toFixed(1),19,JD);}).join('')+E(100,90,62,58,JD)+C(66,48,11,J)+C(134,48,11,J);
+      face=muzzle(13)+P('M93 103 L107 103 L100 111Z',K)+S('M100 111 Q95 117 90 114 M100 111 Q105 117 110 114',K,1.8);
+      break;
+    case 9: /* 판다 */
+      back=C(64,42,15,K)+C(136,42,15,K);
+      face=E(82,94,11,14,K,rot(-20,82,94))+E(118,94,11,14,K,rot(20,118,94))+E(100,106,7,5,K)+S('M100 111 Q96 116 92 114 M100 111 Q104 116 108 114',K,1.8);
+      eyes=`<g class="pc-eyes">${C(83,93,4.5,W)+C(83,93,2.8,K)+C(117,93,4.5,W)+C(117,93,2.8,K)}</g>`;
+      arms=E(42,124,12,22,K,rot(22,42,124))+E(158,124,12,22,K,rot(-22,158,124));
+      feet=E(78,180,17,8,K)+E(122,180,17,8,K);
+      belly='';
+      break;
+  }
+  return `<svg class="pc-char-svg" viewBox="0 0 200 200" focusable="false" aria-hidden="true"><defs>`
+    +grad('j',TC)+grad('jd',DEEP)+grad('jl',LIGHT)+grad('ja',ACC)
+    +`<clipPath id="${id}-clip"><path d="${body}"/></clipPath>`
+    +`<linearGradient id="${id}-ir" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:${mix('var(--type-4)',55,W)}"/><stop offset=".35" style="stop-color:${mix('var(--type-7)',55,W)}"/><stop offset=".7" style="stop-color:${mix('var(--type-3)',55,W)}"/><stop offset="1" style="stop-color:${mix('var(--type-4)',55,W)}"/></linearGradient>`
+    +`<filter id="${id}-b1" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.4"/></filter>`
+    +`<filter id="${id}-b6" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="5"/></filter></defs>`
+    +E(100,193,52,6,K,`class="pc-shadow" opacity=".16" filter="url(#${id}-b6)"`)
+    +`<g class="pc-char">${back}${feet}${arms}`
+    +P(body,J,`stroke="${mix(TC,60,K)}" stroke-opacity=".28" stroke-width="1.2"`)
+    +pcCrystal(id,W,DEEP)
+    +P(body,'none',`stroke="url(#${id}-ir)" stroke-width="3.5" opacity=".7"`)
+    +E(100,150,42,20,W,`opacity=".2" filter="url(#${id}-b6)"`)
+    +belly+over+face+eyes+cheeks
+    +P('M60 76 C62 54 78 40 98 37 C83 46 72 58 68 78Z',W,`opacity=".78" filter="url(#${id}-b1)"`)
+    +gloss(120,46,6,3.5)
+    +S('M68 168 C86 178 114 178 134 167',W,3,`opacity=".45" filter="url(#${id}-b1)"`)
+    +`<path class="pc-glint" d="M140 40 C141 47 143 49 150 50 C143 51 141 53 140 60 C139 53 137 51 130 50 C137 49 139 47 140 40Z" fill="${W}"/>`
+    +`</g></svg>`;
+}
+
+/* 캐릭터 몸 위의 보석 커팅면: 한 점에서 퍼지는 삼각 면 + 윗면 + 빛 조각 (몸 모양으로 잘라냄) */
+function pcCrystal(id,W,DEEP){
+  const cx=96, cy=84, n=14;
+  const pts=Array.from({length:n},(_,i)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [(100+72*Math.cos(a)).toFixed(1),(108+84*Math.sin(a)).toFixed(1)];});
+  const ops=[.16,.04,.1,.05,.08,.02,.14,.03,.09,.06,.12,.02,.1,.05];
+  const facets=pts.map((p,i)=>{const q=pts[(i+1)%n];const deep=i%4===3;
+    return `<path d="M${cx} ${cy}L${p[0]} ${p[1]}L${q[0]} ${q[1]}Z" fill="${deep?DEEP:W}" fill-opacity="${ops[i]}" stroke="${W}" stroke-opacity=".22" stroke-width=".7"/>`;}).join('');
+  return `<g clip-path="url(#${id}-clip)">${facets}`
+    +`<path d="M82 70 L98 60 L114 68 L110 88 L88 90Z" fill="${W}" fill-opacity=".1" stroke="${W}" stroke-opacity=".45" stroke-width=".8"/>`
+    +`<path d="M62 66 L86 52 L78 88Z" fill="${W}" opacity=".35"/><path d="M124 134 L144 118 L134 154Z" fill="${W}" opacity=".15"/></g>`;
+}
+
+/* 떠다니는 보석 소품: 커팅 하트 · 라운드 브릴리언트 · 카이트 컷 · 반짝 별 */
+function pcPropSVG(kind,color,uid){
+  const W='var(--color-surface)', K='var(--color-text-primary)';
+  const mix=(a,p,b)=>`color-mix(in srgb, ${a} ${p}%, ${b})`;
+  const DEEP=mix(color,70,K);
+  const g=`<defs><linearGradient id="${uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:${mix(color,40,W)}"/>`
+    +`<stop offset=".5" style="stop-color:${color}"/><stop offset="1" style="stop-color:${mix(color,85,K)}"/></linearGradient></defs>`;
+  const poly=(pts,fill,op,x='')=>`<path d="M${pts.map(p=>p.join(' ')).join('L')}Z" fill="${fill}" fill-opacity="${op}" ${x}/>`;
+  const edge=`stroke="${W}" stroke-opacity=".55" stroke-width=".5" stroke-linejoin="round"`;
+  const svg=(vb,inner)=>`<svg viewBox="${vb}" aria-hidden="true" focusable="false">${g}${inner}</svg>`;
+  if(kind==='spark'){
+    return svg('0 0 24 24',`<path d="M12 0 C13 7 17 11 24 12 C17 13 13 17 12 24 C11 17 7 13 0 12 C7 11 11 7 12 0Z" fill="url(#${uid})"/>`);
+  }
+  if(kind==='gemheart' || kind==='heart'){
+    const P=[[16,29],[4,18],[1.5,10],[4.5,4],[10,1.5],[16,6],[22,1.5],[27.5,4],[30.5,10],[28,18]], C=[16,14];
+    const ops=[.1,.35,.15,.45,.2,.05,.25,.1,.3,0];
+    return svg('0 0 32 30',poly(P,`url(#${uid})`,1,`stroke="${DEEP}" stroke-opacity=".5" stroke-width=".6"`)
+      +P.map((p,i)=>poly([C,p,P[(i+1)%P.length]],i%4===2?DEEP:W,ops[i],edge)).join('')
+      +poly([[9,6],[14,8],[10,13]],W,.7));
+  }
+  if(kind==='brilliant' || kind==='bubble'){
+    const O=Array.from({length:16},(_,i)=>{const a=i*Math.PI/8-Math.PI/2;return [(16+15*Math.cos(a)).toFixed(2),(16+15*Math.sin(a)).toFixed(2)];});
+    const T=Array.from({length:8},(_,i)=>{const a=i*Math.PI/4-Math.PI/2+Math.PI/8;return [(16+6.5*Math.cos(a)).toFixed(2),(16+6.5*Math.sin(a)).toFixed(2)];});
+    let f='';
+    for(let k=0;k<8;k++){
+      const t1=T[k], t2=T[(k+1)%8], o1=O[(2*k+1)%16], o0=O[(2*k)%16], o2=O[(2*k+2)%16];
+      f+=poly([t1,o0,o1],W,[.35,.1,.25,.05][k%4],edge)+poly([t1,o1,t2],k%3===1?DEEP:W,[.15,.2,.05][k%3],edge)+poly([t2,o1,o2],W,[.05,.3,.12,.2][k%4],edge);
+    }
+    return svg('0 0 32 32',`<circle cx="16" cy="16" r="15" fill="url(#${uid})" stroke="${DEEP}" stroke-opacity=".45" stroke-width=".6"/>`+f+poly(T,W,.28,edge));
+  }
+  /* kite (세로로 긴 마름모 컷) */
+  const top=[16,1],R=[28,12],B=[16,31],L=[4,12],a1=[16,6],a2=[23,12],a3=[16,24],a4=[9,12];
+  return svg('0 0 32 32',poly([top,R,B,L],`url(#${uid})`,1,`stroke="${DEEP}" stroke-opacity=".5" stroke-width=".6"`)
+    +poly([top,L,a4,a1],W,.4,edge)+poly([top,a1,a2,R],W,.12,edge)+poly([a1,a2,a3,a4],W,.22,edge)
+    +poly([L,a4,a3,B],DEEP,.08,edge)+poly([R,B,a3,a2],DEEP,.2,edge));
+}
+
+const PC_PROPS={1:['gemheart','spark','kite'],2:['brilliant','spark','gemheart'],3:['kite','spark','brilliant'],4:['gemheart','spark','kite'],5:['kite','spark','brilliant'],6:['brilliant','spark','gemheart'],7:['gemheart','spark','kite'],8:['kite','spark','gemheart'],9:['brilliant','spark','kite']};
+
+function homeProfileCardHTML(t,{mine=null,link=false,uid='pc'}={}){
   const p=HOME_PROFILES[t];
   const center=homeCenterOf(t);
   const attrs=link
-    ? ` role="button" tabindex="0" data-profile-open="${t}" aria-label="${t}번 ${CHECK_TYPE_NAMES[t]} 핸드북 보기"`
+    ? ` role="button" tabindex="0" data-profile-open="${t}" aria-label="${t}번 ${CHECK_TYPE_NAMES[t]}, ${homeEsc(p.nick)} ${homeEsc(p.animal)}, 나의 원석 ${homeEsc(p.gem)}. 핸드북 보기"`
     : '';
-  return `<article class="profile-card type-${t}${mine?' is-mine':''}" data-center="${center[0]}"${attrs}>`
-    +`<div class="profile-card-top"><span class="profile-no">${t}</span>`
-    +`<span class="profile-badge">${mine?'나의 프로필':homeEsc(center[1])}</span></div>`
-    +`<h3 class="profile-name">${homeEsc(CHECK_TYPE_NAMES[t])}</h3>`
-    +`<p class="profile-quote">“${homeEsc(p.quote)}”</p>`
-    +`<p class="profile-desc">${homeEsc(p.desc)}</p>`
-    +`<p class="profile-tags">${p.tags.map(k=>'#'+homeEsc(k)).join(' ')}</p>`
-    +(mine?`<p class="profile-meta">${homeEsc(mine.source)} · ${homeEsc(center[1])} · ${homeGroupName('hornevian',t)} · ${homeGroupName('harmonic',t)}</p>`:'')
-    +`</article>`;
+  const colors=[`var(--type-${t})`,'var(--color-surface)','var(--color-accent)'];
+  const props=PC_PROPS[t].map((k,i)=>`<span class="pc-prop pc-prop-${i+1}">${pcPropSVG(k,colors[i],`${uid}${t}-p${i}`)}</span>`).join('');
+  return `<article class="pcard type-${t}${mine?' is-mine':''}" style="--tc:var(--type-${t});--i:${t-1}" data-center="${center[0]}"${attrs}>`
+    +`<span class="pcard-frame" aria-hidden="true">${['tl','tr','bl','br'].map(c=>`<span class="pcard-corner pcard-corner-${c}"></span>`).join('')}</span>`
+    +`<div class="pcard-inner">`
+    +`<div class="pcard-head"><span class="pcard-no">${t}번 · ${homeEsc(CHECK_TYPE_NAMES[t])}</span>`
+    +`<span class="pcard-badge">${mine?'나의 프로필':homeEsc(center[1])}</span></div>`
+    +`<div class="pcard-stage" aria-hidden="true"><span class="pc-halo"></span>${props}`
+    +[1,2,3].map(i=>`<span class="pc-twinkle pc-twinkle-${i}">${pcPropSVG('spark','var(--color-surface)',`${uid}${t}-tw${i}`)}</span>`).join('')
+    +`${pcJellySVG(t,uid)}</div>`
+    +`<div class="pcard-ribbon"><h3 class="pcard-title">${homeEsc(p.nick)} <span class="pcard-animal">${homeEsc(p.animal)}</span></h3></div>`
+    +`<p class="pcard-gem">나의 원석 · <strong>${homeEsc(p.gem)}</strong></p>`
+    +`<p class="pcard-quote">“${homeEsc(p.quote)}”</p>`
+    +`<div class="pcard-traits" role="list">${p.traits.map(([e,s])=>`<div role="listitem"><span class="pcard-emoji" aria-hidden="true">${e}</span><span>${homeEsc(s)}</span></div>`).join('')}</div>`
+    +`<p class="pcard-tags">${p.tags.map(k=>'#'+homeEsc(k)).join(' ')}</p>`
+    +(mine?`<p class="pcard-meta">${homeEsc(mine.source)} · ${homeGroupName('hornevian',t)} · ${homeGroupName('harmonic',t)}</p>`:'')
+    +`</div><span class="pcard-shine" aria-hidden="true"></span><span class="pcard-sweep" aria-hidden="true"></span></article>`;
 }
 
-/* 9장 카드 목록. 저장된 유형이 있으면 그 카드에 '나의 프로필'을 붙이고 위에 저장·핸드북 버튼을 보여준다. */
+/* 카드 모션: 포인터 따라 기울기(마우스 환경만) + 화면에 들어올 때 튀어오르기. 동작 줄이기 설정이면 둘 다 끔 */
+const pcReduceMotion=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function bindProfileMotion(rail){
+  if(!rail || rail.dataset.motionBound) return;
+  rail.dataset.motionBound='1';
+  if(!pcReduceMotion() && window.matchMedia('(hover: hover) and (pointer: fine)').matches){
+    rail.addEventListener('pointermove',e=>{
+      const c=e.target.closest('.pcard'); if(!c) return;
+      const r=c.getBoundingClientRect();
+      const x=(e.clientX-r.left)/r.width, y=(e.clientY-r.top)/r.height;
+      c.style.setProperty('--rx',((.5-y)*14).toFixed(2)+'deg');
+      c.style.setProperty('--ry',((x-.5)*16).toFixed(2)+'deg');
+      c.style.setProperty('--mx',(x*100).toFixed(1)+'%');
+      c.style.setProperty('--my',(y*100).toFixed(1)+'%');
+    });
+    rail.addEventListener('pointerout',e=>{
+      const c=e.target.closest('.pcard');
+      if(c && !c.contains(e.relatedTarget)) ['--rx','--ry','--mx','--my'].forEach(k=>c.style.removeProperty(k));
+    });
+  }
+  rail.addEventListener('scroll',()=>syncProfileRailNav(rail),{passive:true});
+}
+function revealProfileRail(rail){
+  if(!rail || pcReduceMotion() || !('IntersectionObserver' in window)) return;
+  rail.classList.remove('is-in');
+  rail.classList.add('pc-wait');
+  const done=()=>{rail.classList.remove('pc-wait');rail.classList.add('is-in');io.disconnect();};
+  const io=new IntersectionObserver(es=>{if(es.some(x=>x.isIntersecting)) done();},{threshold:.15});
+  io.observe(rail);
+  setTimeout(()=>{if(rail.classList.contains('pc-wait')) done();},2500);
+}
+/* 홈 배너: 떠다니는 보석 + 반짝이는 별 (위치는 %, 크기는 토큰) */
+function renderHeroJelly(){
+  const box=document.getElementById('heroJelly');
+  if(!box || box.childElementCount) return;
+  const items=[
+    ['gemheart','var(--type-1)','top:16%;left:9%','--space-9',0],
+    ['kite','var(--type-7)','top:5%;right:6%','--space-8',1],
+    ['brilliant','var(--type-4)','bottom:14%;right:8%','--space-9',0],
+    ['kite','var(--type-3)','bottom:18%;left:14%','--space-7',0],
+    ['brilliant','var(--color-accent)','top:46%;right:20%','--space-6',0],
+    ['gemheart','var(--type-2)','top:50%;left:22%','--space-6',0],
+    ['spark','var(--color-surface)','top:10%;left:30%','--space-5',1],
+    ['spark','var(--color-surface)','top:28%;right:30%','--space-4',0],
+    ['spark','var(--type-3)','bottom:24%;left:36%','--space-4',0],
+    ['spark','var(--color-surface)','bottom:10%;right:34%','--space-5',1],
+    ['spark','var(--color-surface)','top:62%;left:5%','--space-4',1],
+    ['spark','var(--type-4)','top:30%;right:5%','--space-4',1]
+  ];
+  box.innerHTML=items.map(([k,c,pos,size,mobile],i)=>`<span class="pc-prop hjx${k==='spark'?' is-twinkle':''}${mobile?'':' hjx-desk'}" style="${pos};width:var(${size});height:var(${size});animation-delay:-${(i*530)%4200}ms">${pcPropSVG(k,c,`hj-${i}`)}</span>`).join('');
+  /* 제목 안에 박힌 보석 아이콘 */
+  document.querySelectorAll('#page-home [data-inline-jelly]').forEach((el,i)=>{
+    if(!el.childElementCount) el.innerHTML=pcPropSVG(el.dataset.inlineJelly,i?'var(--type-3)':'var(--type-1)',`hij-${i}`);
+  });
+}
+function syncProfileRailNav(rail){
+  const max=rail.scrollWidth-rail.clientWidth-2;
+  document.querySelectorAll('#page-home [data-rail-step]').forEach(b=>{
+    b.disabled=Number(b.dataset.railStep)<0 ? rail.scrollLeft<=2 : rail.scrollLeft>=max;
+  });
+}
+function stepProfileRail(dir){
+  const rail=document.getElementById('homeProfileGrid');
+  const card=rail?.querySelector('.pcard');
+  if(!card) return;
+  const gap=parseFloat(getComputedStyle(rail).columnGap)||0;
+  rail.scrollBy({left:dir*(card.offsetWidth+gap),behavior:pcReduceMotion()?'auto':'smooth'});
+}
+
+/* 오늘의 질문: 날짜마다 바뀌는 성찰 질문 한 줄 (다이어리로 이어짐) */
+const HOME_DAILY_QUESTIONS=[
+  '오늘 가장 크게 반응한 순간은 언제였나요?',
+  '오늘 \'해야 한다\'는 생각이 가장 강했던 순간은 언제였나요?',
+  '오늘 서운했던 일이 있다면, 사실 무엇을 바랐나요?',
+  '오늘 나를 가장 편하게 해준 건 무엇이었나요?',
+  '오늘 참았던 말이 있다면 어떤 말이었나요?',
+  '오늘 에너지가 가장 많이 빠진 순간은 언제였나요?',
+  '오늘 스스로 잘했다고 느낀 선택은 무엇인가요?',
+  '오늘 불안했던 순간, 무엇이 확실했으면 했나요?',
+  '오늘 피하고 싶었던 일은 무엇이었나요?',
+  '오늘 가장 나다웠다고 느낀 순간은 언제였나요?'
+];
+function homeTodayQuestion(){
+  const d=new Date();
+  const day=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);
+  return HOME_DAILY_QUESTIONS[day%HOME_DAILY_QUESTIONS.length];
+}
+
+/* 홈 '나' 영역: 내 카드(있으면) + 오늘의 질문 + 바로 할 수 있는 일 */
+function renderHomeMe(profile){
+  const box=document.getElementById('homeMe');
+  if(!box) return;
+  const today=`<article class="home-today">`
+    +`<span class="home-today-label">오늘의 질문</span>`
+    +`<p class="home-today-q">${homeEsc(homeTodayQuestion())}</p>`
+    +`<p class="home-today-help">짧게라도 적어두면 '나의 변화'에서 반복되는 흐름이 보여요.</p>`
+    +`<button class="btn primary" data-home-diary type="button">다이어리에 쓰기</button></article>`;
+  if(!profile){
+    box.classList.add('is-empty');
+    box.innerHTML=today;
+    return;
+  }
+  const t=profile.type, p=HOME_PROFILES[t];
+  box.classList.remove('is-empty');
+  box.innerHTML=`<div class="home-me-card">${homeProfileCardHTML(t,{link:true,mine:profile,uid:'me'})}</div>`
+    +`<div class="home-me-side">`
+    +`<div class="home-me-head"><span class="home-me-label">나의 프로필 · ${homeEsc(profile.source)}</span>`
+    +`<h2 class="home-me-title">${t}번 ${homeEsc(CHECK_TYPE_NAMES[t])}<br><span>${homeEsc(p.nick)} ${homeEsc(p.animal)}</span></h2></div>`
+    +today
+    +`<div class="home-me-actions"><button class="btn secondary" data-profile-open="${t}" type="button">핸드북 보기</button>`
+    +'<button class="btn secondary" data-share-open-home type="button">링크 공유</button>'
+    +'<button class="btn secondary" data-profile-save type="button">이미지 저장</button></div>'
+    +'</div>';
+}
+
+/* 9장 카드 목록. 저장된 유형이 있으면 그 카드에 '나의 프로필'을 붙인다. */
 function renderHomeProfiles(){
   const grid=document.getElementById('homeProfileGrid');
-  const bar=document.getElementById('homeProfileMine');
   if(!grid) return;
   const profile=getHomeProfile();
   grid.innerHTML=[1,2,3,4,5,6,7,8,9].map(t=>homeProfileCardHTML(t,{link:true,mine:profile && profile.type===t ? profile : null})).join('');
-  if(!bar) return;
-  bar.hidden=!profile;
-  bar.innerHTML=profile
-    ? `<p class="home-profile-mine-text">나의 프로필 <strong>${profile.type}번 ${homeEsc(CHECK_TYPE_NAMES[profile.type])}</strong> · ${homeEsc(profile.source)}</p>`
-      +`<div class="home-profile-mine-actions"><button class="btn secondary" data-profile-open="${profile.type}" type="button">핸드북 보기</button>`
-      +'<button class="btn secondary" data-share-open-home type="button">링크로 공유하기</button>'
-      +'<button class="btn primary" data-profile-save type="button">이미지로 저장하기</button></div>'
-    : '';
+  bindProfileMotion(grid);
+  renderHeroJelly();
+  revealProfileRail(grid);
+  requestAnimationFrame(()=>syncProfileRailNav(grid));
+  renderHomeMe(profile);
 }
 
 /* 나의 프로필 카드를 PNG로 저장 (canvas에 직접 그림, 색은 tokens.css 값을 읽어 씀) */
@@ -2113,6 +2406,9 @@ document.getElementById('page-home')?.addEventListener('keydown',e=>{
 document.getElementById('page-home')?.addEventListener('click',e=>{
   if(e.target.closest('[data-profile-save]')){ saveHomeProfileImage(); return; }
   if(e.target.closest('[data-share-open-home]')){ showSharePage(); return; }
+  if(e.target.closest('[data-home-diary]')){ document.querySelector('.top-nav-main[data-top-page="diary"]')?.click(); return; }
+  const step=e.target.closest('[data-rail-step]');
+  if(step){ stepProfileRail(Number(step.dataset.railStep)); return; }
   const open=e.target.closest('[data-profile-open]');
   if(open){ showHandbookType(Number(open.dataset.profileOpen)); return; }
 
@@ -2120,6 +2416,7 @@ document.getElementById('page-home')?.addEventListener('click',e=>{
   if(action){
     e.preventDefault();
     if(action.dataset.homeAction==='find') showCheckTarget('start');
+    else if(action.dataset.homeAction==='quick') showCheckTarget('quick');
     else openSavedResult();
     return;
   }

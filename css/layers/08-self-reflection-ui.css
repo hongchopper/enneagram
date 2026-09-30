@@ -1,6 +1,6 @@
 #sharingGroup .reflection-menu-label{
   margin:14px 12px 5px 34px!important;
-  color:#AEB5C5!important;
+  color:var(--color-border)!important;
   font-size:var(--text-xs)!important;
   line-height:1.4!important;
   font-weight:700!important;
@@ -426,7 +426,7 @@
   margin-bottom:12px!important;
   padding:16px 18px!important;
   border-radius:var(--radius-md)!important;
-  background:#334155!important;
+  background:var(--color-text-primary)!important;
   color:var(--color-on-primary)!important;
   font-size:var(--text-sm)!important;
   line-height:1.7!important;

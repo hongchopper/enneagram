@@ -96,7 +96,7 @@
   top:34px!important;
   bottom:0!important;
   width:1px!important;
-  background:#D9DDE6!important;
+  background:var(--color-border)!important;
 }
 #page-sharing .why-step>span{
   position:relative!important;

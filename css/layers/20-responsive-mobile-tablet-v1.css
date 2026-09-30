@@ -69,7 +69,7 @@ button,a{
     z-index:var(--z-dropdown) !important;
     height:68px!important;
     padding-top:env(safe-area-inset-top);
-    background:rgba(247,249,252,.97)!important;
+    background:color-mix(in srgb, var(--color-bg) 97%, transparent)!important;
     backdrop-filter:blur(14px);
     -webkit-backdrop-filter:blur(14px);
   }
@@ -115,7 +115,7 @@ button,a{
     position:fixed!important;
     inset:0!important;
     z-index:var(--z-overlay) !important;
-    background:rgba(15,23,42,.28)!important;
+    background:color-mix(in srgb, var(--color-text-primary) 28%, transparent)!important;
   }
 
   /* 콘텐츠 폭 */
@@ -297,7 +297,7 @@ button,a{
     z-index:var(--z-dropdown) !important;
     height:60px!important;
     padding-top:env(safe-area-inset-top);
-    background:rgba(247,249,252,.98)!important;
+    background:color-mix(in srgb, var(--color-bg) 98%, transparent)!important;
     backdrop-filter:blur(14px);
     -webkit-backdrop-filter:blur(14px);
   }
@@ -353,7 +353,7 @@ button,a{
     position:fixed!important;
     inset:0!important;
     z-index:var(--z-overlay) !important;
-    background:rgba(15,23,42,.30)!important;
+    background:color-mix(in srgb, var(--color-text-primary) 30%, transparent)!important;
   }
   .shell-menu-btn,
   .shell-submenu-btn{
@@ -638,7 +638,7 @@ button,a{
     margin-left:-16px!important;
     margin-right:-16px!important;
     padding:6px 16px 8px!important;
-    background:rgba(247,249,252,.97)!important;
+    background:color-mix(in srgb, var(--color-bg) 97%, transparent)!important;
     scrollbar-width:none;
     -ms-overflow-style:none;
   }

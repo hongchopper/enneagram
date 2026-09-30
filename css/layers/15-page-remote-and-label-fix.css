@@ -78,7 +78,7 @@
   width:4px;
   height:4px;
   border-radius:50%;
-  background:#CBD5E1;
+  background:var(--color-border);
 }
 .page-remote-btn:hover{
   background:var(--color-bg);

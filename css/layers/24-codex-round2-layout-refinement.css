@@ -205,7 +205,7 @@
     gap:6px !important;
     margin:0 0 16px !important;
     padding:12px 0 !important;
-    background:rgba(247, 249, 252, .96) !important;
+    background:color-mix(in srgb, var(--color-bg) 96%, transparent) !important;
     backdrop-filter:blur(10px) !important;
     border-bottom:1px solid var(--color-border) !important;
   }
@@ -277,7 +277,7 @@
     grid-template-columns:repeat(4, minmax(0, 1fr)) !important;
     margin:0 0 18px !important;
     padding:8px 0 !important;
-    background:rgba(247, 249, 252, .95) !important;
+    background:color-mix(in srgb, var(--color-bg) 95%, transparent) !important;
     backdrop-filter:blur(8px) !important;
   }
 

@@ -27,7 +27,7 @@
   a,
   input,
   textarea {
-    -webkit-tap-highlight-color:rgba(79, 127, 215, 0.16);
+    -webkit-tap-highlight-color:color-mix(in srgb, var(--color-primary) 16%, transparent);
   }
 
   /* Keep the remaining legacy violet tints inside the agreed blue system. */

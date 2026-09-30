@@ -454,11 +454,30 @@
     }
     const del=e.target.closest('[data-delete-reflection]');
     if(del){
-      if(!confirm('이 기록을 삭제할까요? 삭제하면 되돌릴 수 없어요.')) return;
-      const next=readReflections().filter(r=>r.id!==del.dataset.deleteReflection);
-      write(STORAGE.reflections,next); renderReflectionHistory(); renderExperiments(); renderDashboard();
+      const all=readReflections();
+      const removed=all.find(r=>r.id===del.dataset.deleteReflection);
+      if(!removed) return;
+      write(STORAGE.reflections,all.filter(r=>r.id!==removed.id));
+      renderReflectionHistory(); renderExperiments(); renderDashboard();
+      showUndo(`‘${removed.title||'제목 없는 기록'}’을 삭제했어요.`,()=>{
+        const cur=readReflections(); if(cur.some(r=>r.id===removed.id)) return;
+        cur.push(removed); cur.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+        write(STORAGE.reflections,cur); renderReflectionHistory(); renderExperiments(); renderDashboard();
+      });
     }
   });
+
+  /* 되돌리기 줄: 목록 위에 8초 동안. 되돌릴 수 없는 작업이 아니므로 확인창을 띄우지 않는다 */
+  let undoTimer=null;
+  function showUndo(text,onUndo){
+    const host=g('diaryUndo');
+    if(!host) return;
+    clearTimeout(undoTimer);
+    host.innerHTML=`<span>${esc(text)}</span><button type="button" class="ui-btn ui-btn-ghost" data-undo>되돌리기</button>`;
+    host.hidden=false;
+    host.querySelector('[data-undo]').addEventListener('click',()=>{ onUndo(); host.hidden=true; clearTimeout(undoTimer); });
+    undoTimer=setTimeout(()=>{ host.hidden=true; },8000);
+  }
 
   /* ---- 해보기로 한 것(성장 실험): 다이어리의 '다음엔' + 유형별 추천 + 직접 추가 ----
      저장 키 enneagram_experiments_v1, schemaVersion 1:
@@ -551,10 +570,17 @@
     const d=e.target.closest('[data-exp-delete]');
     if(d){
       const store=readExperiments();
+      const item=store.custom.find(c=>c.id===d.dataset.expDelete);
+      const status=store.status[d.dataset.expDelete];
       store.custom=store.custom.filter(c=>c.id!==d.dataset.expDelete);
       delete store.status[d.dataset.expDelete];
       write(STORAGE.experiments,store);
       renderExperiments(); renderDashboard();
+      if(item) showUndo(`‘${item.text.slice(0,20)}${item.text.length>20?'…':''}’을 삭제했어요.`,()=>{
+        const cur=readExperiments(); if(cur.custom.some(c=>c.id===item.id)) return;
+        cur.custom.unshift(item); if(status) cur.status[item.id]=status;
+        write(STORAGE.experiments,cur); renderExperiments(); renderDashboard();
+      });
     }
   });
   g('experimentList')?.addEventListener('change',e=>{

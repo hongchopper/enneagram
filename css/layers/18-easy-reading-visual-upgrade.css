@@ -13,7 +13,7 @@
 #page-overview .overview-hero-visual{display:flex;justify-content:flex-end}
 #page-overview .overview-visual-card{width:min(100%,390px);border-radius:var(--radius-xl)}
 #page-overview .edu-svg{width:100%;height:auto;display:block}
-#page-overview .overview-callout{background:#334155!important;border:none!important;border-radius:var(--radius-lg)!important}
+#page-overview .overview-callout{background:var(--color-text-primary)!important;border:none!important;border-radius:var(--radius-lg)!important}
 #page-overview .overview-callout,#page-overview .overview-callout p,#page-overview .overview-callout strong{color:var(--color-on-primary)!important}
 
 #page-compare .compare-quick-guide{

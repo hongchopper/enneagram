@@ -272,7 +272,7 @@ button.secondary{
 
 /* ========== Top navigation ========== */
 .top-site-header{
-  background:rgba(247,249,252,.96)!important;
+  background:color-mix(in srgb, var(--color-bg) 96%, transparent)!important;
   border-color:var(--ds-line)!important;
 }
 .top-brand,

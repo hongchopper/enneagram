@@ -52,9 +52,9 @@
     gap:8px !important;
     margin:0 !important;
     padding:10px 0 !important;
-    background:rgba(247, 249, 252, .98) !important;
+    background:color-mix(in srgb, var(--color-bg) 98%, transparent) !important;
     border-bottom:1px solid var(--codex-line) !important;
-    box-shadow:0 1px 0 rgba(221, 229, 239, .65) !important;
+    box-shadow:0 1px 0 color-mix(in srgb, var(--color-border-subtle) 65%, transparent) !important;
     backdrop-filter:blur(10px) !important;
   }
 
@@ -354,7 +354,7 @@
   }
 
   #page-handbook .sentence-highlight {
-    background:linear-gradient(transparent 62%, rgba(79, 127, 215, .18) 62%) !important;
+    background:linear-gradient(transparent 62%, color-mix(in srgb, var(--color-primary) 18%, transparent) 62%) !important;
     color:var(--codex-blue-900) !important;
   }
 

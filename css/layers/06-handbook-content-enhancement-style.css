@@ -95,7 +95,7 @@
   width:18px!important;
   height:18px!important;
   border-radius:50%!important;
-  background:#D8E3F1!important;
+  background:var(--color-border)!important;
   color:var(--color-text-primary)!important;
   font-size:var(--text-xs)!important;
   font-weight:800!important;

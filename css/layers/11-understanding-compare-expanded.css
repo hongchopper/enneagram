@@ -12,7 +12,7 @@
   display:block;margin-bottom:14px;color:var(--color-primary);font-size:var(--text-xs);font-weight:800}
 #page-overview .concept-flow>div>b{display:block;color:var(--color-text-primary);font-size:var(--text-md)}
 #page-overview .concept-flow>div>p{margin:8px 0 0;color:var(--color-text-secondary);font-size:var(--text-xs);line-height:1.6}
-#page-overview .concept-flow>i{align-self:center;color:#A8B0BF;font-style:normal;font-size:var(--text-lg)}
+#page-overview .concept-flow>i{align-self:center;color:var(--color-text-tertiary);font-style:normal;font-size:var(--text-lg)}
 #page-overview .term-card-grid{
   display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 #page-overview .term-card{

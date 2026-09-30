@@ -12,7 +12,7 @@
 
 /* CTA: 배경과 텍스트 대비 명확하게 */
 #page-home .cta-box{
-  background:#16243A!important;
+  background:var(--color-text-primary)!important;
   color:var(--color-on-primary)!important;
 }
 #page-home .cta-box h2,
@@ -22,7 +22,7 @@
 }
 #page-home .cta-box p,
 #page-home .cta-box p *{
-  color:#DCE6F4!important;
+  color:var(--color-primary-soft)!important;
 }
 #page-home .cta-box::after{
   opacity:.35!important;
@@ -60,7 +60,7 @@
     text-shadow:none!important;
   }
   #page-home .cta-box p{
-    color:#E5ECF5!important;
+    color:var(--color-border-subtle)!important;
   }
 }
 

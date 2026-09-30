@@ -54,7 +54,7 @@
 
 #page-handbook .handbook-section-tab:hover::after,
 #page-handbook .handbook-section-tab:focus-visible::after{
-  background:#D8E3F1!important;
+  background:var(--color-border)!important;
 }
 
 #page-handbook .handbook-section-tab-num{
