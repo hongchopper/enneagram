@@ -10,37 +10,13 @@
   text-decoration:none!important;
 }
 
-/* CTA: 배경과 텍스트 대비 명확하게 */
-#page-home .cta-box{
-  background:var(--color-text-primary)!important;
-  color:var(--color-on-primary)!important;
-}
-#page-home .cta-box h2,
-#page-home .cta-box h2 *,
-#page-home .cta-box strong{
-  color:var(--color-on-primary)!important;
-}
-#page-home .cta-box p,
-#page-home .cta-box p *{
-  color:var(--color-primary-soft)!important;
-}
+/* CTA 색은 28 레이어 디자인 시스템(유리 박스 + ink 글자)에서 정한다 */
 #page-home .cta-box::after{
   opacity:.35!important;
 }
-#page-home .cta .btn{
-  background:var(--color-surface)!important;
-  color:var(--color-text-primary)!important;
-  border:0!important;
-  font-weight:800!important;
-}
-#page-home .cta .btn:hover,
-#page-home .cta .btn:focus{
-  background:var(--color-surface-subtle)!important;
-  color:var(--color-text-primary)!important;
-}
 
 /* 모바일에서는 CTA 장식이 글을 방해하지 않도록 뒤로 보내고 약하게 */
-@media(max-width:767px){
+
   #page-home .cta-box{
     isolation:isolate;
     overflow:hidden!important;
@@ -55,14 +31,7 @@
     position:relative;
     z-index:1;
   }
-  #page-home .cta-box h2{
-    color:var(--color-on-primary)!important;
-    text-shadow:none!important;
-  }
-  #page-home .cta-box p{
-    color:var(--color-border-subtle)!important;
-  }
-}
+
 
 /* Journey는 링크처럼 보이되 밑줄 없이 카드/목록 스타일 유지 */
 #page-home .journey-item{

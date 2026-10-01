@@ -58,7 +58,7 @@
     padding-top:24px !important;
   }
 
-  @media (max-width: 1000px) {
+  
     .shell-main {
       padding-top:0 !important;
     }
@@ -66,9 +66,9 @@
     .page-panel {
       top:0 !important;
     }
-  }
+  
 
-  @media (max-width: 920px) {
+  
     :root {
       --content-gutter:18px !important;
     }
@@ -97,9 +97,9 @@
     #page-handbook .handbook-section-nav {
       top:88px !important;
     }
-  }
+  
 
-  @media (max-width: 560px) {
+  
     :root {
       --content-gutter:14px !important;
     }
@@ -107,4 +107,4 @@
     #page-handbook .handbook-type-tabs {
       top:0 !important;
     }
-  }
+  

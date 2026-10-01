@@ -94,9 +94,9 @@
 }
 
 /* 왼쪽 리모콘은 26 레이어에서 제거됨 → 본문 왼쪽 176px 확보 규칙 삭제 (좌우 여백 대칭) */
-@media(max-width:1099px){
+
   .page-remote{display:none!important}
-}
+
 
 /* 상단 글로벌 메뉴도 화면 상단에 안정적으로 유지 */
 .top-site-header{

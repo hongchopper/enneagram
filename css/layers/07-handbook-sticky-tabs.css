@@ -23,10 +23,10 @@
 
 /* 모바일도 page-panel 안에서 상단 0에 고정됨
    (모바일 헤더는 page-panel 바깥 64px 영역에 이미 위치) */
-@media(max-width:760px){
+
   #page-handbook .handbook-section-nav{
     top:0!important;
     margin:0 0 24px!important;
     padding-top:4px!important;
   }
-}
+

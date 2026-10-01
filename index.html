@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko"><head><link href="https://cdn.jsdelivr.net/gh/moonspam/NanumSquareNeo@1.0/nanumsquareneo.css" id="nanum-square-neo-webfont" rel="stylesheet">
+<html lang="ko"><head><link href="https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@2.0/nanumsquare.css" id="nanum-square-webfont" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport">
 <title>에니어그램 통합 자료</title>
@@ -26,6 +26,16 @@
 <script async src="https://mcp.figma.com/mcp/html-to-design/capture.js"></script>
 </head>
 <body>
+<aside aria-label="서비스 소개" class="app-side">
+<div class="app-side-card">
+<span aria-hidden="true" class="app-side-brand">Enneagram</span>
+<p class="app-side-title">내 안의 보석을 깨우고<br>닦아가는 마법 다이어리</p>
+<p class="app-side-desc">9가지 유형을 9개의 보석으로 보여줘요. 간편 검사로 내 보석을 찾고, 다이어리로 반복되는 패턴을 돌아봐요.</p>
+<div aria-hidden="true" class="app-side-gems"><img class="gem-img" src="assets/gems/gem-1-sapphire.png" alt="" width="480" height="480" loading="lazy" decoding="async"><img class="gem-img" src="assets/gems/gem-2-rose-quartz.png" alt="" width="480" height="480" loading="lazy" decoding="async"><img class="gem-img" src="assets/gems/gem-3-diamond.png" alt="" width="480" height="480" loading="lazy" decoding="async"><img class="gem-img" src="assets/gems/gem-4-opal.png" alt="" width="480" height="480" loading="lazy" decoding="async"><img class="gem-img" src="assets/gems/gem-5-amethyst.png" alt="" width="480" height="480" loading="lazy" decoding="async"><img class="gem-img" src="assets/gems/gem-6-emerald.png" alt="" width="480" height="480" loading="lazy" decoding="async"><img class="gem-img" src="assets/gems/gem-7-citrine.png" alt="" width="480" height="480" loading="lazy" decoding="async"><img class="gem-img" src="assets/gems/gem-8-ruby.png" alt="" width="480" height="480" loading="lazy" decoding="async"><img class="gem-img" src="assets/gems/gem-9-aquamarine.png" alt="" width="480" height="480" loading="lazy" decoding="async"></div>
+<button class="app-side-cta" data-side-quick="" type="button">간편 검사 시작</button>
+<p class="app-side-note">로그인 없이 바로 · 기록은 내 브라우저에만</p>
+</div>
+</aside>
 <div class="shell-app"><header class="top-site-header" id="topSiteHeader">
 <div class="top-header-inner">
 <button aria-label="에니어그램 홈" class="top-brand" data-top-home="" type="button">
@@ -41,7 +51,6 @@
 <div class="top-nav-item"><button class="top-nav-main" data-top-page="myspace" type="button">나의 공간</button></div>
 </nav>
 <button aria-controls="globalSearchLayer" aria-haspopup="dialog" aria-label="검색" class="top-search-open" id="globalSearchOpen" title="검색" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-width="2" viewBox="0 0 24 24" width="20"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></button>
-<button aria-label="전체 메뉴 열기" class="top-mobile-menu" id="topMobileMenu" type="button">☰</button>
 </div>
 </header><nav aria-label="현재 페이지 세부 메뉴" class="page-subnav" hidden="" id="pageSubnav">
 <div class="page-subnav-inner" id="pageSubnavList"></div>
@@ -125,165 +134,28 @@
 </nav>
 <div class="shell-note">메뉴를 선택하면 해당 화면으로 이동합니다.</div>
 </aside>
-<main class="shell-main"><section class="page-panel active" data-page-panel="home" id="page-home"><main id="home-top">
-<section class="hero">
-<div aria-hidden="true" class="home-hero-bg">
-<div class="hero-jelly" id="heroJelly"></div>
+<main class="shell-main"><section class="page-panel active" data-page-panel="home" id="page-home"><div class="home-feed" id="home-top">
+<div aria-labelledby="homeFindTitle" class="home-find" hidden="" id="home-find" role="region">
+<div class="home-find-card">
+<div aria-hidden="true" class="home-find-gems" id="homeFindGems"></div>
+<h1 class="home-find-title" id="homeFindTitle">내 보석을 찾아볼까요?</h1>
+<p class="home-find-desc">두 번만 고르면 가장 가까운 유형의 보석을 보여줘요.</p>
+<div class="home-find-actions">
+<button class="btn primary" data-home-action="quick" type="button">간편 검사 시작</button>
+<button class="btn secondary" data-home-action="find" type="button">정식 검사</button>
 </div>
-<div class="wrap hero-grid">
-<div>
-<div class="eyebrow">처음 보는 사람도 쉽게 시작하는 에니어그램</div>
-<h1>
-            나는 왜 <span aria-hidden="true" class="hero-inline-jelly" data-inline-jelly="gemheart"></span>
-            <span class="accent">이렇게 반응할까?<span aria-hidden="true" class="hero-inline-jelly" data-inline-jelly="spark"></span></span>
-</h1>
-<p class="hero-copy">
-            에니어그램은 사람을 9개의 번호로 나누기 위한 도구가 아닙니다.
-            내가 반복해서 보이는 반응과 그 안에 숨은 두려움, 욕구를 알아차리고
-            더 건강한 선택을 해보는 자기이해의 지도에 가깝습니다.
-          </p>
-<div class="hero-actions">
-<a class="btn primary" data-home-action="quick" href="#check-quick">간편 검사 시작</a>
-<a class="btn secondary" data-home-action="result" href="#check-result">내 결과 보기</a>
-</div>
-<ul class="hero-points">
-<li>두 번만 고르면 결과</li>
-<li>로그인 없이 바로</li>
-<li>기록은 내 브라우저에만</li>
-</ul>
-<p class="hero-hint">더 자세히 보고 싶다면 <a data-home-action="find" href="#check">정식 검사</a></p>
+<p class="home-find-note">로그인 없이 바로 · 기록은 내 브라우저에만</p>
 </div>
 </div>
-</section>
-<section class="home-me" id="home-me">
-<div class="wrap">
+<div class="home-me" id="home-me">
 <div class="home-me-grid" id="homeMe"></div>
 </div>
-</section>
-<section class="home-continue" hidden="" id="home-continue">
-<div class="wrap">
-<div class="section-kicker">이어서</div>
-<h2 class="section-title">이어서 보기</h2>
+<div class="home-continue" hidden="" id="home-continue">
+<h2 class="shelf-title">이어서 보기</h2>
 <div class="continue-grid" id="homeContinueList"></div>
 </div>
-</section>
-<section class="profiles-section" id="home-profiles">
-<div class="wrap">
-<div class="section-kicker">9가지 유형</div>
-<h2 class="section-title">9장의 프로필 카드</h2>
-<p class="section-desc">옆으로 넘기며 나와 닮은 동물을 찾아보세요. 카드를 누르면 그 유형의 핸드북이 열려요. 유형 검사 결과가 있으면 내 카드에 '나의 프로필' 표시가 붙어요.</p>
-<div class="pcard-nav"><button aria-label="이전 카드" class="pcard-nav-btn" data-rail-step="-1" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewBox="0 0 24 24" width="20"><path d="m15 18-6-6 6-6"></path></svg></button><button aria-label="다음 카드" class="pcard-nav-btn" data-rail-step="1" type="button"><svg aria-hidden="true" fill="none" focusable="false" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewBox="0 0 24 24" width="20"><path d="m9 18 6-6-6-6"></path></svg></button></div>
-<div class="pcard-rail" id="homeProfileGrid" tabindex="0" aria-label="9가지 유형 프로필 카드"></div>
-</div>
-</section>
-<section id="home-intro">
-<div class="wrap">
-<div class="section-kicker">처음이라면</div>
-<h2 class="section-title">에니어그램을 처음 만났다면<br>이 세 가지만 기억해도 충분해요.</h2>
-<p class="section-desc">
-          에니어그램은 “나는 이런 사람이야”라고 고정하는 방식보다,
-          내가 어떤 상황에서 어떤 방식으로 나를 지키고 있는지를 관찰할 때 훨씬 유용합니다.
-        </p>
-<button class="section-more" data-home-more="overview" type="button">에니어그램 이해 전체 보기</button>
-<div class="principles">
-<article class="principle">
-<div class="num">01</div>
-<h3>행동보다 ‘동기’를 봅니다</h3>
-<p>같은 행동을 해도 그 이유는 다를 수 있습니다. 에니어그램은 겉으로 보이는 행동보다 그 아래의 두려움과 욕구를 살펴봅니다.</p>
-</article>
-<article class="principle">
-<div class="num">02</div>
-<h3>번호보다 ‘반복 패턴’을 봅니다</h3>
-<p>몇 번인지 빨리 정하는 것보다 자주 반복되는 자동반응과 그 흐름을 알아차리는 것이 먼저입니다.</p>
-</article>
-<article class="principle">
-<div class="num">03</div>
-<h3>판단보다 ‘관찰’에 가깝습니다</h3>
-<p>나와 타인을 단정하는 도구가 아니라 내가 놓치던 반응을 알아차리고 선택지를 넓히는 도구로 사용합니다.</p>
-</article>
-</div>
-</div>
-</section>
-<section id="home-lenses">
-<div class="wrap">
-<div class="section-kicker">세 가지 렌즈</div>
-<h2 class="section-title">유형 번호만 보면<br>사람이 평면적으로 보입니다.</h2>
-<p class="section-desc">
-          에니어그램은 한 가지 기준만 보는 체계가 아닙니다.
-          중심 유형, 호니비언, 하모닉처럼 서로 다른 렌즈를 함께 보면
-          “왜 비슷해 보이는 두 사람이 실제로는 다르게 움직이는지”가 더 잘 보입니다.
-        </p>
-<button class="section-more" data-home-more="compare" type="button">전체 유형 비교 보기</button>
-<div class="lenses">
-<article class="lens-card">
-<span class="lens-tag">01 · 중심 유형</span>
-<h3>무엇이 먼저 커지는가?</h3>
-<p>힘든 상황에서 몸과 본능, 관계와 이미지, 생각과 불안 중 무엇을 가장 먼저 사용하게 되는지 봅니다.</p>
-<div class="lens-mini"><span>본능 8·9·1</span><span>감정 2·3·4</span><span>사고 5·6·7</span></div>
-</article>
-<article class="lens-card">
-<span class="lens-tag">02 · 호니비언</span>
-<h3>문제 앞에서 어떻게 움직이는가?</h3>
-<p>앞으로 나가 바꾸려 하는지, 해야 할 일과 기준을 보는지, 혹은 물러나 생각하고 거리를 두는지 살펴봅니다.</p>
-<div class="lens-mini"><span>주장형 3·7·8</span><span>순응형 1·2·6</span><span>후퇴형 4·5·9</span></div>
-</article>
-<article class="lens-card">
-<span class="lens-tag">03 · 하모닉</span>
-<h3>힘든 감정을 어떻게 다루는가?</h3>
-<p>좋게 보며 넘기는지, 감정을 강하게 반응하는지, 감정을 분리하고 해결 모드로 가는지 확인합니다.</p>
-<div class="lens-mini"><span>긍정형 2·7·9</span><span>능력형 1·3·5</span><span>반응형 4·6·8</span></div>
-</article>
-</div>
-</div>
-</section>
-<section class="journey" id="home-journey">
-<div class="wrap">
-<div class="section-kicker">읽는 순서</div>
-<h2 class="section-title">어디서부터 보면 좋을까요?</h2>
-<p class="section-desc">처음부터 모든 개념을 한꺼번에 볼 필요 없습니다. 아래 순서로 보면 덜 헷갈립니다.</p>
-<div class="journey-list">
-<a class="journey-item" data-home-route="overview-basics" href="#overview-basics">
-<div class="journey-step">1단계</div>
-<div><h3>에니어그램 관점 이해하기</h3><p>번호 맞히기보다 반복되는 반응과 그 이유를 보는 관점을 먼저 익힙니다.</p></div>
-<div class="journey-arrow">&gt;</div>
-</a>
-<a class="journey-item" data-home-route="compare-glance" href="#compare-glance">
-<div class="journey-step">2단계</div>
-<div><h3>9가지 유형 빠르게 비교하기</h3><p>핵심 두려움과 욕망, 반복 반응을 보며 내가 자주 보이는 패턴의 후보를 찾습니다.</p></div>
-<div class="journey-arrow">&gt;</div>
-</a>
-<a class="journey-item" data-home-route="compare-centers" href="#compare-centers">
-<div class="journey-step">3단계</div>
-<div><h3>반응 패턴을 입체적으로 보기</h3><p>중심 유형과 호니비언, 하모닉으로 같은 유형 안에서도 다른 반응 방식을 이해합니다.</p></div>
-<div class="journey-arrow">&gt;</div>
-</a>
-<a class="journey-item" data-home-route="overview-growth" href="#overview-growth">
-<div class="journey-step">4단계</div>
-<div><h3>성장 방향으로 연결하기</h3><p>내 자동반응을 고치기보다, 그 순간 한 번 다른 선택을 해보는 방식으로 연결합니다.</p></div>
-<div class="journey-arrow">&gt;</div>
-</a>
-</div>
-</div>
-</section>
-<section class="cta" id="home-cta">
-<div class="wrap">
-<div class="cta-box">
-<div>
-<h2>내 유형을 찾는 것보다 더 중요한 건,<br>내 패턴을 알아차리는 것입니다.</h2>
-<p>9가지 유형을 훑어본 뒤, “나는 어떤 상황에서 왜 비슷하게 반응하는가?”라는 질문으로 넘어가 보세요.</p>
-</div>
-<div class="cta-actions">
-<a class="btn primary" data-home-action="find" href="#check">나의 유형 찾기</a>
-<a class="btn secondary" data-home-action="result" href="#check-result">내 결과 보기</a>
-</div>
-</div>
-</div>
-</section>
-</main><footer class="home-footer">
-<div class="wrap footer-inner">
-<div>Enneagram · 나의 성격 패턴을 이해하는 시작점</div>
-</div>
-</footer></section>
+<div class="home-shelves" id="homeShelves"></div>
+</div></section>
 <section class="page-panel" data-page-panel="check" id="page-check">
 <section class="check-mode-panel check-flow-panel active" data-check-mode-panel="start">
 <div class="check-flow-wrap">
@@ -5284,7 +5156,12 @@
 <span>비교 · 시작</span>
 <h1>9유형 한눈에</h1>
 <p>유형을 외우기보다, 각 유형의 주의가 어디로 향하기 쉬운지를 먼저 보면 전체 구조를 이해하기 쉽습니다.</p>
-</header><div class="compare-quick-guide">
+</header>
+<section class="type-card-shelf">
+<h2 class="shelf-title">9장의 프로필 카드</h2>
+<p class="shelf-desc">옆으로 넘기며 나와 닮은 보석을 찾아보세요. 카드를 누르면 뒷면이 보여요.</p>
+<div aria-label="9가지 유형 프로필 카드" class="pcard-rail" id="typeCardRail" tabindex="0"></div>
+</section><div class="compare-quick-guide">
 <article><span>1</span><h3>먼저 끌리는 문장을 봐요</h3><p>외우기보다 “이건 좀 내 얘기 같다” 싶은 초점을 먼저 잡아보세요.</p></article>
 <article><span>2</span><h3>행동보다 이유를 봐요</h3><p>같은 친절, 같은 계획, 같은 노력도 왜 그러는지는 유형마다 달라요.</p></article>
 <article><span>3</span><h3>헷갈리면 비슷한 유형끼리 비교해요</h3><p>정답 맞히기보다 가장 자주 반복되는 패턴을 찾는 게 핵심이에요.</p></article>
@@ -6018,11 +5895,11 @@
 </section>
 </main>
 <nav aria-label="하단 메뉴" class="bottom-tabbar" id="bottomTabbar">
-<button class="bottom-tab active" data-tab="home" type="button" aria-current="page"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg></span><span class="bottom-tab-label">홈</span></button>
-<button class="bottom-tab" data-tab="check" type="button"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"><path d="M9 3h6v3H9z"></path><path d="M7 4.5H5V21h14V4.5h-2"></path><path d="m9 13.5 2 2 4-4"></path></svg></span><span class="bottom-tab-label">유형 검사</span></button>
-<button class="bottom-tab" data-tab="handbook" type="button"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"><circle cx="12" cy="12" r="9"></circle><path d="M12 3.5 19.4 16.2H4.6z"></path></svg></span><span class="bottom-tab-label">유형 탐구</span></button>
-<button class="bottom-tab" data-tab="diary" type="button"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"><path d="M5 4h10a3 3 0 0 1 3 3v14H8a3 3 0 0 1-3-3z"></path><path d="M9 9h5M9 13h5"></path></svg></span><span class="bottom-tab-label">다이어리</span></button>
-<button class="bottom-tab" data-tab="myspace" type="button"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg></span><span class="bottom-tab-label">나의 공간</span></button>
+<svg aria-hidden="true" class="bt-defs" focusable="false" height="0" width="0"><defs><linearGradient id="btGrad" x1="0" x2="1" y1="0" y2="1"><stop offset="0" style="stop-color:var(--grad-blue)"></stop><stop offset=".5" style="stop-color:var(--grad-violet)"></stop><stop offset="1" style="stop-color:var(--grad-plum)"></stop></linearGradient></defs></svg>
+<button class="bottom-tab active" data-tab="home" type="button" aria-current="page"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24" width="24"><path d="M4 11.2 12 4.5l8 6.7V19a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19z"/><path d="M10 20.5v-3.2a2 2 0 0 1 4 0v3.2"/><path class="bt-fill" stroke="none" d="M12 8.700000000000001C12.468 10.832 12.468 10.832 14.6 11.3C12.468 11.768 12.468 11.768 12 13.9C11.532 11.768 11.532 11.768 9.4 11.3C11.532 10.832 11.532 10.832 12 8.700000000000001Z"/></svg></span><span class="bottom-tab-label">홈</span></button>
+<button class="bottom-tab" data-tab="handbook" type="button"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24" width="24"><path d="M5.5 18.5 8.5 11l7.5 2 3-6.5" stroke-dasharray="1.2 2.6" stroke-width="1.5"/><circle cx="12" cy="12" r="9.2" stroke-width="1.25" opacity=".45"/><path class="bt-fill" stroke="none" d="M5.5 16.1C5.932 18.068 5.932 18.068 7.9 18.5C5.932 18.932 5.932 18.932 5.5 20.9C5.068 18.932 5.068 18.932 3.1 18.5C5.068 18.068 5.068 18.068 5.5 16.1Z"/><path class="bt-fill" stroke="none" d="M8.5 8.8C8.896 10.604 8.896 10.604 10.7 11C8.896 11.396 8.896 11.396 8.5 13.2C8.104 11.396 8.104 11.396 6.3 11C8.104 10.604 8.104 10.604 8.5 8.8Z"/><path class="bt-fill" stroke="none" d="M16 10.4C16.468 12.532 16.468 12.532 18.6 13C16.468 13.468 16.468 13.468 16 15.6C15.532 13.468 15.532 13.468 13.4 13C15.532 12.532 15.532 12.532 16 10.4Z"/><path class="bt-fill" stroke="none" d="M19 3.1C19.612 5.888 19.612 5.888 22.4 6.5C19.612 7.112 19.612 7.112 19 9.9C18.388 7.112 18.388 7.112 15.6 6.5C18.388 5.888 18.388 5.888 19 3.1Z"/></svg></span><span class="bottom-tab-label">유형 탐구</span></button>
+<button class="bottom-tab" data-tab="diary" type="button"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24" width="24"><path d="M5 18V6a2 2 0 0 1 2-2h11v13H7a2 2 0 0 0-2 2 2 2 0 0 0 2 2h11"/><path class="bt-fill" stroke="none" d="M13.3 6.9a3 3 0 1 0 2.2 5.1 2.4 2.4 0 1 1-2.2-5.1z"/><path class="bt-fill" stroke="none" d="M9.6 7.4C9.888 8.712 9.888 8.712 11.2 9C9.888 9.288 9.888 9.288 9.6 10.6C9.312 9.288 9.312 9.288 8 9C9.312 8.712 9.312 8.712 9.6 7.4Z"/></svg></span><span class="bottom-tab-label">다이어리</span></button>
+<button class="bottom-tab" data-tab="myspace" type="button"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24" width="24"><path d="M7.5 5h9l3.5 4.5L12 20 4 9.5z"/><path d="M4 9.5h16"/><path d="m9.8 5-1.8 4.5 4 10.5 4-10.5L14.2 5"/><path class="bt-fill" stroke="none" d="M18.6 1.4C18.996000000000002 3.204 18.996000000000002 3.204 20.8 3.6C18.996000000000002 3.996 18.996000000000002 3.996 18.6 5.800000000000001C18.204 3.996 18.204 3.996 16.400000000000002 3.6C18.204 3.204 18.204 3.204 18.6 1.4Z"/></svg></span><span class="bottom-tab-label">나의 공간</span></button>
 </nav>
 </div>
 <script src="js/00-app-core.js"></script>
@@ -6033,6 +5910,8 @@
 <script src="js/05-codex-round4-remove-left-quick-and-media-gap.js"></script>
 <script src="js/06-codex-global-search-mvp.js"></script>
 <script src="js/07-figma-capture-route-helper.js"></script>
+<script src="js/08-prd-care.js"></script>
+<script src="js/09-mobile-scroll.js"></script>
 </body><div id="codex-browser-sidebar-comments-root" style="position: fixed; inset: 0px; pointer-events: none; z-index: 2147483647;"></div></html>
 
 

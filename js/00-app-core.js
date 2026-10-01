@@ -1255,7 +1255,8 @@ function activateBasePage(name){
     b.classList.toggle('active',name==='home');
   });
   document.querySelectorAll('.bottom-tab[data-tab]').forEach(b=>{
-    const on=b.dataset.tab===name || (exploreGroup && b.dataset.tab==='handbook') || (name==='sharing' && b.dataset.tab==='diary');
+    /* 유형 검사는 하단 탭 없이 홈에서 들어가므로 검사 화면에서는 '홈'을 켠다 */
+    const on=b.dataset.tab===name || (exploreGroup && b.dataset.tab==='handbook') || (name==='sharing' && b.dataset.tab==='diary') || (name==='check' && b.dataset.tab==='home');
     b.classList.toggle('active',on);
     if(on) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current');
   });
@@ -1669,7 +1670,8 @@ function openParentGroup(groupId,firstAction){
     if(group.querySelector('.shell-submenu')) group.classList.toggle('open',group.id===groupId);
   });
   const hasSubmenu=!!document.getElementById(groupId)?.querySelector('.shell-submenu');
-  if(hasSubmenu && window.matchMedia('(max-width:1000px)').matches) openShellMenu();
+  /* 모바일 웹: 항상 앱 폭이라 하위 메뉴가 있으면 드로어를 연다 */
+  if(hasSubmenu) openShellMenu();
 }
 
 document.querySelector('.shell-menu-btn[data-page="overview"]')?.addEventListener('click',()=>openParentGroup('overviewGroup',()=>showOverviewSection('basics')));
@@ -1806,9 +1808,7 @@ function renderHomeContinue(){
   }else if(quickType){
     cards.push({label:'간편 검사 결과',title:`${quickType}번 ${CHECK_TYPE_NAMES[quickType]}`,desc:'헷갈린다면 정식 검사로 가까운 유형을 함께 확인해보세요.',action:'check-quick'});
   }
-  if(myType>=1 && myType<=9){
-    cards.push({label:'내가 고른 유형',title:`${myType}번 ${CHECK_TYPE_NAMES[myType]} 핸드북`,desc:'핵심 패턴과 실제 모습, 성장 방향을 이어서 읽어보세요.',action:`handbook-${myType}`});
-  }
+  /* 내가 고른 유형의 핸드북은 위 대표 프로필 패널의 '핸드북 보기'로 이어지므로 여기 따로 두지 않는다 */
   if(Array.isArray(reflections) && reflections.length){
     cards.push({label:'성찰 기록',title:`기록 ${reflections.length}개`,desc:'반복해서 등장한 단서를 나의 공간에서 모아보세요.',action:'myspace-reflection'});
   }
@@ -1982,25 +1982,35 @@ async function renderQuickResultCard(){
 /* =========================================================
    홈 프로필 카드: 9장 카드 목록 + 나의 프로필 카드(이미지 저장)
    ========================================================= */
+/* 유형별 보석·카드 문구 (디자인 브리프 v2 §5·§9). key = 한글 키워드, en = 카드 영문 장식, intro = 뒷면 1인칭 소개, ask = 뒷면 질문 */
 const HOME_PROFILES={
   1:{desc:'더 올바르고 좋은 방향을 찾는 사람',quote:'이왕 하는 거, 제대로 하자',tags:['원칙','책임감','꼼꼼함'],
-    animal:'비버',gem:'루비',nick:'제대로 짓는',traits:[['📏','기준이 분명하고 스스로에게 엄격해요.'],['🛠️','대충 넘어가는 걸 잘 못 참아요.'],['✅','맡은 일은 끝까지 책임져요.']]},
+    gem:'사파이어',key:'맑은 마음',en:'Clear Heart',
+    intro:'나는 옳다고 믿는 방향을 지키고, 어제보다 조금 더 나아지게 만드는 사람이야.',ask:'오늘 "이 정도면 충분해"라고 넘겨본 일이 있나요?'},
   2:{desc:'사랑받고 필요한 사람이 되고 싶은 사람',quote:'필요한 거 있으면 말해, 내가 도와줄게',tags:['배려','다정함','관계'],
-    animal:'리트리버',gem:'앰버',nick:'먼저 다가가는',traits:[['🤝','누가 필요로 하면 먼저 움직여요.'],['💌','작은 변화도 금방 알아차려요.'],['💛','고맙다는 말에 힘이 나요.']]},
+    gem:'로즈쿼츠',key:'따뜻한 사랑',en:'Warm Love',
+    intro:'나는 곁에 있는 사람의 마음을 먼저 알아채고, 따뜻하게 손을 내미는 사람이야.',ask:'오늘 나 자신을 위해 해준 일은 무엇인가요?'},
   3:{desc:'유능함과 결과로 자신을 증명하려는 사람',quote:'일단 해내고, 이야기는 그다음에',tags:['목표','효율','인정'],
-    animal:'치타',gem:'토파즈',nick:'목표를 향해 달리는',traits:[['🏁','목표가 생기면 속도가 붙어요.'],['📈','결과로 보여주는 게 편해요.'],['✨','인정받을 때 가장 빛나요.']]},
+    gem:'다이아몬드',key:'빛나는 자신감',en:'Shining Achievement',
+    intro:'나는 스스로의 가능성을 믿고, 지금보다 더 빛나는 나를 만들어가는 사람이야.',ask:'오늘 나는 어떤 순간에 가장 빛났나요?'},
   4:{desc:'나다움과 특별한 정체성을 찾는 사람',quote:'왜 나만 이렇게 느끼는 걸까?',tags:['나다움','감수성','깊이'],
-    animal:'고양이',gem:'자수정',nick:'나만의 결을 가진',traits:[['🎨','나다운 게 가장 중요해요.'],['🌙','감정을 깊고 섬세하게 느껴요.'],['🔍','평범한 건 조금 심심해요.']]},
+    gem:'오팔',key:'깊은 감성',en:'Deep Feeling',
+    intro:'나는 내 마음의 결을 깊이 느끼고, 나만의 방식으로 그걸 표현하는 사람이야.',ask:'오늘 평범한 순간에서 발견한 아름다움은 무엇인가요?'},
   5:{desc:'충분히 알고 준비되어 있고 싶은 사람',quote:'조금만 더 알아보고 말할게',tags:['관찰','지식','독립'],
-    animal:'부엉이',gem:'사파이어',nick:'조용히 파고드는',traits:[['📚','궁금한 건 끝까지 알아봐요.'],['🔭','한 발 떨어져서 관찰해요.'],['🔋','혼자만의 시간으로 충전해요.']]},
+    gem:'자수정',key:'맑은 지혜',en:'Clear Wisdom',
+    intro:'나는 궁금한 것을 끝까지 파고들고, 차분히 이해한 다음 움직이는 사람이야.',ask:'오늘 누구와 생각을 나눠보고 싶었나요?'},
   6:{desc:'안전과 확실함을 찾는 사람',quote:'혹시 모르니까, 한 번만 더 확인하자',tags:['신뢰','대비','의리'],
-    animal:'미어캣',gem:'라피스라줄리',nick:'먼저 살피는',traits:[['👀','위험 신호를 누구보다 빨리 알아채요.'],['🛡️','믿는 사람에게 끝까지 의리를 지켜요.'],['📋','플랜 B가 있어야 마음이 놓여요.']]},
+    gem:'에메랄드',key:'든든한 믿음',en:'Steady Trust',
+    intro:'나는 소중한 것을 지키려고 미리 살피고, 믿는 사람 곁을 끝까지 지키는 사람이야.',ask:'오늘 나를 든든하게 해준 것은 무엇이었나요?'},
   7:{desc:'자유롭고 즐거운 가능성을 찾는 사람',quote:'재밌겠다! 일단 가보자',tags:['호기심','자유','아이디어'],
-    animal:'수달',gem:'아쿠아마린',nick:'신나는 걸 찾는',traits:[['🎈','새로운 계획이 떠오르면 설레요.'],['🌈','힘든 일도 재밌는 쪽으로 돌려봐요.'],['🚀','지루한 건 오래 못 버텨요.']]},
+    gem:'시트린',key:'즐거운 상상',en:'Joyful Imagination',
+    intro:'나는 새로운 가능성에 설레고, 하루를 즐거운 일로 채워가는 사람이야.',ask:'오늘 가장 오래 머물고 싶었던 순간은 언제였나요?'},
   8:{desc:'강하게 주도하고 통제력을 갖고 싶은 사람',quote:'돌려 말하지 마, 내가 책임질게',tags:['추진력','보호','솔직함'],
-    animal:'사자',gem:'가넷',nick:'앞장서는',traits:[['🔥','결정이 빠르고 추진력이 있어요.'],['🦁','내 사람은 확실하게 지켜요.'],['💬','돌려 말하기보다 솔직하게 말해요.']]},
+    gem:'루비',key:'단단한 용기',en:'Brave Strength',
+    intro:'나는 내 사람을 지키려고 앞에 서고, 솔직하게 부딪히는 사람이야.',ask:'오늘 누군가에게 기대도 괜찮았던 순간이 있었나요?'},
   9:{desc:'편안함과 조화를 유지하고 싶은 사람',quote:'난 다 괜찮아, 편한 대로 하자',tags:['편안함','수용','조화'],
-    animal:'판다',gem:'에메랄드',nick:'느긋한',traits:[['☁️','갈등보다 편안한 분위기가 좋아요.'],['👂','여러 사람의 입장을 잘 들어줘요.'],['🍃','내 속도로 천천히 가도 괜찮아요.']]}
+    gem:'아쿠아마린',key:'고요한 여유',en:'Calm Ease',
+    intro:'나는 모두가 편안한 자리를 만들고, 내 속도로 천천히 나아가는 사람이야.',ask:'오늘 내가 정말 원했던 것은 무엇이었나요?'}
 };
 const HOME_GROUPS={
   center:[['instinct','본능 중심',[8,9,1]],['emotion','감정 중심',[2,3,4]],['thinking','사고 중심',[5,6,7]]],
@@ -2029,177 +2039,67 @@ function getHomeProfile(){
   return null;
 }
 
-/* 젤리 캐릭터: 같은 몸통(구미 젤리)에 귀·무늬만 바꾼 9마리. 몸 색은 유형 색(--type-N), 광택·그림자는 color-mix로 만든다. */
-function pcJellySVG(t,pre='pc'){
-  const id=pre+t, TC=`var(--type-${t})`, W='var(--color-surface)', K='var(--color-text-primary)';
-  const mix=(a,p,b)=>`color-mix(in srgb, ${a} ${p}%, ${b})`;
-  const DEEP=mix(TC,70,K), LIGHT=mix(TC,32,W), ACC='var(--color-accent)';
-  const E=(cx,cy,rx,ry,fill,x='')=>`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${fill}" ${x}/>`;
-  const C=(cx,cy,r,fill,x='')=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" ${x}/>`;
-  const P=(d,fill,x='')=>`<path d="${d}" fill="${fill}" ${x}/>`;
-  const S=(d,color,w,x='')=>`<path d="${d}" fill="none" stroke="${color}" stroke-width="${w}" stroke-linecap="round" ${x}/>`;
-  const grad=(gid,c)=>`<radialGradient id="${id}-${gid}" cx=".42" cy=".36" r=".72">`
-    +`<stop offset="0" style="stop-color:${mix(c,42,W)}"/><stop offset=".5" style="stop-color:${mix(c,86,W)}"/>`
-    +`<stop offset=".86" style="stop-color:${c}"/><stop offset="1" style="stop-color:${mix(c,80,K)}"/></radialGradient>`;
-  const J=`url(#${id}-j)`, JD=`url(#${id}-jd)`, JL=`url(#${id}-jl)`, JA=`url(#${id}-ja)`;
-  const rot=(a,x,y)=>`transform="rotate(${a} ${x} ${y})"`;
-  const gloss=(x,y,rx,ry)=>E(x,y,rx,ry,W,`opacity=".7" filter="url(#${id}-b1)"`);
-  const eye=(x,y,r=6.5)=>C(x,y,r,K)+C(x+2.3,y-2.4,r*.34,W);
-  let eyes=`<g class="pc-eyes">${eye(82,92)}${eye(118,92)}</g>`;
-  const cheeks=E(68,108,9,5.5,'var(--char-blush)','opacity=".55"')+E(132,108,9,5.5,'var(--char-blush)','opacity=".55"');
-  let back='', over='', face='', arms=E(42,124,12,22,J,rot(22,42,124))+E(158,124,12,22,J,rot(-22,158,124));
-  let feet=E(78,180,17,8,J)+E(122,180,17,8,J);
-  let belly=E(100,140,35,33,JL,'opacity=".9"');
-  const muzzle=(ry=13)=>E(100,110,21,ry,JL);
-  const whiskers=S('M66 108 L46 104 M66 113 L46 115 M134 108 L154 104 M134 113 L154 115',K,1.6,'opacity=".55"');
-  const body='M100 30 C140 30 162 68 162 112 C162 158 136 182 100 182 C64 182 38 158 38 112 C38 68 60 30 100 30Z';
-  switch(t){
-    case 1: /* 비버 */
-      back=E(152,168,28,12,JD,rot(-24,152,168))+C(68,42,12,J)+C(132,42,12,J)+C(68,42,6,DEEP,'opacity=".45"')+C(132,42,6,DEEP,'opacity=".45"');
-      face=muzzle(12)+E(100,102,7.5,5.5,K)+`<rect x="93.5" y="111" width="6" height="9" rx="1.6" fill="${W}"/><rect x="100.5" y="111" width="6" height="9" rx="1.6" fill="${W}"/>`;
-      break;
-    case 2: /* 리트리버 */
-      over=E(50,92,13,27,JD,rot(18,50,92))+E(150,92,13,27,JD,rot(-18,150,92));
-      face=muzzle(14)+E(100,103,8,6,K)+S('M100 109 Q94 116 89 113 M100 109 Q106 116 111 113',K,1.8)+E(100,121,5.5,6.5,'var(--char-blush)');
-      break;
-    case 3: /* 치타 */
-      back=C(68,44,11,J)+C(132,44,11,J)+C(68,44,5,DEEP,'opacity=".6"')+C(132,44,5,DEEP,'opacity=".6"');
-      over=[[56,122,5,4],[62,142,4,3.5],[146,120,5,4],[140,144,4,3.5],[70,162,4,3],[130,164,4,3],[60,80,3.5,3],[141,80,3.5,3],[100,56,4,3]].map(([x,y,rx,ry])=>E(x,y,rx,ry,DEEP,'opacity=".75"')).join('');
-      face=S('M78 99 Q80 110 90 117 M122 99 Q120 110 110 117',DEEP,3)+E(100,112,14,9,JL)+P('M94 104 L106 104 L100 111Z',K);
-      break;
-    case 4: /* 고양이 */
-      back=P('M56 64 L62 20 L94 42Z',J)+P('M144 64 L138 20 L106 42Z',J)+P('M64 54 L66 32 L84 44Z','var(--char-blush)','opacity=".7"')+P('M136 54 L134 32 L116 44Z','var(--char-blush)','opacity=".7"')
-        +S('M152 170 C186 160 188 118 168 102',J,12);
-      face=P('M96 104 L104 104 L100 109Z','var(--char-blush)')+S('M100 109 Q96 115 91 112 M100 109 Q104 115 109 112',K,1.8)+whiskers;
-      break;
-    case 5: /* 부엉이 */
-      back=P('M60 54 L56 18 L86 40Z',JD)+P('M140 54 L144 18 L114 40Z',JD);
-      face=C(82,92,17,JL)+C(118,92,17,JL)+P('M100 100 L108 110 L100 123 L92 110Z',JA);
-      eyes=`<g class="pc-eyes">${eye(82,92,7.5)}${eye(118,92,7.5)}</g>`;
-      over=['M86 132 q5 6 10 0','M104 132 q5 6 10 0','M95 146 q5 6 10 0','M86 160 q5 6 10 0','M104 160 q5 6 10 0'].map(d=>S(d,DEEP,2,'opacity=".55"')).join('');
-      arms=E(42,126,13,26,JD,rot(18,42,126))+E(158,126,13,26,JD,rot(-18,158,126));
-      feet=E(84,181,11,6,JA)+E(116,181,11,6,JA);
-      break;
-    case 6: /* 미어캣 */
-      back=C(56,62,11,JD)+C(144,62,11,JD)+C(56,62,5,DEEP,'opacity=".5"')+C(144,62,5,DEEP,'opacity=".5"');
-      face=E(82,94,11,14,DEEP,rot(-16,82,94))+E(118,94,11,14,DEEP,rot(16,118,94))+muzzle(10)+E(100,105,6,4.5,K);
-      eyes=`<g class="pc-eyes">${C(82,93,5.5,W)+C(82,93,3.6,K)+C(83.4,91.6,1.3,W)+C(118,93,5.5,W)+C(118,93,3.6,K)+C(119.4,91.6,1.3,W)}</g>`;
-      arms='';
-      over=E(86,134,9,15,J,rot(12,86,134))+E(114,134,9,15,J,rot(-12,114,134))+E(84,127,4,2.5,W,'opacity=".6"')+E(112,127,4,2.5,W,'opacity=".6"');
-      break;
-    case 7: /* 수달 */
-      back=E(152,168,24,10,J,rot(-32,152,168))+C(64,48,9,J)+C(136,48,9,J);
-      face=muzzle(14)+E(100,103,8,5.5,K)+S('M100 108 Q96 114 91 112 M100 108 Q104 114 109 112',K,1.8)+whiskers;
-      arms='';
-      over=C(100,146,12,JA)+E(96,141,4,2.5,W,'opacity=".75"')+E(84,142,9,13,J,rot(30,84,142))+E(116,142,9,13,J,rot(-30,116,142));
-      break;
-    case 8: /* 사자 */
-      back=Array.from({length:16},(_,i)=>{const a=(i/16)*Math.PI*2;return C((100+62*Math.cos(a)).toFixed(1),(90+58*Math.sin(a)).toFixed(1),19,JD);}).join('')+E(100,90,62,58,JD)+C(66,48,11,J)+C(134,48,11,J);
-      face=muzzle(13)+P('M93 103 L107 103 L100 111Z',K)+S('M100 111 Q95 117 90 114 M100 111 Q105 117 110 114',K,1.8);
-      break;
-    case 9: /* 판다 */
-      back=C(64,42,15,K)+C(136,42,15,K);
-      face=E(82,94,11,14,K,rot(-20,82,94))+E(118,94,11,14,K,rot(20,118,94))+E(100,106,7,5,K)+S('M100 111 Q96 116 92 114 M100 111 Q104 116 108 114',K,1.8);
-      eyes=`<g class="pc-eyes">${C(83,93,4.5,W)+C(83,93,2.8,K)+C(117,93,4.5,W)+C(117,93,2.8,K)}</g>`;
-      arms=E(42,124,12,22,K,rot(22,42,124))+E(158,124,12,22,K,rot(-22,158,124));
-      feet=E(78,180,17,8,K)+E(122,180,17,8,K);
-      belly='';
-      break;
-  }
-  return `<svg class="pc-char-svg" viewBox="0 0 200 200" focusable="false" aria-hidden="true"><defs>`
-    +grad('j',TC)+grad('jd',DEEP)+grad('jl',LIGHT)+grad('ja',ACC)
-    +`<clipPath id="${id}-clip"><path d="${body}"/></clipPath>`
-    +`<linearGradient id="${id}-ir" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:${mix('var(--type-4)',55,W)}"/><stop offset=".35" style="stop-color:${mix('var(--type-7)',55,W)}"/><stop offset=".7" style="stop-color:${mix('var(--type-3)',55,W)}"/><stop offset="1" style="stop-color:${mix('var(--type-4)',55,W)}"/></linearGradient>`
-    +`<filter id="${id}-b1" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.4"/></filter>`
-    +`<filter id="${id}-b6" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="5"/></filter></defs>`
-    +E(100,193,52,6,K,`class="pc-shadow" opacity=".16" filter="url(#${id}-b6)"`)
-    +`<g class="pc-char">${back}${feet}${arms}`
-    +P(body,J,`stroke="${mix(TC,60,K)}" stroke-opacity=".28" stroke-width="1.2"`)
-    +pcCrystal(id,W,DEEP)
-    +P(body,'none',`stroke="url(#${id}-ir)" stroke-width="3.5" opacity=".7"`)
-    +E(100,150,42,20,W,`opacity=".2" filter="url(#${id}-b6)"`)
-    +belly+over+face+eyes+cheeks
-    +P('M60 76 C62 54 78 40 98 37 C83 46 72 58 68 78Z',W,`opacity=".78" filter="url(#${id}-b1)"`)
-    +gloss(120,46,6,3.5)
-    +S('M68 168 C86 178 114 178 134 167',W,3,`opacity=".45" filter="url(#${id}-b1)"`)
-    +`<path class="pc-glint" d="M140 40 C141 47 143 49 150 50 C143 51 141 53 140 60 C139 53 137 51 130 50 C137 49 139 47 140 40Z" fill="${W}"/>`
-    +`</g></svg>`;
+/* 유형별 보석 이미지 (디자인 시스템 v1 §4-1): assets/gems/ 투명 PNG 480px 9장. 색은 원본 그대로 — 화면에서 가장 채도 높은 요소.
+   장식이라 alt는 비우고, 보석 이름은 옆 글자로 알려준다. */
+const GEM_FILES={1:'sapphire',2:'rose-quartz',3:'diamond',4:'opal',5:'amethyst',6:'emerald',7:'citrine',8:'ruby',9:'aquamarine'};
+function gemImg(t,cls='',eager=false){
+  return `<img class="gem-img${cls?' '+cls:''}" src="assets/gems/gem-${t}-${GEM_FILES[t]}.png" alt="" width="480" height="480" decoding="async"${eager?'':' loading="lazy"'}>`;
 }
 
-/* 캐릭터 몸 위의 보석 커팅면: 한 점에서 퍼지는 삼각 면 + 윗면 + 빛 조각 (몸 모양으로 잘라냄) */
-function pcCrystal(id,W,DEEP){
-  const cx=96, cy=84, n=14;
-  const pts=Array.from({length:n},(_,i)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [(100+72*Math.cos(a)).toFixed(1),(108+84*Math.sin(a)).toFixed(1)];});
-  const ops=[.16,.04,.1,.05,.08,.02,.14,.03,.09,.06,.12,.02,.1,.05];
-  const facets=pts.map((p,i)=>{const q=pts[(i+1)%n];const deep=i%4===3;
-    return `<path d="M${cx} ${cy}L${p[0]} ${p[1]}L${q[0]} ${q[1]}Z" fill="${deep?DEEP:W}" fill-opacity="${ops[i]}" stroke="${W}" stroke-opacity=".22" stroke-width=".7"/>`;}).join('');
-  return `<g clip-path="url(#${id}-clip)">${facets}`
-    +`<path d="M82 70 L98 60 L114 68 L110 88 L88 90Z" fill="${W}" fill-opacity=".1" stroke="${W}" stroke-opacity=".45" stroke-width=".8"/>`
-    +`<path d="M62 66 L86 52 L78 88Z" fill="${W}" opacity=".35"/><path d="M124 134 L144 118 L134 154Z" fill="${W}" opacity=".15"/></g>`;
+/* 반짝 별 (네 갈래): 보석 주변·카드 위 작은 장식 */
+function pcSparkSVG(color){
+  return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 0C13 7 17 11 24 12C17 13 13 17 12 24C11 17 7 13 0 12C7 11 11 7 12 0Z" fill="${color}"/></svg>`;
 }
 
-/* 떠다니는 보석 소품: 커팅 하트 · 라운드 브릴리언트 · 카이트 컷 · 반짝 별 */
-function pcPropSVG(kind,color,uid){
-  const W='var(--color-surface)', K='var(--color-text-primary)';
-  const mix=(a,p,b)=>`color-mix(in srgb, ${a} ${p}%, ${b})`;
-  const DEEP=mix(color,70,K);
-  const g=`<defs><linearGradient id="${uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:${mix(color,40,W)}"/>`
-    +`<stop offset=".5" style="stop-color:${color}"/><stop offset="1" style="stop-color:${mix(color,85,K)}"/></linearGradient></defs>`;
-  const poly=(pts,fill,op,x='')=>`<path d="M${pts.map(p=>p.join(' ')).join('L')}Z" fill="${fill}" fill-opacity="${op}" ${x}/>`;
-  const edge=`stroke="${W}" stroke-opacity=".55" stroke-width=".5" stroke-linejoin="round"`;
-  const svg=(vb,inner)=>`<svg viewBox="${vb}" aria-hidden="true" focusable="false">${g}${inner}</svg>`;
-  if(kind==='spark'){
-    return svg('0 0 24 24',`<path d="M12 0 C13 7 17 11 24 12 C17 13 13 17 12 24 C11 17 7 13 0 12 C7 11 11 7 12 0Z" fill="url(#${uid})"/>`);
-  }
-  if(kind==='gemheart' || kind==='heart'){
-    const P=[[16,29],[4,18],[1.5,10],[4.5,4],[10,1.5],[16,6],[22,1.5],[27.5,4],[30.5,10],[28,18]], C=[16,14];
-    const ops=[.1,.35,.15,.45,.2,.05,.25,.1,.3,0];
-    return svg('0 0 32 30',poly(P,`url(#${uid})`,1,`stroke="${DEEP}" stroke-opacity=".5" stroke-width=".6"`)
-      +P.map((p,i)=>poly([C,p,P[(i+1)%P.length]],i%4===2?DEEP:W,ops[i],edge)).join('')
-      +poly([[9,6],[14,8],[10,13]],W,.7));
-  }
-  if(kind==='brilliant' || kind==='bubble'){
-    const O=Array.from({length:16},(_,i)=>{const a=i*Math.PI/8-Math.PI/2;return [(16+15*Math.cos(a)).toFixed(2),(16+15*Math.sin(a)).toFixed(2)];});
-    const T=Array.from({length:8},(_,i)=>{const a=i*Math.PI/4-Math.PI/2+Math.PI/8;return [(16+6.5*Math.cos(a)).toFixed(2),(16+6.5*Math.sin(a)).toFixed(2)];});
-    let f='';
-    for(let k=0;k<8;k++){
-      const t1=T[k], t2=T[(k+1)%8], o1=O[(2*k+1)%16], o0=O[(2*k)%16], o2=O[(2*k+2)%16];
-      f+=poly([t1,o0,o1],W,[.35,.1,.25,.05][k%4],edge)+poly([t1,o1,t2],k%3===1?DEEP:W,[.15,.2,.05][k%3],edge)+poly([t2,o1,o2],W,[.05,.3,.12,.2][k%4],edge);
-    }
-    return svg('0 0 32 32',`<circle cx="16" cy="16" r="15" fill="url(#${uid})" stroke="${DEEP}" stroke-opacity=".45" stroke-width=".6"/>`+f+poly(T,W,.28,edge));
-  }
-  /* kite (세로로 긴 마름모 컷) */
-  const top=[16,1],R=[28,12],B=[16,31],L=[4,12],a1=[16,6],a2=[23,12],a3=[16,24],a4=[9,12];
-  return svg('0 0 32 32',poly([top,R,B,L],`url(#${uid})`,1,`stroke="${DEEP}" stroke-opacity=".5" stroke-width=".6"`)
-    +poly([top,L,a4,a1],W,.4,edge)+poly([top,a1,a2,R],W,.12,edge)+poly([a1,a2,a3,a4],W,.22,edge)
-    +poly([L,a4,a3,B],DEEP,.08,edge)+poly([R,B,a3,a2],DEEP,.2,edge));
+/* 카드 궤도선: 얇은 금빛 곡선 두 줄 + 작은 점 별 (앞·뒷면 공통) */
+const PC_ORBIT=`<svg class="pcard-orbit" viewBox="0 0 250 350" preserveAspectRatio="none" aria-hidden="true" focusable="false">`
+  +`<ellipse cx="125" cy="190" rx="150" ry="70" transform="rotate(-24 125 190)"/>`
+  +`<ellipse cx="125" cy="170" rx="128" ry="150" transform="rotate(12 125 170)"/>`
+  +[[30,96,1.8],[214,62,1.4],[226,226,2],[22,250,1.4],[178,318,1.6],[64,40,1.2]].map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}"/>`).join('')
+  +`</svg>`;
+
+/* 프로필 카드 (레어 카드, 브리프 §9): 앞면 = Enneagram · Type N · 큰 보석 · 영문 이름 · 키워드
+   뒷면 = 번호 칩 · 작은 보석 · 키워드 · 태그 칩 3개 · 1인칭 소개 · 질문 박스.
+   카드 전체가 뒤집기 버튼이고, 핸드북 이동은 카드 아래 링크로 분리. 상태(빛남/흐려짐)는 카드에 넣지 않는다. */
+/* 컴포넌트는 --tc(base) · --ts(soft) · --td(deep) 세 변수만 쓰면 9유형이 자동으로 바뀐다 */
+const gemVars=t=>`--tc:var(--type-${t});--ts:var(--type-${t}-soft);--td:var(--type-${t}-deep)`;
+
+function homeProfileCardHTML(t,{mine=null}={}){
+  const p=HOME_PROFILES[t], name=homeEsc(CHECK_TYPE_NAMES[t]);
+  const sparks=[1,2,3].map(i=>`<span class="pc-twinkle pc-twinkle-${i}">${pcSparkSVG('var(--color-gold)')}</span>`).join('');
+  return `<article class="pcard type-${t}${mine?' is-mine':''}" style="${gemVars(t)};--i:${t-1}">`
+    +`<button class="pcard-flip" type="button" data-card-flip aria-pressed="false" aria-label="${t}번 ${name} 카드, ${homeEsc(p.key)}. 뒷면 보기">`
+    +`<span class="pcard-body">`
+    +`<span class="pcard-face pcard-front" aria-hidden="true">${PC_ORBIT}`
+    +`<span class="pcard-brand">Enneagram</span><span class="pcard-script">Type ${t}</span>`
+    +`<span class="pcard-gem-stage">${sparks}${gemImg(t)}</span>`
+    +`<span class="pcard-en">${homeEsc(p.en)}</span><span class="pcard-key">${homeEsc(p.key)}</span>`
+    +`</span>`
+    +`<span class="pcard-face pcard-back" aria-hidden="true">${PC_ORBIT}`
+    +`<span class="pcard-chip">${t}</span><span class="pcard-gem-mini">${gemImg(t)}</span>`
+    +`<span class="pcard-title">${homeEsc(p.key)}</span>`
+    +`<span class="pcard-tags">${p.tags.map(k=>`<span class="pcard-tag">#${homeEsc(k)}</span>`).join('')}</span>`
+    +`<span class="pcard-intro">${homeEsc(p.intro)}</span>`
+    +`<span class="pcard-star">${pcSparkSVG('var(--color-gold)')}</span>`
+    +`<span class="pcard-ask">${homeEsc(p.ask)}</span>`
+    +`</span>`
+    +`</span><span class="pcard-shine" aria-hidden="true"></span></button>`
+    +`<p class="pcard-sr" aria-live="polite"></p>`
+    +`<div class="pcard-foot">${mine?'<span class="pcard-badge">나의 프로필</span>':''}`
+    +`<span class="pcard-gemname">${t}번 ${name} · ${homeEsc(p.gem)}</span>`
+    +`<a class="pcard-link" href="#handbook" data-profile-open="${t}">핸드북 보기</a></div>`
+    +`</article>`;
 }
 
-const PC_PROPS={1:['gemheart','spark','kite'],2:['brilliant','spark','gemheart'],3:['kite','spark','brilliant'],4:['gemheart','spark','kite'],5:['kite','spark','brilliant'],6:['brilliant','spark','gemheart'],7:['gemheart','spark','kite'],8:['kite','spark','gemheart'],9:['brilliant','spark','kite']};
-
-function homeProfileCardHTML(t,{mine=null,link=false,uid='pc'}={}){
-  const p=HOME_PROFILES[t];
-  const center=homeCenterOf(t);
-  const attrs=link
-    ? ` role="button" tabindex="0" data-profile-open="${t}" aria-label="${t}번 ${CHECK_TYPE_NAMES[t]}, ${homeEsc(p.nick)} ${homeEsc(p.animal)}, 나의 원석 ${homeEsc(p.gem)}. 핸드북 보기"`
-    : '';
-  const colors=[`var(--type-${t})`,'var(--color-surface)','var(--color-accent)'];
-  const props=PC_PROPS[t].map((k,i)=>`<span class="pc-prop pc-prop-${i+1}">${pcPropSVG(k,colors[i],`${uid}${t}-p${i}`)}</span>`).join('');
-  return `<article class="pcard type-${t}${mine?' is-mine':''}" style="--tc:var(--type-${t});--i:${t-1}" data-center="${center[0]}"${attrs}>`
-    +`<span class="pcard-frame" aria-hidden="true">${['tl','tr','bl','br'].map(c=>`<span class="pcard-corner pcard-corner-${c}"></span>`).join('')}</span>`
-    +`<div class="pcard-inner">`
-    +`<div class="pcard-head"><span class="pcard-no">${t}번 · ${homeEsc(CHECK_TYPE_NAMES[t])}</span>`
-    +`<span class="pcard-badge">${mine?'나의 프로필':homeEsc(center[1])}</span></div>`
-    +`<div class="pcard-stage" aria-hidden="true"><span class="pc-halo"></span>${props}`
-    +[1,2,3].map(i=>`<span class="pc-twinkle pc-twinkle-${i}">${pcPropSVG('spark','var(--color-surface)',`${uid}${t}-tw${i}`)}</span>`).join('')
-    +`${pcJellySVG(t,uid)}</div>`
-    +`<div class="pcard-ribbon"><h3 class="pcard-title">${homeEsc(p.nick)} <span class="pcard-animal">${homeEsc(p.animal)}</span></h3></div>`
-    +`<p class="pcard-gem">나의 원석 · <strong>${homeEsc(p.gem)}</strong></p>`
-    +`<p class="pcard-quote">“${homeEsc(p.quote)}”</p>`
-    +`<div class="pcard-traits" role="list">${p.traits.map(([e,s])=>`<div role="listitem"><span class="pcard-emoji" aria-hidden="true">${e}</span><span>${homeEsc(s)}</span></div>`).join('')}</div>`
-    +`<p class="pcard-tags">${p.tags.map(k=>'#'+homeEsc(k)).join(' ')}</p>`
-    +(mine?`<p class="pcard-meta">${homeEsc(mine.source)} · ${homeGroupName('hornevian',t)} · ${homeGroupName('harmonic',t)}</p>`:'')
-    +`</div><span class="pcard-shine" aria-hidden="true"></span><span class="pcard-sweep" aria-hidden="true"></span></article>`;
+/* 카드 뒤집기: 뒷면 내용은 화면 낭독기에도 읽히도록 aria-live 문단에 넣어준다 */
+function flipProfileCard(btn){
+  const card=btn.closest('.pcard');
+  const t=Number(card.className.match(/type-(\d)/)[1]), p=HOME_PROFILES[t];
+  const back=!card.classList.contains('is-flipped');
+  card.classList.toggle('is-flipped',back);
+  btn.setAttribute('aria-pressed',String(back));
+  btn.setAttribute('aria-label',`${t}번 ${CHECK_TYPE_NAMES[t]} 카드, ${p.key}. ${back?'앞면 보기':'뒷면 보기'}`);
+  card.querySelector('.pcard-sr').textContent=back?`${p.tags.map(k=>'#'+k).join(' ')}. ${p.intro} 오늘의 질문: ${p.ask}`:'';
 }
 
 /* 카드 모션: 포인터 따라 기울기(마우스 환경만) + 화면에 들어올 때 튀어오르기. 동작 줄이기 설정이면 둘 다 끔 */
@@ -2224,53 +2124,12 @@ function bindProfileMotion(rail){
   }
   rail.addEventListener('scroll',()=>syncProfileRailNav(rail),{passive:true});
 }
-function revealProfileRail(rail){
-  if(!rail || pcReduceMotion() || !('IntersectionObserver' in window)) return;
-  rail.classList.remove('is-in');
-  rail.classList.add('pc-wait');
-  const done=()=>{rail.classList.remove('pc-wait');rail.classList.add('is-in');io.disconnect();};
-  const io=new IntersectionObserver(es=>{if(es.some(x=>x.isIntersecting)) done();},{threshold:.15});
-  io.observe(rail);
-  setTimeout(()=>{if(rail.classList.contains('pc-wait')) done();},2500);
-}
-/* 홈 배너: 떠다니는 보석 + 반짝이는 별 (위치는 %, 크기는 토큰) */
-function renderHeroJelly(){
-  const box=document.getElementById('heroJelly');
-  if(!box || box.childElementCount) return;
-  const items=[
-    ['gemheart','var(--type-1)','top:16%;left:9%','--space-9',0],
-    ['kite','var(--type-7)','top:5%;right:6%','--space-8',1],
-    ['brilliant','var(--type-4)','bottom:14%;right:8%','--space-9',0],
-    ['kite','var(--type-3)','bottom:18%;left:14%','--space-7',0],
-    ['brilliant','var(--color-accent)','top:46%;right:20%','--space-6',0],
-    ['gemheart','var(--type-2)','top:50%;left:22%','--space-6',0],
-    ['spark','var(--color-surface)','top:10%;left:30%','--space-5',1],
-    ['spark','var(--color-surface)','top:28%;right:30%','--space-4',0],
-    ['spark','var(--type-3)','bottom:24%;left:36%','--space-4',0],
-    ['spark','var(--color-surface)','bottom:10%;right:34%','--space-5',1],
-    ['spark','var(--color-surface)','top:62%;left:5%','--space-4',1],
-    ['spark','var(--type-4)','top:30%;right:5%','--space-4',1]
-  ];
-  box.innerHTML=items.map(([k,c,pos,size,mobile],i)=>`<span class="pc-prop hjx${k==='spark'?' is-twinkle':''}${mobile?'':' hjx-desk'}" style="${pos};width:var(${size});height:var(${size});animation-delay:-${(i*530)%4200}ms">${pcPropSVG(k,c,`hj-${i}`)}</span>`).join('');
-  /* 제목 안에 박힌 보석 아이콘 */
-  document.querySelectorAll('#page-home [data-inline-jelly]').forEach((el,i)=>{
-    if(!el.childElementCount) el.innerHTML=pcPropSVG(el.dataset.inlineJelly,i?'var(--type-3)':'var(--type-1)',`hij-${i}`);
-  });
-}
 function syncProfileRailNav(rail){
   const max=rail.scrollWidth-rail.clientWidth-2;
   document.querySelectorAll('#page-home [data-rail-step]').forEach(b=>{
     b.disabled=Number(b.dataset.railStep)<0 ? rail.scrollLeft<=2 : rail.scrollLeft>=max;
   });
 }
-function stepProfileRail(dir){
-  const rail=document.getElementById('homeProfileGrid');
-  const card=rail?.querySelector('.pcard');
-  if(!card) return;
-  const gap=parseFloat(getComputedStyle(rail).columnGap)||0;
-  rail.scrollBy({left:dir*(card.offsetWidth+gap),behavior:pcReduceMotion()?'auto':'smooth'});
-}
-
 /* 오늘의 질문: 날짜마다 바뀌는 성찰 질문 한 줄 (다이어리로 이어짐) */
 const HOME_DAILY_QUESTIONS=[
   '오늘 가장 크게 반응한 순간은 언제였나요?',
@@ -2290,44 +2149,118 @@ function homeTodayQuestion(){
   return HOME_DAILY_QUESTIONS[day%HOME_DAILY_QUESTIONS.length];
 }
 
-/* 홈 '나' 영역: 내 카드(있으면) + 오늘의 질문 + 바로 할 수 있는 일 */
+/* 홈 '나' 영역 (디자인 시스템 v1 '오늘의 보석 카드' 바탕): 유리 패널 하나에
+   카드 | 머리(보석 타일·유형·키워드·태그·한 줄 소개) / 오늘의 질문 / 할 수 있는 일. 모바일은 머리 → 카드 → 질문 → 버튼 순서 */
 function renderHomeMe(profile){
   const box=document.getElementById('homeMe');
   if(!box) return;
-  const today=`<article class="home-today">`
+  const question=`<span class="home-today-star" aria-hidden="true">${pcSparkSVG('var(--color-gold)')}</span>`
     +`<span class="home-today-label">오늘의 질문</span>`
     +`<p class="home-today-q">${homeEsc(homeTodayQuestion())}</p>`
     +`<p class="home-today-help">짧게라도 적어두면 '나의 변화'에서 반복되는 흐름이 보여요.</p>`
-    +`<button class="btn primary" data-home-diary type="button">다이어리에 쓰기</button></article>`;
+    +`<button class="btn ${profile?'primary':'secondary'}" data-home-diary type="button">다이어리에 쓰기</button>`; /* 유형이 없으면 주 버튼은 '간편 검사 시작' 하나 */
   if(!profile){
-    box.classList.add('is-empty');
-    box.innerHTML=today;
+    box.className='home-me-grid is-empty';
+    box.removeAttribute('style');
+    box.innerHTML=`<article class="home-today">${question}</article>`;
     return;
   }
   const t=profile.type, p=HOME_PROFILES[t];
-  box.classList.remove('is-empty');
-  box.innerHTML=`<div class="home-me-card">${homeProfileCardHTML(t,{link:true,mine:profile,uid:'me'})}</div>`
-    +`<div class="home-me-side">`
-    +`<div class="home-me-head"><span class="home-me-label">나의 프로필 · ${homeEsc(profile.source)}</span>`
-    +`<h2 class="home-me-title">${t}번 ${homeEsc(CHECK_TYPE_NAMES[t])}<br><span>${homeEsc(p.nick)} ${homeEsc(p.animal)}</span></h2></div>`
-    +today
-    +`<div class="home-me-actions"><button class="btn secondary" data-profile-open="${t}" type="button">핸드북 보기</button>`
+  box.className='home-me-grid me-panel';
+  box.setAttribute('style',gemVars(t));
+  box.innerHTML=`<div class="me-card">${homeProfileCardHTML(t,{mine:profile})}</div>`
+    +`<header class="me-head">`
+    +`<span class="me-label">나의 대표 프로필 · ${homeEsc(profile.source)}</span>`
+    +`<div class="me-title-row"><span class="gem-tile">${gemImg(t,'',true)}</span>`
+    +`<div><h2 class="home-me-title">${t}번 ${homeEsc(CHECK_TYPE_NAMES[t])}</h2>`
+    +`<p class="me-sub">${homeEsc(p.key)} · ${homeEsc(p.gem)}</p></div></div>`
+    +`<div class="me-tags">${p.tags.map(k=>`<span class="tag-chip">#${homeEsc(k)}</span>`).join('')}</div>`
+    +`<p class="me-desc">${homeEsc(p.intro)}</p>`
+    +`</header>`
+    +`<article class="home-today">${question}</article>`
+    +'<div class="home-me-actions">'
+    +`<button class="btn secondary" data-profile-open="${t}" type="button">핸드북 보기</button>`
     +'<button class="btn secondary" data-share-open-home type="button">링크 공유</button>'
-    +'<button class="btn secondary" data-profile-save type="button">이미지 저장</button></div>'
-    +'</div>';
+    +'<button class="btn secondary" data-profile-save type="button">이미지 저장</button></div>';
 }
 
-/* 9장 카드 목록. 저장된 유형이 있으면 그 카드에 '나의 프로필'을 붙인다. */
+/* 홈 = 큐레이션 피드 (2026-10-01). 소개 글 대신 바로 볼거리를 선반(옆으로 넘기는 줄)으로 보여준다.
+   - 유형이 없으면: 내 보석 찾기 배너 / 있으면: 대표 프로필 패널 (내 카드만)
+   - 이어서 보기 → 오늘의 보석 → 9가지 보석 → 나를 돌아보는 장면 → 비교해서 보기 → 에니어그램 기초
+   9장 카드 줄은 유형 탐구 > 전체 유형으로 옮겼다. */
 function renderHomeProfiles(){
-  const grid=document.getElementById('homeProfileGrid');
-  if(!grid) return;
   const profile=getHomeProfile();
-  grid.innerHTML=[1,2,3,4,5,6,7,8,9].map(t=>homeProfileCardHTML(t,{link:true,mine:profile && profile.type===t ? profile : null})).join('');
-  bindProfileMotion(grid);
-  renderHeroJelly();
-  revealProfileRail(grid);
-  requestAnimationFrame(()=>syncProfileRailNav(grid));
+  const find=document.getElementById('home-find');
+  if(find) find.hidden=!!profile;
+  const gems=document.getElementById('homeFindGems');
+  if(gems && !gems.childElementCount) gems.innerHTML=[2,5,7].map(t=>gemImg(t,'',true)).join('');
   renderHomeMe(profile);
+  renderHomeShelves(profile);
+  renderTypeCardRail(profile);
+  syncTabGem(profile);
+}
+
+/* 유형 탐구 > 전체 유형: 9장의 프로필 카드 */
+function renderTypeCardRail(profile=getHomeProfile()){
+  const rail=document.getElementById('typeCardRail');
+  if(!rail) return;
+  rail.innerHTML=[1,2,3,4,5,6,7,8,9].map(t=>homeProfileCardHTML(t,{mine:profile && profile.type===t ? profile : null})).join('');
+  bindProfileMotion(rail);
+}
+
+/* 오늘의 보석: 날짜마다 바뀌는 유형 하나 */
+function homeTodayType(){
+  const d=new Date();
+  const day=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);
+  return day%9+1;
+}
+
+function renderHomeShelves(profile){
+  const box=document.getElementById('homeShelves');
+  if(!box) return;
+  const firstSentence=sel=>homeEsc((document.querySelector(sel)?.textContent||'').trim());
+  /* section 대신 div: 옛 레이어의 #page-home section{padding:52px 0 !important}를 피한다 */
+  const shelf=(title,body,{more='',cls=''}={})=>`<div class="shelf${cls?' '+cls:''}" role="region" aria-label="${title}"><div class="shelf-head"><h2 class="shelf-title">${title}</h2>${more}</div>${body}</div>`;
+  const rail=items=>`<div class="shelf-rail" role="list">${items}</div>`;
+
+  const t=homeTodayType(), p=HOME_PROFILES[t];
+  const today=`<button class="today-gem" data-profile-open="${t}" style="${gemVars(t)}" type="button">`
+    +`<span class="today-gem-art">${gemImg(t,'',true)}</span>`
+    +`<span class="today-gem-body"><span class="today-gem-label">${t}번 ${homeEsc(CHECK_TYPE_NAMES[t])} · ${homeEsc(p.gem)}</span>`
+    +`<strong class="today-gem-key">${homeEsc(p.key)}</strong>`
+    +`<span class="today-gem-quote">“${homeEsc(p.quote)}”</span></span></button>`;
+
+  const gems=[1,2,3,4,5,6,7,8,9].map(n=>`<button class="gem-chip" data-profile-open="${n}" role="listitem" style="${gemVars(n)}" type="button">`
+    +`<span class="gem-tile">${gemImg(n,'',false)}</span><span class="gem-chip-name">${n}번 ${homeEsc(CHECK_TYPE_NAMES[n])}</span>`
+    +`<span class="gem-chip-gem">${homeEsc(HOME_PROFILES[n].gem)}</span></button>`).join('');
+
+  const scenes=SHARING_TITLES.map((title,i)=>`<button class="shelf-card scene-card" data-shelf-sharing="${i}" role="listitem" type="button">`
+    +`<span class="shelf-card-star" aria-hidden="true">${pcSparkSVG('var(--color-gold)')}</span>`
+    +`<strong class="shelf-card-title">${homeEsc(title)}</strong><span class="shelf-card-go">돌아보기</span></button>`).join('');
+
+  const textCards=(titles,attr,sel)=>Object.entries(titles).map(([k,title])=>`<button class="shelf-card" ${attr}="${k}" role="listitem" type="button">`
+    +`<strong class="shelf-card-title">${homeEsc(title)}</strong><span class="shelf-card-desc">${firstSentence(sel(k))}</span></button>`).join('');
+
+  /* 유형 검사: 하단 탭 대신 홈 CTA. 유형이 없으면 맨 위 '내 보석 찾기'가 그 역할을 하고, 있으면 여기서 다시 확인 */
+  const check=profile
+    ? `<div class="home-check" role="region" aria-label="유형 검사"><div class="home-check-copy"><strong class="home-check-title">유형 검사</strong>`
+      +'<p class="home-check-desc">헷갈리는 유형이 있다면 정식 검사로 그 유형만 자세히 확인해보세요.</p></div>'
+      +'<div class="home-check-actions"><button class="btn secondary" data-home-action="quick" type="button">간편 검사</button>'
+      +'<button class="btn secondary" data-home-action="find" type="button">정식 검사</button></div></div>'
+    : '';
+  box.innerHTML=check+shelf('오늘의 보석',today,{cls:'shelf-today'})
+    +shelf('9가지 보석',rail(gems),{more:'<button class="shelf-more" data-shelf-compare="glance" type="button">카드로 보기</button>'})
+    +shelf('나를 돌아보는 장면',rail(scenes))
+    +shelf('비교해서 보기',rail(textCards(COMPARE_TITLES,'data-shelf-compare',k=>`#page-compare [data-compare-panel="${k}"] p`)))
+    +shelf('에니어그램 기초',rail(textCards(OVERVIEW_TITLES,'data-shelf-overview',k=>`#page-overview .overview-panel[data-overview-key="${k}"] p`)));
+}
+
+/* 하단 탭 '나의 공간' 아이콘: 유형을 정했으면 내 보석 이미지로 (디자인 시스템 §6 하단 탭) */
+function syncTabGem(profile){
+  const icon=document.querySelector('.bottom-tab[data-tab="myspace"] .bottom-tab-icon');
+  if(!icon) return;
+  if(!icon.dataset.lineIcon) icon.dataset.lineIcon=icon.innerHTML;
+  icon.innerHTML=profile ? gemImg(profile.type,'',true) : icon.dataset.lineIcon;
 }
 
 /* 나의 프로필 카드를 PNG로 저장 (canvas에 직접 그림, 색은 tokens.css 값을 읽어 씀) */
@@ -2335,58 +2268,74 @@ async function saveHomeProfileImage(){
   const profile=getHomeProfile();
   if(profile) saveTypeCardImage(profile.type,profile.source);
 }
+/* 프로필 카드를 공유 이미지로 저장 (PRD PC-3: 인스타 스토리 9:16, 디자인 시스템 §5-1 카드 그대로).
+   canvas에 직접 그리고, 색은 tokens.css 값을 읽어 쓴다. 카드에 상태(빛남/흐려짐)는 넣지 않는다. */
 async function saveTypeCardImage(t,source){
-  const p=HOME_PROFILES[t], center=homeCenterOf(t);
+  const p=HOME_PROFILES[t];
   const css=getComputedStyle(document.documentElement);
   const v=name=>css.getPropertyValue(name).trim();
-  const font=v('--font-sans');
-  try{ await document.fonts.ready; }catch(e){}
+  const font=v('--font-sans'), script=v('--font-script');
+  const base=v(`--type-${t}`), deep=v(`--type-${t}-deep`), ink=v('--color-text-primary'), sub=v('--color-text-secondary');
+  const white=v('--color-surface-solid'), gold=v('--color-gold');
+  try{ await Promise.all([document.fonts.load(`96px ${script}`),document.fonts.load(`800 40px ${font}`)]); }catch(e){}
+  const gem=new Image();
+  gem.src=`assets/gems/gem-${t}-${GEM_FILES[t]}.png`;
+  try{ await gem.decode(); }catch(e){}
 
-  const W=1080, H=1350, pad=96, cv=document.createElement('canvas');
+  const W=1080, H=1920, cv=document.createElement('canvas');
   cv.width=W; cv.height=H;
   const ctx=cv.getContext('2d');
-  const box=(x,y,w,h,r,fill)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=fill;ctx.fill();};
-  const wrap=(text,x,y,maxW,lh)=>{
-    let line='';
-    for(const ch of text){
-      if(ctx.measureText(line+ch).width>maxW && line){ctx.fillText(line,x,y);line=ch.trimStart();y+=lh;}
-      else line+=ch;
-    }
-    ctx.fillText(line,x,y);
-    return y+lh;
-  };
+  const blob=(x,y,r,color)=>{const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,color);g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);};
+  const center=(text,y)=>{ctx.textAlign='center';ctx.fillText(text,W/2,y);};
 
-  box(0,0,W,H,0,v('--color-primary-soft'));
-  box(pad/2,pad/2,W-pad,H-pad,48,v('--color-surface'));
-  box(pad/2,pad/2,W-pad,24,[48,48,0,0],v('--color-primary'));
+  /* 바탕: 밝은 라벤더 그레이 + 모서리 빛 덩어리 */
+  ctx.fillStyle=v('--color-bg'); ctx.fillRect(0,0,W,H);
+  ctx.globalAlpha=.75;
+  blob(W,0,900,v('--blob-lavender')); blob(0,260,800,v('--blob-pink')); blob(0,H,900,v('--blob-sky')); blob(W,H-120,800,v('--blob-peach'));
+  ctx.globalAlpha=1;
 
-  ctx.textBaseline='alphabetic';
-  ctx.fillStyle=v('--color-text-tertiary');
-  ctx.font=`700 34px ${font}`;
-  ctx.fillText('나의 에니어그램 프로필',pad+24,pad+110);
+  /* 카드 5:7 — 홀로그램(흰색과 반반) → 보석 색 35% → 가운데 흰 빛 */
+  const cw=780, ch=1092, cx=(W-cw)/2, cy=330, r=56;
+  const card=()=>{ctx.beginPath();ctx.roundRect(cx,cy,cw,ch,r);};
+  ctx.save();
+  ctx.shadowColor='rgba(110, 90, 200, 0.22)'; ctx.shadowBlur=90; ctx.shadowOffsetY=36;
+  card(); ctx.fillStyle=white; ctx.fill();
+  ctx.restore();
+  ctx.save(); card(); ctx.clip();
+  const holo=ctx.createLinearGradient(cx,cy,cx+cw,cy+ch);
+  [['#C7E6FF',0],['#D7C8FF',.3],['#F7D6E6',.55],['#CDEDC6',.8],['#FFF1C4',1]].forEach(([c,o])=>holo.addColorStop(o,c));
+  ctx.fillStyle=holo; ctx.fillRect(cx,cy,cw,ch);
+  ctx.globalAlpha=.5; ctx.fillStyle=white; ctx.fillRect(cx,cy,cw,ch);
+  ctx.globalAlpha=.35; ctx.fillStyle=base; ctx.fillRect(cx,cy,cw,ch);
+  ctx.globalAlpha=.85;
+  const glow=ctx.createRadialGradient(W/2,cy+ch*.46,0,W/2,cy+ch*.46,cw*.55);
+  glow.addColorStop(0,white); glow.addColorStop(1,'transparent');
+  ctx.fillStyle=glow; ctx.fillRect(cx,cy,cw,ch);
+  ctx.globalAlpha=1;
+  /* 금빛 궤도선 2개 + 작은 별 */
+  ctx.strokeStyle=gold; ctx.lineWidth=2.5; ctx.globalAlpha=.8;
+  ctx.beginPath(); ctx.ellipse(W/2,cy+ch*.54,cw*.6,ch*.2,-24*Math.PI/180,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(W/2,cy+ch*.49,cw*.51,ch*.43,12*Math.PI/180,0,Math.PI*2); ctx.stroke();
+  ctx.fillStyle=gold; ctx.globalAlpha=1;
+  [[.12,.27,6],[.86,.18,5],[.9,.65,7],[.09,.71,5],[.71,.91,6],[.26,.11,4]].forEach(([x,y,s])=>{ctx.beginPath();ctx.arc(cx+cw*x,cy+ch*y,s,0,Math.PI*2);ctx.fill();});
+  ctx.restore();
+  /* 흰 테두리 + 8px 안쪽 금빛 선 */
+  card(); ctx.lineWidth=4; ctx.strokeStyle='rgba(255, 255, 255, 0.9)'; ctx.stroke();
+  ctx.beginPath(); ctx.roundRect(cx+24,cy+24,cw-48,ch-48,r-24); ctx.lineWidth=2; ctx.strokeStyle=gold; ctx.globalAlpha=.45; ctx.stroke(); ctx.globalAlpha=1;
 
-  ctx.fillStyle=v('--color-text-primary');
-  ctx.font=`800 260px ${font}`;
-  ctx.fillText(String(t),pad+10,pad+380);
-  ctx.font=`800 88px ${font}`;
-  ctx.fillText(CHECK_TYPE_NAMES[t],pad+24,pad+510);
+  /* 카드 앞면 글자와 보석 */
+  ctx.fillStyle=deep; ctx.textBaseline='alphabetic';
+  ctx.font=`700 46px ${font}`; center('Enneagram',cy+140);
+  ctx.font=`110px ${script}`; center(`Type ${t}`,cy+270);
+  if(gem.complete && gem.naturalWidth){ const gs=470; ctx.drawImage(gem,(W-gs)/2,cy+320,gs,gs); }
+  ctx.font=`64px ${script}`; center(p.en,cy+ch-150);
+  ctx.font=`700 42px ${font}`; center(p.key,cy+ch-80);
 
-  ctx.fillStyle=v('--color-text-primary');
-  ctx.font=`700 52px ${font}`;
-  let y=wrap(`“${p.quote}”`,pad+24,pad+650,W-pad*2-48,72);
-
-  ctx.fillStyle=v('--color-text-secondary');
-  ctx.font=`500 40px ${font}`;
-  y=wrap(p.desc,pad+24,y+24,W-pad*2-48,60);
-
-  ctx.fillStyle=v('--color-primary');
-  ctx.font=`700 40px ${font}`;
-  ctx.fillText(p.tags.map(k=>'#'+k).join('  '),pad+24,y+40);
-
-  ctx.fillStyle=v('--color-text-tertiary');
-  ctx.font=`500 32px ${font}`;
-  ctx.fillText(`${center[1]} · ${homeGroupName('hornevian',t)} · ${homeGroupName('harmonic',t)}`,pad+24,H-pad-80);
-  ctx.fillText(`${source} · Enneagram`,pad+24,H-pad-30);
+  /* 카드 아래 */
+  ctx.fillStyle=ink; ctx.font=`800 52px ${font}`; center(`${t}번 ${CHECK_TYPE_NAMES[t]} · ${p.gem}`,cy+ch+150);
+  ctx.fillStyle=sub; ctx.font=`500 36px ${font}`; center(`#${p.tags.join('  #')}`,cy+ch+220);
+  ctx.font=`500 32px ${font}`; center(`${source} · Enneagram`,H-110);
+  ctx.font=`700 36px ${font}`; ctx.fillStyle=sub; center('나의 에니어그램 카드',200);
 
   cv.toBlob(blob=>{
     if(!blob) return;
@@ -2398,19 +2347,22 @@ async function saveTypeCardImage(t,source){
   },'image/png');
 }
 
-document.getElementById('page-home')?.addEventListener('keydown',e=>{
-  const open=e.target.closest('[data-profile-open][role="button"]');
-  if(open && (e.key==='Enter' || e.key===' ')){e.preventDefault();showHandbookType(Number(open.dataset.profileOpen));}
-});
+/* 앱 열 밖 서비스 소개 패널의 간편 검사 버튼 */
+document.querySelector('[data-side-quick]')?.addEventListener('click',()=>showCheckTarget('quick'));
 
 document.getElementById('page-home')?.addEventListener('click',e=>{
   if(e.target.closest('[data-profile-save]')){ saveHomeProfileImage(); return; }
   if(e.target.closest('[data-share-open-home]')){ showSharePage(); return; }
   if(e.target.closest('[data-home-diary]')){ document.querySelector('.top-nav-main[data-top-page="diary"]')?.click(); return; }
-  const step=e.target.closest('[data-rail-step]');
-  if(step){ stepProfileRail(Number(step.dataset.railStep)); return; }
+  const sh=e.target.closest('[data-shelf-sharing],[data-shelf-compare],[data-shelf-overview]');
+  if(sh){
+    if(sh.dataset.shelfSharing!==undefined) showSharingTopic(Number(sh.dataset.shelfSharing));
+    else if(sh.dataset.shelfCompare) showCompareSection(sh.dataset.shelfCompare);
+    else showOverviewSection(sh.dataset.shelfOverview);
+    return;
+  }
   const open=e.target.closest('[data-profile-open]');
-  if(open){ showHandbookType(Number(open.dataset.profileOpen)); return; }
+  if(open){ e.preventDefault(); showHandbookType(Number(open.dataset.profileOpen)); return; }
 
   const action=e.target.closest('[data-home-action]');
   if(action){
@@ -2438,6 +2390,32 @@ document.getElementById('page-home')?.addEventListener('click',e=>{
     else if(key==='myspace-reflection' && typeof showMySpaceSection==='function') showMySpaceSection('reflection');
   }
 });
+
+document.addEventListener('click',e=>{
+  const flip=e.target.closest('[data-card-flip]');
+  if(flip){ flipProfileCard(flip); return; }
+  const open=e.target.closest('.pcard [data-profile-open]');
+  if(open && !open.closest('#page-home')){ e.preventDefault(); showHandbookType(Number(open.dataset.profileOpen)); }
+});
+
+/* 유형 탐구 > 각 유형 요약: 맨 위에 그 유형의 프로필 카드 (핸드북 본문은 비동기로 그려지므로 나타날 때 끼워 넣는다) */
+function injectHandbookCards(){
+  document.querySelectorAll('#page-handbook .type-page .hb-summary').forEach(sum=>{
+    if(sum.querySelector('.hb-card-slot')) return;
+    const t=Number((sum.closest('.type-page')?.id||'').replace('type-',''));
+    if(!(t>=1 && t<=9)) return;
+    const profile=getHomeProfile();
+    const slot=document.createElement('div');
+    slot.className='hb-card-slot';
+    slot.innerHTML=homeProfileCardHTML(t,{mine:profile && profile.type===t ? profile : null});
+    sum.prepend(slot);
+  });
+}
+const hbRoot=document.getElementById('page-handbook');
+if(hbRoot){
+  injectHandbookCards();
+  new MutationObserver(()=>injectHandbookCards()).observe(hbRoot,{childList:true,subtree:true});
+}
 
 function refreshHome(){
   syncHomeResultButtons();
@@ -2563,7 +2541,7 @@ function renderShareViewer(){
       <h2 class="share-panel-title">나와 비교해볼까요?</h2>
       <p class="share-panel-desc">${me?`내 카드는 <b>${me}번 ${homeEsc(CHECK_TYPE_NAMES[me])}</b>예요. 다른 유형으로 바꿔 볼 수도 있어요.`:'내 유형을 골라보세요. 아직 모르면 유형 검사부터 해도 좋아요.'}</p>
       ${shareTypeChips(shareState.compare,'data-share-compare')}
-      <div class="share-actions">${me?'':'<button class="share-btn" data-share-check type="button">내 유형 찾기</button>'}<button class="share-btn is-ghost" data-share-own type="button">내 카드도 링크로 보내기</button></div>
+      <div class="share-actions">${me?'':'<button class="share-btn is-primary" data-share-check type="button">간편 검사로 내 유형 찾기</button>'}<button class="share-btn is-ghost" data-share-own type="button">내 카드도 링크로 보내기</button></div>
     </section>
     <div id="shareCompare">${shareState.compare?shareCompareHTML(t,shareState.compare,who,null,null):''}</div>`;
 }
@@ -2658,7 +2636,8 @@ document.getElementById('shareApp')?.addEventListener('click',e=>{
     return;
   }
   if(e.target.closest('[data-share-own]')){ showSharePage(); return; }
-  if(e.target.closest('[data-share-check]')){ showCheckTarget('start'); return; }
+  /* 공유 링크로 들어온 사람은 바로 간편 검사로 (PRD PC-4) */
+  if(e.target.closest('[data-share-check]')){ showCheckTarget('quick'); return; }
   const hb=e.target.closest('[data-share-handbook]');
   if(hb){ showHandbookType(Number(hb.dataset.shareHandbook)); return; }
 });

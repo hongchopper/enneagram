@@ -5,8 +5,8 @@
 #sharingGroup .shell-sharing-topic strong{
   font-weight:600!important;
 }
-@media(max-width:760px){
+
   #page-sharing .reflection-type-points{
     grid-template-columns:1fr!important;
   }
-}
+

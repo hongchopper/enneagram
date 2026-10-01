@@ -185,7 +185,7 @@
   font-weight:800!important;
 }
 
-@media(max-width:760px){
+
   #page-handbook .motivation-summary-card,
   #page-handbook .auto-pattern-loop,
   #page-handbook .growth-message-card{
@@ -240,4 +240,4 @@
     height:22px!important;
     transform:rotate(90deg)!important;
   }
-}
+

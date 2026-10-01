@@ -109,7 +109,7 @@
 .shell-overview-target strong,.shell-compare-target strong{font-weight:600}
 
 /* 모바일 */
-@media(max-width:760px){
+
   #page-overview .concept-flow{grid-template-columns:1fr;gap:8px}
   #page-overview .concept-flow>i{transform:rotate(90deg);justify-self:center}
   #page-overview .term-card-grid{grid-template-columns:1fr}
@@ -121,4 +121,4 @@
   #page-compare .compare-three-types{grid-template-columns:1fr}
   #page-compare .scenario-grid{grid-template-columns:1fr}
   #page-compare .confuse-grid{grid-template-columns:1fr}
-}
+

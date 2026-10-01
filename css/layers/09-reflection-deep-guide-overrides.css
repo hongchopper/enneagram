@@ -237,7 +237,7 @@
   display:none!important;
 }
 
-@media(max-width:760px){
+
   #sharingGroup .shell-sharing-topic{
     padding-left:22px!important;
   }
@@ -261,4 +261,4 @@
   #page-sharing .reflection-type-why{
     padding:16px!important;
   }
-}
+

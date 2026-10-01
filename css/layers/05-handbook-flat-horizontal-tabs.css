@@ -75,7 +75,7 @@
 }
 
 /* 모바일도 2x2가 아니라 4개를 한 줄에 유지 */
-@media(max-width:760px){
+
   #page-handbook .handbook-section-nav{
     grid-template-columns:repeat(4,minmax(0,1fr))!important;
     margin:0 0 24px!important;
@@ -100,9 +100,9 @@
     font-size:var(--text-xs)!important;
     letter-spacing:-.025em!important;
   }
-}
 
-@media(max-width:390px){
+
+@media (max-width:390px) {
   #page-handbook .handbook-section-tab{
     gap:3px!important;
     padding-left:1px!important;

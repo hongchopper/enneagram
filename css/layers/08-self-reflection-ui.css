@@ -445,7 +445,7 @@
   margin-right:auto!important;
 }
 
-@media(max-width:760px){
+
   #sharingGroup .reflection-menu-label{margin-left:22px!important}
   #sharingGroup .shell-sharing-topic{padding-left:22px!important}
   #page-sharing .reflection-hero h2{font-size:var(--text-page-title-mobile)!important}
@@ -477,7 +477,7 @@
     grid-template-columns:1fr!important;
     gap:5px!important;
   }
-}
-@media(max-width:420px){
+
+@media (max-width:420px) {
   #page-sharing .reflection-choice-grid{grid-template-columns:1fr!important}
 }

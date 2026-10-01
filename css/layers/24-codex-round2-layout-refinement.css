@@ -37,8 +37,8 @@
     left:0 !important;
     right:auto !important;
     transform:translateY(0) !important;
-    width:min(430px, calc(100vw - 32px)) !important;
-    max-width:calc(100vw - 32px) !important;
+    width:min(430px, calc(var(--app-vw) - 32px)) !important;
+    max-width:calc(var(--app-vw) - 32px) !important;
     border-radius:0 0 var(--radius-md) var(--radius-md) !important;
     padding:22px !important;
   }
@@ -49,7 +49,7 @@
   }
 
   .top-mega-wide {
-    width:min(610px, calc(100vw - 32px)) !important;
+    width:min(610px, calc(var(--app-vw) - 32px)) !important;
   }
 
   .top-nav-item:hover .top-mega,
@@ -119,8 +119,8 @@
   #page-handbook [class*="thumb"],
   #page-handbook [class*="illust"],
   #page-handbook svg[role="img"],
-  #page-handbook svg,
-  #page-handbook img {
+  #page-handbook svg:not(.pcard svg),
+  #page-handbook img:not(.pcard img) { /* 프로필 카드(보석·궤도선)는 남긴다 */
     display:none !important;
   }
 
@@ -389,7 +389,7 @@
     border-left:0 !important;
   }
 
-  @media (max-width: 920px) {
+  
     .top-site-header {
       position:sticky !important;
       top:0 !important;
@@ -419,9 +419,9 @@
     #page-check .check-diagnosis-grid {
       grid-template-columns:repeat(3, minmax(0, 1fr)) !important;
     }
-  }
+  
 
-  @media (max-width: 560px) {
+  
     :root {
       --content-gutter:16px;
     }
@@ -443,4 +443,4 @@
     #page-handbook .handbook-type-tab {
       min-height:38px !important;
     }
-  }
+  

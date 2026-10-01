@@ -42,244 +42,25 @@ button,a{
 }
 
 /* ---------- 상세 페이지 왼쪽 리모콘 ---------- */
-@media (min-width:1200px){
-  .page-remote{
-    display:block;
-  }
-  /* 리모콘 제거(26 레이어) 후 본문 왼쪽 176px 확보 규칙 삭제 */
-}
-@media (max-width:1199px){
+
+
   .page-remote{
     display:none!important;
   }
   .page-panel:not(#page-home){
     padding-left:0!important;
   }
-}
+
 
 /* =========================================================
    TABLET · 768–1199
    ========================================================= */
-@media (min-width:768px) and (max-width:1199px){
 
-  /* 상단 메뉴는 태블릿부터 햄버거 */
-  .top-site-header{
-    position:sticky!important;
-    top:0!important;
-    z-index:var(--z-dropdown) !important;
-    height:68px!important;
-    padding-top:env(safe-area-inset-top);
-    background:color-mix(in srgb, var(--color-bg) 97%, transparent)!important;
-    backdrop-filter:blur(14px);
-    -webkit-backdrop-filter:blur(14px);
-  }
-  .top-header-inner{
-    width:calc(100% - 40px)!important;
-    height:68px!important;
-    gap:16px!important;
-  }
-  .top-global-nav{
-    display:none!important;
-  }
-  .top-mobile-menu{
-    display:grid!important;
-    place-items:center!important;
-    margin-left:auto!important;
-    width:44px!important;
-    height:44px!important;
-  }
-
-  /* 사이드 드로어 */
-  .shell-sidebar{
-    display:flex!important;
-    position:fixed!important;
-    inset:0 auto 0 0!important;
-    width:min(360px,72vw)!important;
-    min-width:0!important;
-    height:100dvh!important;
-    padding:28px 22px calc(28px + env(safe-area-inset-bottom))!important;
-    background:var(--color-surface)!important;
-    border-right:1px solid var(--ds-line,var(--color-border))!important;
-    box-shadow:var(--shadow-lg) !important;
-    transform:translateX(-105%)!important;
-    transition:transform .2s ease!important;
-    z-index:var(--z-drawer) !important;
-    overflow-y:auto!important;
-    overscroll-behavior:contain;
-  }
-  .shell-sidebar.open{
-    transform:translateX(0)!important;
-  }
-  .shell-overlay.show{
-    display:block!important;
-    position:fixed!important;
-    inset:0!important;
-    z-index:var(--z-overlay) !important;
-    background:color-mix(in srgb, var(--color-text-primary) 28%, transparent)!important;
-  }
-
-  /* 콘텐츠 폭 */
-  #page-home .wrap,
-  #page-overview .overview-wrap,
-  #page-compare .all-types-compare-page-wrap,
-  #page-sharing main.wrap,
-  #page-sharing .reflection-page,
-  #page-handbook main.wrap,
-  #page-check .check-mode-top,
-  #page-check .quick-check-wrap,
-  #page-check [data-check-mode-panel="detail"] > .wrap{
-    width:calc(100% - 56px)!important;
-  }
-
-  /* Home */
-  #page-home .hero{
-    padding:var(--harness-page-top) 0 56px!important; /* 다른 메뉴와 같은 상단 간격 */
-  }
-  #page-home .hero-grid{
-    grid-template-columns:minmax(0,1fr) minmax(300px,.85fr)!important;
-    gap:40px!important;
-  }
-  #page-home .hero h1{
-    font-size:clamp(var(--text-3xl), 4vw, var(--text-4xl))!important;
-  }
-  #page-home .hero-copy,
-  #page-home .section-desc{
-    font-size:var(--text-md)!important;
-  }
-  #page-home .hero-visual{
-    min-height:390px!important;
-  }
-  #page-home .principles,
-  #page-home .lenses{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  }
-  #page-home .type-grid{
-    grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  }
-  #page-home .cta-box{
-    grid-template-columns:1fr auto!important;
-    gap:28px!important;
-    padding:42px!important;
-  }
-
-  /* 에니어그램 이해 */
-  #page-overview .overview-hero-layout{
-    grid-template-columns:minmax(0,1fr) 300px!important;
-    gap:24px!important;
-    padding:24px!important;
-  }
-  #page-overview .overview-hero h1{
-    font-size:var(--text-3xl)!important;
-  }
-  #page-overview .learning-steps,
-  #page-overview .selfobserve-grid,
-  #page-overview .growth-process{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  }
-  #page-overview .term-card-grid,
-  #page-overview .pattern-detail-grid,
-  #page-overview .center-deep-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  }
-  #page-overview .variation-layers{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  }
-  #page-overview .meaning-compare-grid,
-  #page-overview .variation-example-grid,
-  #page-overview .arrow-reading-grid,
-  #page-overview .usage-do-dont,
-  #page-overview .warning-list{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  }
-
-  /* 비교 */
-  #page-compare .compare-section-hero h1{
-    font-size:var(--text-3xl)!important;
-  }
-  #page-compare .glance-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  }
-  #page-compare .compare-quick-guide,
-  #page-compare .compare-reading-grid,
-  #page-compare .center-strategy-grid,
-  #page-compare .harmonic-example-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  }
-  #page-compare .compare-three-types{
-    grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  }
-  #page-compare .scenario-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  }
-  #page-compare .confuse-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  }
-  #page-compare .group-detail-list article{
-    grid-template-columns:150px 1fr!important;
-  }
-  #page-compare .group-detail-list article ul{
-    grid-column:1 / -1;
-  }
-
-  /* 핸드북 대표 이미지 */
-  #page-handbook .hero-no-media{
-    grid-template-columns:72px minmax(0,1fr) 170px!important;
-    gap:18px!important;
-  }
-  #page-handbook .hero-no-media > .type-hero-animal{
-    width:170px!important;
-  }
-  #page-handbook .type-hero-animal-card{
-    min-height:170px!important;
-    padding:14px!important;
-    border-radius:var(--radius-lg)!important;
-  }
-  #page-handbook .type-hero-animal-card img{
-    max-width:136px!important;
-  }
-
-  /* 핸드북 상단 탭은 한 줄 가로 스크롤 */
-  #page-handbook .handbook-section-nav{
-    overflow-x:auto!important;
-    overflow-y:hidden!important;
-    flex-wrap:nowrap!important;
-    scrollbar-width:none;
-    -ms-overflow-style:none;
-    padding-left:4px!important;
-    padding-right:4px!important;
-  }
-  #page-handbook .handbook-section-nav::-webkit-scrollbar{display:none}
-  #page-handbook .handbook-section-tab{
-    flex:0 0 auto!important;
-    min-width:132px!important;
-  }
-
-  /* 핸드북 3열/4열 계열 그리드는 최대 2열 */
-  #page-handbook .grid3,
-  #page-handbook .grid4,
-  #page-handbook .three-col,
-  #page-handbook .four-col{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  }
-
-  /* 나를 돌아보기 */
-  #page-sharing .reflection-process-guide{
-    grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  }
-
-  /* 표/넓은 데이터는 스크롤 */
-  #page-compare .compare-table-wrap,
-  #page-check .table-wrap,
-  #page-handbook .table-wrap{
-    overflow-x:auto!important;
-    -webkit-overflow-scrolling:touch;
-  }
-}
 
 /* =========================================================
    MOBILE · 0–767
    ========================================================= */
-@media (max-width:767px){
+
 
   :root{
     --title-lg:var(--text-page-title-mobile);
@@ -332,7 +113,7 @@ button,a{
     display:flex!important;
     position:fixed!important;
     inset:0 auto 0 0!important;
-    width:min(330px,88vw)!important;
+    width:min(330px,calc(var(--app-vw) * 88 / 100))!important;
     min-width:0!important;
     height:100dvh!important;
     padding:24px 18px calc(28px + env(safe-area-inset-bottom))!important;
@@ -401,7 +182,7 @@ button,a{
     gap:30px!important;
   }
   #page-home .hero h1{
-    font-size:clamp(var(--text-3xl), 4vw, var(--text-4xl))!important;
+    font-size:clamp(var(--text-3xl), calc(var(--app-vw) * 4 / 100), var(--text-4xl))!important;
     line-height:1.12!important;
   }
   #page-home .hero-copy,
@@ -573,8 +354,7 @@ button,a{
     font-size:var(--text-lg)!important;
   }
 
-  /* 모바일 표: 내용 줄이지 않고 수평 스크롤 */
-  #page-compare .compare-table-wrap,
+  /* 모바일 표: 내용 줄이지 않고 수평 스크롤 (비교 표는 28 레이어에서 카드로 쌓는다) */
   #page-check .table-wrap,
   #page-handbook .table-wrap,
   #page-handbook .table-scroll,
@@ -583,10 +363,6 @@ button,a{
     -webkit-overflow-scrolling:touch;
     max-width:100%!important;
   }
-  #page-compare .compare-data-table{
-    min-width:760px!important;
-  }
-
   /* Handbook hero */
   #page-handbook .hero-no-media{
     grid-template-columns:58px minmax(0,1fr)!important;
@@ -716,12 +492,12 @@ button,a{
   .page-panel *{
     overflow-wrap:anywhere;
   }
-}
+
 
 /* =========================================================
    아주 작은 화면 · 360px 이하
    ========================================================= */
-@media (max-width:360px){
+@media (max-width:360px) {
   #page-home .wrap,
   #page-overview .overview-wrap,
   #page-compare .all-types-compare-page-wrap,
@@ -747,7 +523,7 @@ button,a{
 /* =========================================================
    Landscape mobile
    ========================================================= */
-@media (max-width:900px) and (orientation:landscape){
+@media (orientation:landscape) {
   .top-site-header{
     position:sticky!important;
   }

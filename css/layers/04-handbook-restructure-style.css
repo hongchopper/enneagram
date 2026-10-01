@@ -31,7 +31,7 @@
 #page-handbook .handbook-context-append>.card{
   margin:0!important;
 }
-@media(max-width:760px){
+
   #page-handbook .handbook-subgroup-head{
     margin-top:32px!important;
     padding-bottom:10px!important;
@@ -43,4 +43,4 @@
     min-width:40px!important;
     font-size:var(--text-xs)!important;
   }
-}
+

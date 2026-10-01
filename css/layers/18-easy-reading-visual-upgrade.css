@@ -43,11 +43,11 @@
 #page-sharing .reflection-process-guide strong{display:block;margin-bottom:6px;font-size:var(--text-lg);line-height:1.5}
 #page-sharing .reflection-process-guide p{margin:0;font-size:var(--text-md)!important;color:var(--ds-text-secondary)!important}
 
-@media(max-width:1000px){
+
   #page-overview .overview-hero-layout{grid-template-columns:1fr}
   #page-overview .overview-hero-visual{justify-content:flex-start}
-}
-@media(max-width:760px){
+
+
   #page-overview .overview-hero-layout{padding:22px;border-radius:var(--radius-lg);gap:22px}
   #page-compare .compare-quick-guide,#page-compare .motive-simple-banner,#page-sharing .reflection-process-guide{grid-template-columns:1fr}
-}
+

@@ -255,19 +255,19 @@ button.secondary,
 #page-check .quick-action,
 #page-sharing .reflection-action{
   min-height:44px;
-  border-radius:var(--radius-md)!important;
+  border-radius:var(--radius-md);
   font-weight:700!important;
 }
 .btn.primary,
 button.primary{
-  background:var(--ds-primary)!important;
-  color:var(--color-on-primary)!important;
+  background:var(--ds-primary);
+  color:var(--color-on-primary);
 }
 .btn.secondary,
 button.secondary{
-  background:var(--color-surface)!important;
-  color:var(--ds-text)!important;
-  border:1px solid var(--ds-line)!important;
+  background:var(--color-surface);
+  color:var(--ds-text);
+  border:1px solid var(--ds-line);
 }
 
 /* ========== Top navigation ========== */
@@ -361,7 +361,7 @@ button.secondary{
   font-family:var(--font-sans) !important;
 }
 #page-home .hero h1{
-  font-size:clamp(var(--text-3xl), 4vw, var(--text-4xl)))!important;
+  font-size:clamp(var(--text-3xl), calc(var(--app-vw) * 4 / 100), var(--text-4xl)))!important;
   font-weight:800!important;
 }
 #page-home .hero-copy,
@@ -391,7 +391,7 @@ button.secondary{
 }
 
 /* ========== Responsive ========== */
-@media(max-width:760px){
+
   :root{
     --title-lg:var(--text-3xl);
     --title-md:var(--text-2xl);
@@ -412,4 +412,4 @@ button.secondary{
     padding-top:var(--space-7)!important;
     padding-bottom:var(--space-8)!important;
   }
-}
+
