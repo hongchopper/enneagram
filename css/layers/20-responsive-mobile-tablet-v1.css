@@ -154,7 +154,7 @@ button,a{
   #page-check .check-mode-top,
   #page-check .quick-check-wrap,
   #page-check [data-check-mode-panel="detail"] > .wrap{
-    width:calc(100% - 32px)!important;
+    width:calc(100% - var(--page-gutter) * 2)!important;
   }
 
   /* 페이지 섹션 간격 */

@@ -6206,7 +6206,7 @@ body {
    ========================================================= */
 /* 열은 화면 폭에 고정 (안의 가로 줄이 열을 넓히지 않게) */
 #page-home #home-top {
-  --feed-pad:var(--page-padding-mobile);
+  --feed-pad:var(--page-gutter);
   display:grid;
   grid-template-columns:minmax(0, 1fr);
   gap:var(--space-6);
@@ -6335,12 +6335,12 @@ body {
 .shelf-rail {
   display:flex;
   gap:var(--space-3);
-  margin:0 calc(var(--feed-pad, var(--page-padding-mobile)) * -1);
-  padding:var(--space-1) var(--feed-pad, var(--page-padding-mobile)) var(--space-3);
+  margin:0 calc(var(--feed-pad, var(--page-gutter)) * -1);
+  padding:var(--space-1) var(--feed-pad, var(--page-gutter)) var(--space-3);
   overflow-x:auto;
   overscroll-behavior-x:contain;
   scroll-snap-type:x mandatory;
-  scroll-padding-inline:var(--feed-pad, var(--page-padding-mobile));
+  scroll-padding-inline:var(--feed-pad, var(--page-gutter));
   scrollbar-width:none;
 }
 
@@ -6517,11 +6517,11 @@ body {
 #page-home .continue-grid {
   display:flex;
   gap:var(--space-3);
-  margin:0 calc(var(--feed-pad, var(--page-padding-mobile)) * -1);
-  padding:var(--space-1) var(--feed-pad, var(--page-padding-mobile)) var(--space-3);
+  margin:0 calc(var(--feed-pad, var(--page-gutter)) * -1);
+  padding:var(--space-1) var(--feed-pad, var(--page-gutter)) var(--space-3);
   overflow-x:auto;
   scroll-snap-type:x mandatory;
-  scroll-padding-inline:var(--feed-pad, var(--page-padding-mobile));
+  scroll-padding-inline:var(--feed-pad, var(--page-gutter));
   scrollbar-width:none;
 }
 
@@ -6548,8 +6548,8 @@ body {
 }
 
 .type-card-shelf .pcard-rail {
-  margin:0 calc(var(--feed-pad, var(--page-padding-mobile)) * -1);
-  padding:var(--space-2) var(--page-padding-mobile) var(--space-5);
+  margin:0 calc(var(--feed-pad, var(--page-gutter)) * -1);
+  padding:var(--space-2) var(--page-gutter) var(--space-5);
   scrollbar-width:none;
 }
 
@@ -6581,36 +6581,45 @@ body {
 /* =========================================================
    가로 줄 공통: 넘길 내용이 남은 쪽만 흐리게 (js/09-mobile-scroll.js가 data-edge를 붙인다)
    ========================================================= */
-:is(.page-subnav-inner, .hb-tabs, .explore-chips, .shelf-rail, .pcard-rail, .continue-grid)[data-edge="start"] {
+:is(.page-subnav-inner, .hb-tabs, .hb-chips, .explore-chips, .shelf-rail, .pcard-rail, .continue-grid)[data-edge="start"] {
   -webkit-mask-image:linear-gradient(to right, var(--color-text-primary) calc(100% - var(--space-8)), transparent);
   mask-image:linear-gradient(to right, var(--color-text-primary) calc(100% - var(--space-8)), transparent);
 }
 
-:is(.page-subnav-inner, .hb-tabs, .explore-chips, .shelf-rail, .pcard-rail, .continue-grid)[data-edge="mid"] {
+:is(.page-subnav-inner, .hb-tabs, .hb-chips, .explore-chips, .shelf-rail, .pcard-rail, .continue-grid)[data-edge="mid"] {
   -webkit-mask-image:linear-gradient(to right, transparent, var(--color-text-primary) var(--space-8), var(--color-text-primary) calc(100% - var(--space-8)), transparent);
   mask-image:linear-gradient(to right, transparent, var(--color-text-primary) var(--space-8), var(--color-text-primary) calc(100% - var(--space-8)), transparent);
 }
 
-:is(.page-subnav-inner, .hb-tabs, .explore-chips, .shelf-rail, .pcard-rail, .continue-grid)[data-edge="end"] {
+:is(.page-subnav-inner, .hb-tabs, .hb-chips, .explore-chips, .shelf-rail, .pcard-rail, .continue-grid)[data-edge="end"] {
   -webkit-mask-image:linear-gradient(to right, transparent, var(--color-text-primary) var(--space-8));
   mask-image:linear-gradient(to right, transparent, var(--color-text-primary) var(--space-8));
 }
 
 .page-subnav-inner,
+.hb-chips,
 .explore-chips {
   scroll-snap-type:x proximity;
   scrollbar-width:none;
 }
 
 .page-subnav-inner > *,
+.hb-chips > *,
 .explore-chips > * {
   scroll-snap-align:start;
 }
 
-/* 핸드북 탭 다섯 개는 폰 폭에 다 들어가게 고르게 */
+/* 핸드북 탭: 위 유형 줄(1번·2번…)과 같은 왼쪽 정렬. 양 끝 맞춤은 간격이 들쭉날쭉해 헷갈렸다 */
 #page-handbook .hb-tabs {
-  justify-content:space-between;
-  gap:var(--space-2);
+  justify-content:flex-start;
+  gap:var(--space-5);
+}
+
+/* 작은 폰(390 이하)에서는 다섯 탭이 한 줄에 다 들어가게 간격만 줄인다 */
+@media (max-width: 390px) {
+  #page-handbook .hb-tabs {
+    gap:var(--space-4);
+  }
 }
 
 /* 비교 표: 폰 폭에서는 유형마다 카드로 쌓는다 */
@@ -6733,4 +6742,18 @@ h3,
   display:grid;
   grid-template-columns:repeat(2, minmax(0, 1fr));
   gap:var(--space-2);
+}
+
+/* PC 마우스로 가로 줄 끌기 (js/09-mobile-scroll.js) */
+@media (hover: hover) and (pointer: fine) {
+  :is(.page-subnav-inner, .hb-tabs, .hb-chips, .explore-chips, .shelf-rail, .pcard-rail, .continue-grid)[data-edge]:not([data-edge="none"]) {
+    cursor:grab;
+  }
+}
+
+/* 양옆 여백 통일: 옛 레이어가 :root의 --content-gutter를 14px !important로 고정했으므로
+   앱 열(.shell-app)에서 같은 변수를 다시 정해 모든 화면 래퍼가 --page-gutter를 쓰게 한다 */
+.shell-app {
+  --content-gutter:var(--page-gutter);
+  --harness-gutter:var(--page-gutter);
 }

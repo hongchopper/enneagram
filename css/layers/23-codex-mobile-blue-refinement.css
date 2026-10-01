@@ -245,8 +245,8 @@
     #page-compare .all-types-compare-page-wrap,
     #page-myspace .myspace-wrap,
     #page-sharing .wrap {
-      width:min(100% - 32px, 1040px) !important;
-      max-width:calc(100% - 32px) !important;
+      width:min(100% - var(--page-gutter) * 2, 1040px) !important;
+      max-width:calc(100% - var(--page-gutter) * 2) !important;
       padding-left:0 !important;
       padding-right:0 !important;
     }
@@ -305,8 +305,8 @@
     #page-compare .all-types-compare-page-wrap,
     #page-myspace .myspace-wrap,
     #page-sharing .wrap {
-      width:min(100% - 24px, 1040px) !important;
-      max-width:calc(100% - 24px) !important;
+      width:min(100% - var(--page-gutter) * 2, 1040px) !important;
+      max-width:calc(100% - var(--page-gutter) * 2) !important;
       padding-top:28px !important;
       padding-bottom:68px !important;
     }
@@ -340,7 +340,6 @@
     }
 
     .overview-callout,
-    #page-sharing .topic,
     #page-sharing .hero,
     #page-handbook .type-page,
     #page-check .quick-result {

@@ -56,8 +56,8 @@
 
   /* Brand — 디자인 시스템 v1 §1-2 (밝은 라벤더 그레이 + 라벤더)
      primary는 단색 강조(글자 링크·아이콘), 메인 버튼은 --grad-primary. primary-light는 아이콘·진행 바·포커스 링 (글자 배경 X) */
-  --color-primary: #5E4DB8;       /* 흰 글자 6.5:1, 라벤더 바탕 위 글자 4.6:1 */
-  --color-primary-hover: #4F3FA6;
+  --color-primary: #6553C2;       /* 흰 글자 5.9:1, 라벤더 바탕 위 글자 4.8:1 */
+  --color-primary-hover: #5443AE;
   --color-primary-light: #9C8CE8;
   --color-primary-soft: #EEEAFD;
   --color-on-primary: #FFFFFF;
@@ -71,15 +71,15 @@
 
   /* Text — ink / ink-sub / ink-faint(비활성·플레이스홀더, 16px 이상 굵은 글자만) */
   --color-text-primary: #3A3845;
-  --color-text-secondary: #57536B; /* 라벤더 바탕 위 5.2:1 */
-  --color-text-tertiary: #57536B;
+  --color-text-secondary: #5F5B6E; /* 라벤더 바탕 위 5.3:1 */
+  --color-text-tertiary: #5F5B6E;
   --color-text-faint: #A9A5B4;
 
   /* Surface — 바탕은 단색 라벤더(2026-10-01, 그라데이션 바탕은 산만해서 뺐다), 그 위 면은 모두 유리.
      --color-surface는 반투명 흰 유리라 어느 화면의 카드든 유리처럼 보인다. 불투명한 흰색이 꼭 필요하면 --color-surface-solid */
-  --color-bg: #DCD5F0;
-  --color-backdrop: #D1C9EA; /* PC에서 앱 열 바깥 */
-  --color-surface: rgba(255, 255, 255, 0.72);
+  --color-bg: #EAE5FC;       /* 맑은 라벤더 (회색기를 빼서 덜 탁하게, 2026-10-01) */
+  --color-backdrop: #E0D9FA; /* PC에서 앱 열 바깥 */
+  --color-surface: rgba(255, 255, 255, 0.78);
   --color-surface-solid: #FFFFFF;
   --color-surface-subtle: rgba(255, 255, 255, 0.45);
   --color-mist: #E6E1EC;
@@ -133,9 +133,9 @@
   --holo: linear-gradient(120deg, #C7E6FF 0%, #D7C8FF 30%, #F7D6E6 55%, #CDEDC6 80%, #FFF1C4 100%);
 
   /* 글래스·그라데이션 (디자인 시스템 v1 §1-4) — 유리 면은 뒤에 배경 빛 덩어리가 있어야 유리처럼 보인다 */
-  --glass: rgba(255, 255, 255, 0.72);
-  --glass-strong: rgba(255, 255, 255, 0.86);
-  --glass-line: rgba(255, 255, 255, 0.8);
+  --glass: rgba(255, 255, 255, 0.78);
+  --glass-strong: rgba(255, 255, 255, 0.9);
+  --glass-line: rgba(255, 255, 255, 0.95); /* 밝은 바탕에서 카드 가장자리가 보이도록 */
   --glass-blur: blur(24px) saturate(1.4);
   --grad-blue: #4F72D0;
   --grad-violet: #7B5FD6;
@@ -191,6 +191,7 @@
   --page-padding-desktop: 32px;
   --page-padding-tablet: 24px;
   --page-padding-mobile: 16px;
+  --page-gutter: 24px; /* 앱 화면 양옆 여백 — 모든 화면이 이 값 하나를 쓴다 (2026-10-01, 16px은 좁아 넓힘) */
 
   /* Readability */
   --readable-sm: 560px;
