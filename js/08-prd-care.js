@@ -54,6 +54,7 @@
     crisisReturnFocus?.focus?.();
   }
   window.openCrisisGuide=openCrisisGuide;
+  window.prdHasCrisisSignal=hasCrisisSignal; /* 채팅 다이어리(02 스크립트)에서도 같은 확인을 쓴다 */
 
   /* 진입점: 전체 메뉴 아래 · 나의 공간 머리 */
   function addHelpEntry(host,cls){

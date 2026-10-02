@@ -63,7 +63,7 @@ body{
   background:var(--ds-bg)!important;
   font-size:var(--text-md)!important;
   line-height:1.75!important;
-  letter-spacing:-.015em!important;
+  letter-spacing:-.01em!important; /* 한글 본문 가독성: 자간을 덜 좁게 (2026-10-02) */
 }
 button,input,textarea,select{font-size:inherit}
 p,li,dd,td{
@@ -72,7 +72,7 @@ p,li,dd,td{
 strong,b{font-weight:700}
 h1,h2,h3,h4,h5,h6{
   color:var(--ds-text)!important;
-  letter-spacing:-.035em!important;
+  letter-spacing:-.02em!important;
   word-break:keep-all;
 }
 h1{font-weight:800!important}

@@ -1982,34 +1982,44 @@ async function renderQuickResultCard(){
 /* =========================================================
    홈 프로필 카드: 9장 카드 목록 + 나의 프로필 카드(이미지 저장)
    ========================================================= */
-/* 유형별 보석·카드 문구 (디자인 브리프 v2 §5·§9). key = 한글 키워드, en = 카드 영문 장식, intro = 뒷면 1인칭 소개, ask = 뒷면 질문 */
+/* 유형별 보석·카드 문구 (디자인 브리프 v2 §5·§9). key = 한글 키워드, en = 카드 영문 장식, role = 타로 카드 영문 칭호,
+   why = 왜 이 보석인지 (보석 상징은 단정하지 않는 말투), intro = 뒷면 1인칭 소개, ask = 뒷면 질문 */
 const HOME_PROFILES={
   1:{desc:'더 올바르고 좋은 방향을 찾는 사람',quote:'이왕 하는 거, 제대로 하자',tags:['원칙','책임감','꼼꼼함'],
-    gem:'사파이어',key:'맑은 마음',en:'Clear Heart',
+    gem:'사파이어',key:'맑은 마음',en:'Clear Heart',role:'THE REFORMER',
+    why:'사파이어는 예부터 진실과 바름을 지키는 보석으로 알려져 왔어요. 흔들림 없이 맑은 푸른빛이, 옳은 방향을 지키려는 1번의 곧은 기준을 닮았어요.',
     intro:'나는 옳다고 믿는 방향을 지키고, 어제보다 조금 더 나아지게 만드는 사람이야.',ask:'오늘 "이 정도면 충분해"라고 넘겨본 일이 있나요?'},
   2:{desc:'사랑받고 필요한 사람이 되고 싶은 사람',quote:'필요한 거 있으면 말해, 내가 도와줄게',tags:['배려','다정함','관계'],
-    gem:'로즈쿼츠',key:'따뜻한 사랑',en:'Warm Love',
+    gem:'로즈쿼츠',key:'따뜻한 사랑',en:'Warm Love',role:'THE HELPER',
+    why:'로즈쿼츠는 ‘사랑의 돌’로 불려 온 분홍빛 수정이에요. 은은하게 마음을 데우는 빛이, 먼저 다가가 손을 내미는 2번의 다정함을 닮았어요.',
     intro:'나는 곁에 있는 사람의 마음을 먼저 알아채고, 따뜻하게 손을 내미는 사람이야.',ask:'오늘 나 자신을 위해 해준 일은 무엇인가요?'},
   3:{desc:'유능함과 결과로 자신을 증명하려는 사람',quote:'일단 해내고, 이야기는 그다음에',tags:['목표','효율','인정'],
-    gem:'다이아몬드',key:'빛나는 자신감',en:'Shining Achievement',
+    gem:'다이아몬드',key:'빛나는 자신감',en:'Shining Achievement',role:'THE ACHIEVER',
+    why:'다이아몬드는 가장 단단하고, 다듬을수록 빛을 많이 되돌려 주는 보석이에요. 목표를 향해 자신을 갈고닦아 빛나는 3번을 닮았어요.',
     intro:'나는 스스로의 가능성을 믿고, 지금보다 더 빛나는 나를 만들어가는 사람이야.',ask:'오늘 나는 어떤 순간에 가장 빛났나요?'},
   4:{desc:'나다움과 특별한 정체성을 찾는 사람',quote:'왜 나만 이렇게 느끼는 걸까?',tags:['나다움','감수성','깊이'],
-    gem:'오팔',key:'깊은 감성',en:'Deep Feeling',
+    gem:'오팔',key:'깊은 감성',en:'Deep Feeling',role:'THE INDIVIDUALIST',
+    why:'오팔은 보는 각도마다 다른 색이 피어나 같은 무늬가 하나도 없는 보석이에요. 하나로 정의되지 않는 4번의 깊고 섬세한 감성을 닮았어요.',
     intro:'나는 내 마음의 결을 깊이 느끼고, 나만의 방식으로 그걸 표현하는 사람이야.',ask:'오늘 평범한 순간에서 발견한 아름다움은 무엇인가요?'},
   5:{desc:'충분히 알고 준비되어 있고 싶은 사람',quote:'조금만 더 알아보고 말할게',tags:['관찰','지식','독립'],
-    gem:'자수정',key:'맑은 지혜',en:'Clear Wisdom',
+    gem:'자수정',key:'맑은 지혜',en:'Clear Wisdom',role:'THE INVESTIGATOR',
+    why:'자수정은 맑은 정신과 지혜를 지켜 주는 보석으로 알려져 왔어요. 고요한 보랏빛이, 한 발 물러나 깊이 이해하려는 5번을 닮았어요.',
     intro:'나는 궁금한 것을 끝까지 파고들고, 차분히 이해한 다음 움직이는 사람이야.',ask:'오늘 누구와 생각을 나눠보고 싶었나요?'},
   6:{desc:'안전과 확실함을 찾는 사람',quote:'혹시 모르니까, 한 번만 더 확인하자',tags:['신뢰','대비','의리'],
-    gem:'에메랄드',key:'든든한 믿음',en:'Steady Trust',
+    gem:'에메랄드',key:'든든한 믿음',en:'Steady Trust',role:'THE LOYALIST',
+    why:'에메랄드는 오래전부터 믿음과 변치 않는 마음을 뜻해 온 보석이에요. 믿는 사람 곁을 끝까지 지키는 6번의 든든함을 닮았어요.',
     intro:'나는 소중한 것을 지키려고 미리 살피고, 믿는 사람 곁을 끝까지 지키는 사람이야.',ask:'오늘 나를 든든하게 해준 것은 무엇이었나요?'},
   7:{desc:'자유롭고 즐거운 가능성을 찾는 사람',quote:'재밌겠다! 일단 가보자',tags:['호기심','자유','아이디어'],
-    gem:'시트린',key:'즐거운 상상',en:'Joyful Imagination',
+    gem:'시트린',key:'즐거운 상상',en:'Joyful Imagination',role:'THE ENTHUSIAST',
+    why:'시트린은 햇살을 담은 듯한 노란빛 덕분에 ‘기쁨의 돌’로 불려 왔어요. 늘 즐거운 가능성을 찾아 나서는 7번을 닮았어요.',
     intro:'나는 새로운 가능성에 설레고, 하루를 즐거운 일로 채워가는 사람이야.',ask:'오늘 가장 오래 머물고 싶었던 순간은 언제였나요?'},
   8:{desc:'강하게 주도하고 통제력을 갖고 싶은 사람',quote:'돌려 말하지 마, 내가 책임질게',tags:['추진력','보호','솔직함'],
-    gem:'루비',key:'단단한 용기',en:'Brave Strength',
+    gem:'루비',key:'단단한 용기',en:'Brave Strength',role:'THE CHALLENGER',
+    why:'루비는 붉은 생명력과 용기를 상징해 온 보석이에요. 앞장서서 내 사람을 지키는 8번의 단단한 힘을 닮았어요.',
     intro:'나는 내 사람을 지키려고 앞에 서고, 솔직하게 부딪히는 사람이야.',ask:'오늘 누군가에게 기대도 괜찮았던 순간이 있었나요?'},
   9:{desc:'편안함과 조화를 유지하고 싶은 사람',quote:'난 다 괜찮아, 편한 대로 하자',tags:['편안함','수용','조화'],
-    gem:'아쿠아마린',key:'고요한 여유',en:'Calm Ease',
+    gem:'아쿠아마린',key:'고요한 여유',en:'Calm Ease',role:'THE PEACEMAKER',
+    why:'아쿠아마린은 잔잔한 바다를 닮은 물빛 보석이에요. 모두가 편안하길 바라며 조화를 지키는 9번의 고요함을 닮았어요.',
     intro:'나는 모두가 편안한 자리를 만들고, 내 속도로 천천히 나아가는 사람이야.',ask:'오늘 내가 정말 원했던 것은 무엇이었나요?'}
 };
 const HOME_GROUPS={
@@ -2058,29 +2068,52 @@ const PC_ORBIT=`<svg class="pcard-orbit" viewBox="0 0 250 350" preserveAspectRat
   +[[30,96,1.8],[214,62,1.4],[226,226,2],[22,250,1.4],[178,318,1.6],[64,40,1.2]].map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}"/>`).join('')
   +`</svg>`;
 
-/* 프로필 카드 (레어 카드, 브리프 §9): 앞면 = Enneagram · Type N · 큰 보석 · 영문 이름 · 키워드
-   뒷면 = 번호 칩 · 작은 보석 · 키워드 · 태그 칩 3개 · 1인칭 소개 · 질문 박스.
-   카드 전체가 뒤집기 버튼이고, 핸드북 이동은 카드 아래 링크로 분리. 상태(빛남/흐려짐)는 카드에 넣지 않는다. */
+/* 프로필 카드 — 선 장식 액자 디자인 (2026-10-03, 레퍼런스: 얇은 금빛 선 액자 카드)
+   상아색 종이 + 보석 색 살짝 · 얇은 이중 선 · 네 모서리 잎줄기 · 위 초승달과 별 · 아래 반쪽 해 · 양옆 보석 장식.
+   타로 요소(로마 숫자 · THE ○○ 칭호 · 아치 창)는 쓰지 않는다. 모바일에서 길지 않게 2:3 비율.
+   앞면: 보석 · 영문 필기체 · 유형 이름 · 번호와 보석 · 키워드 · 한 줄 설명
+   뒷면: 왜 이 보석일까요? · 오늘의 질문. 카드 전체가 뒤집기 버튼이고, 핸드북 이동은 카드 아래 링크.
+   상태(빛남/흐려짐)는 카드에 넣지 않는다 (공유되는 정보). */
 /* 컴포넌트는 --tc(base) · --ts(soft) · --td(deep) 세 변수만 쓰면 9유형이 자동으로 바뀐다 */
 const gemVars=t=>`--tc:var(--type-${t});--ts:var(--type-${t}-soft);--td:var(--type-${t}-deep)`;
-
+const svgOpen=(cls,vb)=>`<svg class="${cls}" viewBox="${vb}" aria-hidden="true" focusable="false">`;
+/* 잎 하나: (x,y)에서 각도 deg 방향으로 길이 len */
+const decoLeaf=(x,y,deg,len)=>`<path transform="translate(${x} ${y}) rotate(${deg})" d="M0 0C${len*.3} -${len*.28} ${len*.7} -${len*.28} ${len} 0C${len*.7} ${len*.28} ${len*.3} ${len*.28} 0 0Z"/>`;
+/* 모서리 잎줄기 (왼쪽 위 기준, 나머지 모서리는 CSS로 뒤집는다) */
+const DECO_SPRIG=svgOpen('deco-sprig','0 0 56 72')
+  +'<path d="M6 6C10 22 12 42 8 68"/><path d="M6 6C20 9 34 9 52 6"/>'
+  +[[9,18,60,11],[11,30,-60,12],[11,42,70,12],[10,54,-70,10],[18,8,-30,10],[30,9,30,11],[42,8,-25,9]].map(([x,y,d,l])=>decoLeaf(x,y,d,l)).join('')
+  +'<circle cx="6" cy="6" r="2"/></svg>';
+/* 위: 초승달 + 작은 별 두 개 */
+const DECO_MOON=svgOpen('deco-moon','0 0 96 32')
+  +'<path class="deco-fill" d="M50 4A12 12 0 0 0 50 28A7 12 0 0 1 50 4Z"/>'
+  +'<path class="deco-fill" d="M22 16l1.2 3 3 1.2-3 1.2-1.2 3-1.2-3-3-1.2 3-1.2Z"/><path class="deco-fill" d="M74 16l1.2 3 3 1.2-3 1.2-1.2 3-1.2-3-3-1.2 3-1.2Z"/>'
+  +'<circle class="deco-fill" cx="12" cy="20" r="1"/><circle class="deco-fill" cx="84" cy="20" r="1"/></svg>';
+/* 아래: 반쪽 해와 햇살 */
+const DECO_SUN=svgOpen('deco-sun','0 0 96 32')
+  +'<path d="M34 30A14 14 0 0 1 62 30"/><path d="M14 30H82"/>'
+  +[-70,-50,-30,-10,10,30,50,70].map(d=>`<path transform="rotate(${d} 48 30)" d="M48 12V4"/>`).join('')
+  +'</svg>';
+const decoFrame=()=>`<span class="deco-frame" aria-hidden="true">`
+  +['tl','tr','bl','br'].map(k=>`<span class="deco-corner deco-${k}">${DECO_SPRIG}</span>`).join('')
+  +`<span class="deco-top">${DECO_MOON}</span><span class="deco-bottom">${DECO_SUN}</span>`
+  +'<span class="deco-jewel deco-jewel-l"></span><span class="deco-jewel deco-jewel-r"></span></span>';
 function homeProfileCardHTML(t,{mine=null}={}){
   const p=HOME_PROFILES[t], name=homeEsc(CHECK_TYPE_NAMES[t]);
   const sparks=[1,2,3].map(i=>`<span class="pc-twinkle pc-twinkle-${i}">${pcSparkSVG('var(--color-gold)')}</span>`).join('');
-  return `<article class="pcard type-${t}${mine?' is-mine':''}" style="${gemVars(t)};--i:${t-1}">`
-    +`<button class="pcard-flip" type="button" data-card-flip aria-pressed="false" aria-label="${t}번 ${name} 카드, ${homeEsc(p.key)}. 뒷면 보기">`
+  return `<article class="pcard deco type-${t}${mine?' is-mine':''}" style="${gemVars(t)};--i:${t-1}">`
+    +`<button class="pcard-flip" type="button" data-card-flip aria-pressed="false" aria-label="${t}번 ${name} 카드, ${homeEsc(p.gem)}, ${homeEsc(p.key)}. 뒷면 보기">`
     +`<span class="pcard-body">`
-    +`<span class="pcard-face pcard-front" aria-hidden="true">${PC_ORBIT}`
-    +`<span class="pcard-brand">Enneagram</span><span class="pcard-script">Type ${t}</span>`
-    +`<span class="pcard-gem-stage">${sparks}${gemImg(t)}</span>`
-    +`<span class="pcard-en">${homeEsc(p.en)}</span><span class="pcard-key">${homeEsc(p.key)}</span>`
+    +`<span class="pcard-face pcard-front" aria-hidden="true">${decoFrame()}`
+    +`<span class="deco-gem">${sparks}${gemImg(t)}</span>`
+    +`<span class="deco-en">${homeEsc(p.en)}</span>`
+    +`<span class="deco-name">${name}</span>`
+    +`<span class="deco-meta">${t}번 · ${homeEsc(p.gem)} · ${homeEsc(p.key)}</span>`
+    +`<span class="deco-desc">${homeEsc(p.desc)}</span>`
     +`</span>`
-    +`<span class="pcard-face pcard-back" aria-hidden="true">${PC_ORBIT}`
-    +`<span class="pcard-chip">${t}</span><span class="pcard-gem-mini">${gemImg(t)}</span>`
-    +`<span class="pcard-title">${homeEsc(p.key)}</span>`
-    +`<span class="pcard-tags">${p.tags.map(k=>`<span class="pcard-tag">#${homeEsc(k)}</span>`).join('')}</span>`
-    +`<span class="pcard-intro">${homeEsc(p.intro)}</span>`
-    +`<span class="pcard-star">${pcSparkSVG('var(--color-gold)')}</span>`
+    +`<span class="pcard-face pcard-back" aria-hidden="true">${decoFrame()}`
+    +`<span class="deco-back-title">왜 ${homeEsc(p.gem)}일까요?</span>`
+    +`<span class="deco-why">${homeEsc(p.why)}</span>`
     +`<span class="pcard-ask">${homeEsc(p.ask)}</span>`
     +`</span>`
     +`</span><span class="pcard-shine" aria-hidden="true"></span></button>`
@@ -2098,8 +2131,8 @@ function flipProfileCard(btn){
   const back=!card.classList.contains('is-flipped');
   card.classList.toggle('is-flipped',back);
   btn.setAttribute('aria-pressed',String(back));
-  btn.setAttribute('aria-label',`${t}번 ${CHECK_TYPE_NAMES[t]} 카드, ${p.key}. ${back?'앞면 보기':'뒷면 보기'}`);
-  card.querySelector('.pcard-sr').textContent=back?`${p.tags.map(k=>'#'+k).join(' ')}. ${p.intro} 오늘의 질문: ${p.ask}`:'';
+  btn.setAttribute('aria-label',`${t}번 ${CHECK_TYPE_NAMES[t]} 카드, ${p.gem}, ${p.key}. ${back?'앞면 보기':'뒷면 보기'}`);
+  card.querySelector('.pcard-sr').textContent=back?`왜 ${p.gem}일까요? ${p.why} 오늘의 질문: ${p.ask}`:'';
 }
 
 /* 카드 모션: 포인터 따라 기울기(마우스 환경만) + 화면에 들어올 때 튀어오르기. 동작 줄이기 설정이면 둘 다 끔 */
@@ -2171,7 +2204,7 @@ function renderHomeMe(profile){
   box.innerHTML=`<div class="me-card">${homeProfileCardHTML(t,{mine:profile})}</div>`
     +`<header class="me-head">`
     +`<span class="me-label">나의 대표 프로필 · ${homeEsc(profile.source)}</span>`
-    +`<div class="me-title-row"><span class="gem-tile">${gemImg(t,'',true)}</span>`
+    +`<div class="me-title-row"><span class="gem-tile deco-square">${gemImg(t,'',true)}</span>`
     +`<div><h2 class="home-me-title">${t}번 ${homeEsc(CHECK_TYPE_NAMES[t])}</h2>`
     +`<p class="me-sub">${homeEsc(p.key)} · ${homeEsc(p.gem)}</p></div></div>`
     +`<div class="me-tags">${p.tags.map(k=>`<span class="tag-chip">#${homeEsc(k)}</span>`).join('')}</div>`
@@ -2225,14 +2258,17 @@ function renderHomeShelves(profile){
 
   const t=homeTodayType(), p=HOME_PROFILES[t];
   const today=`<button class="today-gem" data-profile-open="${t}" style="${gemVars(t)}" type="button">`
-    +`<span class="today-gem-art">${gemImg(t,'',true)}</span>`
+    +`<span class="today-gem-art deco-square">${gemImg(t,'',true)}</span>`
     +`<span class="today-gem-body"><span class="today-gem-label">${t}번 ${homeEsc(CHECK_TYPE_NAMES[t])} · ${homeEsc(p.gem)}</span>`
     +`<strong class="today-gem-key">${homeEsc(p.key)}</strong>`
     +`<span class="today-gem-quote">“${homeEsc(p.quote)}”</span></span></button>`;
 
-  const gems=[1,2,3,4,5,6,7,8,9].map(n=>`<button class="gem-chip" data-profile-open="${n}" role="listitem" style="${gemVars(n)}" type="button">`
-    +`<span class="gem-tile">${gemImg(n,'',false)}</span><span class="gem-chip-name">${n}번 ${homeEsc(CHECK_TYPE_NAMES[n])}</span>`
-    +`<span class="gem-chip-gem">${homeEsc(HOME_PROFILES[n].gem)}</span></button>`).join('');
+  /* 9가지 보석: 보석만 보면 와닿지 않아 '왜 이 보석인지'를 함께 보여준다 */
+  const gems=[1,2,3,4,5,6,7,8,9].map(n=>`<button class="shelf-card gem-card" data-profile-open="${n}" role="listitem" style="${gemVars(n)}" type="button">`
+    +`<span class="gem-card-head"><span class="gem-tile deco-square">${gemImg(n,'',false)}</span>`
+    +`<span class="gem-card-name"><strong class="shelf-card-title">${n}번 ${homeEsc(CHECK_TYPE_NAMES[n])}</strong>`
+    +`<span class="gem-card-gem">${homeEsc(HOME_PROFILES[n].gem)} · ${homeEsc(HOME_PROFILES[n].key)}</span></span></span>`
+    +`<span class="gem-card-why">${homeEsc(HOME_PROFILES[n].why)}</span></button>`).join('');
 
   const scenes=SHARING_TITLES.map((title,i)=>`<button class="shelf-card scene-card" data-shelf-sharing="${i}" role="listitem" type="button">`
     +`<span class="shelf-card-star" aria-hidden="true">${pcSparkSVG('var(--color-gold)')}</span>`
@@ -2398,17 +2434,28 @@ document.addEventListener('click',e=>{
   if(open && !open.closest('#page-home')){ e.preventDefault(); showHandbookType(Number(open.dataset.profileOpen)); }
 });
 
-/* 유형 탐구 > 각 유형 요약: 맨 위에 그 유형의 프로필 카드 (핸드북 본문은 비동기로 그려지므로 나타날 때 끼워 넣는다) */
+/* 유형 탐구 > 각 유형 요약: 맨 위 유형 소개 박스를 프로필 카드로 꾸민다 (2026-10-03).
+   큰 뒤집기 카드는 페이지와 어울리지 않아 빼고, 소개 박스 자체에 프로필 카드와 같은 선 장식 액자(상아색 · 이중 선 · 잎줄기 · 달 · 해 · 보석)를 입힌다.
+   글(이름·설명·대표 문장)은 원래 박스의 것을 그대로 쓰고, 보석·키워드·태그 칩·왜 이 보석인지만 덧붙인다. 핸드북은 비동기로 그려지므로 나타날 때 꾸민다. */
 function injectHandbookCards(){
-  document.querySelectorAll('#page-handbook .type-page .hb-summary').forEach(sum=>{
-    if(sum.querySelector('.hb-card-slot')) return;
-    const t=Number((sum.closest('.type-page')?.id||'').replace('type-',''));
+  document.querySelectorAll('#page-handbook .type-page .hb-sum-hero').forEach(hero=>{
+    if(hero.classList.contains('hb-idcard')) return;
+    const t=Number((hero.closest('.type-page')?.id||'').replace('type-',''));
     if(!(t>=1 && t<=9)) return;
-    const profile=getHomeProfile();
-    const slot=document.createElement('div');
-    slot.className='hb-card-slot';
-    slot.innerHTML=homeProfileCardHTML(t,{mine:profile && profile.type===t ? profile : null});
-    sum.prepend(slot);
+    const p=HOME_PROFILES[t];
+    hero.classList.add('hb-idcard','deco');
+    hero.setAttribute('style',gemVars(t));
+    const sparks=[1,2,3].map(i=>`<span class="pc-twinkle pc-twinkle-${i}">${pcSparkSVG('var(--color-gold)')}</span>`).join('');
+    hero.insertAdjacentHTML('afterbegin',decoFrame()
+      +`<div class="hb-idcard-top" aria-hidden="true">`
+      +`<span class="hb-idcard-gem">${sparks}${gemImg(t,'',true)}</span>`
+      +`<span class="hb-idcard-en">${homeEsc(p.en)}</span></div>`);
+    hero.querySelector('.hb-sum-desc')?.insertAdjacentHTML('afterend',`<div class="hb-idcard-key">${t}번 · ${homeEsc(p.gem)} · ${homeEsc(p.key)}</div>`);
+    hero.querySelector('.hb-sum-tags')?.insertAdjacentHTML('afterend',`<div class="hb-idcard-tags">${p.tags.map(k=>`<span class="tag-chip">#${homeEsc(k)}</span>`).join('')}</div>`);
+    /* 왜 이 보석인지: 보석만으로는 와닿지 않아 이유를 함께 적는다 */
+    const why=`<div class="hb-idcard-why"><strong>왜 ${homeEsc(p.gem)}일까요?</strong><p>${homeEsc(p.why)}</p></div>`;
+    const after=hero.querySelector('.hb-idcard-tags');
+    if(after) after.insertAdjacentHTML('afterend',why); else hero.insertAdjacentHTML('beforeend',why);
   });
 }
 const hbRoot=document.getElementById('page-handbook');

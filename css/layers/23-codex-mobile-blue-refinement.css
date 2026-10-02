@@ -343,7 +343,7 @@
     #page-sharing .hero,
     #page-handbook .type-page,
     #page-check .quick-result {
-      padding:20px 16px !important;
+      padding:var(--space-5) !important; /* 넉넉하게 (2026-10-02) */
     }
 
     #page-check .quick-result-main,

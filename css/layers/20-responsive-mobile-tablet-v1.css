@@ -271,7 +271,7 @@ button,a{
     width:min(100%,360px)!important;
   }
   #page-overview .overview-easy-box{
-    padding:14px 16px!important;
+    padding:var(--space-5)!important; /* 넉넉하게 (2026-10-02) */
   }
   #page-overview .learning-steps,
   #page-overview .term-card-grid,
@@ -315,7 +315,7 @@ button,a{
   #page-compare .compare-triad-card,
   #page-compare .center-strategy-grid article,
   #page-compare .harmonic-example-grid article{
-    padding:18px!important;
+    padding:var(--space-5)!important; /* 넉넉하게 (2026-10-02) */
   }
 
   /* 비교 */

@@ -5,7 +5,7 @@
     experiments:'enneagram_experiments_v1'
   };
   const REFLECTION_SCHEMA=2; /* 성찰 기록 한 건의 형식 버전 (readReflections에서 옮김) */
-  const EXPERIMENT_SCHEMA=1; /* 성장 실험 저장 형식 버전 (readExperiments) */
+  const EXPERIMENT_SCHEMA=2; /* 성장 실험 저장 형식 버전 (readExperiments). v2: 항목마다 루틴(routine)과 날짜별 체크(log)를 더했다 */
 
   const TYPES={
     1:{name:'개혁가',focus:'기준·올바름',fear:'잘못되거나 결함 있는 상태',desire:'좋고 올바른 사람이 되는 것',question:'그 상황에서 “제대로 해야 한다”는 기준이 얼마나 중요했나요?'},
@@ -47,7 +47,206 @@
     if(push) history.replaceState(null,'','#diary');
     if(typeof closeShellMenu==='function') closeShellMenu();
     renderReflectionHistory();
-    renderDiaryForm().then(renderExperiments); /* 내 유형이 바뀌었을 수 있어 추천을 다시 그림 */
+    /* ---- 다이어리 탭: 쓰기(채팅) · 기록 · 실천 (2026-10-03) ----
+     쓰기는 긴 폼 대신 채팅: 정해진 순서로 질문이 하나씩 말풍선으로 나오고, 답을 모아 다이어리 한 편으로 정리해 저장한다.
+     저장 형식은 기존 성찰 기록(schemaVersion 2)과 같다 — '왜'는 다섯 단계 대신 한 번(whys[0])만 묻는다. */
+  const DIARY_TABS=[['write','쓰기'],['history','기록'],['practice','실천']];
+  let diaryTab='write';
+  function chatWhyOptions(){
+    const t=diaryTypeInfo.type, out=[];
+    if(t && DIARY_WHY_BY_TYPE[t]) out.push([DIARY_WHY_BY_TYPE[t],`${DIARY_WHY_BY_TYPE[t]} · 내 유형`]);
+    Object.entries(DIARY_WHY_BY_TYPE).forEach(([k,v])=>{ if(Number(k)!==t) out.push([v,v]); });
+    return out;
+  }
+  function chatMotiveOptions(){
+    const t=diaryTypeInfo.type;
+    const list=t?[DIARY_TYPE_MOTIVE[t],...DIARY_MOTIVES.filter(m=>m!==DIARY_TYPE_MOTIVE[t])]:DIARY_MOTIVES;
+    return list.map(m=>[m,m===DIARY_TYPE_MOTIVE[t]?`${m} · 내 유형`:m]);
+  }
+  function chatNextOptions(){
+    return (diaryTypeInfo.actions.length?diaryTypeInfo.actions.slice(0,3):DIARY_NEXT_GENERIC).map(x=>[x,x.length>40?x.slice(0,39)+'…':x]);
+  }
+  const CHAT_STEPS=[
+    {key:'date',ask:'언제 있었던 일이에요?',type:'single',options:()=>[['today','오늘'],['yesterday','어제']]},
+    {key:'category',ask:'어떤 장면의 이야기예요?',type:'single',options:()=>DIARY_CATEGORIES},
+    {key:'situation',ask:'무슨 일이 있었나요? 해석보다 실제로 있었던 일을 적어보세요.',type:'text',placeholder:'예) 회의에서 내 의견이 묻혔다'},
+    {key:'emotions',ask:'그때 어떤 감정이 들었어요? 여러 개 골라도 돼요.',type:'multi',options:()=>DIARY_EMOTIONS.map(e=>[e,e]),text:'다른 감정이면 적어주세요'},
+    {key:'reaction',ask:'그 순간 나는 어떻게 반응했나요?',type:'multi',options:()=>DIARY_REACTIONS.map(r=>[r,r]),text:'직접 쓰기',skip:true},
+    {key:'why',ask:'왜 그렇게 반응했을까요?',type:'multi',options:chatWhyOptions,text:'직접 쓰기',skip:true},
+    {key:'motives',ask:'그 순간 나는 무엇을 지키거나 얻고 싶었을까요?',type:'multi',options:chatMotiveOptions,skip:true},
+    {key:'next',ask:'다음에 비슷한 일이 생기면 해보고 싶은 작은 행동이 있나요? 적어 두면 ‘실천’에 모여요.',type:'multi',options:chatNextOptions,text:'직접 쓰기',skip:true}
+  ];
+  let chat={step:0,answers:{},picks:[],saved:false};
+
+  function chatAvatar(){
+    const t=diaryMyType()||5;
+    return `<span class="chat-avatar" aria-hidden="true">${typeof gemImg==='function'?gemImg(t,'',true):''}</span>`;
+  }
+  function chatBot(html){
+    g('diaryChatLog').insertAdjacentHTML('beforeend',`<div class="chat-msg is-bot">${chatAvatar()}<div class="chat-bubble">${html}</div></div>`);
+  }
+  function chatMe(text){
+    g('diaryChatLog').insertAdjacentHTML('beforeend',`<div class="chat-msg is-me"><div class="chat-bubble">${esc(text)}</div></div>`);
+  }
+  /* 마지막 질문과 선택지가 한 화면에 들어오면 선택지 끝까지, 선택지가 길면 질문이 맨 위에 오게 내린다 */
+  function chatScroll(){
+    const log=g('diaryChatLog'); if(!log) return;
+    const behavior=window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth';
+    const msgs=log.querySelectorAll('.chat-msg'), msg=msgs[msgs.length-1], quick=log.querySelector('.chat-quick');
+    if(msg && quick){
+      const cs=getComputedStyle(msg), room=innerHeight-parseFloat(cs.scrollMarginBottom||0)-parseFloat(cs.scrollMarginTop||0);
+      if(quick.getBoundingClientRect().bottom-msg.getBoundingClientRect().top>room){ msg.scrollIntoView({block:'start',behavior}); return; }
+    }
+    log.lastElementChild?.scrollIntoView({block:'end',behavior});
+  }
+  function chatAsk(){
+    const st=CHAT_STEPS[chat.step];
+    chat.picks=[];
+    chatBot(esc(st.ask));
+    renderChatComposer();
+    chatScroll();
+  }
+  /* 선택지는 마지막 질문 말풍선 바로 아래(대화 안)에 그때그때 보여주고, 입력창은 화면 아래에 늘 붙어 있다.
+     하나만 고르는 질문에서는 입력창을 잠그고 '위에서 골라주세요'라고 안내한다. */
+  function renderChatComposer(){
+    const log=g('diaryChatLog'), field=g('diaryChatText'); if(!log||!field) return;
+    log.querySelector('.chat-quick')?.remove();
+    const st=CHAT_STEPS[chat.step];
+    let quick='';
+    if(!st) quick=chat.saved
+      ?'<div class="chat-actions"><button type="button" class="ui-btn ui-btn-secondary" data-chat-go="history">기록 보기</button><button type="button" class="ui-btn ui-btn-primary" data-chat-restart>새 장면 쓰기</button></div>'
+      :'<div class="chat-actions"><button type="button" class="ui-btn ui-btn-secondary" data-chat-restart>처음부터 다시</button><button type="button" class="ui-btn ui-btn-primary" data-chat-save>다이어리에 저장</button></div>';
+    else if(st.type==='single') quick=`<div class="ui-chips chat-chips">${st.options().map(([v,l])=>`<button type="button" class="ui-chip" data-chat-pick="${esc(v)}">${esc(l)}</button>`).join('')}</div>`;
+    else if(st.type==='multi') quick=`<div class="ui-chips chat-chips">${st.options().map(([v,l])=>`<button type="button" class="ui-chip" data-chat-toggle="${esc(v)}" aria-pressed="false">${esc(l)}</button>`).join('')}</div>`;
+    if(quick) log.insertAdjacentHTML('beforeend',`<div class="chat-quick">${quick}</div>`);
+    const open=!!st && (st.type==='text' || !!st.text);
+    field.value='';
+    field.disabled=!open;
+    field.placeholder=!st?(chat.saved?'저장했어요':'위에서 저장해주세요'):st.type==='text'?(st.placeholder||''):(st.text||'위에서 골라주세요');
+    if(st && st.type==='single') field.placeholder='위에서 하나를 골라주세요';
+    field.setAttribute('aria-label',st?(st.type==='text'?st.ask:(st.text||st.ask)):'대화 입력');
+    const err=g('diaryChatError'); if(err) err.hidden=true;
+    chatNextLabel();
+  }
+  function chatNextLabel(){
+    const st=CHAT_STEPS[chat.step], send=g('diaryChatSend');
+    if(!send) return;
+    const has=chat.picks.length || (g('diaryChatText')?.value.trim());
+    send.disabled=!st || st.type==='single';
+    send.textContent=st && st.type==='multi' && st.skip && !has?'건너뛰기':'보내기';
+  }
+  function chatAnswer(value,label){
+    const st=CHAT_STEPS[chat.step];
+    chat.answers[st.key]=value;
+    g('diaryChatLog')?.querySelector('.chat-quick')?.remove();
+    chatMe(label||'건너뛰었어요');
+    chat.step++;
+    if(chat.step<CHAT_STEPS.length) chatAsk(); else chatSummary();
+  }
+  function chatRecord(){
+    const a=chat.answers;
+    const now=new Date();
+    let createdAt=now.toISOString();
+    if(a.date==='yesterday'){ const d=new Date(now); d.setDate(d.getDate()-1); d.setHours(12,0,0,0); createdAt=d.toISOString(); }
+    const situation=(a.situation||'').trim();
+    return {id:'r_'+Date.now(),schemaVersion:REFLECTION_SCHEMA,createdAt,
+      title:situation.split(/[.\n!?]/)[0].slice(0,30),category:a.category||'일상',emotions:a.emotions||[],situation,
+      reaction:(a.reaction||[]).join(' · '),whys:[(a.why||[]).join(' · '),'','','',''],motives:a.motives||[],next:(a.next||[]).join(' · ')};
+  }
+  function chatSummary(){
+    const r=chatRecord();
+    const rows=[['무슨 일',r.situation],['감정',r.emotions.join(', ')],['나의 반응',r.reaction],['그렇게 한 이유',r.whys[0]],['지키고 싶었던 것',r.motives.join(', ')],['다음엔',r.next]].filter(x=>x[1]);
+    const d=new Date(r.createdAt);
+    chatBot('오늘의 장면을 이렇게 정리했어요.'
+      +`<article class="chat-summary"><div class="chat-summary-meta">${esc(longDate(d))} · ${esc(catLabel(r.category))}</div>`
+      +`<h3 class="chat-summary-title">${esc(r.title||'제목 없는 기록')}</h3>`
+      +`<dl class="diary-review">${rows.map(([k,v])=>`<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl></article>`);
+    renderChatComposer();
+    chatScroll();
+  }
+  function chatSave(){
+    const record=chatRecord();
+    const arr=readReflections(); arr.unshift(record); write(STORAGE.reflections,arr);
+    chat.saved=true;
+    renderReflectionHistory(); renderExperiments(); renderDashboard();
+    chatBot(record.next?'저장했어요. ‘기록’에서 다시 볼 수 있고, 다음엔 해보기로 한 행동은 ‘실천’에 모였어요.':'저장했어요. ‘기록’에서 다시 볼 수 있어요.');
+    renderChatComposer();
+    chatScroll();
+    /* 위험한 표현이 보이면 기록은 저장하고 도움 안내를 띄운다 (PRD SF-1·2) */
+    const text=[record.situation,record.reaction,record.whys[0],record.next,...record.emotions].join(' ');
+    if(typeof window.prdHasCrisisSignal==='function' && window.prdHasCrisisSignal(text) && typeof window.openCrisisGuide==='function') window.openCrisisGuide({fromDiary:true});
+  }
+  function chatStart(){
+    chat={step:0,answers:{},picks:[],saved:false};
+    const log=g('diaryChatLog'); if(!log) return;
+    log.innerHTML='';
+    chatBot('오늘 기억에 남은 장면 하나를 같이 정리해볼까요? 질문에 하나씩 답하면 다이어리로 정리해 드려요.');
+    chatAsk();
+  }
+  function setDiaryTab(tab){
+    diaryTab=tab;
+    document.querySelectorAll('#diaryTabs [data-diary-tab]').forEach(b=>{
+      const on=b.dataset.diaryTab===tab;
+      b.setAttribute('aria-selected',on?'true':'false');
+      b.classList.toggle('active',on);
+      b.tabIndex=on?0:-1;
+    });
+    const wrap=document.querySelector('#page-diary .diary-wrap');
+    if(wrap) wrap.dataset.diaryTab=tab;
+    if(tab==='history') renderReflectionHistory();
+    if(tab==='practice') renderExperiments();
+  }
+  function setupDiaryTabs(){
+    const wrap=document.querySelector('#page-diary .diary-wrap');
+    if(!wrap || g('diaryTabs')) return;
+    const head=wrap.querySelector('.diary-head');
+    head?.insertAdjacentHTML('afterend',`<div class="diary-tabs" id="diaryTabs" role="tablist" aria-label="다이어리">${DIARY_TABS.map(([k,l])=>`<button type="button" role="tab" id="diaryTab-${k}" data-diary-tab="${k}" aria-selected="false">${l}</button>`).join('')}</div>`
+      +'<section class="diary-chat" data-diary-panel="write" role="tabpanel" aria-labelledby="diaryTab-write"><div class="chat-log" id="diaryChatLog" role="log" aria-live="polite"></div>'
+      +'<form class="chat-bar" id="diaryChatComposer" data-chat-form><p class="diary-error" hidden id="diaryChatError" role="alert"></p>'
+      +'<textarea class="ui-field" id="diaryChatText" rows="1" aria-label="대화 입력"></textarea>'
+      +'<button type="submit" class="ui-btn ui-btn-primary" id="diaryChatSend">보내기</button></form></section>');
+    wrap.querySelector('.diary-layout')?.setAttribute('data-diary-panel','practice');
+    wrap.querySelector('.diary-list')?.setAttribute('data-diary-panel','history');
+    g('diaryTabs').addEventListener('click',e=>{ const b=e.target.closest('[data-diary-tab]'); if(b) setDiaryTab(b.dataset.diaryTab); });
+    g('diaryTabs').addEventListener('keydown',e=>{
+      if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft') return;
+      const i=DIARY_TABS.findIndex(([k])=>k===diaryTab), n=(i+(e.key==='ArrowRight'?1:-1)+DIARY_TABS.length)%DIARY_TABS.length;
+      setDiaryTab(DIARY_TABS[n][0]); g('diaryTab-'+DIARY_TABS[n][0])?.focus();
+    });
+    const composer=g('diaryChatComposer'), chatPanel=wrap.querySelector('.diary-chat');
+    chatPanel.addEventListener('click',e=>{
+      const pick=e.target.closest('[data-chat-pick]');
+      if(pick){ chatAnswer(pick.dataset.chatPick,pick.textContent); return; }
+      const tog=e.target.closest('[data-chat-toggle]');
+      if(tog){ const v=tog.dataset.chatToggle, i=chat.picks.indexOf(v); if(i>=0) chat.picks.splice(i,1); else chat.picks.push(v); tog.classList.toggle('active',i<0); tog.setAttribute('aria-pressed',i<0?'true':'false'); if(g('diaryChatError')) g('diaryChatError').hidden=true; chatNextLabel(); return; }
+      if(e.target.closest('[data-chat-save]')){ chatSave(); return; }
+      if(e.target.closest('[data-chat-restart]')){ chatStart(); return; }
+      const go=e.target.closest('[data-chat-go]');
+      if(go) setDiaryTab(go.dataset.chatGo);
+    });
+    composer.addEventListener('input',chatNextLabel);
+    composer.addEventListener('submit',e=>{
+      e.preventDefault();
+      const st=CHAT_STEPS[chat.step]; if(!st) return;
+      const text=g('diaryChatText')?.value.trim()||'';
+      const err=g('diaryChatError');
+      if(st.type==='text'){
+        if(!text){ if(err){ err.textContent='한 줄이라도 적어주세요.'; err.hidden=false; } g('diaryChatText')?.focus(); return; }
+        chatAnswer(text,text); return;
+      }
+      const values=[...chat.picks,text].filter(Boolean);
+      if(!values.length && !st.skip){ if(err){ err.textContent='위에서 하나 이상 골라주세요.'; err.hidden=false; } return; }
+      chatAnswer(values,values.length?values.join(', '):'');
+    });
+    composer.addEventListener('keydown',e=>{
+      if(e.key==='Enter' && !e.shiftKey && e.target.matches('textarea#diaryChatText')){ e.preventDefault(); e.target.form?.requestSubmit(); }
+    });
+    setDiaryTab('write');
+    loadDiaryTypeInfo().then(chatStart);
+  }
+  setupDiaryTabs();
+
+  renderDiaryForm().then(renderExperiments); /* 내 유형이 바뀌었을 수 있어 추천을 다시 그림 */
     document.getElementById('page-diary')?.scrollTo({top:0});
   };
 
@@ -480,12 +679,37 @@
   }
 
   /* ---- 해보기로 한 것(성장 실험): 다이어리의 '다음엔' + 유형별 추천 + 직접 추가 ----
-     저장 키 enneagram_experiments_v1, schemaVersion 1:
-     { schemaVersion, status:{ [기록 id 또는 실험 id]: { done, note, updatedAt } }, custom:[{ id, text, createdAt, src? }] } */
+     저장 키 enneagram_experiments_v1, schemaVersion 2:
+     { schemaVersion, status:{ [기록 id 또는 실험 id]: { done, note, updatedAt, routine?:{ freq:'daily'|'weekdays'|'three', since }, log?:{ 'YYYY-MM-DD':true } } },
+       custom:[{ id, text, createdAt, src? }] }
+     v1 → v2: 구조는 그대로이고 routine·log는 없으면 '루틴 아님'으로 읽으므로, 버전 숫자만 올려 다시 저장한다. */
   function readExperiments(){
     const v=read(STORAGE.experiments,null);
     if(v && v.schemaVersion===EXPERIMENT_SCHEMA && v.status && Array.isArray(v.custom)) return v;
+    if(v && v.schemaVersion===1 && v.status && Array.isArray(v.custom)){
+      const migrated={...v,schemaVersion:EXPERIMENT_SCHEMA};
+      write(STORAGE.experiments,migrated);
+      return migrated;
+    }
     return {schemaVersion:EXPERIMENT_SCHEMA,status:{},custom:[]};
+  }
+
+  /* 루틴: 매일 · 평일 · 일주일에 3번. 이번 주(월~일) 체크 칸과 연속 기록 */
+  const ROUTINE_FREQ={daily:['매일',7],weekdays:['평일',5],three:['일주일에 3번',3]};
+  function weekDays(){
+    const now=new Date(); now.setHours(0,0,0,0);
+    const mon=new Date(now); mon.setDate(now.getDate()-((now.getDay()+6)%7));
+    return Array.from({length:7},(_,i)=>{const d=new Date(mon); d.setDate(mon.getDate()+i); return d;});
+  }
+  function routineStats(it){
+    const log=it.log||{}, freq=it.routine?.freq;
+    const todayKey=dayKeyOf(new Date());
+    const week=weekDays().map(d=>({key:dayKeyOf(d),label:'월화수목금토일'[(d.getDay()+6)%7],done:!!log[dayKeyOf(d)],today:dayKeyOf(d)===todayKey,future:dayKeyOf(d)>todayKey,weekend:d.getDay()===0||d.getDay()===6}));
+    const count=week.filter(w=>w.done&&!(freq==='weekdays'&&w.weekend)).length;
+    let streak=0; const d=new Date(); d.setHours(0,0,0,0);
+    if(!log[dayKeyOf(d)]) d.setDate(d.getDate()-1);
+    while(log[dayKeyOf(d)]){ streak++; d.setDate(d.getDate()-1); }
+    return {week,count,target:(ROUTINE_FREQ[freq]||ROUTINE_FREQ.daily)[1],label:(ROUTINE_FREQ[freq]||ROUTINE_FREQ.daily)[0],streak,todayDone:!!log[todayKey]};
   }
   function experimentItems(){
     const store=readExperiments();
@@ -496,13 +720,13 @@
     const custom=store.custom.map(c=>({id:c.id,text:c.text,src:c.src||'직접 추가',custom:true,createdAt:c.createdAt}));
     return [...fromDiary,...custom]
       .sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt))
-      .map(it=>({...it,done:!!store.status[it.id]?.done,note:store.status[it.id]?.note||''}));
+      .map(it=>({...it,done:!!store.status[it.id]?.done,note:store.status[it.id]?.note||'',routine:store.status[it.id]?.routine||null,log:store.status[it.id]?.log||{}}));
   }
   function experimentSummary(){
     const items=experimentItems();
     return {total:items.length,done:items.filter(i=>i.done).length};
   }
-  let experimentFilter='todo';
+  let experimentFilter=null; /* 처음에는 루틴이 있으면 '루틴', 없으면 '해볼 것' */
   function renderExperiments(){
     const list=g('experimentList');
     if(!list) return;
@@ -510,10 +734,22 @@
     const done=items.filter(i=>i.done).length;
     const badge=g('experimentCountBadge');
     if(badge) badge.textContent=`${done} / ${items.length}`;
+    const routines=items.filter(i=>i.routine).length;
+    if(!experimentFilter) experimentFilter=routines?'routine':'todo';
     const filter=g('experimentFilter');
-    if(filter) filter.innerHTML=[['todo',`해볼 것 ${items.length-done}`],['done',`해봤어요 ${done}`],['all','전체']]
+    if(filter) filter.innerHTML=[['routine',`루틴 ${routines}`],['todo',`해볼 것 ${items.length-done}`],['done',`해봤어요 ${done}`],['all','전체']]
       .map(([k,l])=>chip(k,l,experimentFilter===k,'data-exp-filter')).join('');
-    const shown=items.filter(i=>experimentFilter==='all'||(experimentFilter==='done')===i.done);
+    const shown=items.filter(i=>experimentFilter==='all'||(experimentFilter==='routine'?!!i.routine:(experimentFilter==='done')===i.done));
+    const routineHTML=it=>{
+      if(!it.routine) return `<div class="routine-start"><button type="button" class="ui-btn ui-btn-ghost" data-routine-open="${esc(it.id)}">루틴으로 만들기</button>`
+        +`<div class="ui-chips routine-pick" hidden>${Object.entries(ROUTINE_FREQ).map(([k,[l]])=>`<button type="button" class="ui-chip" data-routine-set="${esc(it.id)}" data-freq="${k}">${l}</button>`).join('')}</div></div>`;
+      const st=routineStats(it);
+      return `<div class="routine">`
+        +`<div class="routine-head"><span class="routine-freq">${esc(st.label)}</span><span class="routine-stat">이번 주 ${st.count} / ${st.target}${st.streak>1?` · 연속 ${st.streak}일`:''}</span></div>`
+        +`<ol class="routine-week" aria-label="이번 주 체크">${st.week.map(w=>`<li class="${w.done?'is-done':''}${w.today?' is-today':''}${w.future?' is-future':''}" aria-label="${w.label}요일 ${w.done?'했어요':'안 했어요'}"><span>${w.label}</span><i aria-hidden="true">${w.done?'✓':''}</i></li>`).join('')}</ol>`
+        +`<div class="routine-actions"><button type="button" class="ui-btn ui-btn-secondary routine-today${st.todayDone?' is-done':''}" data-routine-today="${esc(it.id)}" aria-pressed="${st.todayDone?'true':'false'}">${st.todayDone?'오늘 했어요 ✓':'오늘 했어요'}</button>`
+        +`<button type="button" class="ui-btn ui-btn-ghost" data-routine-stop="${esc(it.id)}">루틴 그만하기</button></div></div>`;
+    };
     list.innerHTML=shown.length?shown.map(it=>`
       <article class="experiment-item${it.done?' is-done':''}">
         <button type="button" class="experiment-check" data-exp-toggle="${esc(it.id)}" aria-pressed="${it.done?'true':'false'}" aria-label="${it.done?'해봤어요 해제':'해봤어요로 표시'}">${it.done?'✓':''}</button>
@@ -521,10 +757,11 @@
           <p class="experiment-text">${esc(it.text)}</p>
           <span class="experiment-src">${esc(it.src)}</span>
           ${it.done?`<input class="ui-field experiment-note" data-exp-note="${esc(it.id)}" type="text" maxlength="120" placeholder="해보니 어땠나요? (한 줄)" aria-label="해보니 어땠나요?" value="${esc(it.note)}">`:''}
+          ${routineHTML(it)}
         </div>
         ${it.custom?`<button type="button" class="ui-btn ui-btn-ghost" data-exp-delete="${esc(it.id)}">삭제</button>`:''}
       </article>`).join('')
-      :`<div class="ui-empty"><strong>${items.length?(experimentFilter==='done'?'아직 해본 것이 없어요.':'해볼 것을 모두 해봤어요.'):'아직 해보기로 한 것이 없어요.'}</strong><p>${items.length?'작은 것 하나라도 해봤다면 동그라미를 눌러 보세요.':'기록의 ‘다음엔’에 적거나, 아래 추천에서 골라보세요.'}</p></div>`;
+      :`<div class="ui-empty"><strong>${experimentFilter==='routine'&&items.length?'아직 루틴이 없어요.':items.length?(experimentFilter==='done'?'아직 해본 것이 없어요.':'해볼 것을 모두 해봤어요.'):'아직 해보기로 한 것이 없어요.'}</strong><p>${experimentFilter==='routine'&&items.length?'‘해볼 것’에서 꾸준히 하고 싶은 행동을 루틴으로 만들어 보세요.':items.length?'작은 것 하나라도 해봤다면 동그라미를 눌러 보세요.':'기록의 ‘다음엔’에 적거나, 아래 추천에서 골라보세요.'}</p></div>`;
     /* 유형별 추천 */
     const reco=g('experimentReco');
     if(reco){
@@ -558,6 +795,21 @@
     if(b) addCustomExperiment(b.dataset.expReco,diaryTypeInfo.type?`추천 · ${diaryTypeInfo.type}번`:'추천');
   });
   g('experimentList')?.addEventListener('click',e=>{
+    const ro=e.target.closest('[data-routine-open]');
+    if(ro){ const pick=ro.parentElement.querySelector('.routine-pick'); pick.hidden=!pick.hidden; ro.setAttribute('aria-expanded',pick.hidden?'false':'true'); return; }
+    const rs=e.target.closest('[data-routine-set]');
+    if(rs){ saveExperimentStatus(rs.dataset.routineSet,{routine:{freq:rs.dataset.freq,since:dayKeyOf(new Date())}}); experimentFilter='routine'; renderExperiments(); return; }
+    const rt=e.target.closest('[data-routine-today]');
+    if(rt){
+      const id=rt.dataset.routineToday, store=readExperiments(), key=dayKeyOf(new Date());
+      const log={...(store.status[id]?.log||{})};
+      if(log[key]) delete log[key]; else log[key]=true;
+      saveExperimentStatus(id,{log});
+      renderExperiments(); renderDashboard();
+      return;
+    }
+    const rstop=e.target.closest('[data-routine-stop]');
+    if(rstop){ saveExperimentStatus(rstop.dataset.routineStop,{routine:null}); renderExperiments(); return; }
     const t=e.target.closest('[data-exp-toggle]');
     if(t){
       const id=t.dataset.expToggle;

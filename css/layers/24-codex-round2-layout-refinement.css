@@ -119,8 +119,8 @@
   #page-handbook [class*="thumb"],
   #page-handbook [class*="illust"],
   #page-handbook svg[role="img"],
-  #page-handbook svg:not(.pcard svg),
-  #page-handbook img:not(.pcard img) { /* 프로필 카드(보석·궤도선)는 남긴다 */
+  #page-handbook svg:not(.pcard svg):not(.hb-idcard svg),
+  #page-handbook img:not(.pcard img):not(.hb-idcard img) { /* 프로필 카드(보석·궤도선)는 남긴다 */
     display:none !important;
   }
 

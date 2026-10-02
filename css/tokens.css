@@ -43,6 +43,7 @@
 
   --text-xs: 12px;   /* Caption / Meta / Badge */
   --text-sm: 14px;   /* Secondary body */
+  --text-note: 14px; /* 보조 안내·라벨 고정값 (옛 레이어의 크기 토큰을 지역에서 바꿔 끼울 때 기준으로 쓴다) */
   --text-md: 16px;   /* Primary body */
   --text-lg: 18px;   /* Card title */
   --text-h3: 17px;   /* 카드 안 제목 (디자인 시스템 h3) */
@@ -67,7 +68,7 @@
   --color-accent-soft: #F3F0FD;
 
   /* Gold line — 카드 궤도선·작은 별 장식 전용 (글자에 쓰지 않음) */
-  --color-gold: #D9B86A;
+  --color-gold: #B4A8E0;          /* 장식 선·반짝이. 이름은 남기고 보라 계열로 통일 (2026-10-03, 노랑·보라·홀로그램이 섞여 눈이 피로하다는 의견) */
 
   /* Text — ink / ink-sub / ink-faint(비활성·플레이스홀더, 16px 이상 굵은 글자만) */
   --color-text-primary: #3A3845;
@@ -75,18 +76,19 @@
   --color-text-tertiary: #5F5B6E;
   --color-text-faint: #A9A5B4;
 
-  /* Surface — 바탕은 단색 라벤더(2026-10-01, 그라데이션 바탕은 산만해서 뺐다), 그 위 면은 모두 유리.
-     --color-surface는 반투명 흰 유리라 어느 화면의 카드든 유리처럼 보인다. 불투명한 흰색이 꼭 필요하면 --color-surface-solid */
-  --color-bg: #EAE5FC;       /* 맑은 라벤더 (회색기를 빼서 덜 탁하게, 2026-10-01) */
-  --color-backdrop: #E0D9FA; /* PC에서 앱 열 바깥 */
-  --color-surface: rgba(255, 255, 255, 0.78);
+  /* Surface — 흰 바탕 + 연회색 카드 면 (2026-10-02). 불투명한 흰색이 꼭 필요하면 --color-surface-solid */
+  --color-bg: #FFFFFF;          /* 흰 바탕 (2026-10-02) */
+  --color-backdrop: #F8F9F9;    /* PC에서 앱 열 바깥: 아주 옅은 회색 (아이웨딩 웹과 같은 값) */
+  --color-surface: #FFFFFF;     /* 카드 면: 흰색 + 얇은 중립 회색 선 (색 칠한 네모는 촌스러워 뺐다, 2026-10-03) */
   --color-surface-solid: #FFFFFF;
-  --color-surface-subtle: rgba(255, 255, 255, 0.45);
-  --color-mist: #E6E1EC;
+  --color-surface-subtle: #FFFFFF; /* 카드 안 작은 박스도 색 없이 */
+  --color-ivory: #FCFBFF;         /* 프로필 카드 종이색 (보라 기운의 흰색) */
+  --color-fill: #F3F3F6;          /* 채팅의 상대 말풍선처럼 면이 꼭 필요한 곳의 옅은 중립 회색 */
+  --color-mist: #E8E8EC;
 
   /* Border */
-  --color-border: #E6E1EC;
-  --color-border-subtle: #EEEBF2;
+  --color-border: #E8E8EC;          /* 보랏빛 없는 중립 회색 선 */
+  --color-border-subtle: #F0F0F3;
 
   /* Banner — 홈 상단 배너 */
   --color-banner: #F1EEF8;
@@ -119,30 +121,33 @@
   --gem-rose: #F59FA0;
   --gem-clear: #EEF3FA;
 
-  --type-1: var(--gem-blue);     --type-1-soft: #E4F0FF; --type-1-deep: #2F5E9E; /* 사파이어 */
-  --type-2: var(--gem-pink);     --type-2-soft: #FCE3E9; --type-2-deep: #A3405F; /* 로즈쿼츠 */
-  --type-3: var(--gem-clear);    --type-3-soft: #FFF6DC; --type-3-deep: #806010; /* 다이아몬드 (빛 #FFE7A8) */
-  --type-4: var(--gem-lilac);    --type-4-soft: #F6EBF6; --type-4-deep: #80467F; /* 오팔 */
-  --type-5: var(--gem-lavender); --type-5-soft: #F1ECFF; --type-5-deep: #5A44AE; /* 자수정 */
-  --type-6: var(--gem-mint);     --type-6-soft: #EEF9EC; --type-6-deep: #2D7244; /* 에메랄드 */
-  --type-7: var(--gem-yellow);   --type-7-soft: #FFF3E3; --type-7-deep: #8F5310; /* 시트린 (→ #FFD3B1) */
-  --type-8: var(--gem-rose);     --type-8-soft: #FCDCDC; --type-8-deep: #A0333A; /* 루비 */
-  --type-9: var(--gem-sky);      --type-9-soft: #E3F5F8; --type-9-deep: #1F6878; /* 아쿠아마린 */
+  --type-1: var(--gem-blue);     --type-1-soft: var(--color-primary-soft); --type-1-deep: var(--color-primary); /* 사파이어 */
+  --type-2: var(--gem-pink);     --type-2-soft: var(--color-primary-soft); --type-2-deep: var(--color-primary); /* 로즈쿼츠 */
+  --type-3: var(--gem-clear);    --type-3-soft: var(--color-primary-soft); --type-3-deep: var(--color-primary); /* 다이아몬드 (빛 #FFE7A8) */
+  --type-4: var(--gem-lilac);    --type-4-soft: var(--color-primary-soft); --type-4-deep: var(--color-primary); /* 오팔 */
+  --type-5: var(--gem-lavender); --type-5-soft: var(--color-primary-soft); --type-5-deep: var(--color-primary); /* 자수정 */
+  --type-6: var(--gem-mint);     --type-6-soft: var(--color-primary-soft); --type-6-deep: var(--color-primary); /* 에메랄드 */
+  --type-7: var(--gem-yellow);   --type-7-soft: var(--color-primary-soft); --type-7-deep: var(--color-primary); /* 시트린 (→ #FFD3B1) */
+  --type-8: var(--gem-rose);     --type-8-soft: var(--color-primary-soft); --type-8-deep: var(--color-primary); /* 루비 */
+  --type-9: var(--gem-sky);      --type-9-soft: var(--color-primary-soft); --type-9-deep: var(--color-primary); /* 아쿠아마린 */
 
   /* 홀로그램 (브리프 §4-3) — 프로필 카드 배경 전용. 본문 글자 뒤·다이어리 화면에 쓰지 않음 */
-  --holo: linear-gradient(120deg, #C7E6FF 0%, #D7C8FF 30%, #F7D6E6 55%, #CDEDC6 80%, #FFF1C4 100%);
+  --holo: linear-gradient(120deg, #DCD6FF 0%, #EADCFB 35%, #F6E3F1 62%, #DDE6FF 100%); /* 보라 계열 안에서만 도는 홀로그램 (2026-10-03, 무지개·노랑은 뺐다) */
+  --card-paper: linear-gradient(color-mix(in srgb, var(--color-ivory) 55%, transparent), color-mix(in srgb, var(--color-ivory) 55%, transparent)), var(--holo); /* 프로필 카드·정사각형 프로필 바탕 */
 
   /* 글래스·그라데이션 (디자인 시스템 v1 §1-4) — 유리 면은 뒤에 배경 빛 덩어리가 있어야 유리처럼 보인다 */
-  --glass: rgba(255, 255, 255, 0.78);
-  --glass-strong: rgba(255, 255, 255, 0.9);
-  --glass-line: rgba(255, 255, 255, 0.95); /* 밝은 바탕에서 카드 가장자리가 보이도록 */
-  --glass-blur: blur(24px) saturate(1.4);
-  --grad-blue: #4F72D0;
-  --grad-violet: #7B5FD6;
-  --grad-plum: #A3589E;
+  /* 이름은 glass로 남겨 두었지만 흰 바탕에서는 유리 대신 평평한 면: glass = 카드 면, glass-strong = 흰 면(버튼·질문 박스), glass-line = 얇은 선 */
+  --glass: var(--color-surface);
+  --glass-strong: #FFFFFF;
+  --glass-line: #E8E8EC;
+  --glass-blur: none;
+  /* 남보라→보라→자주보라: 보라 계열 안의 그라데이션 (2026-10-03). 세 색 모두 흰 글자 4.5 이상 */
+  --grad-blue: #5A55CF;
+  --grad-violet: #7A5BD6;
+  --grad-plum: #8C5BC4;
   --grad-primary: linear-gradient(100deg, var(--grad-blue), var(--grad-violet), var(--grad-plum)); /* 메인 버튼·선택 칩·진행 바, 흰 글자 4.5 이상 */
-  --grad-aurora: linear-gradient(135deg, #FBC7D9, #D9C6FF 38%, #B9DCFF 72%, #FFDCC0); /* 보석 미리보기 타일·강조 카드 (글자 ink) */
-  --glow-primary: 0 8px 24px rgba(123, 95, 214, 0.35);
+  --grad-aurora: linear-gradient(135deg, #EDE7FF, #F5E6F7 50%, #E4EAFF); /* 보석 미리보기 타일·강조 카드 (글자 ink) */
+  --glow-primary: none; /* 버튼 아래 번지는 빛은 덜어냈다 (2026-10-02). 그라데이션 색은 주 버튼에만 */
   /* 배경 빛 덩어리: 화면 모서리의 크고 흐린 원 4개 */
   --blob-pink: #F9C6DA;
   --blob-lavender: #D5C6FF;
@@ -178,9 +183,9 @@
 
   /* Shadow */
   /* 높이 (디자인 시스템 v1 §3) — 안쪽 위 1px 흰 선이 유리 모서리의 빛 반사 */
-  --shadow-sm: 0 4px 14px rgba(120, 104, 210, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.9);  /* elev-1 */
-  --shadow-md: 0 12px 40px rgba(120, 104, 210, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.9); /* elev-2 */
-  --shadow-lg: 0 24px 60px rgba(110, 90, 200, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.9);  /* elev-3 */
+  --shadow-sm: none;                                 /* elev-1: 칩·작은 타일 — 흰 바탕 + 회색 면이라 그림자 없이 */
+  --shadow-md: 0 1px 3px rgba(30, 20, 60, 0.05);   /* elev-2: 카드·떠 있는 바 (아주 옅게) */
+  --shadow-lg: 0 12px 32px rgba(60, 40, 140, 0.12); /* elev-3: 프로필 카드 */
 
   /* Layout */
   /* 모바일 웹: 어떤 화면에서도 앱 폭으로 그린다 (강남언니 웹과 같은 616px. 디자인 시스템 v1 §3의 480은 PC에서 너무 좁아 넓힘, 2026-10-01). --app-frame은 옛 레이어의 --app-max(데스크톱 컨테이너)와 다른 값. --app-vw는 vw 대신 쓰는 "앱 폭 기준 vw" */
@@ -191,7 +196,8 @@
   --page-padding-desktop: 32px;
   --page-padding-tablet: 24px;
   --page-padding-mobile: 16px;
-  --page-gutter: 24px; /* 앱 화면 양옆 여백 — 모든 화면이 이 값 하나를 쓴다 (2026-10-01, 16px은 좁아 넓힘) */
+  --page-gutter: 40px; /* 본문(콘텐츠) 양옆 여백 — 모든 화면이 이 값 하나를 쓴다 (2026-10-03) */
+  --nav-gutter: 24px;  /* 탭·칩 같은 메뉴 줄의 양옆 여백 — 본문 여백과 따로 둔다 */
 
   /* Readability */
   --readable-sm: 560px;
