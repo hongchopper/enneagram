@@ -1791,36 +1791,6 @@ function syncHomeResultButtons(){
   });
 }
 
-/* 홈 '이어서 보기': 검사 결과·내 유형·성찰 기록이 있을 때만 노출 */
-function renderHomeContinue(){
-  const section=document.getElementById('home-continue');
-  const list=document.getElementById('homeContinueList');
-  if(!section || !list) return;
-
-  const {detailDone,quickType}=getSavedCheckState();
-  const readJSON=(k,fb)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):fb;}catch(e){return fb;}};
-  const myType=Number(readJSON('enneagram_my_type_v1',''));
-  const reflections=readJSON('enneagram_reflections_v1',[]);
-  const cards=[];
-
-  if(detailDone.length){
-    cards.push({label:'정식 검사 결과',title:`${detailDone.length}개 유형 점수 확인`,desc:'완료한 유형의 점수 구간 해석을 다시 볼 수 있어요.',action:'check-result'});
-  }else if(quickType){
-    cards.push({label:'간편 검사 결과',title:`${quickType}번 ${CHECK_TYPE_NAMES[quickType]}`,desc:'헷갈린다면 정식 검사로 가까운 유형을 함께 확인해보세요.',action:'check-quick'});
-  }
-  /* 내가 고른 유형의 핸드북은 위 대표 프로필 패널의 '핸드북 보기'로 이어지므로 여기 따로 두지 않는다 */
-  if(Array.isArray(reflections) && reflections.length){
-    cards.push({label:'성찰 기록',title:`기록 ${reflections.length}개`,desc:'반복해서 등장한 단서를 나의 공간에서 모아보세요.',action:'myspace-reflection'});
-  }
-
-  section.hidden=!cards.length;
-  const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  list.innerHTML=cards.map(c=>
-    `<button class="continue-card" data-home-continue="${esc(c.action)}" type="button">`
-    +`<span class="continue-label">${esc(c.label)}</span><strong>${esc(c.title)}</strong><span class="continue-desc">${esc(c.desc)}</span></button>`
-  ).join('');
-}
-
 /* =========================================================
    유형 프로필 카드 (유형 검사 결과 · 간편 검사 결과 · 홈 · 공유에서 같이 씀)
    데이터는 핸드북 원문(HTML)에서 뽑는다: 마운트된 페이지(Element)든 DOMParser 문서든 같은 함수.
@@ -2098,7 +2068,7 @@ const decoFrame=()=>`<span class="deco-frame" aria-hidden="true">`
   +['tl','tr','bl','br'].map(k=>`<span class="deco-corner deco-${k}">${DECO_SPRIG}</span>`).join('')
   +`<span class="deco-top">${DECO_MOON}</span><span class="deco-bottom">${DECO_SUN}</span>`
   +'<span class="deco-jewel deco-jewel-l"></span><span class="deco-jewel deco-jewel-r"></span></span>';
-function homeProfileCardHTML(t,{mine=null}={}){
+function homeProfileCardHTML(t,{mine=null,link=true}={}){
   const p=HOME_PROFILES[t], name=homeEsc(CHECK_TYPE_NAMES[t]);
   const sparks=[1,2,3].map(i=>`<span class="pc-twinkle pc-twinkle-${i}">${pcSparkSVG('var(--color-gold)')}</span>`).join('');
   return `<article class="pcard deco type-${t}${mine?' is-mine':''}" style="${gemVars(t)};--i:${t-1}">`
@@ -2120,7 +2090,7 @@ function homeProfileCardHTML(t,{mine=null}={}){
     +`<p class="pcard-sr" aria-live="polite"></p>`
     +`<div class="pcard-foot">${mine?'<span class="pcard-badge">나의 프로필</span>':''}`
     +`<span class="pcard-gemname">${t}번 ${name} · ${homeEsc(p.gem)}</span>`
-    +`<a class="pcard-link" href="#handbook" data-profile-open="${t}">핸드북 보기</a></div>`
+    +`${link?`<a class="pcard-link" href="#handbook" data-profile-open="${t}">핸드북 보기</a>`:''}</div>`
     +`</article>`;
 }
 
@@ -2187,21 +2157,17 @@ function homeTodayQuestion(){
 function renderHomeMe(profile){
   const box=document.getElementById('homeMe');
   if(!box) return;
-  const question=`<span class="home-today-star" aria-hidden="true">${pcSparkSVG('var(--color-gold)')}</span>`
-    +`<span class="home-today-label">오늘의 질문</span>`
-    +`<p class="home-today-q">${homeEsc(homeTodayQuestion())}</p>`
-    +`<p class="home-today-help">짧게라도 적어두면 '나의 변화'에서 반복되는 흐름이 보여요.</p>`
-    +`<button class="btn ${profile?'primary':'secondary'}" data-home-diary type="button">다이어리에 쓰기</button>`; /* 유형이 없으면 주 버튼은 '간편 검사 시작' 하나 */
+  /* 다이어리가 완성되기 전까지 홈의 '오늘의 질문'은 뺀다 (2026-10-03). 핸드북·공유·이미지 저장 버튼도 홈에서는 뺐다 */
   if(!profile){
     box.className='home-me-grid is-empty';
     box.removeAttribute('style');
-    box.innerHTML=`<article class="home-today">${question}</article>`;
+    box.innerHTML='';
     return;
   }
   const t=profile.type, p=HOME_PROFILES[t];
   box.className='home-me-grid me-panel';
   box.setAttribute('style',gemVars(t));
-  box.innerHTML=`<div class="me-card">${homeProfileCardHTML(t,{mine:profile})}</div>`
+  box.innerHTML=`<div class="me-card">${homeProfileCardHTML(t,{mine:profile,link:false})}</div>`
     +`<header class="me-head">`
     +`<span class="me-label">나의 대표 프로필 · ${homeEsc(profile.source)}</span>`
     +`<div class="me-title-row"><span class="gem-tile deco-square">${gemImg(t,'',true)}</span>`
@@ -2210,16 +2176,12 @@ function renderHomeMe(profile){
     +`<div class="me-tags">${p.tags.map(k=>`<span class="tag-chip">#${homeEsc(k)}</span>`).join('')}</div>`
     +`<p class="me-desc">${homeEsc(p.intro)}</p>`
     +`</header>`
-    +`<article class="home-today">${question}</article>`
-    +'<div class="home-me-actions">'
-    +`<button class="btn secondary" data-profile-open="${t}" type="button">핸드북 보기</button>`
-    +'<button class="btn secondary" data-share-open-home type="button">링크 공유</button>'
-    +'<button class="btn secondary" data-profile-save type="button">이미지 저장</button></div>';
+    ;
 }
 
 /* 홈 = 큐레이션 피드 (2026-10-01). 소개 글 대신 바로 볼거리를 선반(옆으로 넘기는 줄)으로 보여준다.
    - 유형이 없으면: 내 보석 찾기 배너 / 있으면: 대표 프로필 패널 (내 카드만)
-   - 이어서 보기 → 오늘의 보석 → 9가지 보석 → 나를 돌아보는 장면 → 비교해서 보기 → 에니어그램 기초
+   - 오늘의 보석 → 9가지 보석 → 나를 돌아보는 장면 → 비교해서 보기 → 에니어그램 기초
    9장 카드 줄은 유형 탐구 > 전체 유형으로 옮겼다. */
 function renderHomeProfiles(){
   const profile=getHomeProfile();
@@ -2281,8 +2243,8 @@ function renderHomeShelves(profile){
   const check=profile
     ? `<div class="home-check" role="region" aria-label="유형 검사"><div class="home-check-copy"><strong class="home-check-title">유형 검사</strong>`
       +'<p class="home-check-desc">헷갈리는 유형이 있다면 정식 검사로 그 유형만 자세히 확인해보세요.</p></div>'
-      +'<div class="home-check-actions"><button class="btn secondary" data-home-action="quick" type="button">간편 검사</button>'
-      +'<button class="btn secondary" data-home-action="find" type="button">정식 검사</button></div></div>'
+      +'<div class="home-check-actions"><button class="btn primary" data-home-action="quick" type="button">간편 검사</button>'
+      +'<button class="btn secondary is-tinted" data-home-action="find" type="button">정식 검사</button></div></div>'
     : '';
   box.innerHTML=check+shelf('오늘의 보석',today,{cls:'shelf-today'})
     +shelf('9가지 보석',rail(gems),{more:'<button class="shelf-more" data-shelf-compare="glance" type="button">카드로 보기</button>'})
@@ -2387,9 +2349,6 @@ async function saveTypeCardImage(t,source){
 document.querySelector('[data-side-quick]')?.addEventListener('click',()=>showCheckTarget('quick'));
 
 document.getElementById('page-home')?.addEventListener('click',e=>{
-  if(e.target.closest('[data-profile-save]')){ saveHomeProfileImage(); return; }
-  if(e.target.closest('[data-share-open-home]')){ showSharePage(); return; }
-  if(e.target.closest('[data-home-diary]')){ document.querySelector('.top-nav-main[data-top-page="diary"]')?.click(); return; }
   const sh=e.target.closest('[data-shelf-sharing],[data-shelf-compare],[data-shelf-overview]');
   if(sh){
     if(sh.dataset.shelfSharing!==undefined) showSharingTopic(Number(sh.dataset.shelfSharing));
@@ -2415,15 +2374,6 @@ document.getElementById('page-home')?.addEventListener('click',e=>{
     else if(key==='handbook') showHandbookType(1);
     else if(key==='compare') showCompareSection('glance');
     return;
-  }
-  const cont=e.target.closest('[data-home-continue]');
-  if(cont){
-    const key=cont.dataset.homeContinue;
-    const m=key.match(/^handbook-([1-9])$/);
-    if(key==='check-result') showCheckTarget('result');
-    else if(key==='check-quick') showCheckTarget('quick');
-    else if(m) showHandbookType(Number(m[1]));
-    else if(key==='myspace-reflection' && typeof showMySpaceSection==='function') showMySpaceSection('reflection');
   }
 });
 
@@ -2466,7 +2416,6 @@ if(hbRoot){
 
 function refreshHome(){
   syncHomeResultButtons();
-  renderHomeContinue();
   renderHomeProfiles();
 }
 refreshHome();

@@ -7904,3 +7904,25 @@ h3,
     radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--tc) 30%, transparent) 0, transparent 45%),
     var(--card-paper);
 }
+
+/* 유형 검사 버튼 (2026-10-03): 간편 검사는 주 버튼, 정식 검사는 연보라 면으로 색을 넣는다 */
+#page-home .btn.secondary.is-tinted {
+  border-color:transparent;
+  background:var(--color-primary-soft);
+  color:var(--color-primary);
+}
+
+#page-home .home-check-actions .btn {
+  padding:0 var(--space-3);
+  white-space:nowrap;
+}
+
+#page-home .btn.secondary.is-tinted:hover {
+  border-color:var(--color-primary-light);
+  background:var(--color-primary-soft);
+}
+
+/* 유형이 없을 때 대표 프로필 자리는 비운다 (오늘의 질문은 다이어리 완성 후 다시) */
+#page-home .home-me:has(#homeMe:empty) {
+  display:none;
+}
