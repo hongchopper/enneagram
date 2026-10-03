@@ -7926,3 +7926,666 @@ h3,
 #page-home .home-me:has(#homeMe:empty) {
   display:none;
 }
+
+/* =========================================================
+   홈 콘텐츠 피드 (2026-10-03): 오늘의 VS · 나라면? · 세 중심 · 1분 읽기
+   가로 줄 대신 세로로 쌓고, 작은 카드는 2열. 모든 카드에 보석을 넣어 글만 있는 카드가 없게
+   ========================================================= */
+#page-home .home-feed-list {
+  display:grid;
+  gap:var(--space-5);
+}
+
+#page-home .feed-card {
+  position:relative;
+  display:grid;
+  align-content:start;
+  gap:var(--space-3);
+  padding:var(--space-6) var(--space-5);
+  border:1px solid var(--glass-line);
+  border-radius:var(--radius-xl);
+  background:var(--color-surface);
+  color:var(--color-text-primary);
+  font:inherit;
+  text-align:left;
+}
+
+#page-home button.feed-card {
+  width:100%;
+  cursor:pointer;
+}
+
+#page-home button.feed-card:hover {
+  border-color:var(--color-primary-light);
+}
+
+#page-home .feed-card:focus-visible,
+#page-home .quiz-option:focus-visible,
+#page-home .feed-more:focus-visible {
+  outline:2px solid var(--color-primary-light);
+  outline-offset:var(--space-1);
+}
+
+#page-home .feed-tag {
+  justify-self:start;
+  padding:var(--space-1) var(--space-3);
+  border-radius:var(--radius-full);
+  background:var(--grad-primary);
+  color:var(--color-on-primary);
+  font-size:var(--text-xs);
+  font-weight:800;
+  letter-spacing:.02em;
+}
+
+#page-home .feed-tag.is-soft {
+  background:var(--color-primary-soft);
+  color:var(--color-primary);
+}
+
+#page-home .feed-title {
+  --font-sans:var(--font-display);
+  margin:0;
+  font-family:var(--font-display);
+  font-size:var(--text-xl);
+  font-weight:700;
+  line-height:1.4;
+  word-break:keep-all;
+}
+
+#page-home .feed-sub {
+  margin:0;
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+}
+
+#page-home .feed-more {
+  justify-self:start;
+  padding:0;
+  border:0;
+  background:none;
+  color:var(--color-primary);
+  font:inherit;
+  font-size:var(--text-sm);
+  font-weight:700;
+  cursor:pointer;
+}
+
+/* 오늘의 VS: 카드 종이 바탕 + 두 보석이 마주 본다 */
+#page-home .feed-vs {
+  justify-items:center;
+  border-color:transparent;
+  background:var(--card-paper);
+  text-align:center;
+}
+
+#page-home .vs-gems {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:var(--space-4);
+}
+
+#page-home .vs-side {
+  display:grid;
+  justify-items:center;
+  gap:var(--space-2);
+}
+
+#page-home .vs-side .gem-tile {
+  width:var(--space-10);
+  height:var(--space-10);
+}
+
+#page-home .vs-side .gem-img {
+  width:72%;
+  height:auto;
+}
+
+#page-home .vs-name {
+  font-size:var(--text-sm);
+  font-weight:700;
+}
+
+#page-home .vs-mark {
+  --font-sans:var(--font-script);
+  color:var(--color-primary);
+  font-family:var(--font-script);
+  font-size:var(--text-script-lg);
+  line-height:1;
+}
+
+#page-home .feed-vs-answer {
+  display:grid;
+  justify-items:center;
+  gap:var(--space-3);
+  padding-top:var(--space-4);
+  border-top:1px solid color-mix(in srgb, var(--deco-line, var(--color-gold)) 45%, transparent);
+}
+
+#page-home .feed-vs-answer[hidden] {
+  display:none;
+}
+
+#page-home .feed-vs .feed-more {
+  justify-self:center;
+}
+
+#page-home .feed-vs-answer p {
+  margin:0;
+  font-size:var(--text-md);
+  line-height:var(--body-line);
+  word-break:keep-all;
+}
+
+/* 나라면?: 반응 고르기 */
+#page-home .quiz-options {
+  display:grid;
+  gap:var(--space-2);
+}
+
+#page-home .quiz-option {
+  padding:var(--space-3) var(--space-4);
+  border:1px solid var(--glass-line);
+  border-radius:var(--radius-md);
+  background:var(--color-surface);
+  color:var(--color-text-primary);
+  font:inherit;
+  font-size:var(--text-md);
+  line-height:1.5;
+  text-align:left;
+  word-break:keep-all;
+  cursor:pointer;
+}
+
+#page-home .feed-quiz:not(.is-answered) .quiz-option:hover {
+  border-color:var(--color-primary-light);
+  background:var(--color-primary-soft);
+}
+
+#page-home .feed-quiz.is-answered .quiz-option {
+  color:var(--color-text-secondary);
+  cursor:default;
+}
+
+#page-home .feed-quiz.is-answered .quiz-option.is-picked {
+  border-color:var(--color-primary);
+  background:var(--color-primary-soft);
+  color:var(--color-text-primary);
+  font-weight:700;
+}
+
+#page-home .quiz-result {
+  display:grid;
+  grid-template-columns:auto minmax(0, 1fr);
+  align-items:center;
+  gap:var(--space-3) var(--space-4);
+  padding-top:var(--space-4);
+  border-top:1px solid var(--glass-line);
+}
+
+#page-home .quiz-result[hidden] {
+  display:none;
+}
+
+#page-home .quiz-result .gem-tile {
+  width:var(--space-9);
+  height:var(--space-9);
+}
+
+#page-home .quiz-result .gem-img {
+  width:72%;
+  height:auto;
+}
+
+#page-home .quiz-result-title {
+  display:block;
+  font-size:var(--text-md);
+  font-weight:800;
+  word-break:keep-all;
+}
+
+#page-home .quiz-result-key {
+  margin:var(--space-1) 0 0;
+  color:var(--color-primary);
+  font-size:var(--text-sm);
+  font-weight:700;
+}
+
+#page-home .quiz-result-note {
+  grid-column:1 / -1;
+  margin:0;
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+  line-height:1.6;
+  word-break:keep-all;
+}
+
+#page-home .quiz-result-actions {
+  display:flex;
+  flex-wrap:wrap;
+  grid-column:1 / -1;
+  align-items:center;
+  gap:var(--space-4);
+}
+
+/* 세 중심: 보석 세 무리 */
+#page-home .feed-centers {
+  background:var(--card-paper);
+  border-color:transparent;
+}
+
+#page-home .centers-row {
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+  gap:var(--space-2);
+}
+
+#page-home .center-group {
+  display:grid;
+  justify-items:center;
+  gap:var(--space-1);
+  padding:var(--space-3) var(--space-1);
+  border-radius:var(--radius-md);
+  background:color-mix(in srgb, var(--color-surface-solid) 70%, transparent);
+  text-align:center;
+}
+
+#page-home .center-gems {
+  display:flex;
+  justify-content:center;
+}
+
+#page-home .center-gems > span {
+  margin:0 calc(var(--space-1) * -1);
+}
+
+#page-home .center-gems .gem-img {
+  width:var(--space-6);
+  height:auto;
+}
+
+#page-home .center-group strong {
+  --font-sans:var(--font-display);
+  font-family:var(--font-display);
+  font-size:var(--text-lg);
+  font-weight:700;
+}
+
+#page-home .center-group span:last-child {
+  color:var(--color-text-secondary);
+  font-size:var(--text-xs);
+  word-break:keep-all;
+}
+
+/* 2열: 1분 읽기 + 작은 VS */
+#page-home .feed-grid {
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:var(--space-3);
+}
+
+#page-home .feed-grid .feed-card {
+  gap:var(--space-2);
+  padding:var(--space-4);
+  border-radius:var(--radius-lg);
+}
+
+#page-home .feed-read-gem {
+  width:var(--space-8);
+  height:var(--space-8);
+}
+
+#page-home .feed-read-gem .gem-img {
+  width:72%;
+  height:auto;
+}
+
+#page-home .feed-q {
+  --font-sans:var(--font-display);
+  font-family:var(--font-display);
+  font-size:var(--text-md);
+  font-weight:700;
+  line-height:1.45;
+  word-break:keep-all;
+}
+
+#page-home .feed-preview {
+  display:-webkit-box;
+  overflow:hidden;
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+  line-height:1.55;
+  word-break:keep-all;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+}
+
+#page-home .feed-grid .feed-tag {
+  margin-top:auto;
+}
+
+#page-home .feed-vs-mini {
+  background:var(--card-paper);
+  border-color:transparent;
+}
+
+#page-home .feed-vs-mini .vs-gems {
+  justify-content:flex-start;
+  gap:var(--space-1);
+}
+
+#page-home .feed-vs-mini .vs-side .gem-tile {
+  width:var(--space-7);
+  height:var(--space-7);
+}
+
+#page-home .feed-vs-mini .vs-name {
+  display:none;
+}
+
+#page-home .feed-vs-mini .vs-mark {
+  font-size:var(--text-xl);
+  white-space:nowrap;
+}
+
+/* =========================================================
+   유형 탐구 정리 (2026-10-03): 가로 탭 세 줄 → 한 줄
+   1) 첫 화면: 보석 카드 9장(2열) + 비교하며 알아보기 목록
+   2) 유형 페이지 위: ‹ 이전 유형 | 지금 유형(고르기) | 다음 유형 ›
+   3) 소주제 칩 → 펼치는 목록
+   ========================================================= */
+#page-compare .explore-hub {
+  display:grid;
+  gap:var(--space-6);
+  padding-top:var(--space-5);
+}
+
+#page-compare .explore-hub[hidden] {
+  display:none;
+}
+
+#page-compare .explore-chips[hidden] {
+  display:none;
+}
+
+#page-compare .explore-hub-title {
+  --font-sans:var(--font-display);
+  margin:0;
+  font-family:var(--font-display);
+  font-size:var(--text-2xl);
+  font-weight:700;
+}
+
+#page-compare .explore-hub-desc {
+  margin:var(--space-2) 0 0;
+  color:var(--color-text-secondary);
+  font-size:var(--text-md);
+}
+
+#page-compare .explore-hub-sub {
+  --font-sans:var(--font-display);
+  margin:var(--space-6) 0 0;
+  font-family:var(--font-display);
+  font-size:var(--text-xl);
+  font-weight:700;
+}
+
+/* 보석 카드 9장: 2열 */
+#page-compare .explore-type-grid {
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:var(--space-3);
+}
+
+.pcard.deco.is-compact {
+  display:block;
+  width:100%;
+  padding:0;
+  border:0;
+  background:none;
+  font:inherit;
+  text-align:center;
+  cursor:pointer;
+}
+
+.pcard.deco.is-compact:focus-visible {
+  outline:2px solid var(--color-primary);
+  outline-offset:var(--space-1);
+}
+
+.pcard.deco.is-compact .pcard-face {
+  aspect-ratio:3 / 4;
+  padding:var(--space-7) var(--space-3) var(--space-6);
+  -webkit-backface-visibility:visible;
+  backface-visibility:visible;
+}
+
+.pcard.deco.is-compact .deco-corner {
+  width:var(--space-5);
+  height:var(--space-6);
+}
+
+.pcard.deco.is-compact .deco-top,
+.pcard.deco.is-compact .deco-bottom {
+  width:var(--space-9);
+  height:var(--space-5);
+}
+
+.pcard.deco.is-compact .deco-gem .gem-img {
+  width:52%;
+  animation:none;
+}
+
+.pcard.deco.is-compact .deco-name {
+  font-size:var(--text-lg);
+}
+
+.pcard.deco.is-compact .deco-meta {
+  font-size:var(--text-sm);
+}
+
+.pcard.deco.is-compact .deco-mine {
+  position:absolute;
+  top:var(--space-4);
+  left:50%;
+  padding:var(--space-1) var(--space-2);
+  border-radius:var(--radius-full);
+  background:var(--color-primary);
+  color:var(--color-on-primary);
+  font-size:var(--text-xs);
+  font-weight:800;
+  white-space:nowrap;
+  transform:translateX(-50%);
+}
+
+.pcard.deco.is-compact:hover .pcard-face {
+  box-shadow:0 0 0 1px var(--color-primary-light), var(--shadow-lg);
+}
+
+/* 비교하며 알아보기: 목록 줄 */
+#page-compare .explore-compare-list {
+  display:grid;
+  border-top:1px solid var(--glass-line);
+}
+
+#page-compare .explore-row {
+  display:grid;
+  grid-template-columns:minmax(0, 1fr) auto;
+  align-items:center;
+  gap:var(--space-4);
+  padding:var(--space-5) 0;
+  border:0;
+  border-bottom:1px solid var(--glass-line);
+  border-radius:0;
+  background:none;
+  box-shadow:none;
+  color:var(--color-text-primary);
+  font:inherit;
+  text-align:left;
+  cursor:pointer;
+}
+
+#page-compare .explore-row-text {
+  display:grid;
+  gap:var(--space-1);
+}
+
+#page-compare .explore-row strong {
+  font-size:var(--text-md);
+  font-weight:700;
+}
+
+#page-compare .explore-row-text span {
+  display:-webkit-box;
+  overflow:hidden;
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+  line-height:1.55;
+  word-break:keep-all;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+}
+
+#page-compare .explore-row i {
+  color:var(--color-primary);
+  font-size:var(--text-xl);
+  font-style:normal;
+}
+
+#page-compare .explore-row:focus-visible {
+  outline:2px solid var(--color-primary-light);
+  outline-offset:var(--space-1);
+}
+
+/* 유형 페이지 위: 유형 바꾸기 */
+#page-handbook .hb-switch {
+  display:grid;
+  gap:var(--space-3);
+  margin-bottom:var(--space-5);
+}
+
+#page-handbook .hb-back {
+  justify-self:start;
+  padding:0;
+  border:0;
+  background:none;
+  color:var(--color-primary);
+  font-size:var(--text-sm);
+  font-weight:700;
+  cursor:pointer;
+}
+
+#page-handbook .hb-switch-row {
+  display:grid;
+  grid-template-columns:auto minmax(0, 1fr) auto;
+  align-items:center;
+  gap:var(--space-2);
+}
+
+#page-handbook .hb-switch-btn {
+  width:44px;
+  min-height:44px;
+  padding:0;
+  font-size:var(--text-lg);
+  border:1px solid var(--glass-line);
+  border-radius:var(--radius-full);
+  background:var(--color-surface);
+  color:var(--color-text-secondary);
+  font-weight:700;
+  cursor:pointer;
+}
+
+#page-handbook .hb-switch-current {
+  position:relative;
+  display:block;
+}
+
+#page-handbook .hb-switch-current select {
+  --font-sans:var(--font-display);
+  width:100%;
+  min-height:48px;
+  padding:0 var(--space-7) 0 var(--space-4);
+  border:1px solid var(--color-primary-light);
+  border-radius:var(--radius-full);
+  background:var(--color-primary-soft);
+  color:var(--color-primary);
+  font-family:var(--font-display);
+  font-size:var(--text-md);
+  font-weight:700;
+  text-align:center;
+  text-align-last:center;
+  -webkit-appearance:none;
+  appearance:none;
+  cursor:pointer;
+}
+
+#page-handbook .hb-switch-current::after {
+  content:"▾";
+  position:absolute;
+  top:50%;
+  right:var(--space-4);
+  color:var(--color-primary);
+  pointer-events:none;
+  transform:translateY(-50%);
+}
+
+#page-handbook .hb-switch-btn:focus-visible,
+#page-handbook .hb-back:focus-visible,
+#page-handbook .hb-switch-current select:focus-visible,
+#page-handbook .hb-acc-head:focus-visible {
+  outline:2px solid var(--color-primary-light);
+  outline-offset:var(--space-1);
+}
+
+/* 소주제: 펼치는 목록 */
+#page-handbook .hb-acc {
+  border-bottom:1px solid var(--glass-line);
+}
+
+#page-handbook :not(.hb-acc) + .hb-acc {
+  border-top:1px solid var(--glass-line);
+}
+
+#page-handbook .hb-acc-head {
+  --font-sans:var(--font-display);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:var(--space-3);
+  width:100%;
+  min-height:56px;
+  padding:var(--space-4) 0;
+  border:0;
+  background:none;
+  color:var(--color-text-primary);
+  font-family:var(--font-display);
+  font-size:var(--text-lg);
+  font-weight:700;
+  text-align:left;
+  cursor:pointer;
+  scroll-margin-top:calc(var(--space-10) + var(--space-4));
+}
+
+#page-handbook .hb-acc-head i {
+  flex:none;
+  width:var(--space-2);
+  height:var(--space-2);
+  margin-right:var(--space-1);
+  border-right:2px solid var(--color-text-secondary);
+  border-bottom:2px solid var(--color-text-secondary);
+  transform:rotate(45deg);
+  transition:transform var(--duration-fast) ease;
+}
+
+#page-handbook .hb-acc.is-open .hb-acc-head {
+  color:var(--color-primary);
+}
+
+#page-handbook .hb-acc.is-open .hb-acc-head i {
+  border-color:var(--color-primary);
+  transform:rotate(-135deg);
+}
+
+#page-handbook .hb-acc .hb-topic {
+  padding-bottom:var(--space-7);
+}

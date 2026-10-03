@@ -335,6 +335,30 @@ function hbChildTitle(el){
   return h?hbText(h).split(' · ')[0]:'';
 }
 
+/* 소주제를 펼치는 목록으로 (2026-10-03): 칩 줄 대신 소제목 버튼을 세로로 두고, 누르면 그 자리에서 펼친다 */
+function hbAccordion(chapter,topics,doc){
+  return topics.map((t,i)=>{
+    const id=`${chapter.id||'hb'}-topic-${i}`;
+    t.id=id;
+    const acc=doc.createElement('div'); /* section이면 옛 레이어의 #page-handbook section 여백(!important)이 붙는다 */
+    acc.className='hb-acc';
+    const head=doc.createElement('button');
+    head.type='button';
+    head.className='hb-acc-head';
+    head.dataset.hbTopic=String(i);
+    head.setAttribute('aria-expanded','false');
+    head.setAttribute('aria-controls',id);
+    head.innerHTML=`<span>${hbEsc(t.dataset.label)}</span><i aria-hidden="true"></i>`;
+    acc.append(head,t);
+    return acc;
+  });
+}
+function hbPagerEl(doc){
+  const pager=doc.createElement('div');
+  pager.className='hb-pager';
+  return pager;
+}
+
 /* 장 본문을 소주제 묶음(.hb-topic)으로 나눈다 */
 function hbSplitChapter(chapter,tab,doc){
   const body=chapter.querySelector('.chapter-body');
@@ -354,14 +378,7 @@ function hbSplitChapter(chapter,tab,doc){
     if(hit>=cur) cur=hit;
     topics[cur].appendChild(el);
   });
-  const chips=doc.createElement('div');
-  chips.className='hb-chips';
-  chips.setAttribute('role','tablist');
-  chips.setAttribute('aria-label',tab.label+' 소주제');
-  chips.innerHTML=tab.topics.map(([label],i)=>`<button class="hb-chip" data-hb-topic="${i}" role="tab" type="button">${hbEsc(label)}</button>`).join('');
-  const pager=doc.createElement('div');
-  pager.className='hb-pager';
-  body.append(chips,...topics,pager);
+  body.append(...hbAccordion(chapter,topics,doc),hbPagerEl(doc));
 }
 
 /* 핸드북 '실제 모습' 소제목(h3) > 삶의 장면 칩 번호 (나를 돌아보기 주제 순서와 같음)
@@ -423,14 +440,7 @@ function hbSplitLife(chapter,tab,doc,n){
     box.innerHTML=`<div class="hb-life-label">직접 돌아보기</div>`+sharing.__topicHTML(i,n);
     t.appendChild(box);
   });
-  const chips=doc.createElement('div');
-  chips.className='hb-chips';
-  chips.setAttribute('role','tablist');
-  chips.setAttribute('aria-label',tab.label+' 소주제');
-  chips.innerHTML=tab.topics.map(([label],i)=>`<button class="hb-chip" data-hb-topic="${i}" role="tab" type="button">${hbEsc(label)}</button>`).join('');
-  const pager=doc.createElement('div');
-  pager.className='hb-pager';
-  body.append(chips,...topics,pager);
+  body.append(...hbAccordion(chapter,topics,doc),hbPagerEl(doc));
 }
 
 function hbSummaryHTML(page,n){
@@ -545,7 +555,14 @@ function layoutHandbookPage(page){
 
   const top=doc.createElement('div');
   top.className='hb-top';
-  top.innerHTML=`<div class="hb-tabs" role="tablist" aria-label="${n}번 핸드북">`
+  /* 유형 바꾸기 (2026-10-03): 위 '전체 유형 · 1~9번' 줄 대신 ‹ 이전 유형 | 지금 유형(고르기) | 다음 유형 › */
+  const prevT=n===1?9:n-1, nextT=n===9?1:n+1;
+  top.innerHTML=`<div class="hb-switch"><button class="hb-back" data-hb-hub type="button">‹ 유형 탐구</button>`
+    +`<div class="hb-switch-row"><button class="hb-switch-btn" data-hb-type-go="${prevT}" aria-label="이전 유형: ${prevT}번 ${CHECK_TYPE_NAMES[prevT]}" type="button">‹</button>`
+    +`<label class="hb-switch-current"><span class="sr-only">다른 유형 고르기</span><select data-hb-type-select>`
+    +[1,2,3,4,5,6,7,8,9].map(t=>`<option value="${t}"${t===n?' selected':''}>${t}번 ${CHECK_TYPE_NAMES[t]}</option>`).join('')+`</select></label>`
+    +`<button class="hb-switch-btn" data-hb-type-go="${nextT}" aria-label="다음 유형: ${nextT}번 ${CHECK_TYPE_NAMES[nextT]}" type="button">›</button></div></div>`
+    +`<div class="hb-tabs" role="tablist" aria-label="${n}번 핸드북">`
     +HB_TABS.map(t=>`<button class="hb-tab" data-hb-tab-btn="${t.key}" role="tab" type="button">${t.label}</button>`).join('')+`</div>`;
   const summary=doc.createElement('section');
   summary.className='hb-panel';
@@ -555,11 +572,18 @@ function layoutHandbookPage(page){
 
   page.addEventListener('click',e=>{
     const tabBtn=e.target.closest('[data-hb-tab-btn]');
-    if(tabBtn){ hbShow(page,tabBtn.dataset.hbTabBtn,0,true); return; }
-    const chip=e.target.closest('[data-hb-topic]');
-    if(chip){ hbShow(page,chip.closest('.hb-panel').dataset.hbTab,Number(chip.dataset.hbTopic),true); return; }
+    if(tabBtn){ hbShow(page,tabBtn.dataset.hbTabBtn,null,true); return; }
+    const head=e.target.closest('.hb-acc-head');
+    if(head){
+      const open=head.getAttribute('aria-expanded')==='true';
+      hbShow(page,head.closest('.hb-panel').dataset.hbTab,open?null:Number(head.dataset.hbTopic),open?false:'topic');
+      return;
+    }
     const go=e.target.closest('[data-hb-go]');
-    if(go){ const [t,i]=go.dataset.hbGo.split(':'); hbShow(page,t,Number(i)||0,true); return; }
+    if(go){ const [t,i]=go.dataset.hbGo.split(':'); hbShow(page,t,i===undefined?null:Number(i),i===undefined?true:'topic'); return; }
+    const tg=e.target.closest('[data-hb-type-go]');
+    if(tg){ realWindow.showHandbookType(Number(tg.dataset.hbTypeGo)); return; }
+    if(e.target.closest('[data-hb-hub]')){ realWindow.showExploreHub(); return; }
     const rt=e.target.closest('.hb-reflect .reflection-type-btn');
     if(rt){
       const box=rt.closest('.hb-reflect');
@@ -583,9 +607,14 @@ function layoutHandbookPage(page){
     }
   });
 
+  page.addEventListener('change',e=>{
+    const sel=e.target.closest('[data-hb-type-select]');
+    if(sel) realWindow.showHandbookType(Number(sel.value));
+  });
+
   const want=hbPending && hbPending.type===n ? hbPending : null;
   hbPending=null;
-  hbShow(page,want?want.tab:'summary',want?want.topic:0,false);
+  hbShow(page,want?want.tab:'summary',want?want.topic:null,false);
 }
 
 function hbShow(page,tabKey,topic,scroll){
@@ -596,24 +625,26 @@ function hbShow(page,tabKey,topic,scroll){
     b.classList.toggle('active',on);
     b.setAttribute('aria-selected',on?'true':'false');
   });
+  let openHead=null;
   if(tab.topics){
     const panel=page.querySelector(`.hb-panel[data-hb-tab="${tab.key}"]`);
-    const i=Math.min(Math.max(topic||0,0),tab.topics.length-1);
+    const i=topic==null?-1:Math.min(Math.max(Number(topic)||0,0),tab.topics.length-1);
     panel.querySelectorAll('.hb-topic').forEach(t=>{t.hidden=Number(t.dataset.topic)!==i;});
-    panel.querySelectorAll('[data-hb-topic]').forEach(b=>{
+    panel.querySelectorAll('.hb-acc-head').forEach(b=>{
       const on=Number(b.dataset.hbTopic)===i;
-      b.classList.toggle('active',on);
-      b.setAttribute('aria-selected',on?'true':'false');
+      b.setAttribute('aria-expanded',on?'true':'false');
+      b.closest('.hb-acc')?.classList.toggle('is-open',on);
+      if(on) openHead=b;
     });
-    /* 이전 / 다음: 장 끝에서는 다음 장으로 */
+    /* 이전 / 다음: 탭 단위 */
     const idx=HB_TABS.indexOf(tab);
-    const prev=i>0?[`${tab.key}:${i-1}`,tab.topics[i-1][0]]:(HB_TABS[idx-1].topics?[`${HB_TABS[idx-1].key}:${HB_TABS[idx-1].topics.length-1}`,HB_TABS[idx-1].label]:['summary:0','요약']);
-    const next=i<tab.topics.length-1?[`${tab.key}:${i+1}`,tab.topics[i+1][0]]:(HB_TABS[idx+1]?[`${HB_TABS[idx+1].key}:0`,HB_TABS[idx+1].label]:null);
-    panel.querySelector('.hb-pager').innerHTML=`<button class="hb-pager-btn" data-hb-go="${prev[0]}" type="button"><span>이전</span><strong>‹ ${hbEsc(prev[1])}</strong></button>`
-      +(next?`<button class="hb-pager-btn is-next" data-hb-go="${next[0]}" type="button"><span>다음</span><strong>${hbEsc(next[1])} ›</strong></button>`:'');
+    const prev=HB_TABS[idx-1], next=HB_TABS[idx+1];
+    panel.querySelector('.hb-pager').innerHTML=(prev?`<button class="hb-pager-btn" data-hb-go="${prev.key}" type="button"><span>이전</span><strong>‹ ${hbEsc(prev.label)}</strong></button>`:'')
+      +(next?`<button class="hb-pager-btn is-next" data-hb-go="${next.key}" type="button"><span>다음</span><strong>${hbEsc(next.label)} ›</strong></button>`:'');
   }
   const n=page.dataset.type||String(page.id).replace(/\D/g,'');
   try{ realWindow.history.replaceState(null,'',`#handbook-${n}`+(tab.key==='summary'?'':`-${tab.key}`)); }catch(e){}
+  if(scroll==='topic' && openHead){ openHead.scrollIntoView({block:'start',behavior:'smooth'}); return; }
   if(scroll){
     const bar=page.querySelector('.hb-top');
     const panelEl=bar && bar.closest('.page-panel');
@@ -622,11 +653,11 @@ function hbShow(page,tabKey,topic,scroll){
 }
 
 /* 다른 화면(검색·링크)에서 특정 탭/주제로 열기 */
-realWindow.openHandbookTab=function(n,tabKey,topic){
+realWindow.openHandbookTab=function(n,tabKey,topic=null){
   n=Number(n);
   const page=handbookTypeHost && handbookTypeHost.querySelector(`.type-page[data-hb-layout][id="type-${n}"]`);
-  if(page && handbookTypeHost.dataset.type===String(n)) hbShow(page,tabKey,topic||0,false);
-  else hbPending={type:n,tab:tabKey,topic:topic||0};
+  if(page && handbookTypeHost.dataset.type===String(n)) hbShow(page,tabKey,topic,false);
+  else hbPending={type:n,tab:tabKey,topic};
 };
 
 /* 검색 결과 등 본문 안 요소 id로 열기: 해당 탭·주제를 보이게 한 뒤 스크롤 */
@@ -1192,11 +1223,9 @@ function openShellMenu(){
 
 /* 2Depth 탭: GNB 아래 고정 노출. 사이드바(모바일 드로어) 세부 메뉴 버튼을 원본으로 삼아 같은 동작을 공유한다. */
 const PAGE_SUBNAV_CONFIG={
-  overview:"#overviewGroup .shell-overview-target",
-  /* 유형 탐구: 핸드북·전체 유형 비교가 같은 2Depth(전체 유형 · 1~9번)를 쓴다.
-     나를 돌아보기(삶의 장면)는 다이어리에서 열고, 다이어리·나의 공간은 2Depth 없는 한 페이지 */
-  handbook:"#handbookGroup .shell-handbook-type, #handbookGroup .shell-explore-link",
-  compare:"#handbookGroup .shell-handbook-type, #handbookGroup .shell-explore-link"
+  overview:"#overviewGroup .shell-overview-target"
+  /* 유형 탐구는 2Depth 줄을 없앴다 (2026-10-03): 첫 화면(보석 카드 9장 + 비교 목록)에서 들어가고,
+     유형 페이지 안에서 ‹ 이전 | 지금 유형 | 다음 › 으로 바꾼다 */
 };
 
 function renderPageSubnav(pageName){
@@ -1290,6 +1319,17 @@ function renderExploreChips(name){
     host.prepend(bar);
   }
   bar.innerHTML='';
+  if(name==='compare'){
+    /* 비교 기준 칩 7개는 첫 화면 목록이 대신한다. 첫 화면에서는 줄째 숨김 */
+    bar.hidden=document.getElementById('page-compare')?.dataset.mode==='hub';
+    const back=document.createElement('button');
+    back.type='button';
+    back.className='explore-chip explore-back';
+    back.textContent='‹ 유형 탐구';
+    back.addEventListener('click',()=>showExploreHub());
+    bar.appendChild(back);
+    return;
+  }
   if(name==='sharing'){
     const back=document.createElement('button');
     back.type='button';
@@ -1626,8 +1666,45 @@ function setCompareSidebarActive(key){
     b.classList.toggle('active',b.dataset.compareTarget===key);
   });
 }
+/* 유형 탐구 첫 화면: 보석 카드 9장(2열) + 비교하며 알아보기 목록 */
+function showExploreHub(push=true){
+  activateBasePage('compare');
+  const page=document.getElementById('page-compare');
+  if(page) page.dataset.mode='hub';
+  document.querySelectorAll('#page-compare [data-compare-panel]').forEach(p=>p.classList.remove('active'));
+  const hub=document.getElementById('exploreHub');
+  if(hub) hub.hidden=false;
+  renderTypeCardRail();
+  renderExploreCompareList();
+  document.getElementById('shellMobileTitle').textContent='유형 탐구';
+  page?.scrollTo({top:0});
+  if(push) history.replaceState(null,'','#explore');
+  closeShellMenu();
+}
+function renderExploreCompareList(){
+  const box=document.getElementById('exploreCompareList');
+  if(!box || box.childElementCount) return;
+  const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  box.innerHTML=Object.entries(COMPARE_TITLES).map(([k,title])=>{
+    const panel=document.querySelector(`#page-compare [data-compare-panel="${k}"]`);
+    const desc=(panel?.querySelector('.compare-section-hero p')||panel?.querySelector('p'))?.textContent.trim()||'';
+    return `<button class="explore-row" data-explore-compare="${k}" type="button"><span class="explore-row-text"><strong>${esc(title)}</strong><span>${esc(desc)}</span></span><i aria-hidden="true">›</i></button>`;
+  }).join('');
+}
+document.getElementById('page-compare')?.addEventListener('click',e=>{
+  const row=e.target.closest('[data-explore-compare]');
+  if(row){ showCompareSection(row.dataset.exploreCompare); return; }
+  const card=e.target.closest('[data-explore-type]');
+  if(card) showHandbookType(Number(card.dataset.exploreType));
+});
+
 function showCompareSection(key='glance',push=true){
+  if(key==='hub'){ showExploreHub(push); return; }
   if(!Object.prototype.hasOwnProperty.call(COMPARE_TITLES,key)) key='glance';
+  const cmpPage=document.getElementById('page-compare');
+  if(cmpPage) cmpPage.dataset.mode='panel';
+  const hubEl=document.getElementById('exploreHub');
+  if(hubEl) hubEl.hidden=true;
   currentCompare=key;
   activateBasePage('compare');
   setCompareSidebarActive(key);
@@ -1750,7 +1827,7 @@ document.querySelectorAll('[data-top-home]').forEach(b=>{
 
 document.querySelector('.top-nav-main[data-top-page="overview"]')?.addEventListener('click',()=>showOverviewSection('basics'));
 document.querySelector('.top-nav-main[data-top-page="check"]')?.addEventListener('click',()=>showCheckTarget('start'));
-document.querySelector('.top-nav-main[data-top-page="handbook"]')?.addEventListener('click',()=>showHandbookType(1));
+document.querySelector('.top-nav-main[data-top-page="handbook"]')?.addEventListener('click',()=>showExploreHub());
 document.querySelector('.top-nav-main[data-top-page="compare"]')?.addEventListener('click',()=>showCompareSection('glance'));
 document.querySelector('.top-nav-main[data-top-page="sharing"]')?.addEventListener('click',()=>showSharingTopic(0));
 
@@ -2181,7 +2258,7 @@ function renderHomeMe(profile){
 
 /* 홈 = 큐레이션 피드 (2026-10-01). 소개 글 대신 바로 볼거리를 선반(옆으로 넘기는 줄)으로 보여준다.
    - 유형이 없으면: 내 보석 찾기 배너 / 있으면: 대표 프로필 패널 (내 카드만)
-   - 오늘의 보석 → 9가지 보석 → 나를 돌아보는 장면 → 비교해서 보기 → 에니어그램 기초
+   - 9가지 보석 → 오늘의 VS · 나라면? → 나를 돌아보는 장면 → 세 중심 · 1분 읽기(VS 섞음)
    9장 카드 줄은 유형 탐구 > 전체 유형으로 옮겼다. */
 function renderHomeProfiles(){
   const profile=getHomeProfile();
@@ -2197,17 +2274,107 @@ function renderHomeProfiles(){
 
 /* 유형 탐구 > 전체 유형: 9장의 프로필 카드 */
 function renderTypeCardRail(profile=getHomeProfile()){
-  const rail=document.getElementById('typeCardRail');
-  if(!rail) return;
-  rail.innerHTML=[1,2,3,4,5,6,7,8,9].map(t=>homeProfileCardHTML(t,{mine:profile && profile.type===t ? profile : null})).join('');
-  bindProfileMotion(rail);
+  const grid=document.getElementById('typeCardRail');
+  if(!grid) return;
+  grid.innerHTML=[1,2,3,4,5,6,7,8,9].map(t=>exploreTypeCardHTML(t,profile && profile.type===t)).join('');
+}
+/* 유형 탐구 첫 화면 카드: 프로필 카드와 같은 액자를 작게. 뒤집지 않고 누르면 유형 페이지로 */
+function exploreTypeCardHTML(t,mine){
+  const p=HOME_PROFILES[t];
+  return `<button class="pcard deco is-compact type-${t}${mine?' is-mine':''}" data-explore-type="${t}" style="${gemVars(t)}" type="button">`
+    +`<span class="pcard-face pcard-front">${decoFrame()}<span class="deco-gem">${gemImg(t,'',false)}</span>`
+    +`<span class="deco-name">${homeEsc(CHECK_TYPE_NAMES[t])}</span><span class="deco-meta">${t}번 · ${homeEsc(p.gem)}</span>`
+    +(mine?'<span class="deco-mine">나의 유형</span>':'')+'</span></button>';
 }
 
-/* 오늘의 보석: 날짜마다 바뀌는 유형 하나 */
-function homeTodayType(){
+/* 오늘 날짜 번호: 홈 콘텐츠(VS·퀴즈·1분 읽기)가 하루마다 바뀌게 */
+function homeDayNum(){
   const d=new Date();
-  const day=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);
-  return day%9+1;
+  return Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);
+}
+
+/* =========================================================
+   홈 콘텐츠 피드 (2026-10-03): '비교해서 보기 · 에니어그램 기초' 글 묶음 대신 눌러보고 싶은 카드
+   - VS: 헷갈리는 두 유형 (비교 > 헷갈리는 유형 원문에서 읽는다)
+   - 나라면?: 같은 상황 미니 퀴즈 (비교 > 같은 상황, 다른 이유 원문에서 읽는다). 유형 판별이 아니라 동기 차이 예시
+   - 세 중심: 보석 세 무리 그림
+   - 1분 읽기: 질문형 제목 + 두 줄 미리보기 (기초 · 비교 글)
+   ========================================================= */
+/* VS 카드 앞면 질문 (원문 '둘 다 …' 문장을 짧은 질문으로) */
+const HOME_VS_HOOK={
+  '1-6':'둘 다 꼼꼼한데, 뭐가 다를까?','2-9':'둘 다 잘 맞춰주는데, 뭐가 다를까?','3-7':'둘 다 활기찬데, 뭐가 다를까?',
+  '3-8':'둘 다 추진력이 강한데, 뭐가 다를까?','4-5':'둘 다 혼자만의 시간이 필요한데, 뭐가 다를까?','5-6':'둘 다 생각이 많은데, 뭐가 다를까?',
+  '6-8':'둘 다 강하게 맞서는데, 뭐가 다를까?','1-8':'둘 다 직설적인데, 뭐가 다를까?','1-3':'둘 다 기준이 높은데, 뭐가 다를까?',
+  '2-3':'둘 다 관계에 능숙한데, 뭐가 다를까?','4-9':'둘 다 조용한데, 뭐가 다를까?','7-8':'둘 다 에너지가 강한데, 뭐가 다를까?'
+};
+/* 1분 읽기: 질문형 제목 */
+const HOME_READS=[
+  {overview:'basics',q:'나는 왜 늘 같은 데서 걸릴까?'},
+  {overview:'core',q:'유형을 가르는 건 행동일까, 마음일까?'},
+  {overview:'variation',q:'같은 4번인데 왜 이렇게 달라?'},
+  {overview:'growth',q:'유형은 바뀔까, 자랄까?'},
+  {overview:'use',q:'번호로 사람을 판단하면 안 되는 이유'},
+  {compare:'glance',q:'아홉 유형을 한 장으로 보면?'},
+  {compare:'motives',q:'아홉 유형이 진짜 원하는 것'},
+  {compare:'hornevian',q:'다가갈까, 맞설까, 물러날까?'},
+  {compare:'harmonic',q:'문제가 생기면 나는 어떻게 할까?'}
+];
+const HOME_CENTERS=[['머리',[5,6,7],'생각하고 움직이는 쪽'],['가슴',[2,3,4],'느끼고 움직이는 쪽'],['장',[8,9,1],'먼저 움직이는 쪽']];
+
+function homeVsPairs(){
+  return [...document.querySelectorAll('#page-compare [data-compare-panel="confused"] .confuse-card')].map(card=>{
+    const [a,b]=[...card.querySelectorAll('.confuse-pair b')].map(x=>parseInt(x.textContent,10));
+    return {a,b,same:card.querySelector('h3')?.textContent.trim()||'',diff:card.querySelector('p')?.textContent.trim()||''};
+  }).filter(x=>x.a&&x.b);
+}
+function homeScenes(){
+  return [...document.querySelectorAll('#page-compare [data-compare-panel="situations"] .scenario-card')].map(card=>({
+    title:card.querySelector('h2')?.textContent.trim()||'',
+    rows:[...card.querySelectorAll('.scenario-row')].map(r=>({t:parseInt(r.querySelector('b')?.textContent,10),text:r.querySelector('p')?.textContent.trim()||''}))
+  })).filter(x=>x.title&&x.rows.length);
+}
+function homeVsCardHTML(v,{big=false}={}){
+  const hook=HOME_VS_HOOK[`${Math.min(v.a,v.b)}-${Math.max(v.a,v.b)}`]||v.same;
+  const side=t=>`<span class="vs-side" style="${gemVars(t)}"><span class="gem-tile deco-square">${gemImg(t,'',false)}</span><span class="vs-name">${t}번 ${homeEsc(CHECK_TYPE_NAMES[t])}</span></span>`;
+  if(!big) return `<button class="feed-card feed-vs-mini" data-shelf-compare="confused" type="button"><span class="feed-tag">VS</span>`
+    +`<span class="vs-gems">${side(v.a)}<span class="vs-mark" aria-hidden="true">vs</span>${side(v.b)}</span>`
+    +`<strong class="feed-q">${homeEsc(hook)}</strong></button>`;
+  return `<article class="feed-card feed-vs"><span class="feed-tag">오늘의 VS</span>`
+    +`<span class="vs-gems">${side(v.a)}<span class="vs-mark" aria-hidden="true">vs</span>${side(v.b)}</span>`
+    +`<h2 class="feed-title">${homeEsc(hook)}</h2>`
+    +`<button class="btn primary feed-vs-open" data-vs-open aria-expanded="false" aria-controls="homeVsAnswer" type="button">차이 보기</button>`
+    +`<div class="feed-vs-answer" id="homeVsAnswer" hidden><p>${homeEsc(v.diff)}</p>`
+    +`<button class="feed-more" data-shelf-compare="confused" type="button">헷갈리는 유형 더 보기</button></div></article>`;
+}
+/* 나라면?: 장면 하나 + 반응 네 개 (날짜마다 다른 유형 조합). 고르면 가까운 유형을 보여준다 */
+let homeQuizScene=null;
+function homeQuizHTML(sceneIdx){
+  const scenes=homeScenes(); if(!scenes.length) return '';
+  const i=((sceneIdx%scenes.length)+scenes.length)%scenes.length, sc=scenes[i];
+  homeQuizScene=i;
+  const day=homeDayNum()+i;
+  const picks=[0,1,2,3].map(k=>sc.rows[(day*4+k*2)%sc.rows.length]).filter((r,k,arr)=>arr.findIndex(x=>x.t===r.t)===k);
+  return `<article class="feed-card feed-quiz" id="homeQuiz"><span class="feed-tag">나라면?</span>`
+    +`<h2 class="feed-title">${homeEsc(sc.title)}</h2>`
+    +`<p class="feed-sub">가장 나다운 반응을 하나 골라보세요.</p>`
+    +`<div class="quiz-options">${picks.map(r=>`<button class="quiz-option" data-quiz-pick="${r.t}" type="button">${homeEsc(r.text)}</button>`).join('')}</div>`
+    +`<div class="quiz-result" hidden></div></article>`;
+}
+function homeQuizReveal(btn){
+  const box=btn.closest('#homeQuiz'); if(!box) return;
+  const t=Number(btn.dataset.quizPick), p=HOME_PROFILES[t];
+  /* disabled·aria-disabled는 옛 레이어 01이 !important로 흐리게 만들어, 카드에 is-answered를 달아 잠근다 */
+  box.classList.add('is-answered');
+  box.querySelectorAll('.quiz-option').forEach(b=>{ b.classList.toggle('is-picked',b===btn); b.setAttribute('aria-pressed',String(b===btn)); });
+  const res=box.querySelector('.quiz-result');
+  res.setAttribute('style',gemVars(t));
+  res.innerHTML=`<span class="gem-tile deco-square">${gemImg(t,'',false)}</span>`
+    +`<div><strong class="quiz-result-title">${t}번 ${homeEsc(CHECK_TYPE_NAMES[t])}에 가까운 반응이에요</strong>`
+    +`<p class="quiz-result-key">${homeEsc(p.gem)} · ${homeEsc(p.key)}</p></div>`
+    +'<p class="quiz-result-note">유형을 가르는 정답이 아니라, 같은 상황에서도 마음이 향하는 곳이 다르다는 예시예요.</p>'
+    +'<div class="quiz-result-actions"><button class="btn secondary is-tinted" data-quiz-next type="button">다른 장면</button>'
+    +'<button class="feed-more" data-shelf-compare="situations" type="button">아홉 유형 반응 모두 보기</button></div>';
+  res.hidden=false;
 }
 
 function renderHomeShelves(profile){
@@ -2217,13 +2384,6 @@ function renderHomeShelves(profile){
   /* section 대신 div: 옛 레이어의 #page-home section{padding:52px 0 !important}를 피한다 */
   const shelf=(title,body,{more='',cls=''}={})=>`<div class="shelf${cls?' '+cls:''}" role="region" aria-label="${title}"><div class="shelf-head"><h2 class="shelf-title">${title}</h2>${more}</div>${body}</div>`;
   const rail=items=>`<div class="shelf-rail" role="list">${items}</div>`;
-
-  const t=homeTodayType(), p=HOME_PROFILES[t];
-  const today=`<button class="today-gem" data-profile-open="${t}" style="${gemVars(t)}" type="button">`
-    +`<span class="today-gem-art deco-square">${gemImg(t,'',true)}</span>`
-    +`<span class="today-gem-body"><span class="today-gem-label">${t}번 ${homeEsc(CHECK_TYPE_NAMES[t])} · ${homeEsc(p.gem)}</span>`
-    +`<strong class="today-gem-key">${homeEsc(p.key)}</strong>`
-    +`<span class="today-gem-quote">“${homeEsc(p.quote)}”</span></span></button>`;
 
   /* 9가지 보석: 보석만 보면 와닿지 않아 '왜 이 보석인지'를 함께 보여준다 */
   const gems=[1,2,3,4,5,6,7,8,9].map(n=>`<button class="shelf-card gem-card" data-profile-open="${n}" role="listitem" style="${gemVars(n)}" type="button">`
@@ -2236,8 +2396,21 @@ function renderHomeShelves(profile){
     +`<span class="shelf-card-star" aria-hidden="true">${pcSparkSVG('var(--color-gold)')}</span>`
     +`<strong class="shelf-card-title">${homeEsc(title)}</strong><span class="shelf-card-go">돌아보기</span></button>`).join('');
 
-  const textCards=(titles,attr,sel)=>Object.entries(titles).map(([k,title])=>`<button class="shelf-card" ${attr}="${k}" role="listitem" type="button">`
-    +`<strong class="shelf-card-title">${homeEsc(title)}</strong><span class="shelf-card-desc">${firstSentence(sel(k))}</span></button>`).join('');
+  /* 콘텐츠 피드 */
+  const day=homeDayNum();
+  const vs=homeVsPairs();
+  const vsToday=vs.length?homeVsCardHTML(vs[day%vs.length],{big:true}):'';
+  const centers=`<button class="feed-card feed-centers" data-shelf-overview="centers" type="button"><span class="feed-tag">세 중심</span>`
+    +'<h2 class="feed-title">생각하고, 느끼고, 먼저 움직이고</h2>'
+    +`<span class="centers-row">${HOME_CENTERS.map(([name,ts,desc])=>`<span class="center-group"><span class="center-gems">${ts.map(t=>`<span style="${gemVars(t)}">${gemImg(t,'',false)}</span>`).join('')}</span><strong>${name}</strong><span>${desc}</span></span>`).join('')}</span>`
+    +'<span class="feed-more">나는 어느 쪽일까? 보러 가기</span></button>';
+  const readSel=r=>r.overview?`#page-overview .overview-panel[data-overview-key="${r.overview}"] p`:`#page-compare [data-compare-panel="${r.compare}"] p`;
+  const reads=[0,1,2,3].map(k=>HOME_READS[(day+k*2)%HOME_READS.length]).filter((r,k,arr)=>arr.indexOf(r)===k);
+  const readCards=reads.map((r,k)=>`<button class="feed-card feed-read" ${r.overview?`data-shelf-overview="${r.overview}"`:`data-shelf-compare="${r.compare}"`} style="${gemVars((day+k*3)%9+1)}" type="button">`
+    +`<span class="feed-read-gem gem-tile deco-square">${gemImg((day+k*3)%9+1,'',false)}</span>`
+    +`<strong class="feed-q">${homeEsc(r.q)}</strong><span class="feed-preview">${firstSentence(readSel(r))}</span><span class="feed-tag is-soft">1분 읽기</span></button>`);
+  const miniVs=vs.length>2?[1,2].map(k=>homeVsCardHTML(vs[(day+k*5)%vs.length])):[];
+  const grid=`<div class="feed-grid">${[readCards[0],miniVs[0],readCards[1],readCards[2],miniVs[1],readCards[3]].filter(Boolean).join('')}</div>`;
 
   /* 유형 검사: 하단 탭 대신 홈 CTA. 유형이 없으면 맨 위 '내 보석 찾기'가 그 역할을 하고, 있으면 여기서 다시 확인 */
   const check=profile
@@ -2246,11 +2419,11 @@ function renderHomeShelves(profile){
       +'<div class="home-check-actions"><button class="btn primary" data-home-action="quick" type="button">간편 검사</button>'
       +'<button class="btn secondary is-tinted" data-home-action="find" type="button">정식 검사</button></div></div>'
     : '';
-  box.innerHTML=check+shelf('오늘의 보석',today,{cls:'shelf-today'})
-    +shelf('9가지 보석',rail(gems),{more:'<button class="shelf-more" data-shelf-compare="glance" type="button">카드로 보기</button>'})
+  box.innerHTML=check
+    +shelf('9가지 보석',rail(gems),{more:'<button class="shelf-more" data-shelf-compare="hub" type="button">카드로 보기</button>'})
+    +`<div class="home-feed-list">${vsToday}${homeQuizHTML(day)}</div>`
     +shelf('나를 돌아보는 장면',rail(scenes))
-    +shelf('비교해서 보기',rail(textCards(COMPARE_TITLES,'data-shelf-compare',k=>`#page-compare [data-compare-panel="${k}"] p`)))
-    +shelf('에니어그램 기초',rail(textCards(OVERVIEW_TITLES,'data-shelf-overview',k=>`#page-overview .overview-panel[data-overview-key="${k}"] p`)));
+    +`<div class="home-feed-list">${centers}${grid}</div>`;
 }
 
 /* 하단 탭 '나의 공간' 아이콘: 유형을 정했으면 내 보석 이미지로 (디자인 시스템 §6 하단 탭) */
@@ -2349,6 +2522,19 @@ async function saveTypeCardImage(t,source){
 document.querySelector('[data-side-quick]')?.addEventListener('click',()=>showCheckTarget('quick'));
 
 document.getElementById('page-home')?.addEventListener('click',e=>{
+  const vsOpen=e.target.closest('[data-vs-open]');
+  if(vsOpen){
+    const ans=document.getElementById('homeVsAnswer'), open=ans.hidden;
+    ans.hidden=!open; vsOpen.setAttribute('aria-expanded',String(open)); vsOpen.textContent=open?'접기':'차이 보기';
+    return;
+  }
+  const pick=e.target.closest('[data-quiz-pick]');
+  if(pick){ if(!pick.closest('.is-answered')) homeQuizReveal(pick); return; }
+  if(e.target.closest('[data-quiz-next]')){
+    const q=document.getElementById('homeQuiz');
+    if(q){ q.outerHTML=homeQuizHTML((homeQuizScene??0)+1); document.querySelector('#homeQuiz .quiz-option')?.focus(); }
+    return;
+  }
   const sh=e.target.closest('[data-shelf-sharing],[data-shelf-compare],[data-shelf-overview]');
   if(sh){
     if(sh.dataset.shelfSharing!==undefined) showSharingTopic(Number(sh.dataset.shelfSharing));
@@ -2658,10 +2844,12 @@ if(/^share(=|$)/.test(hash)){
   showCompareSection(match[1],false);
 }else if(hash==='compare'){
   showCompareSection('glance',false);
+}else if(hash==='explore'){
+  showExploreHub(false);
 }else if((match=hash.match(/^handbook-([1-9])$/))){
   showHandbookType(Number(match[1]),false);
 }else if((match=hash.match(/^handbook-([1-9])-(basic|pattern|life|real|growth)$/))){
-  window.openHandbookTab?.(Number(match[1]),match[2]==='real'?'life':match[2],0);
+  window.openHandbookTab?.(Number(match[1]),match[2]==='real'?'life':match[2],null); /* 탭 주소로 열면 소주제는 모두 접힌 목록 */
   showHandbookType(Number(match[1]),false);
 }else if((match=hash.match(/^check-detail-([1-9])$/))){
   showCheckTarget('detail-'+match[1],false);
