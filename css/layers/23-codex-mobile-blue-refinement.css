@@ -139,7 +139,7 @@
     font-size:clamp(var(--text-3xl), calc(var(--app-vw) * 4 / 100), var(--text-4xl)) !important;
     line-height:1.24 !important;
     letter-spacing:0 !important;
-    font-weight:800 !important;
+    font-weight:700 !important;
   }
 
   #page-home h2,
@@ -152,7 +152,7 @@
     font-size:clamp(var(--text-2xl), calc(var(--app-vw) * 2.8 / 100), var(--text-3xl)) !important;
     line-height:1.32 !important;
     letter-spacing:0 !important;
-    font-weight:800 !important;
+    font-weight:700 !important;
   }
 
   #page-home h3,

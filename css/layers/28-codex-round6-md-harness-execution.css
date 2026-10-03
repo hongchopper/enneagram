@@ -99,7 +99,7 @@
     background:transparent !important;
     color:var(--harness-blue-900) !important;
     font-size:var(--text-md) !important;
-    font-weight:800 !important;
+    font-weight:700 !important;
     white-space:nowrap !important;
     box-shadow:none !important;
   }
@@ -193,7 +193,7 @@
     background:var(--color-surface) !important;
     color:var(--harness-blue-800) !important;
     font-size:var(--text-sm) !important;
-    font-weight:800 !important;
+    font-weight:700 !important;
     white-space:nowrap !important;
   }
 
@@ -328,7 +328,7 @@
     color:var(--harness-blue-900) !important;
     font-size:var(--text-md) !important;
     line-height:1.45 !important;
-    font-weight:800 !important;
+    font-weight:700 !important;
   }
 
   .global-search-result span {
@@ -336,7 +336,7 @@
     color:var(--harness-blue-600) !important;
     font-size:var(--text-xs) !important;
     line-height:1.4 !important;
-    font-weight:800 !important;
+    font-weight:700 !important;
   }
 
   .global-search-result p,
@@ -463,7 +463,7 @@
   margin-bottom:var(--space-2);
   color:var(--color-primary);
   font-size:var(--text-xs);
-  font-weight:800;
+  font-weight:700;
   letter-spacing:.04em;
 }
 
@@ -471,7 +471,7 @@
   margin:0;
   color:var(--color-text-primary);
   font-size:var(--text-3xl);
-  font-weight:800;
+  font-weight:700;
   line-height:1.3;
 }
 
@@ -551,7 +551,7 @@
 
 #page-check .check-choice-card strong {
   font-size:var(--text-2xl);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-check .check-choice-desc {
@@ -563,18 +563,20 @@
 #page-check .check-choice-go {
   display:inline-flex;
   align-items:center;
-  min-height:48px;
+  min-height:52px;
   margin-top:auto;
   padding:0 var(--space-5);
-  border-radius:var(--radius-md);
+  border-radius:var(--radius-full);
   background:var(--color-primary);
   color:var(--color-on-primary);
   font-size:var(--text-md);
   font-weight:700;
 }
 
+/* 정식 검사는 보조 버튼 색 (홈의 '정식 검사'와 같게) */
 #page-check .check-choice-card + .check-choice-card .check-choice-go {
-  background:var(--color-text-primary);
+  background:var(--color-primary-soft);
+  color:var(--color-primary);
 }
 
 /* 헷갈리는 유형 고르기 */
@@ -660,7 +662,7 @@
   background:var(--color-surface-subtle);
   color:var(--color-text-primary);
   font-size:var(--text-lg);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-check .check-select-type.active .check-select-no {
@@ -749,7 +751,7 @@
 }
 
 #page-check .check-detail-step-no {
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-check .check-detail-step-meta {
@@ -883,7 +885,7 @@
 
 #page-home .continue-card strong {
   font-size:var(--text-lg);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-home .continue-desc {
@@ -940,7 +942,7 @@
 
 #page-home .profile-no {
   font-size:var(--text-4xl);
-  font-weight:800;
+  font-weight:700;
   line-height:1;
 }
 
@@ -961,7 +963,7 @@
 #page-home .profile-card .profile-name {
   margin:var(--space-1) 0 0;
   font-size:var(--text-lg);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-home .profile-card .profile-quote {
@@ -1332,7 +1334,7 @@
 
 #page-handbook .hb-pager-btn strong {
   font-size:var(--text-md);
-  font-weight:800;
+  font-weight:700;
 }
 
 /* 요약 */
@@ -1376,14 +1378,14 @@
 #page-handbook .hb-sum-no {
   color:var(--color-primary);
   font-size:calc(var(--text-4xl) * 2.2);
-  font-weight:800;
+  font-weight:700;
   line-height:1;
 }
 
 #page-handbook .hb-sum-name {
   margin:0;
   font-size:var(--text-3xl);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-handbook .hb-sum-desc {
@@ -1446,7 +1448,7 @@
   background:var(--color-primary);
   color:var(--color-on-primary);
   font-size:var(--text-lg);
-  font-weight:800;
+  font-weight:700;
   box-shadow:var(--shadow-md);
 }
 
@@ -1463,7 +1465,7 @@
   margin:0 0 var(--space-2);
   color:var(--color-text-primary);
   font-size:var(--text-md);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-handbook .hb-sum-value {
@@ -1534,7 +1536,7 @@
   background:var(--color-primary-soft);
   color:var(--color-primary-hover);
   font-size:var(--text-md);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-handbook .hb-sum-link-title {
@@ -1559,7 +1561,7 @@
   margin:0;
   color:var(--color-text-primary);
   font-size:var(--text-lg);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-handbook .hb-sum-line-sub {
@@ -1573,7 +1575,7 @@
 #page-handbook .hb-block-title {
   margin:0 0 var(--space-2);
   font-size:var(--text-lg);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-handbook .hb-block-desc {
@@ -1622,7 +1624,7 @@
   margin:0;
   color:var(--color-text-primary);
   font-size:var(--text-lg);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-handbook .hb-state-sub {
@@ -1683,7 +1685,7 @@
 
 #page-handbook .hb-more-card strong {
   font-size:var(--text-md);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-handbook .hb-more-card span {
@@ -1721,7 +1723,7 @@
   margin:var(--space-2) 0 0;
   color:var(--color-primary-hover);
   font-size:var(--text-sm);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-handbook .hb-reflect {
@@ -1762,7 +1764,7 @@
   margin:0 0 var(--space-2);
   color:var(--color-text-primary);
   font-size:var(--text-md);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-handbook .hb-reflect .reflect-section {
@@ -1850,7 +1852,7 @@
   background:var(--color-primary-soft);
   color:var(--color-primary-hover);
   font-size:var(--text-sm);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-handbook .hb-reflect .why-step-deep {
@@ -1881,7 +1883,7 @@
 
 #page-handbook .hb-reflect .reflection-type-btn b {
   font-size:var(--text-lg);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-handbook .hb-reflect .reflection-type-btn span {
@@ -1919,12 +1921,12 @@
   background:var(--color-primary);
   color:var(--color-on-primary);
   font-size:var(--text-lg);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-handbook .hb-reflect .reflection-type-title strong {
   font-size:var(--text-lg);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-handbook .hb-reflect .reflection-type-main {
@@ -1943,7 +1945,7 @@
   justify-content:space-between;
   gap:var(--space-2);
   margin-bottom:var(--space-2);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-handbook .hb-reflect .reflection-h-points {
@@ -2075,7 +2077,7 @@
 #page-myspace .change-card h3 {
   margin:0;
   font-size:var(--text-lg);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-myspace .change-sub {
@@ -2232,13 +2234,13 @@
   margin:0 0 var(--space-2);
   color:var(--color-primary);
   font-size:var(--text-sm);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-share .share-head h1 {
   margin:0;
   font-size:var(--text-3xl);
-  font-weight:800;
+  font-weight:700;
   line-height:1.3;
 }
 
@@ -2260,7 +2262,7 @@
 #page-share .share-panel-title {
   margin:0;
   font-size:var(--text-xl);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-share .share-panel-desc,
@@ -2296,7 +2298,7 @@
 
 #page-share .share-chip b {
   font-size:var(--text-lg);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-share .share-chip span {
@@ -2414,7 +2416,7 @@
 #page-share .share-card-no {
   color:var(--color-primary);
   font-size:calc(var(--text-4xl) * 1.6);
-  font-weight:800;
+  font-weight:700;
   line-height:1;
 }
 
@@ -2430,7 +2432,7 @@
 #page-share .share-card-name {
   margin:var(--space-2) 0 0;
   font-size:var(--text-2xl);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-share .share-card-desc,
@@ -2455,7 +2457,7 @@
 #page-share .share-lens h3 {
   margin:0;
   font-size:var(--text-lg);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-share .share-lens-cols {
@@ -2475,7 +2477,7 @@
   margin-bottom:var(--space-1);
   color:var(--color-primary);
   font-size:var(--text-sm);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-share .share-lens-cols p {
@@ -2500,7 +2502,7 @@
   margin:0 0 var(--space-1);
   color:var(--color-text-secondary);
   font-size:var(--text-sm);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-share .share-core p {
@@ -2536,13 +2538,13 @@
 
 #page-diary h1 {
   font-size:var(--text-4xl);
-  font-weight:800;
+  font-weight:700;
   line-height:1.24;
 }
 
 #page-diary h2 {
   font-size:var(--text-3xl);
-  font-weight:800;
+  font-weight:700;
   line-height:1.32;
 }
 
@@ -2694,7 +2696,7 @@
   background:var(--color-primary);
   color:var(--color-on-primary);
   font-size:var(--text-xs);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-diary .diary-why .ui-chip {
@@ -2736,39 +2738,39 @@
   top:var(--space-4);
 }
 
-#page-diary .diary-exp {
+:is(#page-diary, #page-polish) .diary-exp {
   display:grid;
   gap:var(--space-3);
 }
 
-#page-diary .diary-card-head,
+:is(#page-diary, #page-polish) .diary-card-head,
 #page-diary .diary-list-head {
   display:flex;
   align-items:center;
   gap:var(--space-3);
 }
 
-#page-diary .diary-card-head h2,
+:is(#page-diary, #page-polish) .diary-card-head h2,
 #page-diary .diary-list-head h2 {
   margin:0;
   font-size:var(--text-xl);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-diary .diary-list-head h2 {
   font-size:var(--text-2xl);
 }
 
-#page-diary .diary-exp .ui-help {
+:is(#page-diary, #page-polish) .diary-exp .ui-help {
   margin:0;
 }
 
-#page-diary .experiment-list {
+:is(#page-diary, #page-polish) .experiment-list {
   display:grid;
   gap:var(--space-2);
 }
 
-#page-diary .experiment-item {
+:is(#page-diary, #page-polish) .experiment-item {
   display:grid;
   grid-template-columns:auto minmax(0, 1fr) auto;
   align-items:start;
@@ -2779,11 +2781,11 @@
   background:var(--color-surface);
 }
 
-#page-diary .experiment-item.is-done {
+:is(#page-diary, #page-polish) .experiment-item.is-done {
   background:var(--color-surface-subtle);
 }
 
-#page-diary .experiment-check {
+:is(#page-diary, #page-polish) .experiment-check {
   display:grid;
   place-items:center;
   width:calc(var(--space-9) - var(--space-5));
@@ -2793,60 +2795,60 @@
   background:var(--color-surface);
   color:var(--color-on-primary);
   font-size:var(--text-lg);
-  font-weight:800;
+  font-weight:700;
   cursor:pointer;
 }
 
-#page-diary .experiment-check:hover {
+:is(#page-diary, #page-polish) .experiment-check:hover {
   border-color:var(--color-primary);
 }
 
-#page-diary .experiment-check[aria-pressed="true"] {
+:is(#page-diary, #page-polish) .experiment-check[aria-pressed="true"] {
   border-color:var(--color-primary);
   background:var(--color-primary);
 }
 
-#page-diary .experiment-text {
+:is(#page-diary, #page-polish) .experiment-text {
   margin:0;
   color:var(--color-text-primary);
   font-size:var(--text-md);
   font-weight:700;
 }
 
-#page-diary .experiment-item.is-done .experiment-text {
+:is(#page-diary, #page-polish) .experiment-item.is-done .experiment-text {
   color:var(--color-text-secondary);
   text-decoration:line-through;
 }
 
-#page-diary .experiment-src {
+:is(#page-diary, #page-polish) .experiment-src {
   display:block;
   margin-top:var(--space-1);
   color:var(--color-text-tertiary);
   font-size:var(--text-sm);
 }
 
-#page-diary .experiment-note {
+:is(#page-diary, #page-polish) .experiment-note {
   margin-top:var(--space-2);
   padding:var(--space-2) var(--space-3);
   font-size:var(--text-sm);
 }
 
-#page-diary .diary-exp-reco {
+:is(#page-diary, #page-polish) .diary-exp-reco {
   display:grid;
   gap:var(--space-2);
 }
 
-#page-diary .diary-exp-reco:empty {
+:is(#page-diary, #page-polish) .diary-exp-reco:empty {
   display:none;
 }
 
-#page-diary .diary-exp-reco-head {
+:is(#page-diary, #page-polish) .diary-exp-reco-head {
   color:var(--color-primary-hover);
   font-size:var(--text-sm);
-  font-weight:800;
+  font-weight:700;
 }
 
-#page-diary .diary-exp-reco-item {
+:is(#page-diary, #page-polish) .diary-exp-reco-item {
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -2863,16 +2865,16 @@
   cursor:pointer;
 }
 
-#page-diary .diary-exp-reco-item:hover {
+:is(#page-diary, #page-polish) .diary-exp-reco-item:hover {
   border-color:var(--color-primary);
 }
 
-#page-diary .diary-exp-reco-item b {
+:is(#page-diary, #page-polish) .diary-exp-reco-item b {
   flex:none;
   color:var(--color-primary);
 }
 
-#page-diary .experiment-add {
+:is(#page-diary, #page-polish) .experiment-add {
   display:grid;
   grid-template-columns:minmax(0, 1fr) auto;
   gap:var(--space-2);
@@ -2914,7 +2916,7 @@
   position:relative;
   color:var(--color-text-secondary);
   font-size:var(--text-sm);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-diary .diary-day-label::before {
@@ -2941,7 +2943,7 @@
 #page-diary .diary-card-head h3 {
   margin:0;
   font-size:var(--text-lg);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-diary .diary-card-emotions {
@@ -2982,7 +2984,7 @@
   margin-right:var(--space-2);
   color:var(--color-primary);
   font-size:var(--text-sm);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-diary .diary-card-actions {
@@ -3030,7 +3032,7 @@
   height:auto;
   padding:0 var(--space-5);
   border:1px solid var(--color-border);
-  border-radius:var(--radius-md);
+  border-radius:var(--radius-full); /* 버튼은 모두 알약 (2026-10-03 통일) */
   background:var(--color-surface);
   color:var(--color-text-primary);
   font-family:inherit;
@@ -3129,13 +3131,13 @@
   margin:0 0 var(--space-2);
   color:var(--color-primary);
   font-size:var(--text-sm);
-  font-weight:800;
+  font-weight:700;
 }
 
 .ui-page-head h1 {
   margin:0;
   font-size:var(--text-3xl);
-  font-weight:800;
+  font-weight:700;
   line-height:1.3;
 }
 
@@ -3154,7 +3156,7 @@
 .ui-section-head h2 {
   margin:0;
   font-size:var(--text-2xl);
-  font-weight:800;
+  font-weight:700;
   line-height:1.3;
 }
 
@@ -3226,7 +3228,7 @@
   margin:0 0 var(--space-2);
   color:var(--color-text-primary);
   font-size:var(--text-md);
-  font-weight:800;
+  font-weight:700;
 }
 
 .ui-help {
@@ -3255,7 +3257,7 @@
   background:transparent;
   color:var(--color-primary);
   font-size:var(--text-sm);
-  font-weight:800;
+  font-weight:700;
   letter-spacing:0;
   text-transform:none;
 }
@@ -3267,7 +3269,7 @@
 #page-myspace .myspace-page-head h1 {
   margin:0;
   font-size:clamp(var(--text-3xl), calc(var(--app-vw) * 4 / 100), var(--text-4xl));
-  font-weight:800;
+  font-weight:700;
   line-height:1.24;
   letter-spacing:0;
 }
@@ -3284,6 +3286,7 @@
 
 /* 주 버튼 */
 #page-home .btn.primary,
+#page-myspace .home-check .btn.primary,
 #page-myspace .primary-action,
 #page-diary .primary-action,
 #page-check .check-flow-primary,
@@ -3302,6 +3305,7 @@
 }
 
 #page-home .btn.primary:hover,
+#page-myspace .home-check .btn.primary:hover,
 #page-myspace .primary-action:hover,
 #page-diary .primary-action:hover,
 #page-check .check-flow-primary:hover,
@@ -3465,7 +3469,7 @@
 .tcp-kicker {
   color:var(--color-banner-accent);
   font-size:var(--text-sm);
-  font-weight:800;
+  font-weight:700;
 }
 
 .tcp-badge {
@@ -3487,7 +3491,7 @@
   --ds-text:var(--color-on-banner);
   color:var(--color-on-banner);
   font-size:calc(var(--text-4xl) * 2.2);
-  font-weight:800;
+  font-weight:700;
   line-height:1;
 }
 
@@ -3496,7 +3500,7 @@
   margin:0;
   color:var(--color-on-banner);
   font-size:var(--text-3xl);
-  font-weight:800;
+  font-weight:700;
   line-height:1.2;
 }
 
@@ -3560,7 +3564,7 @@
 .tcp-score-main strong {
   color:var(--color-primary-hover);
   font-size:var(--text-3xl);
-  font-weight:800;
+  font-weight:700;
   line-height:1;
 }
 
@@ -3576,7 +3580,7 @@
   background:var(--color-surface);
   color:var(--color-primary-hover);
   font-size:var(--text-xs);
-  font-weight:800;
+  font-weight:700;
 }
 
 .tcp-score .tcp-text {
@@ -3605,7 +3609,7 @@
   margin:0 0 var(--space-2);
   color:var(--color-text-primary);
   font-size:var(--text-sm);
-  font-weight:800;
+  font-weight:700;
 }
 
 .tcp-box .tcp-text {
@@ -3663,7 +3667,7 @@
   background:var(--color-primary-soft);
   color:var(--color-primary-hover);
   font-size:var(--text-sm);
-  font-weight:800;
+  font-weight:700;
 }
 
 .tcp-link-title {
@@ -3688,7 +3692,7 @@
   margin:0;
   color:var(--color-text-primary);
   font-size:var(--text-lg);
-  font-weight:800;
+  font-weight:700;
 }
 
 .tcp-line-sub {
@@ -3776,7 +3780,7 @@
 #page-check .check-summary h2 {
   margin:0 0 var(--space-2);
   font-size:var(--text-2xl);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-check .check-summary-desc {
@@ -3902,7 +3906,7 @@
     padding:var(--space-5);
   }
 
-  #page-diary .experiment-add {
+  :is(#page-diary, #page-polish) .experiment-add {
     grid-template-columns:1fr;
   }
 
@@ -4403,7 +4407,7 @@
 .pcard .pcard-title {
   color:var(--color-text-primary);
   font-size:var(--text-xl);
-  font-weight:800;
+  font-weight:700;
   line-height:1.3;
 }
 
@@ -4417,12 +4421,12 @@
 .pcard-tag {
   display:inline-flex;
   align-items:center;
-  min-height:calc(var(--space-6) - var(--space-1));
+  min-height:var(--space-6);
   padding:0 var(--space-3);
   border-radius:var(--radius-full);
   background:var(--ts);
   color:var(--td);
-  font-size:var(--text-xs);
+  font-size:var(--text-sm);
   font-weight:700;
 }
 
@@ -4503,7 +4507,7 @@
   background:var(--color-primary-soft);
   color:var(--color-primary);
   font-size:var(--text-xs);
-  font-weight:800;
+  font-weight:700;
 }
 
 .pcard-gemname {
@@ -4710,7 +4714,7 @@
   margin:0 0 var(--space-2);
   color:var(--color-primary);
   font-size:var(--text-3xl);
-  font-weight:800;
+  font-weight:700;
   line-height:1;
 }
 
@@ -4720,7 +4724,7 @@
   margin:0;
   color:var(--color-text-primary);
   font-size:var(--text-lg);
-  font-weight:800;
+  font-weight:700;
   line-height:1.4;
 }
 
@@ -4741,7 +4745,7 @@
   background:var(--color-accent-soft);
   color:var(--color-text-primary);
   font-size:var(--text-xs);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-home .lens-mini {
@@ -4772,18 +4776,18 @@
 #page-home .journey-arrow {
   margin-top:auto;
   color:var(--color-primary);
-  font-weight:800;
+  font-weight:700;
 }
 
 /* 나: 대표 프로필 패널 (디자인 시스템 v1 '오늘의 보석 카드' 바탕)
    데스크톱: 카드 | 머리 / 오늘의 질문 / 버튼 — 오른쪽 세 덩어리를 카드 높이에 맞춰 위·가운데·아래로 나눈다.
    모바일: 머리 → 카드 → 오늘의 질문 → 버튼 */
-#page-home .home-me-grid {
+:is(#page-home, #page-myspace) .home-me-grid {
   display:grid;
   gap:var(--space-5);
 }
 
-#page-home .me-panel {
+:is(#page-home, #page-myspace) .me-panel {
   grid-template-columns:calc(var(--space-10) * 3.75) minmax(0, 1fr);
   grid-template-rows:auto 1fr auto;
   grid-template-areas:
@@ -4801,40 +4805,42 @@
   backdrop-filter:var(--glass-blur);
 }
 
-#page-home .me-card {
+:is(#page-home, #page-myspace) .me-card {
+  display:grid;
   grid-area:card;
+  gap:var(--space-3);
   align-self:center;
 }
 
-#page-home .me-card .pcard {
+:is(#page-home, #page-myspace) .me-card .pcard {
   width:100%;
 }
 
-#page-home .me-card .pcard-foot {
+:is(#page-home, #page-myspace) .me-card .pcard-foot {
   display:none;
 }
 
-#page-home .me-head {
+:is(#page-home, #page-myspace) .me-head {
   display:grid;
   grid-area:head;
   gap:var(--space-3);
   align-content:start;
 }
 
-#page-home .me-label {
+:is(#page-home, #page-myspace) .me-label {
   color:var(--color-text-secondary);
   font-size:var(--text-sm);
   font-weight:700;
 }
 
-#page-home .me-title-row {
+:is(#page-home, #page-myspace) .me-title-row {
   display:flex;
   align-items:center;
   gap:var(--space-4);
 }
 
 /* 보석 미리보기 타일: 64, 오로라 그라데이션 + elev-1, 보석 44 */
-#page-home .gem-tile {
+:is(#page-home, #page-myspace) .gem-tile {
   display:grid;
   flex:none;
   place-items:center;
@@ -4846,36 +4852,36 @@
   box-shadow:var(--shadow-sm);
 }
 
-#page-home .gem-tile .gem-img {
+:is(#page-home, #page-myspace) .gem-tile .gem-img {
   width:calc(var(--space-8) - var(--space-1));
   height:auto;
   max-width:none;
 }
 
-#page-home .me-head .home-me-title {
+:is(#page-home, #page-myspace) .me-head .home-me-title {
   margin:0;
   color:var(--color-text-primary);
   font-size:var(--text-3xl);
-  font-weight:800;
+  font-weight:700;
   line-height:1.2;
   letter-spacing:-.03em;
 }
 
-#page-home .me-sub {
+:is(#page-home, #page-myspace) .me-sub {
   margin:var(--space-1) 0 0;
   color:var(--td);
   font-size:var(--text-lg);
   font-weight:700;
 }
 
-#page-home .me-tags {
+:is(#page-home, #page-myspace) .me-tags {
   display:flex;
   flex-wrap:wrap;
   gap:var(--space-2);
 }
 
-/* 태그 칩: 높이 28, soft 바탕 + deep 글자 */
-#page-home .tag-chip {
+/* 태그 칩: 높이 32 · 글자 14 (12는 너무 작아 키움, 2026-10-03), soft 바탕 + deep 글자 */
+:is(#page-home, #page-myspace, #page-compare) .tag-chip {
   display:inline-flex;
   align-items:center;
   min-height:calc(var(--space-6) - var(--space-1));
@@ -4888,13 +4894,21 @@
   box-shadow:var(--shadow-sm);
 }
 
-#page-home .me-desc {
+:is(#page-home, #page-myspace) .me-desc {
   max-width:var(--readable-sm);
   margin:0;
   color:var(--color-text-primary);
   font-size:var(--text-md);
   line-height:var(--body-line);
   word-break:keep-all;
+}
+
+/* 카드 뒷면이던 '왜 이 보석일까요?' (뒤집기를 없애 카드 아래 글로) */
+:is(#page-home, #page-myspace) .me-why-title {
+  margin:var(--space-3) 0 0;
+  color:var(--color-text-primary);
+  font-size:var(--text-lg);
+  font-weight:700;
 }
 
 /* 오늘의 질문 = 질문 박스 (진한 유리 · 모서리 20 · 위에 작은 별) */
@@ -4916,7 +4930,7 @@
   box-shadow:var(--shadow-sm);
 }
 
-#page-home .me-panel .home-today {
+:is(#page-home, #page-myspace) .me-panel .home-today {
   grid-area:today;
   align-self:center;
 }
@@ -4943,7 +4957,7 @@
   background:none;
   color:var(--color-primary);
   font-size:var(--text-sm);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-home .home-today .home-today-q {
@@ -4951,7 +4965,7 @@
   margin:0;
   color:var(--color-text-primary);
   font-size:var(--text-xl);
-  font-weight:800;
+  font-weight:700;
   line-height:1.45;
   word-break:keep-all;
 }
@@ -4968,14 +4982,14 @@
   justify-self:end;
 }
 
-#page-home .home-me-actions {
+:is(#page-home, #page-myspace) .home-me-actions {
   display:grid;
   grid-area:actions;
   grid-template-columns:repeat(3, minmax(0, 1fr));
   gap:var(--space-2);
 }
 
-#page-home .home-me-actions .btn {
+:is(#page-home, #page-myspace) .home-me-actions .btn {
   width:100%;
   padding:0 var(--space-3);
   white-space:nowrap;
@@ -4984,28 +4998,27 @@
 
 
 
-  #page-home .me-panel {
+  :is(#page-home, #page-myspace) .me-panel {
     grid-template-columns:minmax(0, 1fr);
     grid-template-rows:none;
     grid-template-areas:
-      "head"
       "card"
-      "today"
+      "head"
       "actions";
     padding:var(--space-5) var(--space-4);
     border-radius:var(--radius-xl);
   }
 
-  #page-home .me-card .pcard {
+  :is(#page-home, #page-myspace) .me-card .pcard {
     width:min(100%, calc(var(--space-10) * 3.75));
     margin:0 auto;
   }
 
-  #page-home .me-head .home-me-title {
+  :is(#page-home, #page-myspace) .me-head .home-me-title {
     font-size:var(--text-2xl);
   }
 
-  #page-home .me-sub {
+  :is(#page-home, #page-myspace) .me-sub {
     font-size:var(--text-md);
   }
 
@@ -5019,11 +5032,11 @@
     margin-top:var(--space-3);
   }
 
-  #page-home .home-me-actions {
+  :is(#page-home, #page-myspace) .home-me-actions {
     gap:var(--space-1);
   }
 
-  #page-home .home-me-actions .btn {
+  :is(#page-home, #page-myspace) .home-me-actions .btn {
     min-height:calc(var(--space-8) - var(--space-1));
     padding:0 var(--space-1);
     font-size:var(--text-sm);
@@ -5043,7 +5056,7 @@
     left:0;
     z-index:var(--z-sticky);
     display:grid;
-    grid-template-columns:repeat(4, minmax(0, 1fr)); /* 홈 · 유형 탐구 · 다이어리 · 나의 공간 (유형 검사는 홈 CTA로) */
+    grid-template-columns:repeat(5, minmax(0, 1fr)); /* 홈 · 유형 탐구 · 다이어리 · 보석 닦기 · 나의 공간 (유형 검사는 홈 CTA로) */
     padding:var(--space-1) var(--space-1) calc(var(--space-1) + env(safe-area-inset-bottom));
     border-top:1px solid var(--color-border);
     background:color-mix(in srgb, var(--color-surface) 88%, transparent);
@@ -5204,7 +5217,7 @@
 #page-home .hero h1 {
   margin:0;
   font-size:var(--text-5xl);
-  font-weight:800;
+  font-weight:700;
   line-height:1.18;
   letter-spacing:-.03em;
 }
@@ -5418,6 +5431,7 @@ body {
 
 /* 주 버튼 */
 #page-home .btn.primary,
+#page-myspace .home-check .btn.primary,
 #page-myspace .primary-action,
 #page-diary .primary-action,
 #page-check .check-flow-primary,
@@ -5430,12 +5444,13 @@ body {
   border-radius:var(--radius-full);
   background:var(--grad-primary);
   color:var(--color-on-primary);
-  font-weight:800;
+  font-weight:700;
   box-shadow:var(--glow-primary);
   transition:transform var(--duration-fast) var(--ease-soft), box-shadow var(--duration-fast);
 }
 
 #page-home .btn.primary:hover,
+#page-myspace .home-check .btn.primary:hover,
 #page-myspace .primary-action:hover,
 #page-diary .primary-action:hover,
 #page-check .check-flow-primary:hover,
@@ -5460,6 +5475,7 @@ body {
 
 /* 보조 버튼: 진한 유리 */
 #page-home .btn.secondary,
+#page-myspace .home-check .btn.secondary,
 #page-myspace .secondary-action,
 #page-diary .secondary-action,
 #page-check .quick-secondary,
@@ -5736,7 +5752,7 @@ body {
   .app-side-title {
     margin:0;
     font-size:var(--text-2xl);
-    font-weight:800;
+    font-weight:700;
     line-height:1.4;
     letter-spacing:-.03em;
     word-break:keep-all;
@@ -5774,7 +5790,7 @@ body {
     background:var(--grad-primary);
     color:var(--color-on-primary);
     font-size:var(--text-md);
-    font-weight:800;
+    font-weight:700;
     box-shadow:var(--glow-primary);
     cursor:pointer;
   }
@@ -5831,7 +5847,7 @@ body {
 .crisis-guide h2 {
   margin:0;
   font-size:var(--text-2xl);
-  font-weight:800;
+  font-weight:700;
   line-height:1.35;
 }
 
@@ -5871,7 +5887,7 @@ body {
 .crisis-guide-tel {
   color:var(--color-text-primary);
   font-size:var(--text-2xl);
-  font-weight:800;
+  font-weight:700;
   text-decoration:underline;
   text-underline-offset:4px;
 }
@@ -6013,7 +6029,7 @@ body {
   margin:0;
   color:var(--color-text-primary);
   font-size:var(--text-2xl);
-  font-weight:800;
+  font-weight:700;
 }
 
 .gem-reveal-sub {
@@ -6032,7 +6048,7 @@ body {
   background:var(--grad-primary);
   color:var(--color-on-primary);
   font-size:var(--text-md);
-  font-weight:800;
+  font-weight:700;
   box-shadow:var(--glow-primary);
   cursor:pointer;
 }
@@ -6153,7 +6169,7 @@ body {
 
 .bottom-tabbar .bottom-tab.active .bottom-tab-label {
   color:var(--color-primary);
-  font-weight:800;
+  font-weight:700;
 }
 
 /* 나의 공간: 내 보석 이미지 */
@@ -6210,7 +6226,7 @@ body {
   gap:var(--space-6);
 }
 
-#page-home .home-me {
+:is(#page-home, #page-myspace) .home-me {
   padding:0;
 }
 
@@ -6227,7 +6243,7 @@ body {
   border:1px solid var(--glass-line);
   border-radius:var(--radius-panel);
   background:var(--glass);
-  box-shadow:var(--shadow-md);
+  box-shadow:none;
   text-align:center;
   -webkit-backdrop-filter:var(--glass-blur);
   backdrop-filter:var(--glass-blur);
@@ -6254,7 +6270,7 @@ body {
 #page-home .home-find-title {
   margin:0;
   font-size:var(--text-2xl);
-  font-weight:800;
+  font-weight:700;
   letter-spacing:-.03em;
 }
 
@@ -6291,7 +6307,7 @@ body {
   margin:0;
   color:var(--color-text-primary);
   font-size:var(--text-xl);
-  font-weight:800;
+  font-weight:700;
   letter-spacing:-.02em;
 }
 
@@ -6382,7 +6398,7 @@ body {
 
 #page-home .today-gem-key {
   font-size:var(--text-xl);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-home .today-gem-quote {
@@ -6449,11 +6465,11 @@ body {
   gap:var(--space-2);
   width:calc(var(--space-10) * 3);
   min-height:calc(var(--space-10) * 1.75);
-  padding:var(--space-4) var(--space-5);
+  padding:var(--space-5);
   border:1px solid var(--glass-line);
   border-radius:var(--radius-lg);
   background:var(--glass);
-  box-shadow:var(--shadow-sm);
+  box-shadow:none;
   color:var(--color-text-primary);
   text-align:left;
   cursor:pointer;
@@ -6463,7 +6479,7 @@ body {
 
 .shelf-card-title {
   font-size:var(--text-h3);
-  font-weight:800;
+  font-weight:700;
 }
 
 .shelf-card-desc {
@@ -6659,7 +6675,7 @@ body {
 #page-compare .compare-data-table tbody th {
   color:var(--color-primary);
   font-size:var(--text-lg);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-compare .compare-data-table td + td {
@@ -6709,7 +6725,7 @@ h3,
 }
 
 /* 홈: 유형이 있는 사람용 검사 CTA */
-#page-home .home-check {
+:is(#page-home, #page-myspace) .home-check {
   display:grid;
   gap:var(--space-3);
   padding:var(--space-5);
@@ -6721,12 +6737,12 @@ h3,
   backdrop-filter:var(--glass-blur);
 }
 
-#page-home .home-check-title {
+:is(#page-home, #page-myspace) .home-check-title {
   font-size:var(--text-xl);
   font-weight:700;
 }
 
-#page-home .home-check-desc {
+:is(#page-home, #page-myspace) .home-check-desc {
   margin:var(--space-1) 0 0;
   color:var(--color-text-secondary);
   font-size:var(--text-sm);
@@ -6734,7 +6750,7 @@ h3,
   word-break:keep-all;
 }
 
-#page-home .home-check-actions {
+:is(#page-home, #page-myspace) .home-check-actions {
   display:grid;
   grid-template-columns:repeat(2, minmax(0, 1fr));
   gap:var(--space-2);
@@ -6771,7 +6787,7 @@ h3,
 #page-myspace .diary-exp-reco-item,
 #page-sharing .reflection-guide,
 #page-check .quick-result,
-#page-home .home-check,
+:is(#page-home, #page-myspace) .home-check,
 #page-home .home-today {
   padding:var(--space-5);
 }
@@ -6793,7 +6809,7 @@ h3,
 #page-sharing .reflect-section-head p,
 #page-sharing .reflection-prompt-card p,
 #page-home .home-today .home-today-help,
-#page-home .home-check-desc {
+:is(#page-home, #page-myspace) .home-check-desc {
   font-size:var(--text-md);
   line-height:var(--body-line);
 }
@@ -6813,11 +6829,11 @@ h3,
   margin-bottom:var(--space-4);
 }
 
-#page-home .me-panel {
+:is(#page-home, #page-myspace) .me-panel {
   row-gap:var(--space-6);
 }
 
-#page-home .me-head {
+:is(#page-home, #page-myspace) .me-head {
   gap:var(--space-4);
 }
 
@@ -6825,7 +6841,7 @@ h3,
   row-gap:var(--space-2);
 }
 
-#page-home .home-check {
+:is(#page-home, #page-myspace) .home-check {
   gap:var(--space-4);
 }
 
@@ -6851,15 +6867,15 @@ h3,
 }
 
 /* 작은 칩·타일의 그림자 */
-#page-home .tag-chip,
-#page-home .gem-tile,
+:is(#page-home, #page-myspace) .tag-chip,
+:is(#page-home, #page-myspace) .gem-tile,
 #page-home .today-gem-art,
 .shelf-card {
   box-shadow:none;
 }
 
 /* 홈 대표 프로필: 바깥 패널 박스를 걷어내 박스 안 박스를 없앤다 (프로필 카드가 주인공) */
-#page-home .me-panel {
+:is(#page-home, #page-myspace) .me-panel {
   padding:0;
   border:0;
   border-radius:0;
@@ -7268,7 +7284,7 @@ h3,
 .ui-card.diary-form,
 .ui-card.diary-exp,
 #page-diary .ui-card.diary-form,
-#page-diary .ui-card.diary-exp {
+:is(#page-diary, #page-polish) .ui-card.diary-exp {
   padding:0;
   border:0;
   border-radius:0;
@@ -7277,14 +7293,14 @@ h3,
 }
 
 .ui-card.diary-exp,
-#page-diary .ui-card.diary-exp {
+:is(#page-diary, #page-polish) .ui-card.diary-exp {
   margin-top:var(--space-9);
   padding-top:var(--space-7);
   border-top:1px solid var(--glass-line);
 }
 
 /* 다이어리 추천 항목: 작은 상자 대신 목록 줄 (줄 사이 얇은 선) */
-#page-diary .diary-exp-reco-item,
+:is(#page-diary, #page-polish) .diary-exp-reco-item,
 #page-myspace .diary-exp-reco-item {
   padding:var(--space-4) 0;
   border:0;
@@ -7295,7 +7311,7 @@ h3,
 }
 
 /* 다이어리 빈 상태 안내: 상자를 걷어낸 뒤 남은 들여쓰기 제거 */
-#page-diary .diary-exp .ui-empty {
+:is(#page-diary, #page-polish) .diary-exp .ui-empty {
   padding-right:0;
   padding-left:0;
   border:0;
@@ -7346,7 +7362,7 @@ h3,
 #page-diary .diary-tabs button.active {
   background:var(--color-primary-soft);
   color:var(--color-primary);
-  font-weight:800;
+  font-weight:700;
 }
 
 #page-diary .diary-tabs button:focus-visible {
@@ -7533,46 +7549,48 @@ h3,
 }
 
 /* 실천: 루틴 */
-#page-diary .routine-start {
+:is(#page-diary, #page-polish) .routine-start {
   display:grid;
   gap:var(--space-2);
   margin-top:var(--space-2);
 }
 
-#page-diary .routine-start .ui-btn {
-  justify-self:start;
-  padding-left:0;
+/* 루틴으로 만들기: 버튼 대신 라벨 + 늘 보이는 세 가지 선택 */
+:is(#page-diary, #page-polish) .routine-start-label {
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+  font-weight:600;
 }
 
-#page-diary .routine {
+:is(#page-diary, #page-polish) .routine {
   display:grid;
   gap:var(--space-3);
   margin-top:var(--space-3);
 }
 
-#page-diary .routine-head {
+:is(#page-diary, #page-polish) .routine-head {
   display:flex;
   flex-wrap:wrap;
   align-items:center;
   gap:var(--space-2);
 }
 
-#page-diary .routine-freq {
+:is(#page-diary, #page-polish) .routine-freq {
   padding:var(--space-1) var(--space-2);
   border-radius:var(--radius-full);
   background:var(--color-primary-soft);
   color:var(--color-primary);
   font-size:var(--text-xs);
-  font-weight:800;
+  font-weight:700;
 }
 
-#page-diary .routine-stat {
+:is(#page-diary, #page-polish) .routine-stat {
   color:var(--color-text-secondary);
   font-size:var(--text-sm);
   font-weight:700;
 }
 
-#page-diary .routine-week {
+:is(#page-diary, #page-polish) .routine-week {
   display:grid;
   grid-template-columns:repeat(7, minmax(0, 1fr));
   gap:var(--space-1);
@@ -7581,7 +7599,7 @@ h3,
   list-style:none;
 }
 
-#page-diary .routine-week li {
+:is(#page-diary, #page-polish) .routine-week li {
   display:grid;
   justify-items:center;
   gap:var(--space-1);
@@ -7589,7 +7607,7 @@ h3,
   font-size:var(--text-xs);
 }
 
-#page-diary .routine-week i {
+:is(#page-diary, #page-polish) .routine-week i {
   display:grid;
   place-items:center;
   width:100%;
@@ -7600,34 +7618,34 @@ h3,
   border-radius:var(--radius-full);
   color:var(--color-on-primary);
   font-style:normal;
-  font-weight:800;
+  font-weight:700;
 }
 
-#page-diary .routine-week li.is-done i {
+:is(#page-diary, #page-polish) .routine-week li.is-done i {
   border-color:var(--color-primary);
   background:var(--color-primary);
 }
 
-#page-diary .routine-week li.is-today span {
+:is(#page-diary, #page-polish) .routine-week li.is-today span {
   color:var(--color-primary);
-  font-weight:800;
+  font-weight:700;
 }
 
-#page-diary .routine-week li.is-today i {
+:is(#page-diary, #page-polish) .routine-week li.is-today i {
   border-color:var(--color-primary-light);
 }
 
-#page-diary .routine-week li.is-future i {
+:is(#page-diary, #page-polish) .routine-week li.is-future i {
   border-style:dashed;
 }
 
-#page-diary .routine-actions {
+:is(#page-diary, #page-polish) .routine-actions {
   display:flex;
   flex-wrap:wrap;
   gap:var(--space-2);
 }
 
-#page-diary .routine-today.is-done {
+:is(#page-diary, #page-polish) .routine-today.is-done {
   border-color:var(--color-primary);
   color:var(--color-primary);
 }
@@ -7823,6 +7841,15 @@ h3,
   word-break:keep-all;
 }
 
+/* 앞면 태그 (홈 내 프로필 카드만): 소개 문장 아래 한 줄 */
+.pcard.deco .deco-tags {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:var(--space-2);
+  margin-top:var(--space-3);
+}
+
 /* 뒷면 */
 .pcard.deco .pcard-back {
   gap:var(--space-2);
@@ -7906,24 +7933,26 @@ h3,
 }
 
 /* 유형 검사 버튼 (2026-10-03): 간편 검사는 주 버튼, 정식 검사는 연보라 면으로 색을 넣는다 */
-#page-home .btn.secondary.is-tinted {
+#page-home .btn.secondary.is-tinted,
+#page-myspace .home-check .btn.secondary.is-tinted {
   border-color:transparent;
   background:var(--color-primary-soft);
   color:var(--color-primary);
 }
 
-#page-home .home-check-actions .btn {
+:is(#page-home, #page-myspace) .home-check-actions .btn {
   padding:0 var(--space-3);
   white-space:nowrap;
 }
 
-#page-home .btn.secondary.is-tinted:hover {
+#page-home .btn.secondary.is-tinted:hover,
+#page-myspace .home-check .btn.secondary.is-tinted:hover {
   border-color:var(--color-primary-light);
   background:var(--color-primary-soft);
 }
 
 /* 유형이 없을 때 대표 프로필 자리는 비운다 (오늘의 질문은 다이어리 완성 후 다시) */
-#page-home .home-me:has(#homeMe:empty) {
+:is(#page-home, #page-myspace) .home-me:has(#homeMe:empty) {
   display:none;
 }
 
@@ -7941,7 +7970,7 @@ h3,
   display:grid;
   align-content:start;
   gap:var(--space-3);
-  padding:var(--space-6) var(--space-5);
+  padding:var(--space-5);
   border:1px solid var(--glass-line);
   border-radius:var(--radius-xl);
   background:var(--color-surface);
@@ -7970,11 +7999,10 @@ h3,
   justify-self:start;
   padding:var(--space-1) var(--space-3);
   border-radius:var(--radius-full);
-  background:var(--grad-primary);
-  color:var(--color-on-primary);
+  background:var(--color-primary-soft);
+  color:var(--color-primary);
   font-size:var(--text-xs);
-  font-weight:800;
-  letter-spacing:.02em;
+  font-weight:600;
 }
 
 #page-home .feed-tag.is-soft {
@@ -8013,8 +8041,6 @@ h3,
 /* 오늘의 VS: 카드 종이 바탕 + 두 보석이 마주 본다 */
 #page-home .feed-vs {
   justify-items:center;
-  border-color:transparent;
-  background:var(--card-paper);
   text-align:center;
 }
 
@@ -8047,10 +8073,9 @@ h3,
 }
 
 #page-home .vs-mark {
-  --font-sans:var(--font-script);
-  color:var(--color-primary);
-  font-family:var(--font-script);
-  font-size:var(--text-script-lg);
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+  font-weight:600;
   line-height:1;
 }
 
@@ -8059,7 +8084,7 @@ h3,
   justify-items:center;
   gap:var(--space-3);
   padding-top:var(--space-4);
-  border-top:1px solid color-mix(in srgb, var(--deco-line, var(--color-gold)) 45%, transparent);
+  border-top:1px solid var(--color-border);
 }
 
 #page-home .feed-vs-answer[hidden] {
@@ -8140,7 +8165,7 @@ h3,
 #page-home .quiz-result-title {
   display:block;
   font-size:var(--text-md);
-  font-weight:800;
+  font-weight:700;
   word-break:keep-all;
 }
 
@@ -8169,10 +8194,6 @@ h3,
 }
 
 /* 세 중심: 보석 세 무리 */
-#page-home .feed-centers {
-  background:var(--card-paper);
-  border-color:transparent;
-}
 
 #page-home .centers-row {
   display:grid;
@@ -8264,10 +8285,6 @@ h3,
   margin-top:auto;
 }
 
-#page-home .feed-vs-mini {
-  background:var(--card-paper);
-  border-color:transparent;
-}
 
 #page-home .feed-vs-mini .vs-gems {
   justify-content:flex-start;
@@ -8331,10 +8348,50 @@ h3,
 }
 
 /* 보석 카드 9장: 2열 */
+/* 9가지 카드: 크게, 옆으로 넘긴다 (2026-10-03). 한 장을 가운데에 두고 양옆 카드가 조금 보이게, 한 장씩 멈춘다 */
 #page-compare .explore-type-grid {
-  display:grid;
-  grid-template-columns:repeat(2, minmax(0, 1fr));
-  gap:var(--space-3);
+  --explore-card-w:min(calc(var(--space-10) * 3.75), calc(var(--app-vw) * 0.78)); /* 나의 공간 프로필 카드와 같은 300 (360 폰에서는 조금 작게) */
+  display:flex;
+  gap:0; /* 옆 카드가 작아지면서 생기는 틈이 간격 역할 */
+  margin:0 calc(var(--page-gutter) * -1);
+  padding:var(--space-2) calc((var(--app-vw) - var(--explore-card-w)) / 2) var(--space-3);
+  overflow-x:auto;
+  overscroll-behavior-x:contain;
+  scroll-snap-type:x mandatory;
+  scrollbar-width:none;
+}
+
+#page-compare .explore-type-grid::-webkit-scrollbar {
+  display:none;
+}
+
+#page-compare .explore-type-grid > .pcard {
+  flex:none;
+  width:var(--explore-card-w);
+  scroll-snap-align:center;
+  /* 가운데 카드만 크게 (js가 --focus를 0~1로 넣는다). transform과 겹치지 않게 scale 속성을 쓴다 */
+  scale:calc(0.84 + 0.16 * var(--focus, 1));
+  opacity:calc(0.55 + 0.45 * var(--focus, 1));
+  transition:scale var(--duration-fast) var(--ease-soft), opacity var(--duration-fast) var(--ease-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #page-compare .explore-type-grid > .pcard {
+    transition:none;
+  }
+}
+
+#page-compare .explore-count {
+  margin:0 0 var(--space-6);
+  color:var(--color-text-secondary);
+  font-size:var(--text-xs);
+  text-align:center;
+  font-variant-numeric:tabular-nums;
+}
+
+#page-compare .explore-count b {
+  color:var(--color-text-primary);
+  font-weight:700;
 }
 
 .pcard.deco.is-compact {
@@ -8355,7 +8412,7 @@ h3,
 
 .pcard.deco.is-compact .pcard-face {
   aspect-ratio:3 / 4;
-  padding:var(--space-7) var(--space-3) var(--space-6);
+  padding:var(--space-7) var(--space-3) var(--space-8); /* 아래 해 장식과 소개 글이 닿지 않게 */
   -webkit-backface-visibility:visible;
   backface-visibility:visible;
 }
@@ -8377,11 +8434,21 @@ h3,
 }
 
 .pcard.deco.is-compact .deco-name {
-  font-size:var(--text-lg);
+  font-size:var(--text-xl);
 }
 
 .pcard.deco.is-compact .deco-meta {
   font-size:var(--text-sm);
+}
+
+/* 큰 카드라 한 줄 소개도 함께 */
+.pcard.deco.is-compact .deco-desc {
+  margin-top:var(--space-2);
+  padding:0 var(--space-3);
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+  line-height:1.5;
+  word-break:keep-all;
 }
 
 .pcard.deco.is-compact .deco-mine {
@@ -8393,7 +8460,7 @@ h3,
   background:var(--color-primary);
   color:var(--color-on-primary);
   font-size:var(--text-xs);
-  font-weight:800;
+  font-weight:700;
   white-space:nowrap;
   transform:translateX(-50%);
 }
@@ -8519,6 +8586,18 @@ h3,
   cursor:pointer;
 }
 
+/* 지금 유형의 보석: 고르기 상자(select)는 그림을 못 담아 왼쪽 안쪽에 겹쳐 둔다. 글자는 가운데라 겹치지 않는다 */
+#page-handbook .hb-switch-gem {
+  position:absolute;
+  top:50%;
+  left:var(--space-4);
+  width:var(--space-6);
+  height:var(--space-6);
+  object-fit:contain;
+  pointer-events:none;
+  transform:translateY(-50%);
+}
+
 #page-handbook .hb-switch-current::after {
   content:"▾";
   position:absolute;
@@ -8531,61 +8610,493 @@ h3,
 
 #page-handbook .hb-switch-btn:focus-visible,
 #page-handbook .hb-back:focus-visible,
-#page-handbook .hb-switch-current select:focus-visible,
-#page-handbook .hb-acc-head:focus-visible {
+#page-handbook .hb-switch-current select:focus-visible {
   outline:2px solid var(--color-primary-light);
   outline-offset:var(--space-1);
 }
 
-/* 소주제: 펼치는 목록 */
-#page-handbook .hb-acc {
-  border-bottom:1px solid var(--glass-line);
+/* 소주제: 펼치기 없이 이어서 (2026-10-03). 소주제 사이를 넓게 띄우고, 바로가기로 왔을 때 위 탭 줄에 가리지 않게 */
+#page-handbook .hb-panel .hb-topic + .hb-topic {
+  margin-top:var(--space-7);
 }
 
-#page-handbook :not(.hb-acc) + .hb-acc {
-  border-top:1px solid var(--glass-line);
+#page-handbook .hb-panel .hb-topic {
+  scroll-margin-top:calc(var(--space-10) + var(--space-4));
 }
 
-#page-handbook .hb-acc-head {
-  --font-sans:var(--font-display);
+/* 유형 번호 옆 보석 (유형 탐구 라벨): 글자 크기에 맞춰 1.25배, 숫자 바로 앞에 */
+.num-gem {
+  display:inline-block;
+  width:1.25em;
+  height:1.25em;
+  margin-right:.1em;
+  vertical-align:-.3em;
+  object-fit:contain;
+}
+
+/* 나의 공간 내 프로필: 카드 → 한 줄 소개 → 유형 검사 (2026-10-03 홈에서 옮김) */
+:is(#page-home, #page-myspace) .me-panel .home-check {
+  grid-area:actions;
+}
+
+#page-myspace .home-me {
+  margin-bottom:var(--space-8);
+}
+
+/* 정식 검사 결과의 헷갈리기 쉬운 유형 (펼치기 없이) */
+.confusion-note {
+  margin-top:var(--space-3);
+}
+
+.confusion-note strong {
+  display:block;
+  margin-bottom:var(--space-1);
+  color:var(--color-text-primary);
+  font-size:var(--text-sm);
+  font-weight:700;
+}
+
+.confusion-note p {
+  margin:0;
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+  line-height:1.6;
+}
+
+/* 뒤로 가기 ‹ 유형 탐구: 비교·돌아보기·핸드북 모두 같은 글자 버튼 (2026-10-03 통일, 테두리 알약 없이) */
+#page-compare .explore-chip.explore-back,
+#page-sharing .explore-chip.explore-back,
+#page-handbook .hb-back {
+  justify-self:start;
+  min-height:44px;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:none;
+  box-shadow:none;
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+  font-weight:600;
+}
+
+/* 뒤로 가기 줄은 맨 위에 붙이고 제목과 가깝게 */
+#page-compare .explore-chips,
+#page-sharing .explore-chips {
+  margin:0 0 var(--space-2);
+}
+
+/* =========================================================
+   홈 배너 (2026-10-03): 맨 위 큰 카드를 옆으로 넘긴다. 한 장씩 멈추고(scroll-snap), 자동으로 넘어가지 않는다.
+   면은 그 장 보석 색을 옅게 깐 단색(그라데이션 없음), 오른쪽 아래 '1 / 5'
+   ========================================================= */
+#page-home .home-banner {
+  position:relative;
+}
+
+#page-home .home-banner-rail {
+  display:flex;
+  gap:var(--space-3);
+  margin:0 calc(var(--feed-pad, var(--page-gutter)) * -1);
+  padding:0 var(--feed-pad, var(--page-gutter));
+  overflow-x:auto;
+  overscroll-behavior-x:contain;
+  scroll-snap-type:x mandatory;
+  scroll-padding-inline:var(--feed-pad, var(--page-gutter));
+  scrollbar-width:none;
+}
+
+#page-home .home-banner-rail::-webkit-scrollbar {
+  display:none;
+}
+
+#page-home .banner-slide {
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0, 1fr) auto;
+  align-items:center;
+  gap:var(--space-3);
+  flex:none;
+  width:calc(var(--app-vw) - var(--feed-pad, var(--page-gutter)) * 2);
+  min-height:calc(var(--space-10) * 2.75);
+  padding:var(--space-5);
+  border:0;
+  border-radius:var(--radius-lg);
+  background:color-mix(in srgb, var(--tc) 30%, var(--color-surface));
+  color:var(--color-text-primary);
+  font:inherit;
+  text-align:left;
+  scroll-snap-align:start;
+  cursor:pointer;
+}
+
+/* 첫 장(내 보석 찾기): 버튼 두 개가 한 줄에 들어가게 글을 넓게 쓰고, 보석은 오른쪽 위에 작게 */
+#page-home .banner-slide.is-find {
+  grid-template-columns:minmax(0, 1fr);
+  cursor:default;
+}
+
+#page-home .banner-slide.is-find .banner-art {
+  position:absolute;
+  top:var(--space-4);
+  right:var(--space-4);
+  width:auto;
+}
+
+#page-home .banner-slide.is-find .banner-art .gem-img {
+  width:var(--space-7);
+}
+
+#page-home .banner-slide.is-find .banner-art .gem-img + .gem-img {
+  margin-left:calc(var(--space-2) * -1);
+}
+
+#page-home .banner-copy {
+  display:grid;
+  align-content:center;
+  gap:var(--space-2);
+  min-width:0;
+}
+
+#page-home .banner-tag {
+  color:var(--color-primary);
+  font-size:var(--text-xs);
+  font-weight:600;
+}
+
+#page-home .banner-title {
+  color:var(--color-text-primary);
+  font-size:var(--text-xl);
+  font-weight:700;
+  line-height:1.35;
+  word-break:keep-all;
+}
+
+#page-home .banner-desc {
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+  line-height:1.5;
+  word-break:keep-all;
+}
+
+#page-home .banner-go {
+  margin-top:var(--space-1);
+  color:var(--color-primary);
+  font-size:var(--text-sm);
+  font-weight:600;
+}
+
+#page-home .banner-actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:var(--space-2);
+  margin-top:var(--space-2);
+}
+
+#page-home .banner-actions .btn {
+  min-height:44px;
+  padding:0 var(--space-4);
+  font-size:var(--text-sm);
+  white-space:nowrap;
+}
+
+/* 보석: 한 개는 크게, 여러 개는 겹쳐서 */
+#page-home .banner-art {
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  width:calc(var(--space-10) + var(--space-5));
+}
+
+#page-home .banner-art .gem-img {
+  flex:none;
+  width:calc(var(--space-10) + var(--space-5));
+  height:auto;
+  filter:drop-shadow(0 8px 14px color-mix(in srgb, var(--td) 22%, transparent));
+}
+
+#page-home .banner-art:not(.is-1) .gem-img {
+  width:var(--space-9);
+}
+
+#page-home .banner-art:not(.is-1) .gem-img + .gem-img {
+  margin-left:calc(var(--space-6) * -1);
+}
+
+#page-home .banner-art.is-3 {
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+#page-home .banner-art.is-3 .gem-img {
+  width:var(--space-8);
+}
+
+#page-home .banner-art.is-3 .gem-img + .gem-img {
+  margin-left:calc(var(--space-3) * -1);
+}
+
+#page-home .banner-count {
+  position:absolute;
+  right:var(--space-3);
+  bottom:var(--space-3);
+  padding:var(--space-1) var(--space-2);
+  border-radius:var(--radius-full);
+  background:color-mix(in srgb, var(--color-text-primary) 45%, transparent);
+  color:var(--color-on-primary);
+  font-size:var(--text-xs);
+  font-weight:500;
+  font-variant-numeric:tabular-nums;
+  pointer-events:none;
+}
+
+#page-home .banner-count b {
+  font-weight:700;
+}
+
+/* 유형 탐구 카드 = 나의 공간 프로필 카드와 같은 모양 (2026-10-03). 바깥은 버튼이라 기본 버튼 모양만 지운다 */
+#page-compare .pcard.deco.is-explore {
+  display:block;
+  padding:0;
+  border:0;
+  background:none;
+  color:inherit;
+  font:inherit;
+  text-align:center;
+  cursor:pointer;
+}
+
+#page-compare .pcard.deco.is-explore:focus-visible {
+  outline:2px solid var(--color-primary);
+  outline-offset:var(--space-1);
+  border-radius:var(--radius-profile);
+}
+
+#page-compare .pcard.deco.is-explore .deco-mine {
+  position:absolute;
+  top:var(--space-4);
+  left:50%;
+  z-index:1;
+  padding:var(--space-1) var(--space-2);
+  border-radius:var(--radius-full);
+  background:var(--color-primary);
+  color:var(--color-on-primary);
+  font-size:var(--text-xs);
+  font-weight:700;
+  white-space:nowrap;
+  transform:translateX(-50%);
+}
+
+/* =========================================================
+   보석 닦기 (2026-10-03, 하단 메뉴 신설): 1분 연습 · 이번 주에 닦아 볼 것 · 해보기로 한 것
+   카드는 다른 화면과 같은 문법 (흰 면 · 얇은 선 · 반경 20), 단계 번호는 옅은 보라 동그라미
+   ========================================================= */
+#page-polish .polish-wrap {
+  display:grid;
+  gap:var(--space-7);
+  padding:var(--space-5) 0 var(--space-10); /* 양옆 여백은 앱 열이 이미 준다 */
+}
+
+#page-polish .polish-head {
+  margin:0;
+}
+
+#page-polish .polish-head h1 {
+  font-size:var(--text-3xl);
+}
+
+#page-polish .polish-app {
+  display:grid;
+  gap:var(--space-7);
+}
+
+#page-polish .polish-sec {
+  display:grid;
+  gap:var(--space-4);
+}
+
+#page-polish .polish-title {
+  margin:0;
+  color:var(--color-text-primary);
+  font-size:var(--text-xl);
+  font-weight:700;
+}
+
+/* 1분 연습: 세 단계를 세로로 이어 (번호 동그라미 + 굵은 이름 + 한 줄 + 설명) */
+#page-polish .polish-steps {
+  display:grid;
+  gap:var(--space-3);
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+
+#page-polish .polish-step {
+  display:grid;
+  grid-template-columns:var(--space-7) minmax(0, 1fr);
+  gap:var(--space-3);
+  padding:var(--space-5);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);
+  background:var(--color-surface);
+}
+
+#page-polish .polish-step-no {
+  display:grid;
+  place-items:center;
+  width:var(--space-7);
+  height:var(--space-7);
+  border-radius:var(--radius-full);
+  background:var(--color-primary-soft);
+  color:var(--color-primary);
+  font-size:var(--text-md);
+  font-weight:700;
+}
+
+#page-polish .polish-step strong {
+  display:block;
+  color:var(--color-text-primary);
+  font-size:var(--text-lg);
+  font-weight:700;
+}
+
+#page-polish .polish-step-q {
+  margin:var(--space-1) 0 0;
+  color:var(--color-primary);
+  font-size:var(--text-sm);
+  font-weight:600;
+}
+
+#page-polish .polish-step-d {
+  margin:var(--space-2) 0 0;
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+  line-height:1.6;
+  word-break:keep-all;
+}
+
+/* 이번 주에 닦아 볼 것 */
+#page-polish .polish-type {
+  display:flex;
+  align-items:center;
+  gap:var(--space-3);
+}
+
+#page-polish .polish-type-gem .gem-img {
+  display:block;
+  width:var(--space-9);
+  height:auto;
+}
+
+#page-polish .polish-type-name {
+  display:block;
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+}
+
+#page-polish .polish-type-dir {
+  display:block;
+  margin-top:var(--space-1);
+  color:var(--color-text-primary);
+  font-size:var(--text-lg);
+  font-weight:700;
+  word-break:keep-all;
+}
+
+#page-polish .polish-fix {
+  margin:0;
+  padding:var(--space-4);
+  border-radius:var(--radius-sm);
+  background:var(--color-fill);
+  color:var(--color-text-primary);
+  font-size:var(--text-sm);
+  line-height:1.6;
+}
+
+#page-polish .polish-fix b {
+  margin-right:var(--space-2);
+  color:var(--color-primary);
+  font-weight:700;
+}
+
+#page-polish .polish-keys {
+  display:flex;
+  flex-wrap:wrap;
+  gap:var(--space-2);
+}
+
+#page-polish .polish-keys span {
+  padding:var(--space-1) var(--space-3);
+  border-radius:var(--radius-full);
+  background:var(--color-primary-soft);
+  color:var(--color-primary);
+  font-size:var(--text-xs);
+  font-weight:600;
+}
+
+#page-polish .polish-actions {
+  display:grid;
+  margin:0;
+  padding:0;
+  border-top:1px solid var(--color-border);
+  list-style:none;
+}
+
+#page-polish .polish-actions li {
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:var(--space-3);
-  width:100%;
-  min-height:56px;
-  padding:var(--space-4) 0;
-  border:0;
-  background:none;
+  padding:var(--space-3) 0;
+  border-bottom:1px solid var(--color-border);
   color:var(--color-text-primary);
-  font-family:var(--font-display);
-  font-size:var(--text-lg);
-  font-weight:700;
-  text-align:left;
-  cursor:pointer;
-  scroll-margin-top:calc(var(--space-10) + var(--space-4));
+  font-size:var(--text-md);
+  line-height:1.5;
+  word-break:keep-all;
 }
 
-#page-handbook .hb-acc-head i {
+#page-polish .polish-actions .ui-btn {
   flex:none;
-  width:var(--space-2);
-  height:var(--space-2);
-  margin-right:var(--space-1);
-  border-right:2px solid var(--color-text-secondary);
-  border-bottom:2px solid var(--color-text-secondary);
-  transform:rotate(45deg);
-  transition:transform var(--duration-fast) ease;
+  min-height:40px;
+  padding:0 var(--space-4);
+  font-size:var(--text-sm);
 }
 
-#page-handbook .hb-acc.is-open .hb-acc-head {
-  color:var(--color-primary);
+#page-polish .polish-actions .ui-btn:disabled {
+  color:var(--color-text-secondary);
+  cursor:default;
 }
 
-#page-handbook .hb-acc.is-open .hb-acc-head i {
-  border-color:var(--color-primary);
-  transform:rotate(-135deg);
+/* 유형이 없을 때 */
+#page-polish .polish-find {
+  display:grid;
+  justify-items:start;
+  gap:var(--space-2);
+  padding:var(--space-5);
+  border-radius:var(--radius-lg);
+  background:color-mix(in srgb, var(--type-5) 30%, var(--color-surface));
 }
 
-#page-handbook .hb-acc .hb-topic {
-  padding-bottom:var(--space-7);
+#page-polish .polish-find-gems {
+  display:flex;
+}
+
+#page-polish .polish-find-gems .gem-img {
+  width:var(--space-7);
+  height:auto;
+}
+
+#page-polish .polish-find strong {
+  font-size:var(--text-xl);
+  font-weight:700;
+}
+
+#page-polish .polish-find p {
+  margin:0 0 var(--space-2);
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+}
+
+/* 해보기로 한 것: 이 화면에서는 위 '이번 주에 닦아 볼 것'이 추천을 맡아, 목록 아래 추천 칸은 숨긴다 */
+#page-polish .diary-exp-reco {
+  display:none;
 }

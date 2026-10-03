@@ -30,7 +30,7 @@
   color:var(--color-primary)!important;
   font-size:var(--text-xs)!important;
   line-height:1.4!important;
-  font-weight:800!important;
+  font-weight:700!important;
   letter-spacing:.04em!important;
 }
 #page-sharing .reflection-hero h2{
@@ -38,7 +38,7 @@
   color:var(--color-text-primary)!important;
   font-size:var(--text-3xl)!important;
   line-height:1.35!important;
-  font-weight:800!important;
+  font-weight:700!important;
   letter-spacing:-.03em!important;
 }
 #page-sharing .reflection-hero>p{
@@ -89,7 +89,7 @@
   background:var(--color-primary)!important;
   color:var(--color-on-primary)!important;
   font-size:var(--text-xs)!important;
-  font-weight:800!important;
+  font-weight:700!important;
 }
 #page-sharing .reflect-section-head h3{
   margin:0!important;
@@ -153,7 +153,7 @@
   background:var(--color-primary-soft)!important;
   color:var(--color-primary-hover)!important;
 }
-#page-sharing .choice-check{color:var(--color-primary)!important;font-size:var(--text-xs)!important;font-weight:800!important}
+#page-sharing .choice-check{color:var(--color-primary)!important;font-size:var(--text-xs)!important;font-weight:700!important}
 
 #page-sharing .reflection-prompts{display:grid!important;gap:16px!important}
 #page-sharing .reflection-prompt{
@@ -208,7 +208,7 @@
   margin-bottom:8px!important;
   color:var(--color-primary)!important;
   font-size:var(--text-xs)!important;
-  font-weight:800!important;
+  font-weight:700!important;
 }
 #page-sharing .reflection-explanation>p{
   margin:0!important;
@@ -297,7 +297,7 @@
   background:var(--color-primary)!important;
   color:var(--color-on-primary)!important;
   font-size:var(--text-sm)!important;
-  font-weight:800!important;
+  font-weight:700!important;
 }
 #page-sharing .reflection-type-title strong{color:var(--color-text-primary)!important;font-size:var(--text-lg)!important}
 #page-sharing .reflection-type-title p{
@@ -426,8 +426,8 @@
   margin-bottom:12px!important;
   padding:16px 18px!important;
   border-radius:var(--radius-md)!important;
-  background:var(--color-text-primary)!important;
-  color:var(--color-on-primary)!important;
+  background:var(--color-fill)!important;
+  color:var(--color-text-primary)!important;
   font-size:var(--text-sm)!important;
   line-height:1.7!important;
 }

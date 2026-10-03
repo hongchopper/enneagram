@@ -13,7 +13,7 @@
   color:var(--color-primary)!important;
   font-size:var(--text-xs)!important;
   line-height:1.4!important;
-  font-weight:800!important;
+  font-weight:700!important;
   letter-spacing:.04em!important;
 }
 #page-handbook .enhance-card-head>strong{
@@ -98,7 +98,7 @@
   background:var(--color-border)!important;
   color:var(--color-text-primary)!important;
   font-size:var(--text-xs)!important;
-  font-weight:800!important;
+  font-weight:700!important;
 }
 #page-handbook .auto-pattern-step>b{
   display:block!important;
@@ -106,7 +106,7 @@
   color:var(--color-primary)!important;
   font-size:var(--text-xs)!important;
   line-height:1!important;
-  font-weight:800!important;
+  font-weight:700!important;
 }
 #page-handbook .auto-pattern-step span{
   display:block!important;
@@ -182,7 +182,7 @@
   place-items:center!important;
   color:var(--color-primary)!important;
   font-size:var(--text-xl)!important;
-  font-weight:800!important;
+  font-weight:700!important;
 }
 
 

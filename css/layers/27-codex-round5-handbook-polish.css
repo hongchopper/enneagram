@@ -67,7 +67,7 @@
     color:var(--codex-blue-800) !important;
     font-size:var(--text-md) !important;
     line-height:1.2 !important;
-    font-weight:800 !important;
+    font-weight:700 !important;
     text-decoration:none !important;
   }
 
@@ -114,11 +114,11 @@
     display:grid !important;
     place-items:center !important;
     border-radius:var(--radius-lg) !important;
-    background:var(--codex-blue-600) !important;
-    color:var(--color-on-primary) !important;
+    background:var(--color-primary-soft) !important; /* 진한 보라 네모 대신 옅은 면 (2026-10-03, 태그·배지와 같은 색) */
+    color:var(--color-primary) !important;
     font-size:var(--text-4xl) !important;
     line-height:1 !important;
-    font-weight:800 !important;
+    font-weight:700 !important;
   }
 
   /* 768px 이상에서만 본문을 2번째 칸에 고정. 모바일은 00·01 레이어의 display:contents로
@@ -135,7 +135,7 @@
     color:var(--codex-blue-600) !important;
     font-size:var(--text-xs) !important;
     line-height:1.3 !important;
-    font-weight:800 !important;
+    font-weight:700 !important;
     letter-spacing:.04em !important;
   }
 
@@ -145,7 +145,7 @@
     color:var(--codex-blue-900) !important;
     font-size:var(--text-3xl) !important;
     line-height:1.25 !important;
-    font-weight:800 !important;
+    font-weight:700 !important;
     letter-spacing:0 !important;
   }
 
@@ -224,7 +224,7 @@
 
   #page-handbook .handbook-section-tab-no {
     color:var(--codex-blue-600) !important;
-    font-weight:800 !important;
+    font-weight:700 !important;
   }
 
   #page-handbook .chapter {
@@ -271,7 +271,7 @@
     color:var(--codex-blue-900) !important;
     font-size:var(--text-page-title-mobile) !important;
     line-height:1.25 !important;
-    font-weight:800 !important;
+    font-weight:700 !important;
     letter-spacing:0 !important;
   }
 
@@ -336,14 +336,14 @@
     color:var(--codex-blue-900) !important;
     font-size:var(--text-xl) !important;
     line-height:1.35 !important;
-    font-weight:800 !important;
+    font-weight:700 !important;
   }
 
   #page-handbook h4 {
     color:var(--codex-blue-800) !important;
     font-size:var(--text-md) !important;
     line-height:1.45 !important;
-    font-weight:800 !important;
+    font-weight:700 !important;
   }
 
   #page-handbook .sentence-highlight {

@@ -75,7 +75,7 @@ h1,h2,h3,h4,h5,h6{
   letter-spacing:-.02em!important;
   word-break:keep-all;
 }
-h1{font-weight:800!important}
+h1{font-weight:700!important}
 h2,h3{font-weight:700!important}
 
 /* 읽어야 하는 본문은 14px 아래로 내려가지 않음 */
@@ -126,7 +126,7 @@ h2,h3{font-weight:700!important}
 #page-sharing .reflection-hero h1{
   font-size:var(--title-lg)!important;
   line-height:1.28!important;
-  font-weight:800!important;
+  font-weight:700!important;
 }
 #page-overview .overview-section-head h2,
 #page-compare .compare-explainer-head h2,
@@ -159,7 +159,7 @@ h2,h3{font-weight:700!important}
 .page-remote-eyebrow{
   font-size:var(--text-xs)!important;
   line-height:1.4!important;
-  font-weight:800!important;
+  font-weight:700!important;
   letter-spacing:.06em!important;
   color:var(--ds-primary)!important;
   background:transparent!important;
@@ -310,7 +310,7 @@ button.secondary{
 }
 .page-remote-title{
   font-size:var(--text-sm)!important;
-  font-weight:800!important;
+  font-weight:700!important;
 }
 .page-remote-btn{
   min-height:36px!important;
@@ -362,7 +362,7 @@ button.secondary{
 }
 #page-home .hero h1{
   font-size:clamp(var(--text-3xl), calc(var(--app-vw) * 4 / 100), var(--text-4xl)))!important;
-  font-weight:800!important;
+  font-weight:700!important;
 }
 #page-home .hero-copy,
 #page-home .section-desc{

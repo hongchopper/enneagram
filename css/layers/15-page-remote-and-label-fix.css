@@ -32,7 +32,7 @@
   color:var(--app-primary);
   font-size:var(--text-xs);
   line-height:1.4;
-  font-weight:800;
+  font-weight:700;
   letter-spacing:.08em;
 }
 .page-remote-title{
@@ -41,7 +41,7 @@
   color:var(--app-text);
   font-size:var(--text-xs);
   line-height:1.45;
-  font-weight:800;
+  font-weight:700;
   letter-spacing:-.02em;
   border-bottom:1px solid var(--color-border-subtle);
 }

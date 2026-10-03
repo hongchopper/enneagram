@@ -6,7 +6,7 @@
    표: 폰 폭에서 옆으로 밀어 보는 대신, 행마다 카드로 쌓아 보이게 칸 이름(data-label)을 붙인다
    ========================================================= */
 (function(){
-  const SCROLLERS='.page-subnav-inner, .hb-tabs, .hb-chips, .explore-chips, .shelf-rail, .pcard-rail, .continue-grid';
+  const SCROLLERS='.page-subnav-inner, .hb-tabs, .hb-chips, .explore-chips, .shelf-rail, .pcard-rail, .continue-grid, .home-banner-rail, #typeCardRail';
   const TAB_ROWS='.page-subnav-inner, .hb-tabs, .hb-chips, .explore-chips';
 
   function updateEdge(el){

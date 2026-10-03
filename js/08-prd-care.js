@@ -32,7 +32,7 @@
       layer.addEventListener('keydown',e=>{ if(e.key==='Escape') closeCrisisGuide(); });
     }
     layer.innerHTML=`<div class="crisis-guide-inner">`
-      +`<h2 id="crisisGuideTitle" tabindex="-1">지금 많이 힘드신 것 같아요</h2>`
+      +`<h2 id="crisisGuideTitle" tabindex="-1">지금 많이 힘든 것 같아요</h2>`
       +`<p class="crisis-guide-lead">혼자 견디지 않아도 괜찮아요. 지금 바로 이야기를 들어줄 곳이 있어요.</p>`
       +(fromDiary?`<p class="crisis-guide-note">방금 쓴 기록은 저장해 두었어요.</p>`:'')
       +`<ul class="crisis-guide-list">`

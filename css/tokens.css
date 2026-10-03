@@ -1,37 +1,12 @@
-/* 마루부리: 네이버 한글 글꼴 CDN. 공식 CSS는 굵기마다 이름이 달라 한 이름(굵기 400/600/700)으로 다시 묶었다 */
-@font-face {
-  font-family:"MaruBuri";
-  font-weight:400;
-  font-display:swap;
-  src:url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-Regular.woff2) format("woff2"), url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-Regular.woff) format("woff");
-}
-@font-face {
-  font-family:"MaruBuri";
-  font-weight:600;
-  font-display:swap;
-  src:url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-SemiBold.woff2) format("woff2"), url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-SemiBold.woff) format("woff");
-}
-@font-face {
-  font-family:"MaruBuri";
-  font-weight:700;
-  font-display:swap;
-  src:url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-Bold.woff2) format("woff2"), url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-Bold.woff) format("woff");
-}
-
-/* =========================================================
-   Design Tokens — Single Source of Truth
-   기준: UI/UX Harness Engineering Guide v3 (§26 Recommended Core Tokens)
-   이 파일에 없는 색·크기·radius·shadow·z-index 값을 새로 만들지 않는다.
-   ========================================================= */
 :root {
   /* Typography */
-  /* 제목: 마루부리 (마법서·별빛 같은 분위기, 2026-10-01 A안). 본문: 나눔스퀘어.
-     제목은 --font-sans를 --font-display로 바꿔 끼운다 — 옛 레이어가 var(--font-sans) !important로 글꼴을 묶어 두었기 때문 */
-  --font-display: "MaruBuri", "Nanum Myeongjo", serif;
+  /* 글꼴은 프리텐다드 하나 (2026-10-03, 토스·애플처럼 한 가족). 굵기는 400 / 500 / 600 / 700만 쓴다 (800은 700으로 정리).
+     --font-display는 옛 레이어가 제목에 바꿔 끼우는 이름이라 남겨 두고 본문 글꼴을 가리키게 했다 */
+  --font-display: var(--font-body); /* 제목도 본문과 같은 글꼴 하나 (2026-10-03, 토스·애플처럼 한 가족으로 통일. 마루부리 명조는 뺐다) */
   --font-sans: var(--font-body);
   --font-body:
-    "NanumSquare",
-    "NanumSquareNeo",
+    "Pretendard Variable",
+    "Pretendard",
     -apple-system,
     BlinkMacSystemFont,
     "Apple SD Gothic Neo",
@@ -41,19 +16,20 @@
   /* 카드 영문 장식 전용 (한글에는 쓰지 않음) */
   --font-script: "Great Vibes", "Snell Roundhand", cursive;
 
-  --text-xs: 12px;   /* Caption / Meta / Badge */
-  --text-sm: 14px;   /* Secondary body */
-  --text-note: 14px; /* 보조 안내·라벨 고정값 (옛 레이어의 크기 토큰을 지역에서 바꿔 끼울 때 기준으로 쓴다) */
+  /* 글자 크기 6단계 (2026-10-03, 토스·애플 타입 스케일 참고): 13 메타 / 15 보조 / 16 본문 / 18 카드 제목 / 22 섹션 제목 / 28 페이지 제목 (+32 큰 숫자). 이름이 다른 토큰도 이 6단계 중 하나를 가리킨다 */
+  --text-xs: 13px;   /* 메타·배지·캡션 (2026-10-03 12→13, 토스·애플 캡션 크기) */
+  --text-sm: 15px;   /* 보조 본문·라벨·작은 버튼 */
+  --text-note: 15px; /* 보조 안내·라벨 고정값 (옛 레이어의 크기 토큰을 지역에서 바꿔 끼울 때 기준으로 쓴다) */
   --text-md: 16px;   /* Primary body */
-  --text-lg: 18px;   /* Card title */
-  --text-h3: 17px;   /* 카드 안 제목 (디자인 시스템 h3) */
-  --text-xl: 20px;
-  --text-2xl: 24px;  /* Section title */
+  --text-lg: 18px;   /* 카드 제목 */
+  --text-h3: 18px;   /* 카드 제목 (--text-lg와 같은 단계) */
+  --text-xl: 22px;   /* 섹션 제목 */
+  --text-2xl: 22px;  /* 섹션 제목 (--text-xl과 같은 단계) */
   --text-page-title-mobile: 28px; /* §6.2 Mobile page-title */
-  --text-3xl: 32px;  /* Page title */
+  --text-3xl: 28px;  /* 페이지 제목 (--text-page-title-mobile과 같은 단계) */
   --text-script-lg: 34px; /* 카드 "Type N" 스크립트 */
-  --text-4xl: 40px;  /* Display */
-  --text-5xl: 56px;  /* Hero display (홈 배너 제목, 데스크톱) */
+  --text-4xl: 32px;  /* 큰 숫자·표지 */
+  --text-5xl: 32px;  /* 표지 (--text-4xl과 같은 단계) */
 
   /* Brand — 디자인 시스템 v1 §1-2 (밝은 라벤더 그레이 + 라벤더)
      primary는 단색 강조(글자 링크·아이콘), 메인 버튼은 --grad-primary. primary-light는 아이콘·진행 바·포커스 링 (글자 배경 X) */
@@ -145,8 +121,8 @@
   --grad-blue: #5A55CF;
   --grad-violet: #7A5BD6;
   --grad-plum: #8C5BC4;
-  --grad-primary: linear-gradient(100deg, var(--grad-blue), var(--grad-violet), var(--grad-plum)); /* 메인 버튼·선택 칩·진행 바, 흰 글자 4.5 이상 */
-  --grad-aurora: linear-gradient(135deg, #EDE7FF, #F5E6F7 50%, #E4EAFF); /* 보석 미리보기 타일·강조 카드 (글자 ink) */
+  --grad-primary: var(--color-primary); /* 메인 버튼·선택 칩·진행 바: 그라데이션 없이 단색 (2026-10-03, 토스·애플식) */
+  --grad-aurora: var(--color-fill); /* 보석 미리보기 타일·강조 카드: 그라데이션 없이 옅은 회색 면 (2026-10-03) */
   --glow-primary: none; /* 버튼 아래 번지는 빛은 덜어냈다 (2026-10-02). 그라데이션 색은 주 버튼에만 */
   /* 배경 빛 덩어리: 화면 모서리의 크고 흐린 원 4개 */
   --blob-pink: #F9C6DA;
@@ -171,13 +147,13 @@
   --space-10: 80px;
 
   /* Radius */
-  /* 디자인 시스템 v1 §3 — 전체적으로 한 단계 더 둥글게 */
-  --radius-sm: 12px;   /* 작은 아이콘 버튼, 체크박스 */
-  --radius-md: 16px;
-  --radius-input: 18px; /* 입력창 */
-  --radius-lg: 20px;   /* 타일: 질문 박스, 보석 미리보기, 작은 카드 */
-  --radius-xl: 28px;   /* 카드, 하단 탭 */
-  --radius-panel: 32px; /* 큰 패널 */
+  /* 반경 3단계 (2026-10-03 통일): 12 안쪽 상자·입력·작은 버튼 / 20 카드 / 999 알약(버튼·칩·탭). 이름이 다른 토큰도 이 셋 중 하나 */
+  --radius-sm: 12px;   /* 안쪽 상자·작은 버튼 */
+  --radius-md: 12px;
+  --radius-input: 12px; /* 입력창 */
+  --radius-lg: 20px;   /* 카드 */
+  --radius-xl: 20px;   /* 카드 (--radius-lg와 같은 단계) */
+  --radius-panel: 20px; /* 큰 패널도 카드와 같게 */
   --radius-profile: 24px; /* 프로필 카드는 24 유지 */
   --radius-full: 999px;
 
@@ -196,8 +172,9 @@
   --page-padding-desktop: 32px;
   --page-padding-tablet: 24px;
   --page-padding-mobile: 16px;
-  --page-gutter: 40px; /* 본문(콘텐츠) 양옆 여백 — 모든 화면이 이 값 하나를 쓴다 (2026-10-03) */
-  --nav-gutter: 24px;  /* 탭·칩 같은 메뉴 줄의 양옆 여백 — 본문 여백과 따로 둔다 */
+  /* 양옆 여백은 앱 폭에 비례: 폰(360~430)에서는 24px 안팎, 앱 폭 616에서 40px (2026-10-03, 폰에서 40px은 너무 넓음) */
+  --page-gutter: clamp(24px, calc(var(--app-vw) * 0.065), 40px); /* 본문(콘텐츠) 양옆 여백 — 모든 화면이 이 값 하나를 쓴다 */
+  --nav-gutter: clamp(16px, calc(var(--app-vw) * 0.039), 24px);  /* 탭·칩 같은 메뉴 줄의 양옆 여백 — 본문 여백과 따로 둔다 */
 
   /* Readability */
   --readable-sm: 560px;

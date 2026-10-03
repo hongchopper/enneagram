@@ -73,7 +73,7 @@
     addEntry({
       category:'check',
       pageTitle:labels.check,
-      title:'간편 체크',
+      title:'간편 검사',
       text:document.querySelector('#page-check [data-check-mode-panel="quick"]')?.innerText,
       route:{type:'check',target:'quick'}
     });
@@ -82,7 +82,7 @@
       addEntry({
         category:'check',
         pageTitle:labels.check,
-        title:titleFrom(section,`${type}번 유형 검사`),
+        title:titleFrom(section,`${type}번 정식 검사`),
         text:section.innerText,
         route:{type:'check',target:`detail-${type}`,anchor:section.id}
       });
@@ -183,13 +183,13 @@
     renderRecent();
     if(q.length<2){
       status.textContent='검색어를 입력하면 사이트 전체에서 찾아요.';
-      results.innerHTML='<p class="global-search-empty">예: 3번, 면접, 분노, 날개, 호니비언</p>';
+      results.innerHTML='<p class="global-search-empty">예: 3번, 불안, 면접, 날개, 호니비언</p>';
       return;
     }
     const found=search(q);
     status.textContent=found.length ? `${found.length}개 결과` : '검색 결과가 없어요.';
     if(!found.length){
-      results.innerHTML='<p class="global-search-empty">다른 단어로 검색해보세요. 예: 불안, 관계, 성장, 핵심 동기</p>';
+      results.innerHTML='<p class="global-search-empty">다른 단어로 검색해보세요. 예: 3번, 불안, 면접, 날개, 호니비언</p>';
       return;
     }
     results.innerHTML=found.map((item,i)=>`
