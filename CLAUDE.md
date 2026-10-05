@@ -45,6 +45,10 @@ python3 tools/visual-diff.py shots_before shots_after
 - 11개 화면 상태 × 5개 뷰포트(360/390/768/1024/1440)를 캡처하고, 가로 스크롤 발생 여부와 JS 오류를 알려준다.
 - 의도한 변경 외의 화면에 diff가 생기면 regression이다.
 
+## 캐시 버전 (2026-10-05)
+
+`index.html`의 CSS·JS 주소에는 `?v=<파일 내용 해시>`가 붙는다 (GitHub Pages가 10분 캐시해서 새 HTML + 옛 CSS가 섞이는 문제 방지). 커밋할 때 `.githooks/pre-commit`이 `tools/cache-bust.js`를 돌려 자동으로 맞춘다. 새로 clone했다면 한 번 `git config core.hooksPath .githooks`. 새 CSS·JS를 추가할 때도 주소는 `?v=` 없이 써도 된다.
+
 ## 남은 정리 순서 (가이드 §25)
 
 - ~~Phase 2: breakpoint 약 30종 → 4개, 컨테이너 폭 통일~~ → 모바일 웹 전환으로 완료 (데스크톱 전용 규칙 삭제, 앱 폭 616 하나)

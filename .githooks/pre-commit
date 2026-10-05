@@ -1,0 +1,5 @@
+#!/bin/sh
+# 커밋할 때 CSS·JS 주소 버전을 내용 해시로 맞춘다 (tools/cache-bust.js 참고)
+# 처음 한 번: git config core.hooksPath .githooks
+node tools/cache-bust.js || exit 1
+git diff --quiet -- index.html || git add index.html
