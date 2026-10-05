@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!--
+  링크 미리보기(카카오톡·메신저·SNS) 썸네일 1200x630 원본
+  다시 만들기: powershell -ExecutionPolicy Bypass -File tools/make-og-image.ps1
+  결과: assets/og-image.png (index.html의 og:image가 이 파일을 쓴다)
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+<style>
+  /* 색은 css/tokens.css 값 그대로 (--color-primary / --color-primary-soft / 본문 글자) */
+  :root { --primary: #6553C2; --primary-light: #9C8CE8; --soft: #EEEAFD; --text: #2B2838; --sub: #5E5A6E; }
+  * { margin: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    position: relative;
+    font-family: "Pretendard Variable", Pretendard, sans-serif;
+    background:
+      radial-gradient(circle at 900px 315px, #FFFFFF 0, rgba(255,255,255,0) 300px),
+      radial-gradient(circle at 1120px 40px, rgba(156,140,232,.22) 0, rgba(156,140,232,0) 340px),
+      radial-gradient(circle at 60px 640px, rgba(156,140,232,.18) 0, rgba(156,140,232,0) 360px),
+      linear-gradient(160deg, #FBFAFF 0%, #EEEAFD 100%);
+    color: var(--text);
+  }
+  .copy { position: absolute; left: 80px; top: 50%; transform: translateY(-50%); }
+  h1 { font-size: 80px; font-weight: 700; letter-spacing: -0.04em; line-height: 1.15; }
+  p { margin-top: 24px; font-size: 30px; font-weight: 500; line-height: 1.45; color: var(--sub); letter-spacing: -0.02em; }
+  .pill {
+    display: inline-block; margin-top: 40px; padding: 16px 30px; border-radius: 999px;
+    background: var(--primary); color: #fff; font-size: 26px; font-weight: 600; letter-spacing: -0.02em;
+    box-shadow: 0 10px 24px rgba(101,83,194,.28);
+  }
+  .num { position: absolute; width: 40px; text-align: center; font-size: 26px; font-weight: 700; color: var(--primary); }
+  svg { position: absolute; left: 0; top: 0; }
+  .gem { position: absolute; width: 88px; height: 88px; filter: drop-shadow(0 8px 14px rgba(70,55,150,.20)); }
+</style>
+</head>
+<body>
+  <svg width="1200" height="630" id="figure"></svg>
+  <div class="copy">
+    <h1>에니어그램,<br>나를 읽는 시간</h1>
+    <p>9가지 유형으로 들여다보는<br>내 마음의 모양</p>
+    <div class="pill">1분 만에 내 유형 찾기</div>
+  </div>
+<script>
+  const CX = 900, CY = 315, R = 210, GEM = 88, NUM_R = R + 64;
+  const files = ['gem-1-sapphire','gem-2-rose-quartz','gem-3-diamond','gem-4-opal','gem-5-amethyst',
+                 'gem-6-emerald','gem-7-citrine','gem-8-ruby','gem-9-aquamarine'];
+  // 9번이 맨 위, 시계 방향으로 1~8
+  const pt = k => { const a = (-90 + (k % 9) * 40) * Math.PI / 180; return [CX + R * Math.cos(a), CY + R * Math.sin(a)]; };
+  const svg = document.getElementById('figure');
+  const line = (seq, closed) => {
+    const d = seq.map((k, i) => (i ? 'L' : 'M') + pt(k).join(' ')).join(' ') + (closed ? ' Z' : '');
+    return `<path d="${d}" fill="none" stroke="#9C8CE8" stroke-opacity=".45" stroke-width="2.5" stroke-linejoin="round"/>`;
+  };
+  svg.innerHTML =
+    `<circle cx="${CX}" cy="${CY}" r="${R}" fill="rgba(255,255,255,.55)" stroke="#9C8CE8" stroke-opacity=".55" stroke-width="2.5"/>` +
+    line([3, 6, 9], true) + line([1, 4, 2, 8, 5, 7], true);
+  files.forEach((f, i) => {
+    const k = i + 1, [x, y] = pt(k);
+    const img = new Image(); img.src = `../assets/gems/${f}.png`; img.className = 'gem';
+    img.style.left = (x - GEM / 2) + 'px'; img.style.top = (y - GEM / 2) + 'px';
+    document.body.appendChild(img);
+    const a = (-90 + (k % 9) * 40) * Math.PI / 180, n = document.createElement('div');
+    n.className = 'num'; n.textContent = k;
+    n.style.left = (CX + NUM_R * Math.cos(a) - 20) + 'px'; n.style.top = (CY + NUM_R * Math.sin(a) - 17) + 'px';
+    document.body.appendChild(n);
+  });
+</script>
+</body>
+</html>
