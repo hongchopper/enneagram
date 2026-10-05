@@ -64,8 +64,18 @@ function broadcast(file) {
 }
 
 let timer = null, pending = null;
+/* 윈도우는 파일을 읽기만 해도(사진 지연 로드 등) 변경 이벤트를 보낸다.
+   코드 파일만 보고, 수정 시각이 실제로 바뀐 경우에만 새로고침한다 */
+const WATCH = /\.(html|css|js|json)$/i;
+const mtimes = new Map();
 function onChange(file) {
-  if (!file || IGNORE.test(file)) return;
+  if (!file || IGNORE.test(file) || !WATCH.test(file)) return;
+  let m = 0;
+  try { m = fs.statSync(path.join(ROOT, file)).mtimeMs; } catch (_) {}
+  if (mtimes.get(file) === m) return;
+  const first = !mtimes.has(file);
+  mtimes.set(file, m);
+  if (first && m && Date.now() - m > 2000) return; /* 처음 보는 파일인데 오래전 수정 = 읽기 이벤트 */
   pending = pending && !/\.css$/i.test(pending) ? pending : file; // CSS 외 변경이 섞이면 전체 새로고침
   clearTimeout(timer);
   timer = setTimeout(() => {
