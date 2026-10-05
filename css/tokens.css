@@ -53,12 +53,13 @@
   --color-text-faint: #A9A5B4;
 
   /* Surface — 흰 바탕 + 연회색 카드 면 (2026-10-02). 불투명한 흰색이 꼭 필요하면 --color-surface-solid */
-  --color-bg: #FFFFFF;          /* 흰 바탕 (2026-10-02) */
+  --color-bg: #FFFFFF;          /* 흰 바탕 (2026-10-02). 회색 바탕은 시도했다가 되돌렸다 (2026-10-05) — 바탕은 흰색 유지 */
   --color-backdrop: #F8F9F9;    /* PC에서 앱 열 바깥: 아주 옅은 회색 (아이웨딩 웹과 같은 값) */
   --color-surface: #FFFFFF;     /* 카드 면: 흰색 + 얇은 중립 회색 선 (색 칠한 네모는 촌스러워 뺐다, 2026-10-03) */
   --color-surface-solid: #FFFFFF;
   --color-surface-subtle: #FFFFFF; /* 카드 안 작은 박스도 색 없이 */
   --color-ivory: #FCFBFF;         /* 프로필 카드 종이색 (보라 기운의 흰색) */
+  --color-chat-bg: #EEEBF7;      /* 다이어리 채팅창 바탕 (메신저처럼 옅은 라벤더 회색, 2026-10-05) */
   --color-fill: #F3F3F6;          /* 채팅의 상대 말풍선처럼 면이 꼭 필요한 곳의 옅은 중립 회색 */
   --color-mist: #E8E8EC;
 
@@ -124,6 +125,14 @@
   --grad-primary: var(--color-primary); /* 메인 버튼·선택 칩·진행 바: 그라데이션 없이 단색 (2026-10-03, 토스·애플식) */
   --grad-aurora: var(--color-fill); /* 보석 미리보기 타일·강조 카드: 그라데이션 없이 옅은 회색 면 (2026-10-03) */
   --glow-primary: none; /* 버튼 아래 번지는 빛은 덜어냈다 (2026-10-02). 그라데이션 색은 주 버튼에만 */
+  /* 반짝이 라인 (2026-10-05, 아이콘·배너 시안 3번): 보석만 그라데이션이면 혼자 튀어서, 배너와 메뉴 아이콘에도 같은 계열의 옅은 그라데이션 */
+  --grad-soft: linear-gradient(135deg, #EEE8FF 0%, #F8EAF5 55%, #E8F1FF 100%); /* 배너 바탕: 라벤더 → 분홍 → 하늘 */
+  /* 메뉴 아이콘 선 그라데이션: 분야별 두 색 (라벤더 = 검사·유형 / 하늘 = 알기 / 살구 = 기록 / 민트 = 실천) */
+  --icon-lav-1: #8E7FE0; --icon-lav-2: #C46BB0;
+  --icon-sky-1: #4E72A8; --icon-sky-2: #3FA7B8;
+  --icon-pch-1: #C9733D; --icon-pch-2: #D49A2E;
+  --icon-mnt-1: #3F8566; --icon-mnt-2: #3A97A8;
+  --color-sparkle: #E7C46A; /* 아이콘 칸 모서리의 작은 별빛 */
   /* 배경 빛 덩어리: 화면 모서리의 크고 흐린 원 4개 */
   --blob-pink: #F9C6DA;
   --blob-lavender: #D5C6FF;
@@ -162,6 +171,8 @@
   --shadow-sm: none;                                 /* elev-1: 칩·작은 타일 — 흰 바탕 + 회색 면이라 그림자 없이 */
   --shadow-md: 0 1px 3px rgba(30, 20, 60, 0.05);   /* elev-2: 카드·떠 있는 바 (아주 옅게) */
   --shadow-lg: 0 12px 32px rgba(60, 40, 140, 0.12); /* elev-3: 프로필 카드 */
+  --shadow-icon: 0 6px 16px rgba(80, 60, 160, 0.10); /* 메뉴 아이콘 칸이 살짝 떠 보이게 */
+  --shadow-card: 0 1px 2px rgba(40, 30, 90, 0.04), 0 4px 16px rgba(40, 30, 90, 0.07); /* 카드: 흰 바탕 위 흰 카드를 선 대신 그림자로 띄운다 (2026-10-05) */
 
   /* Layout */
   /* 모바일 웹: 어떤 화면에서도 앱 폭으로 그린다 (강남언니 웹과 같은 616px. 디자인 시스템 v1 §3의 480은 PC에서 너무 좁아 넓힘, 2026-10-01). --app-frame은 옛 레이어의 --app-max(데스크톱 컨테이너)와 다른 값. --app-vw는 vw 대신 쓰는 "앱 폭 기준 vw" */

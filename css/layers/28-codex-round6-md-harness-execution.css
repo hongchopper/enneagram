@@ -1980,7 +1980,8 @@
 
 /* 9유형 비교 · 유형 없이 돌아보기: 화면 안 칩 */
 #page-compare .explore-chips,
-#page-sharing .explore-chips {
+#page-sharing .explore-chips,
+#page-overview .explore-chips {
   display:flex;
   gap:var(--space-2);
   margin:var(--space-5) 0;
@@ -7180,15 +7181,17 @@ h3,
 }
 
 /* 탭: 세 칸 나눔 버튼 */
+/* 분할 탭 (2026-10-05): 회색 줄 위에 선택된 칸만 흰색으로 떠 있다. 칸 수만큼 나눈다 */
 #page-diary .diary-tabs {
   display:grid;
-  grid-template-columns:repeat(3, minmax(0, 1fr));
+  grid-auto-columns:minmax(0, 1fr);
+  grid-auto-flow:column;
   gap:var(--space-1);
   margin:var(--space-5) 0 var(--space-6);
   padding:var(--space-1);
-  border:1px solid var(--glass-line);
+  border:0;
   border-radius:var(--radius-full);
-  background:var(--color-surface);
+  background:color-mix(in srgb, var(--color-primary) 8%, transparent); /* 흰 바탕·채팅 바탕 어디서든 보이는 옅은 라벤더 줄 */
 }
 
 #page-diary .diary-tabs button {
@@ -7203,8 +7206,9 @@ h3,
 }
 
 #page-diary .diary-tabs button.active {
-  background:var(--color-primary-soft);
-  color:var(--color-primary);
+  background:var(--color-surface);
+  box-shadow:var(--shadow-card);
+  color:var(--color-text-primary);
   font-weight:700;
 }
 
@@ -7278,7 +7282,7 @@ h3,
 
 #page-diary .chat-msg.is-bot .chat-bubble {
   border-bottom-left-radius:var(--space-1);
-  background:var(--color-fill);
+  background:var(--color-surface);
   color:var(--color-text-primary);
 }
 
@@ -8183,7 +8187,7 @@ h3,
   font-size:var(--text-md);
 }
 
-#page-compare .explore-hub-sub {
+:is(#page-compare, #page-home) .explore-hub-sub {
   --font-sans:var(--font-display);
   margin:var(--space-6) 0 0;
   font-family:var(--font-display);
@@ -8193,7 +8197,7 @@ h3,
 
 /* 보석 카드 9장: 2열 */
 /* 9가지 카드: 크게, 옆으로 넘긴다 (2026-10-03). 한 장을 가운데에 두고 양옆 카드가 조금 보이게, 한 장씩 멈춘다 */
-#page-compare .explore-type-grid {
+#page-home .explore-type-grid {
   --explore-card-w:min(calc(var(--space-10) * 3.75), calc(var(--app-vw) * 0.78)); /* 나의 공간 프로필 카드와 같은 300 (360 폰에서는 조금 작게) */
   --explore-zoom:1; /* 카드를 통째로 줄이고 싶을 때 쓰는 비율 (지금은 원래 크기) */
   display:flex;
@@ -8206,11 +8210,11 @@ h3,
   scrollbar-width:none;
 }
 
-#page-compare .explore-type-grid::-webkit-scrollbar {
+#page-home .explore-type-grid::-webkit-scrollbar {
   display:none;
 }
 
-#page-compare .explore-type-grid > .pcard {
+#page-home .explore-type-grid > .pcard {
   flex:none;
   width:var(--explore-card-w);
   zoom:var(--explore-zoom);
@@ -8222,12 +8226,12 @@ h3,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  #page-compare .explore-type-grid > .pcard {
+  #page-home .explore-type-grid > .pcard {
     transition:none;
   }
 }
 
-#page-compare .explore-count {
+#page-home .explore-count {
   margin:0 0 var(--space-6);
   color:var(--color-text-secondary);
   font-size:var(--text-xs);
@@ -8235,7 +8239,7 @@ h3,
   font-variant-numeric:tabular-nums;
 }
 
-#page-compare .explore-count b {
+#page-home .explore-count b {
   color:var(--color-text-primary);
   font-weight:700;
 }
@@ -8316,7 +8320,7 @@ h3,
 }
 
 /* 비교하며 알아보기: 목록 줄 */
-#page-compare .explore-compare-list {
+:is(#page-compare, #page-home) .explore-compare-list {
   display:grid;
   border-top:1px solid var(--glass-line);
 }
@@ -8512,6 +8516,7 @@ h3,
 /* 뒤로 가기 ‹ 유형 탐구: 비교·돌아보기·핸드북 모두 같은 글자 버튼 (2026-10-03 통일, 테두리 알약 없이) */
 #page-compare .explore-chip.explore-back,
 #page-sharing .explore-chip.explore-back,
+#page-overview .explore-chip.explore-back,
 #page-handbook .hb-back {
   justify-self:start;
   min-height:44px;
@@ -8700,7 +8705,7 @@ h3,
 }
 
 /* 유형 탐구 카드 = 나의 공간 프로필 카드와 같은 모양 (2026-10-03). 바깥은 버튼이라 기본 버튼 모양만 지운다 */
-#page-compare .pcard.is-explore {
+#page-home .pcard.is-explore {
   display:block;
   padding:0;
   border:0;
@@ -8711,13 +8716,13 @@ h3,
   cursor:pointer;
 }
 
-#page-compare .pcard.is-explore:focus-visible {
+#page-home .pcard.is-explore:focus-visible {
   outline:2px solid var(--color-primary);
   outline-offset:var(--space-1);
   border-radius:var(--radius-profile);
 }
 
-#page-compare .pcard.is-explore .deco-mine {
+#page-home .pcard.is-explore .deco-mine {
   position:absolute;
   top:var(--space-4);
   left:50%;
@@ -9056,4 +9061,644 @@ h3,
   .pcard .gcard-gem .gem-img {
     animation:none;
   }
+}
+
+/* 삶의 장면: 목록 → 장면 한 페이지 (2026-10-05). 목록은 한 줄씩 누르는 행(›), 장면 위에는 ‹ 장면 목록 · n / 9 */
+#page-handbook .hb-scene-list {
+  display:grid;
+  border-top:1px solid var(--color-border);
+}
+
+#page-handbook .hb-scene-list[hidden],
+#page-handbook .hb-scene-nav[hidden] {
+  display:none;
+}
+
+#page-handbook .hb-scene-item {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:var(--space-3);
+  width:100%;
+  min-height:56px;
+  padding:var(--space-3) var(--space-1);
+  border:0;
+  border-bottom:1px solid var(--color-border);
+  border-radius:0;
+  background:none;
+  color:var(--color-text-primary);
+  font-size:var(--text-md);
+  font-weight:600;
+  text-align:left;
+  cursor:pointer;
+}
+
+#page-handbook .hb-scene-item i {
+  color:var(--color-text-secondary);
+  font-style:normal;
+}
+
+#page-handbook .hb-scene-nav {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:var(--space-4);
+  scroll-margin-top:calc(var(--space-8) + var(--space-4));
+}
+
+#page-handbook .hb-scene-back {
+  min-height:44px;
+  padding:0;
+  border:0;
+  background:none;
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+  font-weight:600;
+  cursor:pointer;
+}
+
+#page-handbook .hb-scene-count {
+  color:var(--color-text-secondary);
+  font-size:var(--text-xs);
+  font-variant-numeric:tabular-nums;
+}
+
+#page-handbook .hb-scene-title {
+  flex-basis:100%;
+  margin:var(--space-2) 0 0;
+  color:var(--color-text-primary);
+  font-size:var(--text-xl);
+  font-weight:700;
+}
+
+/* 홈 바로가기 (2026-10-05): 배달·쇼핑 앱 홈의 카테고리 줄처럼 4칸 × 2줄. 아이콘은 보석 타일(크리스탈 글래스) */
+#page-home .home-quick {
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0, 1fr));
+  gap:var(--space-4) var(--space-2);
+  margin:var(--space-5) 0 var(--space-2);
+}
+
+#page-home .home-quick-item {
+  display:grid;
+  justify-items:center;
+  gap:var(--space-2);
+  min-width:0;
+  padding:0;
+  border:0;
+  background:none;
+  color:var(--color-text-primary);
+  font:inherit;
+  cursor:pointer;
+}
+
+#page-home .home-quick-item .gem-tile {
+  width:var(--space-9);
+  height:var(--space-9);
+  border-radius:var(--radius-lg);
+}
+
+#page-home .home-quick-item .gem-tile .gem-img {
+  width:66%;
+  height:auto;
+}
+
+#page-home .home-quick-label {
+  max-width:100%;
+  color:var(--color-text-primary);
+  font-size:var(--text-xs);
+  font-weight:500;
+  line-height:1.3;
+  text-align:center;
+  word-break:keep-all;
+}
+
+/* 핸드북 성장 끝: 보석 닦기로 */
+#page-handbook .hb-polish-link {
+  display:grid;
+  grid-template-columns:minmax(0, 1fr) auto;
+  grid-template-areas:"title go" "desc go";
+  align-items:center;
+  gap:var(--space-1) var(--space-3);
+  width:100%;
+  margin-top:var(--space-7);
+  padding:var(--space-4) var(--space-5);
+  border:0;
+  border-radius:var(--radius-lg);
+  background:var(--color-primary-soft);
+  color:var(--color-text-primary);
+  text-align:left;
+  cursor:pointer;
+}
+
+#page-handbook .hb-polish-link strong {
+  grid-area:title;
+  color:var(--color-primary);
+  font-size:var(--text-md);
+  font-weight:700;
+}
+
+#page-handbook .hb-polish-link span {
+  grid-area:desc;
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+}
+
+#page-handbook .hb-polish-link i {
+  grid-area:go;
+  color:var(--color-primary);
+  font-style:normal;
+}
+
+/* =========================================================
+   메뉴 아이콘 타일 (2026-10-05): 보석은 유형을 가리킬 때만. 유형과 상관없는 메뉴·카드는 옅은 보라 면 + 보라 선 아이콘
+   ========================================================= */
+.icon-tile {
+  position:relative;
+  display:grid;
+  flex:none;
+  place-items:center;
+  width:var(--space-9);
+  height:var(--space-9);
+  border:1px solid var(--color-border-subtle);
+  border-radius:var(--radius-lg);
+  background:var(--color-surface);
+  box-shadow:var(--shadow-icon);
+  color:var(--color-primary);
+}
+
+/* 반짝이 라인 (2026-10-05): 흰 칸이 살짝 떠 있고 선은 분야별 그라데이션(js uiIcon), 몇 칸에는 모서리 별빛 */
+.icon-spark {
+  position:absolute;
+  top:var(--space-1);
+  right:var(--space-1);
+  width:var(--space-3);
+  height:var(--space-3);
+}
+
+.icon-spark svg {
+  display:block;
+  width:100%;
+  height:100%;
+}
+
+.ui-icon-defs {
+  position:absolute;
+  width:0;
+  height:0;
+  overflow:hidden;
+}
+
+.icon-tile .ui-icon {
+  width:var(--space-6);
+  height:var(--space-6);
+}
+
+.icon-tile.is-sm {
+  width:var(--space-8);
+  height:var(--space-8);
+  border-radius:var(--radius-sm);
+}
+
+.icon-tile.is-sm .ui-icon {
+  width:var(--space-5);
+  height:var(--space-5);
+}
+
+/* 배너 '나라면?': 보석 대신 큰 아이콘 */
+#page-home .banner-art.is-icon {
+  display:grid;
+  place-items:center;
+  width:calc(var(--space-10) + var(--space-3));
+  height:calc(var(--space-10) + var(--space-3));
+  border-radius:var(--radius-full);
+  background:color-mix(in srgb, var(--color-surface) 70%, transparent);
+  color:var(--color-primary);
+}
+
+#page-home .banner-art.is-icon .ui-icon {
+  width:var(--space-8);
+  height:var(--space-8);
+}
+
+/* 유형 탐구 목록: 긴 설명 줄 대신 2열 타일 (아이콘 · 이름 · 짧은 한 줄) */
+:is(#page-compare, #page-home) .explore-compare-list {
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:var(--space-3);
+  border-top:0;
+}
+
+:is(#page-compare, #page-home) .explore-tile {
+  display:grid;
+  align-content:start;
+  justify-items:start;
+  gap:var(--space-1);
+  min-height:calc(var(--space-10) * 1.75);
+  padding:var(--space-4);
+  border:0;
+  border-radius:var(--radius-lg);
+  background:var(--color-fill);
+  color:var(--color-text-primary);
+  font:inherit;
+  text-align:left;
+  cursor:pointer;
+}
+
+:is(#page-compare, #page-home) .explore-tile .icon-tile {
+  margin-bottom:var(--space-2);
+}
+
+:is(#page-compare, #page-home) .explore-tile strong {
+  font-size:var(--text-md);
+  font-weight:700;
+  line-height:1.35;
+  word-break:keep-all;
+}
+
+:is(#page-compare, #page-home) .explore-tile span:not(.icon-tile) {
+  color:var(--color-text-secondary);
+  font-size:var(--text-xs);
+  line-height:1.45;
+  word-break:keep-all;
+}
+
+
+/* 핸드북 요약: 선으로만 나누면 덩어리가 안 보여 옅은 회색 면 카드로 (2026-10-05, 바탕은 흰색) */
+#page-handbook .hb-summary,
+#page-handbook .hb-sum-grid2,
+#page-handbook .hb-sum-grid3 {
+  row-gap:var(--space-3);
+  column-gap:var(--space-3);
+}
+
+#page-handbook .hb-sum-box {
+  padding:var(--space-5);
+  border:0;
+  border-radius:var(--radius-lg);
+  background:var(--color-fill);
+}
+
+/* 옛 레이어가 핸드북 버튼 바탕을 var(--color-surface) !important로 칠한다. 글자 버튼은 그 변수만 투명으로 바꿔 둔다 */
+#page-handbook .hb-back,
+#page-handbook .hb-scene-back {
+  --color-surface:transparent;
+}
+
+/* =========================================================
+   검사 결과 카드 위 영역 = 크리스탈 글래스 (2026-10-05)
+   보석 색 면 + 뒤에서 번지는 보석 색 빛 + 가운데 떠 있는 큰 보석. 글은 가운데 정렬, 그룹·태그·대표 문장은 반투명 흰 칩·상자
+   ========================================================= */
+.type-card-pro .tcp-banner.tcp-crystal {
+  position:relative;
+  display:grid;
+  justify-items:center;
+  overflow:hidden;
+  padding:var(--space-5) var(--space-5) var(--space-6);
+  background:color-mix(in srgb, var(--tc) 28%, var(--color-surface));
+  color:var(--color-text-primary);
+  text-align:center;
+}
+
+.type-card-pro .tcp-crystal .tcp-glow {
+  position:absolute;
+  top:var(--space-6);
+  left:50%;
+  width:calc(var(--space-10) * 3);
+  aspect-ratio:1;
+  border-radius:var(--radius-full);
+  background:var(--tc);
+  filter:blur(var(--space-7)) saturate(1.6);
+  transform:translateX(-50%);
+  pointer-events:none;
+}
+
+.type-card-pro .tcp-crystal > :not(.tcp-glow) {
+  position:relative;
+}
+
+.type-card-pro .tcp-crystal .tcp-banner-top {
+  justify-self:stretch;
+  margin-bottom:0;
+}
+
+.type-card-pro .tcp-crystal .tcp-kicker {
+  color:var(--color-primary);
+}
+
+.type-card-pro .tcp-crystal .tcp-badge {
+  background:color-mix(in srgb, var(--color-surface) 75%, transparent);
+  color:var(--color-primary);
+}
+
+.type-card-pro .tcp-crystal .tcp-gem {
+  display:grid;
+  place-items:center;
+  width:calc(var(--space-10) * 1.75);
+  height:calc(var(--space-10) * 1.75);
+  margin:var(--space-2) 0 var(--space-1);
+}
+
+.type-card-pro .tcp-crystal .tcp-gem .gem-img {
+  width:100%;
+  height:auto;
+  filter:drop-shadow(0 var(--space-3) var(--space-4) color-mix(in srgb, var(--td) 28%, transparent));
+  animation:pc-float var(--duration-float) ease-in-out infinite;
+}
+
+.type-card-pro .tcp-crystal .tcp-title {
+  justify-content:center;
+}
+
+.type-card-pro .tcp-crystal .tcp-meta {
+  color:var(--color-primary);
+  font-size:var(--text-sm);
+  font-weight:700;
+}
+
+.type-card-pro .tcp-crystal .tcp-name {
+  margin-top:var(--space-1);
+  color:var(--color-text-primary);
+  font-size:var(--text-3xl);
+}
+
+.type-card-pro .tcp-crystal .tcp-desc {
+  color:var(--color-text-secondary);
+}
+
+.type-card-pro .tcp-crystal .tcp-groups {
+  justify-content:center;
+}
+
+.type-card-pro .tcp-crystal .tcp-groups span {
+  border:0;
+  background:color-mix(in srgb, var(--color-surface) 70%, transparent);
+  color:var(--color-text-primary);
+}
+
+.type-card-pro .tcp-crystal .tcp-tags {
+  margin-top:var(--space-3);
+  color:var(--color-primary);
+  font-size:var(--text-sm);
+}
+
+.type-card-pro .tcp-crystal .tcp-quote {
+  justify-self:stretch;
+  margin-top:var(--space-4);
+  padding:var(--space-4);
+  border:1px solid color-mix(in srgb, var(--color-surface) 90%, transparent);
+  border-radius:var(--radius-lg);
+  background:color-mix(in srgb, var(--color-surface) 45%, transparent);
+  -webkit-backdrop-filter:blur(var(--space-2));
+  backdrop-filter:blur(var(--space-2));
+  color:var(--color-text-primary);
+  font-size:var(--text-md);
+}
+
+/* 작은 결과 카드(정식 검사 목록 등): 보석·빛을 작게 */
+.type-card-pro.is-compact .tcp-crystal .tcp-gem {
+  width:var(--space-10);
+  height:var(--space-10);
+}
+
+.type-card-pro.is-compact .tcp-crystal .tcp-glow {
+  width:calc(var(--space-10) * 2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .type-card-pro .tcp-crystal .tcp-gem .gem-img {
+    animation:none;
+  }
+}
+
+/* 간편 검사 2단계 (2026-10-05): 1단계 A·B·C → 다음 → 2단계 1·2·3 → 결과 보기. 지금 단계가 아닌 묶음은 숨긴다 */
+#page-check .quick-check-wrap[data-quick-stage="alpha"] [data-quick-stage-panel="number"],
+#page-check .quick-check-wrap[data-quick-stage="number"] [data-quick-stage-panel="alpha"] {
+  display:none;
+}
+
+/* 단계 끝: 진한 상자 대신 버튼 위 한 줄 안내 */
+#page-check .quick-stage-foot {
+  display:grid;
+  gap:var(--space-3);
+  margin-top:var(--space-6);
+}
+
+#page-check .quick-stage-hint {
+  margin:0;
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+  text-align:center;
+}
+
+#page-check .quick-stage-hint.is-ready {
+  color:var(--color-primary);
+  font-weight:600;
+}
+
+#page-check .quick-stage-hint[hidden] {
+  display:none;
+}
+
+#page-check .quick-stage-btn {
+  width:100%;
+  min-height:52px;
+  border-radius:var(--radius-full);
+}
+
+#page-check .quick-stage-btn:disabled {
+  border-color:transparent;
+  background:var(--color-mist);
+  color:var(--color-text-faint);
+  cursor:not-allowed;
+}
+
+#page-check .quick-stage-sub {
+  display:flex;
+  justify-content:space-between;
+  gap:var(--space-2);
+}
+
+#page-check .quick-stage-sub .ui-btn {
+  padding:0;
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+  font-weight:600;
+}
+
+/* 홈 배너: 옅은 그라데이션 바탕 (라벤더 → 분홍 → 하늘, 보석 홀로그램과 같은 계열) */
+#page-home .banner-slide {
+  background:var(--grad-soft);
+}
+
+/* 다이어리 쓰기(채팅): 화면 바탕을 메신저처럼 옅은 라벤더 회색으로, 상대 말풍선은 흰색 */
+#page-diary:has(.diary-wrap[data-diary-tab="write"]) {
+  background:var(--color-chat-bg);
+}
+
+
+/* =========================================================
+   카드 = 흰 면 + 그림자 (2026-10-05). 바탕은 흰색 그대로, 카드는 선이나 회색 면 대신 은은한 그림자로 띄운다
+   (카드 안의 작은 상자·선택지는 그대로 회색 면이나 얇은 선)
+   ========================================================= */
+#page-home .feed-card,
+#page-check .check-choice-card,
+#page-overview .overview-hero-layout,
+#page-overview .learning-steps > article,
+#page-overview .meaning-card,
+#page-overview .overview-card,
+#page-overview .overview-rule-list > div,
+#page-handbook .hb-sum-box,
+#page-handbook .hb-sum-line,
+#page-handbook .hb-state,
+#page-handbook .hb-concern,
+#page-handbook .hb-more,
+#page-handbook .hb-topic > section,
+#page-handbook .hb-topic > header,
+:is(#page-compare, #page-home) .explore-tile,
+#page-compare .glance-type-card,
+#page-compare [data-compare-panel] .compare-card,
+#page-sharing .reflection-guide,
+#page-sharing .reflection-explanation,
+#page-sharing .reflection-summary-sentence,
+#page-myspace .mytype-setting,
+#page-myspace .my-insight,
+#page-myspace .feature-card,
+#page-myspace .home-check,
+#page-polish .polish-step {
+  border-color:transparent;
+  background:var(--color-surface);
+  box-shadow:var(--shadow-card);
+}
+
+/* 입체 그림 (2026-10-05, Fluent Emoji 3D · MIT): 글만 있던 자리에 */
+.art3d {
+  display:block;
+  height:auto;
+  object-fit:contain;
+}
+
+#page-home .banner-art.is-art3d {
+  display:grid;
+  place-items:center;
+  width:calc(var(--space-10) + var(--space-3));
+}
+
+#page-home .banner-art.is-art3d .art3d {
+  width:calc(var(--space-10) + var(--space-3));
+  filter:drop-shadow(0 var(--space-2) var(--space-3) rgba(60, 40, 140, 0.14));
+}
+
+#page-home .feed-read-art .art3d {
+  width:var(--space-8);
+  margin-bottom:var(--space-1);
+}
+
+#page-handbook .hb-scene-item .art3d.is-scene {
+  flex:none;
+  width:var(--space-7);
+}
+
+#page-handbook .hb-scene-item {
+  justify-content:flex-start;
+}
+
+#page-handbook .hb-scene-item i {
+  margin-left:auto;
+}
+
+.ui-empty .art3d.is-empty {
+  width:calc(var(--space-10) + var(--space-1));
+  margin:0 auto var(--space-3);
+}
+
+/* 설명 글 사이 사진 (2026-10-05, Unsplash): 블로그처럼 글 흐름 안에 한 장. 모서리 20, 16:10 */
+.shot {
+  margin:var(--space-5) 0;
+}
+
+.shot .shot-img {
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:16 / 10;
+  object-fit:cover;
+  border-radius:var(--radius-lg);
+  background:var(--color-fill);
+}
+
+.shot figcaption {
+  margin-top:var(--space-2);
+  color:var(--color-text-secondary);
+  font-size:var(--text-xs);
+  line-height:1.5;
+}
+
+/* 삶의 장면 페이지 맨 위 사진은 위 여백 없이 */
+#page-handbook .hb-life-topic > .shot:first-child {
+  margin-top:0;
+}
+
+/* 홈 맨 위 9가지 유형 카드 (2026-10-05 유형 탐구에서 옮김) */
+#page-home .home-types {
+  margin:0 0 var(--space-2);
+}
+
+#page-home .home-types .explore-count {
+  margin-bottom:var(--space-5);
+}
+
+/* 나의 공간 · 요즘 나의 흐름 (2026-10-05): 대시보드 대신 기록을 분석한 한 줄 */
+#page-myspace .my-insight {
+  display:grid;
+  gap:var(--space-3);
+  margin-top:var(--space-6);
+  padding:var(--space-5);
+  border-radius:var(--radius-lg);
+}
+
+#page-myspace .my-insight-title {
+  margin:0;
+  color:var(--color-text-primary);
+  font-size:var(--text-lg);
+  font-weight:700;
+}
+
+#page-myspace .my-insight-line {
+  margin:0;
+  color:var(--color-text-primary);
+  font-size:var(--text-md);
+  line-height:1.6;
+  word-break:keep-all;
+}
+
+#page-myspace .my-insight-line b {
+  color:var(--color-primary);
+  font-weight:700;
+}
+
+#page-myspace .my-insight-meta {
+  margin:0;
+  color:var(--color-text-secondary);
+  font-size:var(--text-xs);
+}
+
+#page-myspace .my-insight-meta:empty {
+  display:none;
+}
+
+#page-myspace .my-insight-actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:var(--space-2);
+  margin-top:var(--space-1);
+}
+
+#page-myspace .my-insight + .mytype-setting {
+  margin-top:var(--space-4);
+}
+
+#page-home .home-gem {
+  margin-top:var(--space-5);
 }

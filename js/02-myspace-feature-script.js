@@ -297,123 +297,40 @@
     return Object.entries(counts).sort((a,b)=>b[1]-a[1]);
   }
 
-  /* ---- 나의 변화 보기 (그래프는 모두 한 가지 색: 개수만 보여주므로 범주 색을 쓰지 않는다) ---- */
-  let changePeriod='30';
+  /* ---- 요즘 나의 흐름 (2026-10-05 기록 수·달력·그래프 대시보드를 뺐다) ---- */
   /* 받침 있으면 a(을·과), 없으면 b(를·와) */
   const josa=(w,a,b)=>{const c=String(w).charCodeAt(String(w).length-1);return (c>=0xAC00&&c<=0xD7A3&&(c-0xAC00)%28)?a:b;};
-  const dayKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   const startOfDay=d=>{const x=new Date(d);x.setHours(0,0,0,0);return x;};
   const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
-  const mondayOf=d=>{const x=startOfDay(d);const w=(x.getDay()+6)%7;return addDays(x,-w);};
-
-  function recordDayCounts(reflections){
-    const m={};
-    reflections.forEach(r=>{const d=new Date(r.createdAt);if(!Number.isNaN(d.getTime())){const k=dayKey(d);m[k]=(m[k]||0)+1;}});
-    return m;
-  }
-  /* 오늘(오늘 기록이 없으면 어제)부터 거꾸로 이어진 기록한 날 수 */
-  function recordStreak(counts){
-    let d=startOfDay(new Date());
-    if(!counts[dayKey(d)]) d=addDays(d,-1);
-    let n=0;
-    while(counts[dayKey(d)]){ n++; d=addDays(d,-1); }
-    return n;
-  }
-  function barsHTML(entries,labelFn,unit){
-    if(!entries.length) return '<div class="empty-state small"><strong>아직 보여줄 흐름이 없어요.</strong><p>다이어리에 기록을 남기면 여기에 모여요.</p></div>';
-    const top=entries.slice(0,5), max=top[0][1];
-    return `<div class="change-bar-list" role="list">${top.map(([k,c])=>`
-      <div class="change-bar-row" role="listitem" aria-label="${esc(labelFn(k))} ${c}${unit}">
-        <span class="change-bar-label">${esc(labelFn(k))}</span>
-        <span class="change-bar-track"><span class="change-bar-fill" style="width:${Math.max(8,Math.round(c/max*100))}%"></span></span>
-        <b class="change-bar-value">${c}</b>
-      </div>`).join('')}</div>`;
-  }
-  function calendarHTML(counts){
-    const today=startOfDay(new Date());
-    const start=addDays(mondayOf(today),-28);
-    const cells=[];
-    for(let i=0;i<35;i++){
-      const d=addDays(start,i);
-      if(d>today){ cells.push('<span class="change-day is-future" aria-hidden="true"></span>'); continue; }
-      const c=counts[dayKey(d)]||0;
-      const label=`${d.getMonth()+1}월 ${d.getDate()}일 · ${c?`기록 ${c}개`:'기록 없음'}`;
-      cells.push(`<span class="change-day level-${Math.min(c,2)}${dayKey(d)===dayKey(today)?' is-today':''}" role="img" aria-label="${label}" title="${label}" data-tip="${label}"></span>`);
-    }
-    return `<div class="change-weekdays" aria-hidden="true">${['월','화','수','목','금','토','일'].map(w=>`<span>${w}</span>`).join('')}</div>
-      <div class="change-days">${cells.join('')}</div>
-      <div class="change-legend" aria-hidden="true"><span class="change-day level-0"></span>없음<span class="change-day level-1"></span>1개<span class="change-day level-2"></span>2개 이상</div>`;
-  }
-  function weeksHTML(reflections){
-    const thisMonday=mondayOf(new Date());
-    const weeks=[];
-    for(let i=7;i>=0;i--){
-      const from=addDays(thisMonday,-7*i), to=addDays(from,7);
-      const c=reflections.filter(r=>{const d=new Date(r.createdAt);return d>=from&&d<to;}).length;
-      weeks.push({from,c});
-    }
-    const max=Math.max(1,...weeks.map(w=>w.c));
-    return `<div class="change-week-cols">${weeks.map(w=>{
-      const label=`${w.from.getMonth()+1}/${w.from.getDate()} 주`;
-      return `<div class="change-week" role="img" aria-label="${label} 기록 ${w.c}개" title="${label} · 기록 ${w.c}개">
-        <span class="change-week-value">${w.c||''}</span>
-        <span class="change-week-bar${w.c?'':' is-empty'}" style="height:${w.c?Math.max(8,Math.round(w.c/max*100)):4}%"></span>
-        <span class="change-week-label">${w.from.getMonth()+1}/${w.from.getDate()}</span>
-      </div>`;}).join('')}</div>`;
-  }
 
   function renderDashboard(){
     const all=readReflections();
-    const since=changePeriod==='all'?null:addDays(startOfDay(new Date()),-29);
-    const reflections=since?all.filter(r=>new Date(r.createdAt)>=since):all;
-    const motives=aggregateMotives(reflections);
-    const cats=aggregateCategories(reflections);
-    const emotions=aggregateEmotions(reflections);
-    const counts=recordDayCounts(all);
-    const exp=experimentSummary();
-    const set=(id,v)=>{const el=document.getElementById(id);if(el) el.textContent=v;};
-
-    set('dashReflectionCount',reflections.length);
-    set('dashReflectionSub',changePeriod==='all'?'개의 장면을 돌아봤어요.':'개의 장면을 최근 30일에 돌아봤어요.');
-    set('dashStreak',recordStreak(counts));
-    set('dashExperiment',`${exp.done} / ${exp.total}`);
-
-    const html=(id,v)=>{const el=document.getElementById(id);if(el) el.innerHTML=v;};
     const catName=v=>(DIARY_CATEGORIES.find(c=>c[0]===v)||[v,v])[1];
-    html('changeCalendar',calendarHTML(counts));
-    html('changeWeeks',weeksHTML(all));
-    html('changeEmotions',barsHTML(emotions,x=>x,'번'));
-    html('dashMotiveBars',barsHTML(motives,x=>x,'번'));
-    html('changeScenes',barsHTML(cats,catName,'개'));
-
+    /* 요즘 나의 흐름 한 줄 (2026-10-05): 최근 30일 기록이 2개 이상이면 그걸로, 아니면 전체 기록으로 */
     const summary=document.getElementById('dashPatternSummary');
-    const myType=read(STORAGE.myType,'');
+    const meta=document.getElementById('dashInsightMeta');
     if(!summary) return;
-    if(!reflections.length){
-      summary.innerHTML=changePeriod==='all'||!all.length
-        ?'기록이 생기면 <b>어떤 상황에서 무엇을 중요하게 보고 어떤 방식으로 반응하는지</b>를 여기에 정리해요.'
-        :'최근 30일에는 기록이 없어요. <b>전체</b>를 눌러 예전 기록의 흐름을 보거나, 다이어리에 오늘의 장면을 남겨보세요.';
-    }else{
-      const m=motives[0]?.[0];
-      const c=cats[0]?.[0];
-      const e=emotions[0]?.[0];
-      const second=motives[1]?.[0];
-      let text=`${changePeriod==='all'?'지금까지':'최근 30일'} ${reflections.length}개의 기록에서는 `;
-      if(c) text+=`<b>${esc(catName(c))}</b> 장면이 가장 자주 등장했고, `;
-      if(e) text+=`<b>${esc(e)}</b>${josa(e,'을','를')} 가장 자주 느꼈어요. `;
-      if(m) text+=`<b>${esc(m)}</b>${second?`${josa(m,'과','와')} <b>${esc(second)}</b>`:''} 단서가 반복됐어요. `;
-      text+=`이게 여러 상황에서 같은 이유로 반복되는지 다음 기록에서도 살펴보세요.`;
-      if(myType && TYPES[myType]) text+=` <br><br><b>${myType}번 ${TYPES[myType].name}</b>${josa(TYPES[myType].name,'을','를')} 탐색 중이라면, 이 기록들이 ${TYPES[myType].focus}${josa(TYPES[myType].focus,'이라는','라는')} 유형 설명과 실제로 어떻게 이어지는지 비교해볼 수 있어요.`;
-      summary.innerHTML=text;
+    const recent=all.filter(r=>new Date(r.createdAt)>=addDays(startOfDay(new Date()),-29));
+    const base=recent.length>=2?recent:all;
+    if(base.length<2){
+      summary.innerHTML=all.length?'기록이 하나 더 쌓이면 반복되는 흐름을 한 줄로 알려드릴게요.':'다이어리에 기록이 쌓이면 반복되는 흐름을 한 줄로 알려드릴게요.';
+      if(meta) meta.textContent=all.length?`지금 기록 ${all.length}개`:'';
+      return;
     }
+    const top=list=>{const t=list[0];return t&&t[1]>=2?t[0]:null;}; /* 두 번 넘게 나온 것만 흐름으로 본다 */
+    const c=top(aggregateCategories(base)), e=top(aggregateEmotions(base)), mo=top(aggregateMotives(base));
+    const B=w=>`<b>${esc(w)}</b>`;
+    let line;
+    if(c&&e&&mo) line=`요즘 ${B(catName(c))} 장면에서 ${B(e)}${josa(e,'을','를')} 자주 느꼈고, 그 밑엔 ${B(mo)}${josa(mo,'을','를')} 지키고 싶은 마음이 보여요.`;
+    else if(e&&mo) line=`요즘 ${B(e)}${josa(e,'을','를')} 자주 느꼈고, 그 밑엔 ${B(mo)}${josa(mo,'을','를')} 지키고 싶은 마음이 보여요.`;
+    else if(c&&e) line=`요즘 ${B(catName(c))} 장면에서 ${B(e)}${josa(e,'을','를')} 자주 느꼈어요.`;
+    else if(mo) line=`요즘 기록마다 ${B(mo)}${josa(mo,'을','를')} 지키고 싶은 마음이 반복돼요.`;
+    else if(e) line=`요즘 ${B(e)}${josa(e,'을','를')} 자주 느꼈어요.`;
+    else if(c) line=`요즘 ${B(catName(c))} 장면을 자주 돌아봤어요.`;
+    else line='아직 반복되는 흐름은 없어요. 기록이 더 쌓이면 다시 알려드릴게요.';
+    summary.innerHTML=line;
+    if(meta) meta.textContent=`${base===recent?'최근 30일':'지금까지'} 기록 ${base.length}개를 보고 찾았어요`;
   }
-  document.getElementById('changePeriod')?.addEventListener('click',e=>{
-    const b=e.target.closest('[data-change-period]');
-    if(!b) return;
-    changePeriod=b.dataset.changePeriod;
-    b.parentElement.querySelectorAll('[data-change-period]').forEach(x=>{const on=x===b;x.classList.toggle('active',on);x.setAttribute('aria-pressed',on?'true':'false');});
-    renderDashboard();
-  });
   document.querySelectorAll('[data-share-open]').forEach(b=>b.addEventListener('click',()=>{ if(typeof showSharePage==='function') showSharePage(); }));
 
   // ---- Diary (성찰 기록) ----
@@ -600,7 +517,7 @@
     if(insight) insight.innerHTML=(motive||emotion)?[motive?`자주 나온 단서 <b>${esc(motive[0])}</b> ${motive[1]}회`:'',emotion?`자주 느낀 감정 <b>${esc(emotion[0])}</b> ${emotion[1]}회`:''].filter(Boolean).join(' · '):'';
     const arr=all.filter(r=>diaryFilter==='전체'||r.category===diaryFilter);
     if(!arr.length){
-      list.innerHTML='<div class="ui-empty"><strong>아직 기록이 없어요.</strong><p>위에서 오늘의 장면 하나를 적어보세요.</p></div>';
+      list.innerHTML='<div class="ui-empty"><img class="art3d is-empty" src="assets/illust/notebook.png" alt="" width="256" height="256"><strong>아직 기록이 없어요.</strong><p>위에서 오늘의 장면 하나를 적어보세요.</p></div>';
       return;
     }
     const groups=[];
@@ -747,7 +664,7 @@
         </div>
         ${it.custom?`<button type="button" class="ui-btn ui-btn-ghost" data-exp-delete="${esc(it.id)}">삭제</button>`:''}
       </article>`).join('')
-      :`<div class="ui-empty"><strong>${experimentFilter==='routine'&&items.length?'아직 루틴이 없어요.':items.length?(experimentFilter==='done'?'아직 해본 것이 없어요.':'해볼 것을 모두 해봤어요.'):'아직 해보기로 한 것이 없어요.'}</strong><p>${experimentFilter==='routine'&&items.length?'‘해볼 것’에서 꾸준히 하고 싶은 행동을 루틴으로 만들어 보세요.':items.length?'작은 것 하나라도 해봤다면 동그라미를 눌러 보세요.':'기록의 ‘다음엔’에 적거나, 아래 추천에서 골라보세요.'}</p></div>`;
+      :`<div class="ui-empty"><img class="art3d is-empty" src="assets/illust/seedling.png" alt="" width="256" height="256"><strong>${experimentFilter==='routine'&&items.length?'아직 루틴이 없어요.':items.length?(experimentFilter==='done'?'아직 해본 것이 없어요.':'해볼 것을 모두 해봤어요.'):'아직 해보기로 한 것이 없어요.'}</strong><p>${experimentFilter==='routine'&&items.length?'‘해볼 것’에서 꾸준히 하고 싶은 행동을 루틴으로 만들어 보세요.':items.length?'작은 것 하나라도 해봤다면 동그라미를 눌러 보세요.':'기록의 ‘다음엔’에 적거나, 아래 추천에서 골라보세요.'}</p></div>`;
     /* 유형별 추천 */
     const reco=g('experimentReco');
     if(reco){
