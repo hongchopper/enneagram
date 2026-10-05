@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs></defs><g transform="translate(42 100) rotate(-18)"><polygon points="-10,0 -10,-28 0,-41 10,-28 10,0" fill="#fff" stroke="#44597E" stroke-width="3" stroke-linejoin="round"/>
+<polyline points="-10,-28 0,-23 10,-28" fill="none" stroke="#44597E" stroke-width="3" stroke-linejoin="round"/>
+<line x1="0" y1="-23" x2="0" y2="0" stroke="#44597E" stroke-width="3"/></g><g transform="translate(78 100) rotate(18)"><polygon points="-10,0 -10,-24 0,-36 10,-24 10,0" fill="#fff" stroke="#44597E" stroke-width="3" stroke-linejoin="round"/>
+<polyline points="-10,-24 0,-19 10,-24" fill="none" stroke="#44597E" stroke-width="3" stroke-linejoin="round"/>
+<line x1="0" y1="-19" x2="0" y2="0" stroke="#44597E" stroke-width="3"/></g><g transform="translate(60 102) rotate(0)"><polygon points="-13,0 -13,-50 0,-68 13,-50 13,0" fill="#fff" stroke="#44597E" stroke-width="3" stroke-linejoin="round"/>
+<polyline points="-13,-50 0,-45 13,-50" fill="none" stroke="#44597E" stroke-width="3" stroke-linejoin="round"/>
+<line x1="0" y1="-45" x2="0" y2="0" stroke="#44597E" stroke-width="3"/></g><line x1="22" y1="102" x2="98" y2="102" stroke="#44597E" stroke-width="3" stroke-linecap="round"/></svg>

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>색 방향 시안 2</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; }
+  body { margin:0; padding:24px 16px 56px; background:#FFFFFF; color:#3A3845; font-family:"Pretendard Variable", Pretendard, -apple-system, sans-serif; letter-spacing:-.02em; }
+  h1 { margin:0 0 6px; font-size:24px; }
+  .lead { margin:0 0 24px; color:#5F5B6E; font-size:15px; line-height:1.6; }
+  .dirs { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:28px; }
+  .dir h2 { margin:0 0 4px; font-size:19px; }
+  .dir p.why { margin:0 0 12px; color:#5F5B6E; font-size:14px; line-height:1.55; }
+  .pal { display:flex; gap:6px; margin:0 0 14px; }
+  .pal div { flex:1; }
+  .pal i { display:block; height:28px; border-radius:8px; border:1px solid rgba(0,0,0,.04); }
+  .pal span { display:block; margin-top:3px; font-size:11px; color:#5F5B6E; text-align:center; }
+
+  .phone { overflow:hidden; border:1px solid #ECEBF0; border-radius:28px; background:#FFFFFF; }
+  .top { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid #F0EFF4; font-size:15px; font-weight:600; }
+  .top b { font-size:13px; color:#8C889A; font-weight:500; }
+  .body { padding:16px; }
+  .banner { position:relative; overflow:hidden; padding:18px; border-radius:20px; background:var(--banner-bg); }
+  .banner small { font-size:12px; font-weight:700; color:var(--banner-tag); }
+  .banner strong { display:block; margin:6px 0 4px; font-size:20px; line-height:1.3; color:#3A3845; }
+  .banner p { margin:0 0 14px; font-size:13px; color:#5F5B6E; }
+  .banner .btn { display:inline-grid; place-items:center; height:40px; padding:0 18px; border-radius:999px; background:#6553C2; color:#FFFFFF; font-size:14px; font-weight:700; }
+  .banner .gem { position:absolute; right:-4px; top:16px; width:92px; filter:drop-shadow(0 10px 16px rgba(60,40,140,.18)); }
+  .quick { display:grid; grid-template-columns:repeat(4, 1fr); gap:12px 4px; margin:18px 0; }
+  .q { display:grid; justify-items:center; gap:6px; font-size:11px; text-align:center; }
+  .tile { display:grid; place-items:center; width:48px; height:48px; border-radius:16px; }
+  .tile svg { width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  .card { padding:16px; border-radius:20px; border:1px solid #ECEBF0; }
+  .card small { display:inline-block; padding:3px 9px; border-radius:999px; background:var(--tag-bg); color:var(--tag-ink); font-size:11px; font-weight:700; }
+  .card strong { display:block; margin:10px 0 6px; font-size:17px; }
+  .card p { margin:0; color:#5F5B6E; font-size:13px; line-height:1.5; }
+  .chips { display:flex; gap:6px; margin-top:12px; }
+  .chips span { padding:4px 10px; border-radius:999px; background:#F3F3F6; color:#5F5B6E; font-size:12px; font-weight:600; }
+  .nav { display:flex; justify-content:space-around; margin:14px 12px 12px; padding:10px 0; border:1px solid #ECEBF0; border-radius:20px; color:#8C889A; font-size:11px; }
+  .nav span.on { color:#6553C2; font-weight:700; }
+
+  /* A. 파스텔 보석: 아주 옅은 파스텔 면 + 같은 색의 차분한 진한 톤 아이콘 */
+  .a { --banner-bg:#F1EDFD; --banner-tag:#6553C2; --tag-bg:#FCEBDD; --tag-ink:#A35C2E; }
+  .a .lav { background:#F0ECFC; color:#6A5BB8; }
+  .a .sky { background:#EAF2FB; color:#4E72A8; }
+  .a .pch { background:#FCEFE6; color:#B0683A; }
+  .a .mnt { background:#E9F5EF; color:#3F8566; }
+
+  /* B. 라벤더 + 살구 투톤: 보라 옆에 따뜻한 살구 하나만 더 */
+  .b { --banner-bg:#FCF1E8; --banner-tag:#A35C2E; --tag-bg:#F0ECFC; --tag-ink:#6553C2; }
+  .b .lav { background:#F0ECFC; color:#6553C2; }
+  .b .apr { background:#FCEFE6; color:#B0683A; }
+</style>
+</head>
+<body>
+<h1>색 방향 시안 2</h1>
+<p class="lead">채도를 확 낮췄어요. 면은 아주 옅은 파스텔, 아이콘은 같은 색의 차분한 톤이에요. 버튼·선택은 지금 보라 그대로라 화면 전체 인상은 지금과 크게 다르지 않으면서, 보라 하나만 보이던 단조로움만 덜어요.</p>
+
+<div class="dirs">
+<section class="dir a">
+  <h2>A. 파스텔 보석</h2>
+  <p class="why">라벤더 · 하늘 · 살구 · 민트 네 가지 옅은 면. 하는 일별로 색을 나눠요(검사·유형 라벤더, 알기 하늘, 기록 살구, 실천 민트). 태그 하나에만 살구를 써서 포인트.</p>
+  <div class="pal"><div><i style="background:#F0ECFC"></i><span>라벤더</span></div><div><i style="background:#EAF2FB"></i><span>하늘</span></div><div><i style="background:#FCEFE6"></i><span>살구</span></div><div><i style="background:#E9F5EF"></i><span>민트</span></div><div><i style="background:#6553C2"></i><span>버튼</span></div></div>
+  <div class="phone">
+    <div class="top">Enneagram <b>검색</b></div>
+    <div class="body">
+      <div class="banner"><small>처음이라면</small><strong>내 보석을<br>찾아볼까요?</strong><p>두 번만 고르면 가까운 유형을 보여줘요.</p><span class="btn">간편 검사하기</span><img class="gem" src="https://hongchopper.github.io/enneagram/assets/gems/gem-5-amethyst.png" alt=""></div>
+      <div class="quick">
+        <div class="q"><span class="tile lav"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9z"/><path d="m9 13 2 2 4-4"/></svg></span>유형 검사</div>
+        <div class="q"><span class="tile lav"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5 19.4 16.2H4.6Z"/></svg></span>9가지 유형</div>
+        <div class="q"><span class="tile sky"><svg viewBox="0 0 24 24"><path d="M3.5 5.5c3-1 6-.6 8.5 1.2v13c-2.5-1.8-5.5-2.2-8.5-1.2z"/><path d="M20.5 5.5c-3-1-6-.6-8.5 1.2v13c2.5-1.8 5.5-2.2 8.5-1.2z"/></svg></span>에니어그램이란</div>
+        <div class="q"><span class="tile sky"><svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.5"/><circle cx="7" cy="16" r="3.5"/><circle cx="17" cy="16" r="3.5"/></svg></span>세 중심</div>
+        <div class="q"><span class="tile sky"><svg viewBox="0 0 24 24"><circle cx="9" cy="12" r="5.5"/><circle cx="15" cy="12" r="5.5"/></svg></span>헷갈리는 유형</div>
+        <div class="q"><span class="tile sky"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="m3.5 16 5-5 4 4 3-3 5 5"/><circle cx="16" cy="9" r="1.5"/></svg></span>삶의 장면</div>
+        <div class="q"><span class="tile pch"><svg viewBox="0 0 24 24"><path d="M5 18V6a2 2 0 0 1 2-2h11v13H7a2 2 0 0 0-2 2 2 2 0 0 0 2 2h11"/></svg></span>다이어리</div>
+        <div class="q"><span class="tile mnt"><svg viewBox="0 0 24 24"><path d="M7 9 9.5 5.5h6L18 9l-5.5 7z"/><path d="M7 9h11"/><path d="M4 19.5c2.5-1.6 5-1.6 7.5 0s5 1.6 8.5-.4"/></svg></span>보석 닦기</div>
+      </div>
+      <div class="card"><small>오늘의 VS</small><strong>둘 다 꼼꼼한데, 뭐가 다를까?</strong><p>1번은 ‘옳은가’를, 6번은 ‘믿을 만한가’를 먼저 봐요.</p><div class="chips"><span>#기준</span><span>#신뢰</span></div></div>
+    </div>
+    <div class="nav"><span class="on">홈</span><span>유형 탐구</span><span>다이어리</span><span>보석 닦기</span><span>나의 공간</span></div>
+  </div>
+</section>
+
+<section class="dir b">
+  <h2>B. 라벤더 + 살구</h2>
+  <p class="why">색을 하나만 더해요. 보라 옆에 따뜻한 살구 하나. 배너·기록·태그 같은 ‘따뜻하게 보일 곳’은 살구, 나머지는 지금처럼 라벤더. 가장 조용하고 정돈된 느낌이에요.</p>
+  <div class="pal"><div><i style="background:#F0ECFC"></i><span>라벤더</span></div><div><i style="background:#FCEFE6"></i><span>살구</span></div><div><i style="background:#F3F3F6"></i><span>회색 면</span></div><div><i style="background:#6553C2"></i><span>버튼</span></div></div>
+  <div class="phone">
+    <div class="top">Enneagram <b>검색</b></div>
+    <div class="body">
+      <div class="banner"><small>처음이라면</small><strong>내 보석을<br>찾아볼까요?</strong><p>두 번만 고르면 가까운 유형을 보여줘요.</p><span class="btn">간편 검사하기</span><img class="gem" src="https://hongchopper.github.io/enneagram/assets/gems/gem-5-amethyst.png" alt=""></div>
+      <div class="quick">
+        <div class="q"><span class="tile lav"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9z"/><path d="m9 13 2 2 4-4"/></svg></span>유형 검사</div>
+        <div class="q"><span class="tile lav"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5 19.4 16.2H4.6Z"/></svg></span>9가지 유형</div>
+        <div class="q"><span class="tile lav"><svg viewBox="0 0 24 24"><path d="M3.5 5.5c3-1 6-.6 8.5 1.2v13c-2.5-1.8-5.5-2.2-8.5-1.2z"/><path d="M20.5 5.5c-3-1-6-.6-8.5 1.2v13c2.5-1.8 5.5-2.2 8.5-1.2z"/></svg></span>에니어그램이란</div>
+        <div class="q"><span class="tile lav"><svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.5"/><circle cx="7" cy="16" r="3.5"/><circle cx="17" cy="16" r="3.5"/></svg></span>세 중심</div>
+        <div class="q"><span class="tile lav"><svg viewBox="0 0 24 24"><circle cx="9" cy="12" r="5.5"/><circle cx="15" cy="12" r="5.5"/></svg></span>헷갈리는 유형</div>
+        <div class="q"><span class="tile apr"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="m3.5 16 5-5 4 4 3-3 5 5"/><circle cx="16" cy="9" r="1.5"/></svg></span>삶의 장면</div>
+        <div class="q"><span class="tile apr"><svg viewBox="0 0 24 24"><path d="M5 18V6a2 2 0 0 1 2-2h11v13H7a2 2 0 0 0-2 2 2 2 0 0 0 2 2h11"/></svg></span>다이어리</div>
+        <div class="q"><span class="tile apr"><svg viewBox="0 0 24 24"><path d="M7 9 9.5 5.5h6L18 9l-5.5 7z"/><path d="M7 9h11"/><path d="M4 19.5c2.5-1.6 5-1.6 7.5 0s5 1.6 8.5-.4"/></svg></span>보석 닦기</div>
+      </div>
+      <div class="card"><small>오늘의 VS</small><strong>둘 다 꼼꼼한데, 뭐가 다를까?</strong><p>1번은 ‘옳은가’를, 6번은 ‘믿을 만한가’를 먼저 봐요.</p><div class="chips"><span>#기준</span><span>#신뢰</span></div></div>
+    </div>
+    <div class="nav"><span class="on">홈</span><span>유형 탐구</span><span>다이어리</span><span>보석 닦기</span><span>나의 공간</span></div>
+  </div>
+</section>
+</div>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+<defs>
+<linearGradient id="cEdge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8E7FE0"/><stop offset="1" stop-color="#C46BB0"/></linearGradient>
+</defs>
+<g stroke="#FFFFFF" stroke-width="1.4" stroke-linejoin="round">
+<polygon points="42,30 20,50 48,50" fill="#BBD9FF" fill-opacity="1"/>
+<polygon points="42,30 78,30 72,50 48,50" fill="#FFFFFF" fill-opacity="1"/>
+<polygon points="78,30 72,50 100,50" fill="#F7B8C8" fill-opacity="1"/>
+<polygon points="20,50 48,50 60,98" fill="#D7C8FF" fill-opacity="1"/>
+<polygon points="48,50 72,50 60,98" fill="#B5E4EC" fill-opacity="1"/>
+<polygon points="72,50 100,50 60,98" fill="#E4C7E4" fill-opacity="1"/>
+</g>
+<polygon points="42,30 78,30 100,50 60,98 20,50" fill="none" stroke="url(#cEdge)" stroke-width="2.6" stroke-linejoin="round"/>
+<path d="M98 14 l2.8 7.2 7.2 2.8 -7.2 2.8 -2.8 7.2 -2.8 -7.2 -7.2 -2.8 7.2 -2.8z" fill="url(#cEdge)"/>
+<path d="M18 22 l1.5 3.9 3.9 1.5 -3.9 1.5 -1.5 3.9 -1.5 -3.9 -3.9 -1.5 3.9 -1.5z" fill="#8E7FE0" fill-opacity=".7"/>
+</svg>

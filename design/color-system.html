@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>색 체계 시안</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+<style>
+  :root {
+    /* 1. 중립 */
+    --bg:#FFFFFF; --fill:#F3F3F6; --line:#E8E8EC; --faint:#A9A5B4; --sub:#5F5B6E; --ink:#3A3845;
+    /* 2. 브랜드 (누르는 것만) */
+    --brand:#6553C2; --brand-soft:#EEEAFD;
+    /* 3. 상태 */
+    --ok:#0F9B5C; --ok-soft:#EDF8F3; --warn:#B7791F; --warn-soft:#FFF8E8; --err:#C65B5B; --err-soft:#FBEAEA;
+    /* 4. 분류 (하는 일별) */
+    --learn:#2F62C9; --learn-soft:#EAF1FD;   /* 알기 */
+    --record:#A9501A; --record-soft:#FDF0E6; /* 기록 */
+    --act:#0B7A57; --act-soft:#E5F6EF;       /* 실천 */
+    --test:#6553C2; --test-soft:#EEEAFD;     /* 검사 = 브랜드 */
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:24px 16px 56px; background:var(--bg); color:var(--ink); font-family:"Pretendard Variable", Pretendard, -apple-system, sans-serif; letter-spacing:-.02em; }
+  h1 { margin:0 0 6px; font-size:24px; }
+  h2 { margin:36px 0 6px; font-size:20px; }
+  h3 { margin:20px 0 8px; font-size:16px; }
+  .lead, .note { margin:0 0 16px; color:var(--sub); font-size:15px; line-height:1.6; }
+  .note { font-size:13px; }
+
+  /* 팔레트 */
+  .swatches { display:grid; grid-template-columns:repeat(auto-fill, minmax(96px, 1fr)); gap:8px; }
+  .sw { border-radius:12px; overflow:hidden; border:1px solid var(--line); font-size:12px; }
+  .sw i { display:block; height:44px; }
+  .sw span { display:block; padding:6px 8px; line-height:1.35; }
+  .sw b { display:block; font-size:13px; }
+  .role { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:8px; }
+  .role div { padding:12px; border-radius:16px; font-size:13px; line-height:1.45; }
+  .role b { display:block; margin-bottom:4px; font-size:15px; }
+
+  /* 비교 */
+  .compare { display:grid; grid-template-columns:1fr; gap:12px; }
+  @media (min-width:760px) { .compare { grid-template-columns:1fr 1fr; } }
+  .panel { padding:16px; border:1px solid var(--line); border-radius:20px; }
+  .panel > .label { display:inline-block; margin-bottom:12px; padding:3px 10px; border-radius:999px; background:var(--fill); color:var(--sub); font-size:13px; font-weight:600; }
+  .panel.is-new > .label { background:var(--ink); color:#fff; }
+
+  .quick { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px 6px; }
+  .q { display:grid; justify-items:center; gap:6px; font-size:12px; text-align:center; }
+  .tile { display:grid; place-items:center; width:52px; height:52px; border-radius:18px; }
+  .tile svg { width:26px; height:26px; fill:none; stroke:currentColor; stroke-width:1.75; stroke-linecap:round; stroke-linejoin:round; }
+  .old .tile { background:var(--brand-soft); color:var(--brand); }
+  .t-learn { background:var(--learn-soft); color:var(--learn); }
+  .t-record { background:var(--record-soft); color:var(--record); }
+  .t-act { background:var(--act-soft); color:var(--act); }
+  .t-test { background:var(--test-soft); color:var(--test); }
+
+  .chips { display:flex; flex-wrap:wrap; gap:6px; margin:12px 0 0; }
+  .chip { padding:4px 10px; border-radius:999px; font-size:13px; font-weight:600; }
+  .old .chip { background:var(--brand-soft); color:var(--brand); }
+  .new .chip { background:var(--fill); color:var(--sub); }
+  .new .chip.is-ok { background:var(--ok-soft); color:var(--ok); }
+
+  .tiles { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:4px; }
+  .et { padding:14px; border-radius:16px; background:var(--fill); }
+  .et .tile { width:40px; height:40px; border-radius:12px; margin-bottom:8px; }
+  .et .tile svg { width:20px; height:20px; }
+  .et b { display:block; font-size:15px; }
+  .et span { color:var(--sub); font-size:12px; }
+
+  .btns { display:grid; gap:8px; margin-top:12px; }
+  .btn { display:grid; place-items:center; height:48px; border-radius:999px; font-size:15px; font-weight:700; }
+  .btn.p { background:var(--brand); color:#fff; }
+  .btn.s { background:var(--brand-soft); color:var(--brand); }
+  .new .btn.s { background:var(--fill); color:var(--ink); }
+  .kicker { color:var(--brand); font-size:13px; font-weight:700; }
+  .new .kicker { color:var(--sub); }
+  .done { display:flex; align-items:center; gap:8px; margin-top:12px; padding:10px 12px; border-radius:12px; font-size:14px; }
+  .old .done { background:var(--brand-soft); color:var(--brand); }
+  .new .done { background:var(--ok-soft); color:var(--ok); }
+  .dot { width:18px; height:18px; border-radius:50%; background:currentColor; }
+</style>
+</head>
+<body>
+<h1>색 체계 시안</h1>
+<p class="lead">보라 하나가 모든 역할을 하던 것을 4층으로 나눴어요. <b>보라 = 누르는 것</b>, <b>파랑 = 알기</b>, <b>살구 = 기록</b>, <b>민트 = 실천</b>. 보석 9색은 지금처럼 유형 전용이에요.</p>
+
+<h2>1. 역할별 색</h2>
+<div class="role">
+  <div style="background:var(--fill)"><b>중립 · 70~80%</b>바탕·글자·선·카드 면. 화면 대부분은 흰색과 회색이에요.</div>
+  <div style="background:var(--brand-soft);color:var(--brand)"><b>브랜드 보라 · 10% 이하</b>주 버튼, 링크, 선택된 탭, 검사. 누를 수 있는 것만.</div>
+  <div style="background:var(--ok-soft);color:var(--ok)"><b>상태</b>완료·성공은 초록, 주의는 노랑, 오류는 빨강. 의미가 있을 때만.</div>
+  <div style="background:var(--learn-soft);color:var(--learn)"><b>분류</b>메뉴 아이콘·타일에 작게. 어느 영역인지 색으로 알려줘요.</div>
+</div>
+
+<h3>팔레트</h3>
+<div class="swatches">
+  <div class="sw"><i style="background:#FFFFFF"></i><span><b>바탕</b>#FFFFFF</span></div>
+  <div class="sw"><i style="background:#F3F3F6"></i><span><b>면</b>#F3F3F6</span></div>
+  <div class="sw"><i style="background:#E8E8EC"></i><span><b>선</b>#E8E8EC</span></div>
+  <div class="sw"><i style="background:#5F5B6E"></i><span><b>보조 글자</b>#5F5B6E</span></div>
+  <div class="sw"><i style="background:#3A3845"></i><span><b>글자</b>#3A3845</span></div>
+  <div class="sw"><i style="background:#6553C2"></i><span><b>브랜드</b>#6553C2</span></div>
+  <div class="sw"><i style="background:#2F62C9"></i><span><b>알기</b>#2F62C9</span></div>
+  <div class="sw"><i style="background:#A9501A"></i><span><b>기록</b>#A9501A</span></div>
+  <div class="sw"><i style="background:#0B7A57"></i><span><b>실천</b>#0B7A57</span></div>
+  <div class="sw"><i style="background:#0F9B5C"></i><span><b>성공</b>#0F9B5C</span></div>
+  <div class="sw"><i style="background:#B7791F"></i><span><b>주의</b>#B7791F</span></div>
+  <div class="sw"><i style="background:#C65B5B"></i><span><b>오류</b>#C65B5B</span></div>
+</div>
+<p class="note">분류 색 셋은 흰 바탕과 옅은 면 위 모두 글자 대비 4.5 이상인 진하기예요 (옅은 면 위: 알기 5.0 · 기록 4.9 · 실천 4.8). 면은 같은 색을 아주 옅게 깔아요.</p>
+
+<h2>2. 지금 vs 제안</h2>
+
+<h3>홈 바로가기</h3>
+<div class="compare">
+  <div class="panel old"><span class="label">지금 · 모두 연보라</span>
+    <div class="quick">
+      <div class="q"><span class="tile"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9z"/><path d="m9 13 2 2 4-4"/></svg></span>유형 검사</div>
+      <div class="q"><span class="tile"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5 19.4 16.2H4.6Z"/></svg></span>9가지 유형</div>
+      <div class="q"><span class="tile"><svg viewBox="0 0 24 24"><path d="M3.5 5.5c3-1 6-.6 8.5 1.2v13c-2.5-1.8-5.5-2.2-8.5-1.2z"/><path d="M20.5 5.5c-3-1-6-.6-8.5 1.2v13c2.5-1.8 5.5-2.2 8.5-1.2z"/></svg></span>에니어그램이란</div>
+      <div class="q"><span class="tile"><svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.5"/><circle cx="7" cy="16" r="3.5"/><circle cx="17" cy="16" r="3.5"/></svg></span>세 중심</div>
+      <div class="q"><span class="tile"><svg viewBox="0 0 24 24"><circle cx="9" cy="12" r="5.5"/><circle cx="15" cy="12" r="5.5"/></svg></span>헷갈리는 유형</div>
+      <div class="q"><span class="tile"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="m3.5 16 5-5 4 4 3-3 5 5"/><circle cx="16" cy="9" r="1.5"/></svg></span>삶의 장면</div>
+      <div class="q"><span class="tile"><svg viewBox="0 0 24 24"><path d="M5 18V6a2 2 0 0 1 2-2h11v13H7a2 2 0 0 0-2 2 2 2 0 0 0 2 2h11"/></svg></span>다이어리</div>
+      <div class="q"><span class="tile"><svg viewBox="0 0 24 24"><path d="M7 9 9.5 5.5h6L18 9l-5.5 7z"/><path d="M7 9h11"/><path d="M4 19.5c2.5-1.6 5-1.6 7.5 0s5 1.6 8.5-.4"/></svg></span>보석 닦기</div>
+    </div>
+  </div>
+  <div class="panel new"><span class="label">제안 · 하는 일별 색</span>
+    <div class="quick">
+      <div class="q"><span class="tile t-test"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9z"/><path d="m9 13 2 2 4-4"/></svg></span>유형 검사</div>
+      <div class="q"><span class="tile t-learn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5 19.4 16.2H4.6Z"/></svg></span>9가지 유형</div>
+      <div class="q"><span class="tile t-learn"><svg viewBox="0 0 24 24"><path d="M3.5 5.5c3-1 6-.6 8.5 1.2v13c-2.5-1.8-5.5-2.2-8.5-1.2z"/><path d="M20.5 5.5c-3-1-6-.6-8.5 1.2v13c2.5-1.8 5.5-2.2 8.5-1.2z"/></svg></span>에니어그램이란</div>
+      <div class="q"><span class="tile t-learn"><svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.5"/><circle cx="7" cy="16" r="3.5"/><circle cx="17" cy="16" r="3.5"/></svg></span>세 중심</div>
+      <div class="q"><span class="tile t-learn"><svg viewBox="0 0 24 24"><circle cx="9" cy="12" r="5.5"/><circle cx="15" cy="12" r="5.5"/></svg></span>헷갈리는 유형</div>
+      <div class="q"><span class="tile t-learn"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="m3.5 16 5-5 4 4 3-3 5 5"/><circle cx="16" cy="9" r="1.5"/></svg></span>삶의 장면</div>
+      <div class="q"><span class="tile t-record"><svg viewBox="0 0 24 24"><path d="M5 18V6a2 2 0 0 1 2-2h11v13H7a2 2 0 0 0-2 2 2 2 0 0 0 2 2h11"/></svg></span>다이어리</div>
+      <div class="q"><span class="tile t-act"><svg viewBox="0 0 24 24"><path d="M7 9 9.5 5.5h6L18 9l-5.5 7z"/><path d="M7 9h11"/><path d="M4 19.5c2.5-1.6 5-1.6 7.5 0s5 1.6 8.5-.4"/></svg></span>보석 닦기</div>
+    </div>
+  </div>
+</div>
+
+<h3>라벨 · 태그 · 버튼</h3>
+<div class="compare">
+  <div class="panel old"><span class="label">지금 · 라벨·태그·보조 버튼까지 보라</span>
+    <div class="kicker">간편 검사 · 결과</div>
+    <div class="chips"><span class="chip">#목표</span><span class="chip">#효율</span><span class="chip">#인정</span><span class="chip">감정 중심</span></div>
+    <div class="btns"><span class="btn p">간편 검사하기</span><span class="btn s">정식 검사하기</span></div>
+    <div class="done"><span class="dot"></span>해봤어요</div>
+  </div>
+  <div class="panel new"><span class="label">제안 · 보라는 주 버튼만</span>
+    <div class="kicker">간편 검사 · 결과</div>
+    <div class="chips"><span class="chip">#목표</span><span class="chip">#효율</span><span class="chip">#인정</span><span class="chip">감정 중심</span></div>
+    <div class="btns"><span class="btn p">간편 검사하기</span><span class="btn s">정식 검사하기</span></div>
+    <div class="done"><span class="dot"></span>해봤어요 · 완료는 초록</div>
+  </div>
+</div>
+
+<h3>유형 탐구 타일</h3>
+<div class="compare">
+  <div class="panel old"><span class="label">지금</span>
+    <div class="tiles">
+      <div class="et"><span class="tile" style="background:var(--brand-soft);color:var(--brand)"><svg viewBox="0 0 24 24"><path d="M3.5 5.5c3-1 6-.6 8.5 1.2v13c-2.5-1.8-5.5-2.2-8.5-1.2z"/><path d="M20.5 5.5c-3-1-6-.6-8.5 1.2v13c2.5-1.8 5.5-2.2 8.5-1.2z"/></svg></span><b>에니어그램이란?</b><span>나를 관찰하는 9가지 틀</span></div>
+      <div class="et"><span class="tile" style="background:var(--brand-soft);color:var(--brand)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg></span><b>유형을 만드는 핵심</b><span>행동보다 이유를 봐요</span></div>
+    </div>
+  </div>
+  <div class="panel new"><span class="label">제안 · 알기 = 파랑</span>
+    <div class="tiles">
+      <div class="et"><span class="tile t-learn" style="background:#fff"><svg viewBox="0 0 24 24"><path d="M3.5 5.5c3-1 6-.6 8.5 1.2v13c-2.5-1.8-5.5-2.2-8.5-1.2z"/><path d="M20.5 5.5c-3-1-6-.6-8.5 1.2v13c2.5-1.8 5.5-2.2 8.5-1.2z"/></svg></span><b>에니어그램이란?</b><span>나를 관찰하는 9가지 틀</span></div>
+      <div class="et"><span class="tile t-learn" style="background:#fff"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg></span><b>유형을 만드는 핵심</b><span>행동보다 이유를 봐요</span></div>
+    </div>
+  </div>
+</div>
+
+<h2>3. 적용 규칙 (요약)</h2>
+<div class="panel">
+  <p class="lead" style="margin:0">① 보라는 주 버튼·링크·선택된 탭·검사에만 ② 태그·배지·라벨·보조 버튼은 회색 면 + 진한 글자 ③ 메뉴 아이콘·타일은 하는 일별 색(알기 파랑 · 기록 살구 · 실천 민트 · 검사 보라) ④ 완료·성공은 초록, 오류는 빨강 ⑤ 보석 9색은 유형을 가리킬 때만</p>
+</div>
+</body>
+</html>

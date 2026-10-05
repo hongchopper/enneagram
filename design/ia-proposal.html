@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>화면 구조도</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+<style>
+  :root { --primary:#6553C2; --soft:#EEEAFD; --ink:#3A3845; --sub:#5F5B6E; --line:#E8E8EC; --fill:#F3F3F6;
+          --keep:#EEEAFD; --keep-ink:#5443AE; --move:#FFF4E0; --move-ink:#9A5B00; --cut:#FBEAEA; --cut-ink:#B04545; --new:#E7F6EE; --new-ink:#0F7A4A; }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:24px 16px 56px; background:#fff; color:var(--ink); font-family:"Pretendard Variable", Pretendard, -apple-system, sans-serif; letter-spacing:-.02em; }
+  h1 { margin:0 0 6px; font-size:24px; }
+  .lead { margin:0 0 18px; color:var(--sub); font-size:15px; line-height:1.6; }
+  .legend { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 24px; }
+  .tag { display:inline-flex; align-items:center; padding:3px 10px; border-radius:999px; font-size:13px; font-weight:600; white-space:nowrap; }
+  .keep { background:var(--keep); color:var(--keep-ink); }
+  .move { background:var(--move); color:var(--move-ink); }
+  .cut { background:var(--cut); color:var(--cut-ink); }
+  .new { background:var(--new); color:var(--new-ink); }
+  .stats { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:8px; margin:0 0 28px; }
+  .stat { padding:14px; border-radius:16px; background:var(--fill); }
+  .stat b { display:block; font-size:18px; word-break:keep-all; }
+  .stat span { color:var(--sub); font-size:13px; }
+  h2 { margin:32px 0 6px; font-size:20px; }
+  .job { margin:0 0 12px; color:var(--sub); font-size:15px; }
+  .tab { margin:0 0 14px; padding:16px; border:1px solid var(--line); border-radius:20px; }
+  .tab-head { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+  .tab-head strong { font-size:18px; }
+  .tab-head em { color:var(--sub); font-size:14px; font-style:normal; }
+  ul { margin:0; padding:0; list-style:none; }
+  li { display:flex; gap:8px; align-items:flex-start; padding:8px 0; border-top:1px solid var(--line); font-size:15px; line-height:1.5; }
+  li:first-child { border-top:0; }
+  li .tag { flex:none; margin-top:1px; }
+  li small { display:block; color:var(--sub); font-size:13px; }
+  ul ul { margin:6px 0 0; padding-left:12px; border-left:2px solid var(--line); }
+  ul ul li { border-top:0; padding:4px 0; font-size:14px; }
+  .flow { display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin:0 0 8px; font-size:15px; font-weight:600; }
+  .flow span.step { padding:6px 12px; border-radius:999px; background:var(--soft); color:var(--primary); }
+  .flow i { color:var(--sub); font-style:normal; }
+</style>
+</head>
+<body>
+<h1>화면 구조도 · 줄인 안</h1>
+<p class="lead">원칙은 두 가지예요. ① <b>메뉴 하나에 하는 일 하나</b> ② <b>내용마다 집은 한 곳</b>(다른 곳에서는 링크만). 아래는 줄인 구조이고, 각 줄 앞 표시가 지금과 비교한 변화예요.</p>
+<div class="legend"><span class="tag keep">유지</span><span class="tag move">옮김 · 합침</span><span class="tag cut">뺌 (링크만 남김)</span><span class="tag new">새로·바꿈</span></div>
+
+<div class="flow"><span class="step">홈 · 오늘 할 일</span><i>→</i><span class="step">유형 탐구 · 알기</span><i>→</i><span class="step">다이어리 · 기록</span><i>→</i><span class="step">보석 닦기 · 실천</span><i>→</i><span class="step">나의 공간 · 돌아보기</span></div>
+<p class="lead">하단 메뉴 5개는 그대로예요. 왼쪽부터 서비스 순서대로 읽혀요.</p>
+
+<div class="stats">
+  <div class="stat"><b>37 → 약 12</b><span>홈에서 누를 수 있는 곳</span></div>
+  <div class="stat"><b>105 → 1 + 약 10</b><span>삶의 장면 탭 길이 (폰 화면 수)</span></div>
+  <div class="stat"><b>5 → 1</b><span>9가지 유형이 나오는 곳</span></div>
+</div>
+
+<h2>홈</h2>
+<p class="job">하는 일: <b>오늘 할 일 하나</b>를 보여주기. 볼거리 진열대가 아니에요.</p>
+<div class="tab"><ul>
+  <li><span class="tag new">바꿈</span><div>맨 위 배너 5장 → <b>3장</b><small>검사 전: 내 보석 찾기 · 오늘의 VS · 나라면? / 검사 후: 이번 주 닦을 것(보석 닦기) · 오늘의 VS · 나라면?</small></div></li>
+  <li><span class="tag keep">유지</span><div>오늘의 VS · 나라면? 카드 1개씩<small>매일 바뀌는 콘텐츠라 홈에 둘 이유가 있어요</small></div></li>
+  <li><span class="tag keep">유지</span><div>1분 읽기 4개 → 3개<small>누르면 유형 탐구의 해당 설명으로</small></div></li>
+  <li><span class="tag cut">뺌</span><div>9가지 보석 선반<small>집: 유형 탐구 9장 카드</small></div></li>
+  <li><span class="tag cut">뺌</span><div>나를 돌아보는 장면 선반 (9개)<small>집: 핸드북 ‘삶의 장면’</small></div></li>
+  <li><span class="tag cut">뺌</span><div>세 중심 카드 · 작은 VS 2개<small>집: 유형 탐구 ‘비교’</small></div></li>
+</ul></div>
+
+<h2>유형 탐구</h2>
+<p class="job">하는 일: <b>알기</b>. 유형 하나를 깊이 보거나, 여러 유형을 나란히 비교해요.</p>
+<div class="tab"><ul>
+  <li><span class="tag keep">유지</span><div><b>9가지 유형</b> 카드 스와이프 → 누르면 핸드북
+    <ul>
+      <li>요약 · 유형 이해 · 핵심 패턴 <span class="tag keep">유지</span></li>
+      <li>삶의 장면: <b>9개 장면 목록 → 누르면 장면 한 페이지</b> (이전·다음 장면) <span class="tag new">바꿈</span></li>
+      <li>성장: 읽는 내용만, 끝에 ‘보석 닦기에서 해보기 ›’ <span class="tag new">바꿈</span></li>
+    </ul></div></li>
+  <li><span class="tag keep">유지</span><div><b>비교하며 알아보기</b> (비교는 여기 한 곳)
+    <ul>
+      <li>에니어그램이란? · 유형을 만드는 핵심 <span class="tag move">‘에니어그램 이해’에서 합침</span></li>
+      <li>9가지 유형 한눈에 · 핵심 동기 비교 <span class="tag keep">유지</span></li>
+      <li>세 중심 · 사람을 대하는 방식 · 문제를 대하는 방식 <span class="tag keep">유지</span></li>
+      <li>같은 상황, 다른 이유 · 헷갈리는 유형(VS 모음) <span class="tag keep">유지</span></li>
+    </ul></div></li>
+  <li><span class="tag cut">뺌</span><div>따로 있던 ‘에니어그램 이해’ 화면 (6개 영역)<small>겹치는 영역은 비교로 합치고, 날개·성장 같은 개념은 핸드북 해당 탭으로</small></div></li>
+  <li><span class="tag cut">뺌</span><div>따로 있던 ‘돌아보기’ 화면 (유형 없이 9개 장면)<small>집: 핸드북 ‘삶의 장면’. 장면 안의 ‘직접 돌아보기’는 그대로</small></div></li>
+</ul></div>
+
+<h2>다이어리</h2>
+<p class="job">하는 일: <b>기록</b>.</p>
+<div class="tab"><ul>
+  <li><span class="tag keep">유지</span><div>쓰기(채팅) · 기록 두 칸</div></li>
+</ul></div>
+
+<h2>보석 닦기</h2>
+<p class="job">하는 일: <b>실천</b>. 실천은 여기 한 곳.</p>
+<div class="tab"><ul>
+  <li><span class="tag keep">유지</span><div>1분 연습 · 이번 주에 닦아 볼 것 · 해보기로 한 것</div></li>
+  <li><span class="tag move">합침</span><div>핸드북 ‘성장’의 실천 목록은 여기로 연결</div></li>
+</ul></div>
+
+<h2>나의 공간</h2>
+<p class="job">하는 일: <b>나를 돌아보기</b>. 내 카드와 기록의 흐름.</p>
+<div class="tab"><ul>
+  <li><span class="tag keep">유지</span><div>내 프로필 카드 · 유형 검사 다시 하기 · 나의 변화</div></li>
+  <li><span class="tag cut">뺌</span><div>‘내가 탐색 중인 유형’ 고르기 상자<small>바로 위 내 카드와 겹쳐요. 유형 바꾸기는 검사나 카드에서</small></div></li>
+</ul></div>
+
+<h2>메뉴 밖 화면</h2>
+<div class="tab"><ul>
+  <li><span class="tag keep">유지</span><div>유형 검사 (간편 · 정식)<small>홈 배너 첫 장과 나의 공간에서 들어가요</small></div></li>
+  <li><span class="tag keep">유지</span><div>공유 링크로 받은 카드 화면</div></li>
+</ul></div>
+</body>
+</html>

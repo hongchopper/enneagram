@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="C" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#332D4F"/><stop offset="1" stop-color="#5B5280"/></linearGradient>
+<radialGradient id="G"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".55" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><linearGradient id="E" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5B5280"/><stop offset="1" stop-color="#8F7FB8"/></linearGradient></defs><path d="M14 106 V60 A46 46 0 0 1 106 60 V106 Z" fill="url(#C)"/>
+<circle cx="60" cy="70" r="30" fill="url(#G)"/><g stroke="#fff" stroke-width="1" stroke-linejoin="round">
+<polygon points="50.1,55 38,66 53.4,66" fill="#BBD9FF"/><polygon points="50.1,55 69.9,55 66.6,66 53.4,66" fill="#fff"/>
+<polygon points="69.9,55 66.6,66 82,66" fill="#F7B8C8"/><polygon points="38,66 53.4,66 60,92.4" fill="#D7C8FF"/>
+<polygon points="53.4,66 66.6,66 60,92.4" fill="#B5E4EC"/><polygon points="66.6,66 82,66 60,92.4" fill="#E4C7E4"/></g>
+<path d="M84 35 L85.4 38.6 L89 40 L85.4 41.4 L84 45 L82.6 41.4 L79 40 L82.6 38.6Z" fill="#fff"/><path d="M36 46.5 L36.98 49.02 L39.5 50 L36.98 50.98 L36 53.5 L35.02 50.98 L32.5 50 L35.02 49.02Z" fill="#fff"/>
+<path d="M10 106 H110" stroke="url(#E)" stroke-width="3" stroke-linecap="round"/></svg>

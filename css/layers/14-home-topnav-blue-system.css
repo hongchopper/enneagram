@@ -69,21 +69,17 @@ body{overflow:hidden!important}
   letter-spacing:-.03em;
   cursor:pointer;
 }
+/* 로고: 동굴 속 결정 (2026-10-05, design/logo/round4.html D5) */
 .top-brand-mark{
-  width:34px;height:34px;border-radius:50%;
-  border:1.5px solid var(--app-primary);
-  display:grid;place-items:center;
-  position:relative;
+  width:34px;height:34px;
+  flex:none;
+  background:url("../../assets/logo/logo-mark.svg") center/contain no-repeat;
 }
-.top-brand-mark::after{
-  content:"";
-  width:6px;height:6px;border-radius:50%;
-  background:var(--app-primary);
-  box-shadow:0 -10px 0 -2px var(--app-primary),
-    9px -3px 0 -2px var(--app-primary),
-    6px 8px 0 -2px var(--app-primary),
-    -6px 8px 0 -2px var(--app-primary),
-    -9px -3px 0 -2px var(--app-primary);
+/* 로고 글자: Outfit 대문자 외곽선, A만 보석색 (design/logo/wordmark2.html O1) */
+.top-brand-word{
+  display:block;
+  height:.85em;
+  width:auto;
 }
 .top-global-nav{
   margin-left:auto;

@@ -1,0 +1,18 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "enneagram",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["tools/dev-server.js"],
+      "port": 5500,
+      "autoPort": true
+    },
+    {
+      "name": "moodboard",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["C:/Users/seonm/AppData/Local/Temp/claude/C--Users-seonm-Downloads-----------enneagram/07f9a781-a4df-4b9e-b45b-92d3e634bb73/scratchpad/serve.js"],
+      "port": 5510
+    }
+  ]
+}
