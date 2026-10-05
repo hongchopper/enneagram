@@ -1,6 +1,6 @@
 /* =========================================================
    유형 탐구 = 콘텐츠 피드 + 글 상세 (2026-10-05)
-   - 피드(#page-explore): 오늘의 글 → 내 유형 이야기 → 주제별 줄(옆으로 넘김) → 더 많은 글(위에 나온 글 빼고 전부, 2열, 스크롤하면 끝까지)
+   - 피드(홈 아래 #homeExplore, 2026-10-05 홈과 합침): 오늘의 글 → 내 유형 이야기 → 주제별 줄(옆으로 넘김) → 더 많은 글(위에 나온 글 빼고 전부, 2열, 스크롤하면 끝까지)
    - 글 상세(#page-post): 모든 글이 같은 블로그 템플릿. 사진 → 분류 → 제목 → 리드 → 본문 → 질문 → 안내 → 이어 읽기
    - 글 목록과 제목은 content/explore-posts.js. 유형별 글 본문은 핸드북 데이터에서 소제목(h3) 단위로 읽어 블로그 문단으로 바꾼다
    카드 그림은 모두 사진(assets/photos). 아이콘·입체 그림은 쓰지 않는다
@@ -21,6 +21,14 @@ D.KINDS.forEach(kd=>{
 });
 D.PAGES.forEach(p=>POSTS.set(p.id,{...p}));
 D.ARTICLES.forEach(a=>POSTS.set(a.id,{...a,src:'art'}));
+/* 헷갈리는 두 유형 12쌍 (2026-10-05): 비교 > 헷갈리는 유형 원문 + 두 유형의 핵심 두려움·욕망을 엮어 글로. 사진은 '닮은 둘' */
+const VS_ASK=['그 행동을 하지 않으면 어떤 기분이 들 것 같나요?','실패했을 때 더 아픈 쪽은 어느 유형의 이유인가요?','아무도 보지 않을 때도 그렇게 행동하나요?'];
+homeVsPairs().forEach(v=>{
+  const a=Math.min(v.a,v.b), b=Math.max(v.a,v.b), id=`vs-${a}-${b}`;
+  const hook=(typeof HOME_VS_HOOK!=='undefined' && HOME_VS_HOOK[`${a}-${b}`])||'뭐가 다를까?';
+  POSTS.set(id,{id,src:'vs',a,b,cat:'헷갈리는 유형',pic:`posts/${id}`,meta:`${a}번 vs ${b}번 · 헷갈리는 유형`,
+    title:`${a}번 vs ${b}번, ${hook.replace(", "," ")}`,lead:v.same,same:v.same,diff:v.diff,ask:VS_ASK});
+});
 /* 피드에만 있는 바로가기 카드 (글이 아니라 기능 화면으로) */
 const GO={'go-diary':{title:'오늘 있었던 장면 하나 적어 보기',cat:'다이어리',pic:'diary'},'go-polish':{title:'이번 주에 해볼 작은 행동 고르기',cat:'보석 닦기',pic:'polish'}};
 
@@ -42,7 +50,7 @@ const pic=f=>`<img src="assets/photos/${f}.jpg" alt="" width="900" height="600" 
 function card(id){
   const p=POSTS.get(id)||GO[id];
   if(!p) return '';
-  const meta=p.t?`${N(p.t)} · ${p.cat}`:p.cat;
+  const meta=p.meta||(p.t?`${N(p.t)} · ${p.cat}`:p.cat);
   const attr=GO[id]?`data-go="${id.slice(3)}"`:`data-post="${id}"`;
   return `<button class="feed-post" ${attr} type="button"><span class="feed-post-pic">${pic(p.pic)}</span>`
     +`<strong class="feed-post-title">${esc(p.title)}</strong><span class="feed-post-meta">${esc(meta)}</span></button>`;
@@ -78,7 +86,7 @@ window.renderExploreFeed=function(){
   /* 오늘의 글: 유형이 있으면 내 유형 글 중 하나, 없으면 처음 오는 사람을 위한 글 */
   const heroId=t?`${kinds[day%kinds.length]}-${t}`:['a-mbti','a-many','ov-basics','a-allme','cmp-glance','a-change'][day%6];
   /* 한 화면에 같은 글(같은 사진)은 한 번만: 줄마다 앞에서 나온 글을 뺀다 */
-  const seen=new Set([heroId,'cmp-situations']);
+  const seen=new Set([heroId]);
   const railOnce=(ids,wide)=>rail(ids.filter(id=>!seen.has(id) && seen.add(id)),wide);
   let html=filterHTML()+section('today','오늘의 글',`<div class="feed-post-single">${card(heroId)}</div>`);
   if(t){
@@ -86,9 +94,9 @@ window.renderExploreFeed=function(){
     html+=section('mine',`${N(t)} 이야기`,railOnce(mine,true));
   }
   html+=section('start','처음 왔다면 여기부터',railOnce(['a-mbti','a-change','ov-basics','ov-core','ov-centers','cmp-glance','ov-use'],true));
-  html+=section('confused','나 혹시 몇 번? 헷갈릴 때 읽는 글',railOnce(['a-many','a-allme','cmp-confused','cmp-motives',...pick(['confused','traits'],8)])
-    +`<div class="shelf-rail feed-vs-rail">${vs.map(v=>homeVsCardHTML(v).replace('data-shelf-compare="confused"',`data-shelf-compare="confused" data-vs-pair="${v.a}-${v.b}"`)).join('')}</div>`);
-  html+=section('quiz','나라면 어떻게 할까',homeQuizHTML(day)+`<div class="feed-post-single">${card('cmp-situations')}</div>`);
+  html+=section('confused','나 혹시 몇 번? 헷갈릴 때 읽는 글',railOnce(['a-many','a-allme','cmp-confused','cmp-motives','cmp-situations',...pick(['confused','traits'],8)]));
+  /* 두 유형 비교(VS)는 한 섹션에 줄이 두 개면 헷갈려서 따로 (2026-10-05) */
+  html+=section('vs','닮은 두 유형, 뭐가 다를까?',railOnce([...POSTS.values()].filter(x=>x.src==='vs').map(x=>x.id).sort((x,y)=>((x.length*7+day)%5)-((y.length*7+day)%5))));
   html+=section('auto','머릿속 자동 재생 버튼',railOnce(pick(['auto','theme','fixation'],9,1)));
   html+=section('people','사람 사이에서 우리는',railOnce(['a-other','cmp-hornevian',...pick(['talk','conflict','relemo','praise'],8,2)]));
   html+=section('love','연애할 때, 가족일 때',railOnce(pick(['love','parenting'],9,3)));
@@ -130,7 +138,7 @@ function watchSentinel(){
 }
 /* 관찰자를 못 쓰는 환경 대비: 스크롤할 때마다 끝 표시가 화면 아래 600px 안에 오면 이어 붙인다 */
 document.addEventListener('scroll',()=>{
-  const end=document.querySelector('#page-explore.active .feed-sentinel');
+  const end=document.querySelector('#page-home.active .feed-sentinel');
   if(end && end.getBoundingClientRect().top<innerHeight+600) loadMore();
 },{capture:true,passive:true});
 
@@ -210,6 +218,13 @@ function topicNode(doc,name){
 }
 async function bodyHTML(p){
   if(p.src==='art') return p.body;
+  if(p.src==='vs'){
+    const [da,db]=await Promise.all([getTypeProfile(p.a),getTypeProfile(p.b)]);
+    const side=(t,d)=>`<h2>${esc(N(t))}가 지키려는 것</h2>`
+      +(d.fear?`<p><strong>핵심 두려움</strong><br>${esc(d.fear)}</p>`:'')+(d.desire?`<p><strong>핵심 욕망</strong><br>${esc(d.desire)}</p>`:'')
+      +(d.thought?`<blockquote>${esc(d.thought)}</blockquote>`:'');
+    return `<h2>닮은 점</h2><p>${esc(p.same)}</p><h2>갈리는 지점</h2><p>${esc(p.diff)}</p>`+side(p.a,da)+side(p.b,db);
+  }
   if(p.src==='ov'||p.src==='cmp'){
     const panel=p.src==='ov'
       ?document.querySelector(`#page-overview .overview-panel[data-overview-key="${p.key}"]`)
@@ -239,6 +254,11 @@ const NOTES={
   care:'<div class="post-note">여기 있는 내용은 성격 패턴을 이해하기 위한 것이지, 마음 상태를 진단하는 것이 아니에요. 힘든 마음이 여러 날 이어진다면 믿을 수 있는 사람이나 전문가에게 이야기해보세요.'+D.TEL+'</div>'
 };
 function moreRails(p){
+  if(p.src==='vs'){
+    const others=[...POSTS.values()].filter(x=>x.src==='vs' && x.id!==p.id).map(x=>x.id);
+    const two=['confused','traits','theme'].flatMap(k=>[`${k}-${p.a}`,`${k}-${p.b}`]);
+    return section('postOthers','다른 두 유형도 볼까요?',rail(others))+section('postSame',`${p.a}번과 ${p.b}번 더 알아보기`,rail(two));
+  }
   if(p.t){
     const others=[1,2,3,4,5,6,7,8,9].filter(x=>x!==p.t).map(x=>`${p.kind}-${x}`);
     const ks=D.KINDS.map(k=>k.k), i=ks.indexOf(p.kind);
@@ -259,13 +279,13 @@ async function showPost(id,push=true){
   const lead=p.lead||(p.src==='ov'||p.src==='cmp'?pageLead(p):'');
   view.innerHTML=`<div class="post-top"><button class="feed-chip" data-post-back type="button">‹ 유형 탐구</button></div>`
     +`<article class="post"><figure class="post-hero">${pic(p.pic).replace(' loading="lazy"','')}</figure>`
-    +`<header class="post-head"><p class="post-cat">${p.t?`${esc(N(p.t))} · `:''}${esc(p.cat)}</p><h1 class="post-title">${esc(p.title)}</h1>${lead?`<p class="post-lead">${esc(lead)}</p>`:''}</header>`
+    +`<header class="post-head"><p class="post-cat">${esc(p.meta||((p.t?`${N(p.t)} · `:'')+p.cat))}</p><h1 class="post-title">${esc(p.title)}</h1>${lead?`<p class="post-lead">${esc(lead)}</p>`:''}</header>`
     +'<div class="post-body"><p class="post-loading">불러오는 중</p></div>'
     +(p.ask?`<section class="post-ask"><h2>스스로 물어볼 질문</h2><ul>${p.ask.map(q=>`<li>${esc(q)}</li>`).join('')}</ul></section>`:'')
     +(p.note?NOTES[p.note]:'')
     +(p.t?`<p class="post-fine">${esc(N(p.t))}에 가까울 때 자주 보이는 패턴이에요. 모든 ${p.t}번이 이렇다는 뜻은 아니에요.</p>`
       :'')
-    +`<div class="post-tags">${p.t?`<button class="feed-chip" data-tag-type="${p.t}" type="button">#${esc(N(p.t))}</button>`:''}</div>`
+    +`<div class="post-tags">${(p.src==='vs'?[p.a,p.b]:p.t?[p.t]:[]).map(t=>`<button class="feed-chip" data-tag-type="${t}" type="button">#${esc(N(t))}</button>`).join('')}</div>`
     +`</article><div class="post-more">${moreRails(p)}</div>`;
   document.getElementById('page-post')?.scrollTo({top:0});
   window.scrollTo({top:0});
@@ -301,22 +321,28 @@ async function showTypeSummary(n,push=true){
   const d=await getTypeProfile(n);
   if(token!==typeToken) return;
   const count=[...POSTS.values()].filter(p=>p.t===n).length;
+  const ks=D.KINDS.map(k=>k.k);
+  const rec=ks.map((_,i)=>`${ks[(day+i*3)%ks.length]}-${n}`).filter((x,i,a)=>a.indexOf(x)===i).slice(0,10);
+  const SHARE_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4"/><path d="m7.5 8.5 4.5-4.5 4.5 4.5"/><path d="M5 12.5V18a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5.5"/></svg>';
   view.querySelector('.type-summary').innerHTML=typeCardHTML(d,{
     kicker:`${n}번 유형`,
-    note:'유형은 나를 단정하는 이름표가 아니라, 반복되는 반응을 살펴보는 틀이에요.',
-    actions:[
-      {label:`${n}번 글 ${count}편 모두 보기`,attr:'data-tcp-posts',primary:true},
-      {label:'내 유형으로 저장하기',attr:'data-tcp-save'},
-      {label:'링크로 공유하기',attr:'data-tcp-share'},
-      {label:'이미지로 저장하기',attr:'data-tcp-image'}
-    ]
-  }).replace('<article class="type-card-pro','<article data-source="유형 탐구" class="type-card-pro');
+    note:'유형은 나를 단정하는 이름표가 아니라, 반복되는 반응을 살펴보는 틀이에요.'
+  }).replace('<article class="type-card-pro','<article data-source="유형 탐구" class="type-card-pro')
+    +`<div class="type-actions"><button class="btn primary type-save" data-type-image="${n}" type="button">이미지로 저장하기</button>`
+    +`<button class="type-share" data-type-share="${n}" type="button" aria-label="링크로 공유하기" title="링크로 공유하기">${SHARE_ICON}</button></div>`
+    +`<section class="type-more" aria-labelledby="typeMoreTitle"><h2 class="explore-hub-sub" id="typeMoreTitle">${esc(N(n))} 이야기 ${count}편</h2>${rail(rec)}</section>`;
 }
 window.showTypeSummary=showTypeSummary;
 document.getElementById('page-type')?.addEventListener('click',e=>{
   const go=e.target.closest('[data-type-go]');
   if(go){ showTypeSummary(Number(go.dataset.typeGo)); return; }
-  if(e.target.closest('[data-post-back]')) showExploreHub();
+  if(e.target.closest('[data-post-back]')){ showExploreHub(); return; }
+  const img=e.target.closest('[data-type-image]');
+  if(img){ saveTypeCardImage(Number(img.dataset.typeImage),'유형 탐구'); return; }
+  const sh=e.target.closest('[data-type-share]');
+  if(sh){ showSharePage(); document.querySelector(`#shareApp [data-share-type="${sh.dataset.typeShare}"]`)?.click(); return; }
+  const post=e.target.closest('[data-post]');
+  if(post) showPost(post.dataset.post);
 });
 
 /* ---------- 누르기 ---------- */
@@ -330,6 +356,7 @@ function onClick(e){
     return;
   }
   if(e.target.closest('[data-post-back]')){ showExploreHub(); return; }
+  if(e.target.closest('[data-quiz-check]')){ showCheckTarget('quick'); return; }
   const ft=e.target.closest('[data-filter-type]'), fg=e.target.closest('[data-filter-tag]');
   if(ft||fg){
     if(ft) filter.t=Number(ft.dataset.filterType); else filter.tag=fg.dataset.filterTag;
@@ -342,12 +369,13 @@ function onClick(e){
   if(tt||tc){ window.setExploreFilter(tt?{t:Number(tt.dataset.tagType),tag:''}:{t:0,tag:tc.dataset.tagCat}); showExploreHub(); return; }
 
 }
-document.getElementById('page-explore')?.addEventListener('click',onClick);
+document.getElementById('page-home')?.addEventListener('click',onClick);
 document.getElementById('page-post')?.addEventListener('click',onClick);
 
 /* 직접 링크 #post-<id> (00-app-core.js의 직접 링크 처리 뒤에 실행) */
 const m=location.hash.match(/^#post-(.+)$/); let m2=null;
 if(m) showPost(decodeURIComponent(m[1]),false);
 else if((m2=location.hash.match(/^#(?:type|handbook)-([1-9])/))) showTypeSummary(Number(m2[1]),false); /* 예전 핸드북 주소도 요약으로 */
-else if(document.getElementById('page-explore')?.classList.contains('active')) window.renderExploreFeed();
+else window.renderExploreFeed(); /* 홈 아래 피드 */
+if(location.hash==='#explore') showExploreHub(false);
 })();

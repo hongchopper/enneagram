@@ -160,6 +160,11 @@
 </div>
 </div>
 <div class="home-shelves" id="homeShelves"></div>
+<!-- 유형 탐구 (2026-10-05 홈과 합침): 홈 아래로 이어지는 콘텐츠 피드. 스크롤하면 유형 칩 줄이 위에 붙는다. js/10-explore-content.js가 채운다 -->
+<section aria-labelledby="exploreHubTitle" class="home-explore" id="homeExplore">
+<h2 class="home-explore-title" id="exploreHubTitle">유형 탐구</h2>
+<div class="explore-feed" id="exploreFeed"></div>
+</section>
 </div></section>
 <section class="page-panel" data-page-panel="check" id="page-check">
 <section class="check-mode-panel check-flow-panel active" data-check-mode-panel="start">
@@ -5146,13 +5151,11 @@
 <main class="wrap"><div id="handbookTypeHost"></div></main><script src="content/handbook-type-store.js"></script>
 </section>
 <!-- 유형 탐구 첫 화면 = 큐레이션 피드 (2026-10-05) -->
-<section class="page-panel" data-page-panel="explore" id="page-explore"><div class="explore-wrap">
-<section aria-labelledby="exploreHubTitle" class="explore-hub" id="exploreHub">
-<header class="explore-hub-head"><h1 class="explore-hub-title" id="exploreHubTitle">유형 탐구</h1>
-<p class="explore-hub-desc">궁금한 질문에서 시작해 9가지 유형을 알아가요.</p></header>
-<!-- 큐레이션 피드 (2026-10-05): 오늘의 VS · 내 유형으로 읽기 · 질문별 컬렉션. js renderExploreFeed가 채운다 -->
-<div class="explore-feed" id="exploreFeed"></div>
-</section>
+<!-- 커뮤니티 (2026-10-05, 하단 '유형 탐구' 탭 자리): 장면 게임 — 나라면? · 맞히기 · 내 반응 지도 · 친구와 비교. js/11-scene-game.js가 채운다 -->
+<section class="page-panel" data-page-panel="community" id="page-community"><div class="community-wrap">
+<h1 class="community-title">커뮤니티</h1>
+<p class="community-desc">같은 장면에서도 우리는 다르게 반응해요. 골라 보고, 맞혀 보고, 친구와 비교해 보세요.</p>
+<div id="communityGame"></div>
 </div></section>
 <!-- 유형 탐구 글 상세 (2026-10-05): 모든 글이 같은 블로그 템플릿. js/10-explore-content.js가 채운다 -->
 <section class="page-panel" data-page-panel="post" id="page-post"><div class="post-wrap" id="postView"></div></section>
@@ -5870,13 +5873,12 @@
 <div class="polish-app" id="polishApp"></div>
 <section class="ui-card diary-exp" aria-labelledby="diaryExpTitle">
 <div class="diary-card-head">
-<h2 id="diaryExpTitle">해보기로 한 것</h2>
+<h2 id="diaryExpTitle"><span class="polish-no" aria-hidden="true">2</span>해보기로 한 것</h2>
 <span class="count-badge" id="experimentCountBadge">0 / 0</span>
 </div>
-<p class="ui-help">기록의 ‘다음엔’이 모이는 곳이에요. 꾸준히 하고 싶은 행동은 루틴으로 만들어 날마다 체크하고, 해봤다면 동그라미를 눌러 한 줄 남겨요.</p>
+<p class="ui-help">담은 행동과 다이어리의 ‘다음엔’이 모여요. 해봤다면 동그라미를 눌러 체크해요.</p>
 <div class="ui-chips diary-exp-filter" id="experimentFilter" role="group" aria-label="보기"></div>
 <div class="experiment-list" id="experimentList"></div>
-<div class="diary-exp-reco" id="experimentReco"></div>
 <form class="experiment-add" id="experimentAddForm">
 <input aria-label="직접 추가" class="ui-field" id="experimentAddInput" maxlength="80" placeholder="예: 근거를 한 번 더 말해보기" type="text">
 <button class="ui-btn ui-btn-secondary" type="submit">추가하기</button>
@@ -5891,7 +5893,7 @@
 <nav aria-label="하단 메뉴" class="bottom-tabbar" id="bottomTabbar">
 <svg aria-hidden="true" class="bt-defs" focusable="false" height="0" width="0"><defs><linearGradient id="btGrad" x1="0" x2="1" y1="0" y2="1"><stop offset="0" style="stop-color:var(--grad-blue)"></stop><stop offset=".5" style="stop-color:var(--grad-violet)"></stop><stop offset="1" style="stop-color:var(--grad-plum)"></stop></linearGradient></defs></svg>
 <button class="bottom-tab active" data-tab="home" type="button" aria-current="page"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24" width="24"><path d="M4 11.2 12 4.5l8 6.7V19a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19z"/><path d="M10 20.5v-3.2a2 2 0 0 1 4 0v3.2"/><path class="bt-fill" stroke="none" d="M12 8.700000000000001C12.468 10.832 12.468 10.832 14.6 11.3C12.468 11.768 12.468 11.768 12 13.9C11.532 11.768 11.532 11.768 9.4 11.3C11.532 10.832 11.532 10.832 12 8.700000000000001Z"/></svg></span><span class="bottom-tab-label">홈</span></button>
-<button class="bottom-tab" data-tab="handbook" type="button"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24" width="24"><path d="M5.5 18.5 8.5 11l7.5 2 3-6.5" stroke-dasharray="1.2 2.6" stroke-width="1.5"/><circle cx="12" cy="12" r="9.2" stroke-width="1.25" opacity=".45"/><path class="bt-fill" stroke="none" d="M5.5 16.1C5.932 18.068 5.932 18.068 7.9 18.5C5.932 18.932 5.932 18.932 5.5 20.9C5.068 18.932 5.068 18.932 3.1 18.5C5.068 18.068 5.068 18.068 5.5 16.1Z"/><path class="bt-fill" stroke="none" d="M8.5 8.8C8.896 10.604 8.896 10.604 10.7 11C8.896 11.396 8.896 11.396 8.5 13.2C8.104 11.396 8.104 11.396 6.3 11C8.104 10.604 8.104 10.604 8.5 8.8Z"/><path class="bt-fill" stroke="none" d="M16 10.4C16.468 12.532 16.468 12.532 18.6 13C16.468 13.468 16.468 13.468 16 15.6C15.532 13.468 15.532 13.468 13.4 13C15.532 12.532 15.532 12.532 16 10.4Z"/><path class="bt-fill" stroke="none" d="M19 3.1C19.612 5.888 19.612 5.888 22.4 6.5C19.612 7.112 19.612 7.112 19 9.9C18.388 7.112 18.388 7.112 15.6 6.5C18.388 5.888 18.388 5.888 19 3.1Z"/></svg></span><span class="bottom-tab-label">유형 탐구</span></button>
+<button class="bottom-tab" data-tab="community" type="button"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24" width="24"><circle cx="9" cy="8.5" r="3"/><path d="M3.8 19a5.2 5.2 0 0 1 10.4 0"/><path d="M15.5 6.2a2.8 2.8 0 0 1 0 5.4"/><path d="M17.2 14.2a4.8 4.8 0 0 1 3 4.8"/><path class="bt-fill" stroke="none" d="M19 2.6C19.4 4.4 19.4 4.4 21.2 4.8C19.4 5.2 19.4 5.2 19 7C18.6 5.2 18.6 5.2 16.8 4.8C18.6 4.4 18.6 4.4 19 2.6Z"/></svg></span><span class="bottom-tab-label">커뮤니티</span></button>
 <button class="bottom-tab" data-tab="diary" type="button"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24" width="24"><path d="M5 18V6a2 2 0 0 1 2-2h11v13H7a2 2 0 0 0-2 2 2 2 0 0 0 2 2h11"/><path class="bt-fill" stroke="none" d="M13.3 6.9a3 3 0 1 0 2.2 5.1 2.4 2.4 0 1 1-2.2-5.1z"/><path class="bt-fill" stroke="none" d="M9.6 7.4C9.888 8.712 9.888 8.712 11.2 9C9.888 9.288 9.888 9.288 9.6 10.6C9.312 9.288 9.312 9.288 8 9C9.312 8.712 9.312 8.712 9.6 7.4Z"/></svg></span><span class="bottom-tab-label">다이어리</span></button>
 <button class="bottom-tab" data-tab="polish" type="button"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24" width="24"><path d="M7 9 9.5 5.5h6L18 9l-5.5 7z"/><path d="M7 9h11"/><path d="M4 19.5c2.5-1.6 5-1.6 7.5 0s5 1.6 8.5-.4"/><path class="bt-fill" stroke="none" d="M4.6 3.4C4.95 5 4.95 5 6.6 5.4C4.95 5.8 4.95 5.8 4.6 7.4C4.25 5.8 4.25 5.8 2.6 5.4C4.25 5 4.25 5 4.6 3.4Z"/></svg></span><span class="bottom-tab-label">보석 닦기</span></button>
 <button class="bottom-tab" data-tab="myspace" type="button"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24" width="24"><path d="M7.5 5h9l3.5 4.5L12 20 4 9.5z"/><path d="M4 9.5h16"/><path d="m9.8 5-1.8 4.5 4 10.5 4-10.5L14.2 5"/><path class="bt-fill" stroke="none" d="M18.6 1.4C18.996000000000002 3.204 18.996000000000002 3.204 20.8 3.6C18.996000000000002 3.996 18.996000000000002 3.996 18.6 5.800000000000001C18.204 3.996 18.204 3.996 16.400000000000002 3.6C18.204 3.204 18.204 3.204 18.6 1.4Z"/></svg></span><span class="bottom-tab-label">나의 공간</span></button>
@@ -5909,6 +5911,7 @@
 <script src="js/09-mobile-scroll.js"></script>
 <script src="content/explore-posts.js"></script>
 <script src="js/10-explore-content.js"></script>
+<script src="js/11-scene-game.js"></script>
 </body><div id="codex-browser-sidebar-comments-root" style="position: fixed; inset: 0px; pointer-events: none; z-index: 2147483647;"></div></html>
 
 

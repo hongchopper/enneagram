@@ -1316,7 +1316,7 @@ function activateBasePage(name){
   document.querySelectorAll('.shell-menu-btn[data-page]').forEach(b=>{
     b.classList.toggle('active',b.dataset.page===name);
   });
-  const exploreGroup=['explore','post','type','handbook','compare','overview'].includes(name); /* 2026-10-05: 유형 탐구 = 피드 + 핸드북 · 기초 · 비교 글 */
+  const exploreGroup=['post','type','handbook','compare','overview'].includes(name); /* 유형 탐구 글·요약은 홈 묶음 (홈과 합침) */ /* 2026-10-05: 유형 탐구 = 피드 + 핸드북 · 기초 · 비교 글 */
   document.querySelectorAll('.top-nav-main[data-top-page]').forEach(b=>{
     b.classList.toggle('active',b.dataset.topPage===name
       || (exploreGroup && b.dataset.topPage==='handbook')
@@ -1329,7 +1329,7 @@ function activateBasePage(name){
   });
   document.querySelectorAll('.bottom-tab[data-tab]').forEach(b=>{
     /* 유형 검사는 하단 탭 없이 홈에서 들어가므로 검사 화면에서는 '홈'을 켠다 */
-    const on=b.dataset.tab===name || (exploreGroup && b.dataset.tab==='handbook') || (name==='sharing' && b.dataset.tab==='diary') || (name==='check' && b.dataset.tab==='home');
+    const on=b.dataset.tab===name || (exploreGroup && b.dataset.tab==='home') || (name==='sharing' && b.dataset.tab==='diary') || (name==='check' && b.dataset.tab==='home');
     b.classList.toggle('active',on);
     if(on) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current');
   });
@@ -1413,6 +1413,7 @@ document.querySelectorAll('.shell-explore-link').forEach(b=>{
 function showHomePage(push=true){
   activateBasePage('home');
   refreshHome();
+  window.renderExploreFeed?.(); /* 홈 아래 유형 탐구 피드 (js/10) */
   document.getElementById('shellMobileTitle').textContent='홈';
   document.getElementById('page-home')?.scrollTo({top:0});
   if(push) history.replaceState(null,'','#home');
@@ -1722,16 +1723,13 @@ function setCompareSidebarActive(key){
     b.classList.toggle('active',b.dataset.compareTarget===key);
   });
 }
-/* 유형 탐구 첫 화면 = 큐레이션 피드 (2026-10-05 두 번째): 오늘의 VS · 내 유형으로 읽기 · 질문별 컬렉션.
-   화면은 #page-explore (비교 화면 안에 두면 옛 레이어가 버튼 그림자를 !important로 지운다).
-   핸드북은 홈 유형 카드 · 피드 링크 · 검색으로 들어간다 */
+/* 유형 탐구 = 홈 아래로 이어지는 콘텐츠 피드 (js/10-explore-content.js). 하단 탭 '유형 탐구'·뒤로 버튼은 그 자리로 */
 function showExploreHub(push=true){
-  activateBasePage('explore');
-  window.renderExploreFeed?.(); /* js/10-explore-content.js */
-  document.getElementById('shellMobileTitle').textContent='유형 탐구';
-  document.getElementById('page-explore')?.scrollTo({top:0});
+  /* 2026-10-05 홈과 합침: 홈을 열고 피드 시작점(#homeExplore)으로 내린다 */
+  showHomePage(false);
+  const page=document.getElementById('page-home'), feed=document.getElementById('homeExplore');
+  if(page && feed) page.scrollTo({top:Math.max(0,feed.offsetTop-page.offsetTop)});
   if(push) history.replaceState(null,'','#explore');
-  closeShellMenu();
 }
 
 /* 유형 탐구 목록의 짧은 한 줄 (2026-10-05): 화면 첫 문단은 길어 목록에서는 이 한 줄만 보여준다 */
@@ -1740,32 +1738,14 @@ const EXPLORE_HOOKS={
   glance:'한 장으로 보는 9가지',motives:'무엇이 두렵고 무엇을 원할까',centers:'본능 · 감정 · 사고',hornevian:'자기주장 · 관찰자 · 책임형',
   harmonic:'긍정 · 능력 · 반응 그룹',situations:'같은 행동, 다른 동기',confused:'닮은 듯 다른 두 유형'
 };
-document.getElementById('page-explore')?.addEventListener('click',e=>{
-  /* 유형 탐구 피드: 글 카드는 js/10이, 여기서는 퀴즈·VS 카드만 */
+/* 홈 아래 피드의 '나라면?' 퀴즈 (VS·비교 링크는 홈의 기존 누르기 처리가 맡는다) */
+document.getElementById('page-home')?.addEventListener('click',e=>{
   const pick=e.target.closest('[data-quiz-pick]');
   if(pick){ if(!pick.closest('.is-answered')) homeQuizReveal(pick); return; }
   if(e.target.closest('[data-quiz-next]')){
     const q=document.getElementById('homeQuiz');
     if(q){ q.outerHTML=homeQuizHTML((homeQuizScene??0)+1); document.querySelector('#homeQuiz .quiz-option')?.focus(); }
-    return;
   }
-  const sh=e.target.closest('[data-shelf-compare]');
-  if(sh){
-    showCompareSection(sh.dataset.shelfCompare);
-    /* 작은 VS 카드: 헷갈리는 유형 화면에서 그 쌍으로 */
-    const pair=sh.dataset.vsPair;
-    if(pair){
-      const card=homeVsPairs().findIndex(v=>`${v.a}-${v.b}`===pair);
-      document.querySelectorAll('#page-compare [data-compare-panel="confused"] .confuse-card')[card]?.scrollIntoView({block:'center'});
-    }
-    return;
-  }
-  const row=e.target.closest('[data-explore-compare]');
-  if(row){ showCompareSection(row.dataset.exploreCompare); return; }
-  const ov=e.target.closest('[data-explore-overview]');
-  if(ov){ showOverviewSection(ov.dataset.exploreOverview); return; }
-  const card=e.target.closest('[data-explore-type]');
-  if(card) showHandbookType(Number(card.dataset.exploreType));
 });
 
 function showCompareSection(key='glance',push=true){
@@ -1876,6 +1856,7 @@ document.getElementById('bottomTabbar')?.addEventListener('click',e=>{
   const tab=e.target.closest('.bottom-tab[data-tab]');
   if(!tab) return;
   const key=tab.dataset.tab;
+  if(key==='community'){ window.showCommunityPage?.(); return; } /* js/11-scene-game.js */
   const target=key==='home'
     ? document.querySelector('.top-home-link[data-top-home]')
     : document.querySelector(`.top-nav-main[data-top-page="${key}"]`);
@@ -1997,19 +1978,23 @@ function typeCardHTML(d,opts={}){
   if(opts.compact){
     return `<article class="type-card-pro is-compact" data-type="${n}">${banner}<div class="tcp-body">${score}${opts.note?`<div class="tcp-note">${opts.note}</div>`:''}${actions?`<div class="tcp-actions">${actions}</div>`:''}</div></article>`;
   }
-  return `<article class="type-card-pro" data-type="${n}">${banner}
-    <div class="tcp-body">
+  /* 아래 영역 (2026-10-05 다시 그림): 선 긋는 표 대신 보석 색이 옅게 깔린 덩어리들. 이미지로 저장해도 보기 좋게
+     두려움·욕망 두 칸 → 반복되는 생각 말풍선 → 멋진 점·주의할 점 체크 목록 → 빛나는 환경 → 연결된 유형 보석 타일 → 삶의 주제 */
+  const ICON_OK='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.6 11.3 12.5 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const ICON_WARN='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 4.2v4.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="8" cy="11.6" r="1.1" fill="currentColor"/></svg>';
+  const checks=(arr,warn)=>`<ul class="tcx-checks${warn?' is-caution':''}">${arr.map(x=>`<li><span class="tcx-ico">${warn?ICON_WARN:ICON_OK}</span><span>${hbEsc(x)}</span></li>`).join('')}</ul>`;
+  const sec=(title,inner)=>inner?`<section class="tcx-sec"><h3 class="tcx-h">${title}</h3>${inner}</section>`:'';
+  const linkTile=l=>`<div class="tcx-link" style="${gemVars(l.no)}"><span class="tcx-link-gem">${gemImg(l.no,'',true)}</span><span class="tcx-link-top"><b>${l.no}번 ${hbEsc(CHECK_TYPE_NAMES[l.no]||'')}</b><em>${hbEsc(l.title)}</em></span><span class="tcx-link-desc">${hbEsc(l.desc)}</span></div>`;
+  return `<article class="type-card-pro" data-type="${n}" style="${gemVars(n)}">${banner}
+    <div class="tcp-body tcx">
       ${score}
-      <div class="tcp-grid3">${box('핵심 두려움',d.fear)}${box('핵심 욕망',d.desire)}${box('반복되는 생각',d.thought)}</div>
-      <div class="tcp-grid2">
-        <div class="tcp-box"><span class="tcp-label">이런 모습이 멋져요</span>${li(d.strengths)}</div>
-        <div class="tcp-box"><span class="tcp-label">이런 점은 주의해요</span>${li(d.cautions,'is-caution')}</div>
-      </div>
-      <div class="tcp-grid2">
-        ${box('이런 환경에서 빛나요',d.env)}
-        <div class="tcp-box"><span class="tcp-label">연결된 유형</span><div class="tcp-links">${d.links.map(l=>`<div class="tcp-link"><span class="tcp-link-no">${l.no}</span><span class="tcp-link-title">${hbEsc(l.title)}</span><span class="tcp-link-desc">${hbEsc(l.desc)}</span></div>`).join('')}</div></div>
-      </div>
-      ${d.theme||d.lost?`<div class="tcp-line">${d.theme?`<div class="tcp-line-main">${n}번의 삶을 움직이는 주제는 ‘${hbEsc(d.theme)}’예요.</div>`:''}${d.lost?`<div class="tcp-line-sub">기억하면 좋은 말 · ${hbEsc(d.lost)}</div>`:''}</div>`:''}
+      ${d.fear||d.desire?`<div class="tcx-duo">${d.fear?`<div class="tcx-tile"><span class="tcx-k">핵심 두려움</span><p>${hbEsc(d.fear)}</p></div>`:''}${d.desire?`<div class="tcx-tile is-desire"><span class="tcx-k">핵심 욕망</span><p>${hbEsc(d.desire)}</p></div>`:''}</div>`:''}
+      ${d.thought?`<div class="tcx-bubble"><span class="tcx-k">반복되는 생각</span><p>${hbEsc(d.thought)}</p></div>`:''}
+      ${sec('이런 모습이 멋져요',d.strengths.length?checks(d.strengths):'')}
+      ${sec('이런 점은 주의해요',d.cautions.length?checks(d.cautions,true):'')}
+      ${sec('이런 환경에서 빛나요',d.env?`<p class="tcx-p">${hbEsc(d.env)}</p>`:'')}
+      ${sec('연결된 유형',d.links.length?`<div class="tcx-links">${d.links.map(linkTile).join('')}</div>`:'')}
+      ${d.theme||d.lost?`<div class="tcx-theme">${d.theme?`<span class="tcx-k">삶을 움직이는 주제</span><strong>‘${hbEsc(d.theme)}’</strong>`:''}${d.lost?`<p>기억하면 좋은 말 · ${hbEsc(d.lost)}</p>`:''}</div>`:''}
       ${opts.note?`<div class="tcp-note">${opts.note}</div>`:''}
       ${actions?`<div class="tcp-actions">${actions}</div>`:''}
     </div>

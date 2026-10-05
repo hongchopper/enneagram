@@ -3,8 +3,10 @@
     reflections:'enneagram_reflections_v1',
     myType:'enneagram_my_type_v1',
     experiments:'enneagram_experiments_v1',
-    prefs:'enneagram_prefs_v1'
+    prefs:'enneagram_prefs_v1',
+    wishes:'enneagram_wishes_v1'
   };
+  const WISH_SCHEMA=1; /* 소원과 기도 저장 형식 (readWishes). v1: { schemaVersion, items:[{id, kind:'wish'|'prayer', text, at, done, doneAt}] } */
   const PREFS_SCHEMA=1; /* 보기 설정 저장 형식 버전 (readPrefs). v1: 기도제목 보기(showPrayer) */
   const REFLECTION_SCHEMA=2; /* 성찰 기록 한 건의 형식 버전 (readReflections에서 옮김) */
   const EXPERIMENT_SCHEMA=2; /* 성장 실험 저장 형식 버전 (readExperiments). v2: 항목마다 루틴(routine)과 날짜별 체크(log)를 더했다 */
@@ -68,14 +70,84 @@
   function chatNextOptions(){
     return (diaryTypeInfo.actions.length?diaryTypeInfo.actions.slice(0,3):DIARY_NEXT_GENERIC).map(x=>[x,x.length>40?x.slice(0,39)+'…':x]);
   }
+  /* 쓸 거리 먼저 (2026-10-05): "오늘 있었던 일을 쓰세요"는 막막해서, 주제를 먼저 건넨다. 내 유형 추천 1개 + 일반 주제 4개 + 자유 주제.
+     주제를 고르면 장면 분류는 자동으로 정하고, '무슨 일' 질문과 예시가 그 주제에 맞춰 바뀐다. 주제 자체는 저장하지 않는다(기록 형식 그대로) */
+  const DIARY_TOPICS=[
+    {k:'mind',label:'괜히 마음이 쓰였던 순간',cat:'일상',ex:'예: 동료의 짧은 답장이 계속 신경 쓰였다'},
+    {k:'hurt',label:'누군가의 말에 서운했던 일',cat:'관계',ex:'예: 친구가 내 이야기를 끝까지 듣지 않았다'},
+    {k:'angry',label:'나도 모르게 욱했던 순간',cat:'일상',ex:'예: 회의에서 말이 끊겨 목소리가 커졌다'},
+    {k:'delay',label:'계속 미루고 있는 일',cat:'일',ex:'예: 보고서 시작을 사흘째 미루고 있다'},
+    {k:'proud',label:'오늘 조금 뿌듯했던 순간',cat:'일상',ex:'예: 어려운 부탁을 정중하게 거절했다'},
+    {k:'family',label:'가족과 있었던 작은 일',cat:'가족',ex:'예: 잔소리에 대답 없이 방에 들어갔다'}
+  ];
+  const DIARY_TYPE_TOPIC={
+    1:{label:'기준에 어긋나 신경 쓰였던 일',cat:'일상',ex:'예: 팀원이 마감을 대충 넘겨서 하루 종일 거슬렸다'},
+    2:{label:'부탁을 거절하지 못한 순간',cat:'관계',ex:'예: 피곤했는데 친구 이사를 돕겠다고 했다'},
+    3:{label:'잘 보이고 싶었던 순간',cat:'일',ex:'예: 발표 자료를 밤새 다듬었다'},
+    4:{label:'누군가와 나를 비교한 순간',cat:'일상',ex:'예: 친구의 소식을 보고 내가 작게 느껴졌다'},
+    5:{label:'혼자 있고 싶었던 순간',cat:'관계',ex:'예: 모임 중간에 먼저 집에 가고 싶었다'},
+    6:{label:'걱정이 커졌던 순간',cat:'일상',ex:'예: 메일 답이 없어 혹시 실수했나 계속 생각했다'},
+    7:{label:'지루해서 다른 걸 찾은 순간',cat:'취미',ex:'예: 하던 일을 두고 새 계획을 세우기 시작했다'},
+    8:{label:'밀어붙이고 싶었던 순간',cat:'일',ex:'예: 회의가 늘어져서 내가 결론을 내버렸다'},
+    9:{label:'괜찮다고 넘어간 순간',cat:'관계',ex:'예: 메뉴를 정할 때 아무거나 좋다고 했다'}
+  };
+  /* 테마 (2026-10-05): 회사·연애·시간… 테마를 먼저 고르고, 테마마다 쓸 거리 세 개를 건넨다. 테마가 장면 분류를 정한다.
+     '시간'·'나 자신'은 기존 분류에 없어 '일상'으로 저장한다 (기록 형식은 그대로) */
+  const DIARY_THEMES=[
+    {k:'work',label:'회사·일',cat:'일',topics:[['회의에서 마음이 걸렸던 순간','예: 내 의견이 묻혀서 하루 종일 신경 쓰였다'],['일을 떠안거나 미뤘던 일','예: 거절을 못 해 남의 일까지 맡았다'],['칭찬이나 피드백을 들은 순간','예: 팀장의 한마디가 계속 마음에 남았다']]},
+    {k:'love',label:'연애',cat:'연애',topics:[['연인에게 서운했던 순간','예: 답장이 늦어서 마음이 식은 것 같았다'],['말하지 못하고 삼킨 말','예: 서운했는데 괜찮다고 했다'],['가까워질수록 불안했던 순간','예: 행복한데 갑자기 이게 깨질까 봐 무서웠다']]},
+    {k:'family',label:'가족',cat:'가족',topics:[['가족의 말에 욱했던 순간','예: 잔소리에 대답 없이 방에 들어갔다'],['가족 앞에서 나도 모르게 맡는 역할','예: 또 내가 분위기를 맞추고 있었다'],['고마웠지만 표현 못 한 일','예: 엄마가 챙겨 준 반찬을 그냥 받았다']]},
+    {k:'people',label:'사람 사이',cat:'관계',topics:[['누군가의 말에 서운했던 일','예: 친구가 내 이야기를 끝까지 듣지 않았다'],['거절하지 못한 부탁','예: 피곤했는데 약속을 또 잡았다'],['분위기를 맞추느라 지친 순간','예: 모임 내내 웃었는데 집에 와서 녹초가 됐다']]},
+    {k:'money',label:'돈',cat:'돈',topics:[['돈 때문에 마음이 쓰였던 순간','예: 통장 잔고를 보고 하루 종일 불안했다'],['충동적으로 사거나 꾹 참았던 일','예: 필요 없는 걸 장바구니에 담았다가 결제했다'],['돈 이야기가 불편했던 순간','예: 더치페이를 말하지 못하고 내가 냈다']]},
+    {k:'time',label:'시간',cat:'일상',topics:[['시간에 쫓겼던 순간','예: 마감 전날 밤을 새웠다'],['계속 미루고 있는 일','예: 보고서 시작을 사흘째 미루고 있다'],['쉬어도 쉰 것 같지 않았던 날','예: 주말 내내 누워 있었는데 더 피곤했다']]},
+    {k:'self',label:'나 자신',cat:'일상',topics:[['오늘 조금 뿌듯했던 순간','예: 어려운 부탁을 정중하게 거절했다'],['나도 모르게 욱했던 순간','예: 말이 끊겨 목소리가 커졌다'],['괜히 마음이 쓰였던 순간','예: 동료의 짧은 답장이 계속 신경 쓰였다']]}
+  ];
+  function themeOptions(){ return [...DIARY_THEMES.map(x=>[x.k,x.label]),['free','자유 주제']]; }
+  const chosenTheme=()=>DIARY_THEMES.find(x=>x.k===chat.answers.theme)||null;
+  function topicOptions(){
+    const th=chosenTheme(); if(!th) return [];
+    const t=diaryTypeInfo.type, out=[];
+    /* 내 유형 추천 주제는 테마의 분류와 맞을 때만 맨 앞에 */
+    if(t && DIARY_TYPE_TOPIC[t] && DIARY_TYPE_TOPIC[t].cat===th.cat) out.push(['type',`${DIARY_TYPE_TOPIC[t].label} · 내 유형 추천`]);
+    th.topics.forEach(([label],i)=>out.push([String(i),label]));
+    out.push(['free','직접 쓸래요']);
+    return out;
+  }
+  function chosenTopic(){
+    const k=chat.answers.topic, th=chosenTheme();
+    if(k==='type') return DIARY_TYPE_TOPIC[diaryTypeInfo.type]||null;
+    if(th && /^\d$/.test(String(k))){ const [label,ex]=th.topics[Number(k)]; return {label,ex,cat:th.cat}; }
+    return null;
+  }
+  /* 5Why를 한 단계씩 (2026-10-05): 첫 '왜' 다음에 '그게 왜 중요했을까?' → '채워지지 않으면?' → '결국 정말 중요했던 것'.
+     언제든 '여기까지'로 멈춘다. 답은 기존 기록 형식 whys[0·1·2·4]에 담는다 (whys[3] 자리는 '지키고 싶었던 것' 단계가 따로 있다) */
+  const WHY_DEEP={
+    2:{1:'잘하고 싶었어요',2:'좋은 사이로 지내고 싶었어요',3:'인정받고 싶었어요',4:'나답고 싶었어요',5:'충분히 알고 싶었어요',6:'안심하고 싶었어요',7:'즐겁고 자유롭고 싶었어요',8:'내가 정하고 싶었어요',9:'편안하고 싶었어요'},
+    3:{1:'틀리거나 나쁜 사람이 될까 봐',2:'사랑받지 못할까 봐',3:'가치 없어 보일까 봐',4:'평범해지고 나를 잃을까 봐',5:'무능해 보일까 봐',6:'혼자 위험해질까 봐',7:'갇히고 괴로워질까 봐',8:'약해 보이고 휘둘릴까 봐',9:'관계가 깨질까 봐'},
+    5:{1:'나는 괜찮은 사람이라는 믿음',2:'사랑받고 있다는 느낌',3:'있는 그대로의 가치',4:'나다움',5:'충분히 해낼 수 있다는 감각',6:'안심',7:'자유',8:'내 삶을 내가 정하는 것',9:'마음의 평화'}
+  };
+  function whyDeepOptions(level){
+    const t=diaryTypeInfo.type, map=WHY_DEEP[level], out=[];
+    if(t && map[t]) out.push([map[t],`${map[t]} · 내 유형`]);
+    Object.entries(map).forEach(([k,v])=>{ if(Number(k)!==t) out.push([v,v]); });
+    return out;
+  }
+  const lastWhy=key=>{ const v=chat.answers[key]; const s=(Array.isArray(v)?v.join(' · '):String(v||'')).trim(); return s.length>24?s.slice(0,23)+'…':s; };
+  const answered=key=>{ const v=chat.answers[key]; return Array.isArray(v)?v.length>0:!!String(v||'').trim(); };
   const CHAT_STEPS=[
+    {key:'theme',ask:'오늘은 어떤 테마의 원석을 연마해 볼까요?',type:'single',options:themeOptions},
+    {key:'topic',ask:()=>`‘${chosenTheme()?.label||''}’에서 이런 장면은 어때요? 떠오르는 게 없다면 하나를 골라 보세요.`,type:'single',options:topicOptions,when:()=>!!chosenTheme()},
     {key:'date',ask:'언제 있었던 일이에요?',type:'single',options:()=>[['today','오늘'],['yesterday','어제']]},
-    {key:'category',ask:'어떤 장면의 이야기예요?',type:'single',options:()=>DIARY_CATEGORIES},
-    {key:'situation',ask:'무슨 일이 있었나요? 해석보다 실제로 있었던 일을 적어보세요.',type:'text',placeholder:'예: 회의에서 내 의견이 묻혔다'},
+    {key:'category',ask:'어떤 장면의 이야기예요?',type:'single',options:()=>DIARY_CATEGORIES,when:()=>!chat.answers.category},
+    {key:'situation',ask:()=>{ const tp=chosenTopic(); return tp?`‘${tp.label}’ 하나를 떠올려 보세요. 언제, 누구와, 무슨 일이 있었나요? 해석보다 실제로 있었던 일을 적어요.`:'무슨 일이 있었나요? 해석보다 실제로 있었던 일을 적어보세요.'; },
+      type:'text',placeholder:()=>chosenTopic()?.ex||'예: 회의에서 내 의견이 묻혔다'},
     {key:'emotions',ask:'그때 어떤 감정이 들었어요? 여러 개 골라도 돼요.',type:'multi',options:()=>DIARY_EMOTIONS.map(e=>[e,e]),text:'다른 감정이면 적어주세요'},
     {key:'reaction',ask:'그 순간 나는 어떻게 반응했나요?',type:'multi',options:()=>DIARY_REACTIONS.map(r=>[r,r]),text:'직접 쓰기',skip:true},
-    {key:'why',ask:'왜 그렇게 반응했을까요?',type:'multi',options:chatWhyOptions,text:'직접 쓰기',skip:true},
-    {key:'motives',ask:'그 순간 나는 무엇을 지키거나 얻고 싶었을까요?',type:'multi',options:chatMotiveOptions,skip:true},
+    {key:'why',ask:DIARY_WHY_LABELS[0][0],type:'multi',options:chatWhyOptions,text:'직접 쓰기',skip:true},
+    {key:'why2',ask:()=>`‘${lastWhy('why')}’ 한 단계 더 들어가 볼까요? ${DIARY_WHY_LABELS[1][0]}`,type:'multi',options:()=>whyDeepOptions(2),text:'직접 쓰기',skip:true,stop:true,when:()=>answered('why')},
+    {key:'why3',ask:()=>`‘${lastWhy('why2')}’ ${DIARY_WHY_LABELS[2][0]}`,type:'multi',options:()=>whyDeepOptions(3),text:'직접 쓰기',skip:true,stop:true,when:()=>answered('why2')},
+    {key:'why5',ask:()=>`거의 다 왔어요. ${DIARY_WHY_LABELS[4][0]}`,type:'multi',options:()=>whyDeepOptions(5),text:'직접 쓰기',skip:true,stop:true,when:()=>answered('why3')},
+    {key:'motives',ask:DIARY_WHY_LABELS[3][0],type:'multi',options:chatMotiveOptions,skip:true},
     {key:'next',ask:'다음에 비슷한 일이 생기면 해보고 싶은 작은 행동이 있나요? 적어 두면 ‘보석 닦기’에 모여요.',type:'multi',options:chatNextOptions,text:'직접 쓰기',skip:true}
   ];
   let chat={step:0,answers:{},picks:[],saved:false};
@@ -104,7 +176,7 @@
   function chatAsk(){
     const st=CHAT_STEPS[chat.step];
     chat.picks=[];
-    chatBot(esc(st.ask));
+    chatBot(esc(typeof st.ask==='function'?st.ask():st.ask));
     renderChatComposer();
     chatScroll();
   }
@@ -124,9 +196,10 @@
     const open=!!st && (st.type==='text' || !!st.text);
     field.value='';
     field.disabled=!open;
-    field.placeholder=!st?(chat.saved?'저장했어요':'위에서 저장해주세요'):st.type==='text'?(st.placeholder||''):(st.text||'위에서 골라주세요');
+    field.placeholder=!st?(chat.saved?'저장했어요':'위에서 저장해주세요'):st.type==='text'?((typeof st.placeholder==='function'?st.placeholder():st.placeholder)||''):(st.text||'위에서 골라주세요');
     if(st && st.type==='single') field.placeholder='위에서 하나를 골라주세요';
-    field.setAttribute('aria-label',st?(st.type==='text'?st.ask:(st.text||st.ask)):'대화 입력');
+    const askText=st?(typeof st.ask==='function'?st.ask():st.ask):'';
+    field.setAttribute('aria-label',st?(st.type==='text'?askText:(st.text||askText)):'대화 입력');
     const err=g('diaryChatError'); if(err) err.hidden=true;
     chatNextLabel();
   }
@@ -135,14 +208,17 @@
     if(!send) return;
     const has=chat.picks.length || (g('diaryChatText')?.value.trim());
     send.disabled=!st || st.type==='single';
-    send.textContent=st && st.type==='multi' && st.skip && !has?'건너뛰기':'보내기';
+    send.textContent=st && st.type==='multi' && st.skip && !has?(st.stop?'여기까지':'건너뛰기'):'보내기';
   }
   function chatAnswer(value,label){
     const st=CHAT_STEPS[chat.step];
     chat.answers[st.key]=value;
+    if(st.key==='theme'){ const th=chosenTheme(); if(th) chat.answers.category=th.cat; }
+    if(st.key==='topic'){ const tp=chosenTopic(); if(tp?.cat) chat.answers.category=tp.cat; }
     g('diaryChatLog')?.querySelector('.chat-quick')?.remove();
-    chatMe(label||'건너뛰었어요');
+    chatMe(label||(st.stop?'여기까지 할게요':'건너뛰었어요'));
     chat.step++;
+    while(chat.step<CHAT_STEPS.length && CHAT_STEPS[chat.step].when && !CHAT_STEPS[chat.step].when()) chat.step++;
     if(chat.step<CHAT_STEPS.length) chatAsk(); else chatSummary();
   }
   function chatRecord(){
@@ -153,11 +229,11 @@
     const situation=(a.situation||'').trim();
     return {id:'r_'+Date.now(),schemaVersion:REFLECTION_SCHEMA,createdAt,
       title:situation.split(/[.\n!?]/)[0].slice(0,30),category:a.category||'일상',emotions:a.emotions||[],situation,
-      reaction:(a.reaction||[]).join(' · '),whys:[(a.why||[]).join(' · '),'','','',''],motives:a.motives||[],next:(a.next||[]).join(' · ')};
+      reaction:(a.reaction||[]).join(' · '),whys:['why','why2','why3','','why5'].map(k=>k?(Array.isArray(a[k])?a[k].join(' · '):String(a[k]||'')):''),motives:a.motives||[],next:(a.next||[]).join(' · ')};
   }
   function chatSummary(){
     const r=chatRecord();
-    const rows=[['무슨 일',r.situation],['감정',r.emotions.join(', ')],['나의 반응',r.reaction],['그렇게 한 이유',r.whys[0]],['지키고 싶었던 것',r.motives.join(', ')],['다음엔',r.next]].filter(x=>x[1]);
+    const rows=[['무슨 일',r.situation],['감정',r.emotions.join(', ')],['나의 반응',r.reaction],['그렇게 한 이유',r.whys.filter(Boolean).join(' → ')],['지키고 싶었던 것',r.motives.join(', ')],['다음엔',r.next]].filter(x=>x[1]);
     const d=new Date(r.createdAt);
     chatBot('오늘의 장면을 이렇게 정리했어요.'
       +`<article class="chat-summary"><div class="chat-summary-meta">${esc(longDate(d))} · ${esc(catLabel(r.category))}</div>`
@@ -166,23 +242,49 @@
     renderChatComposer();
     chatScroll();
   }
+  /* 연마 처방전 (2026-10-05): 같은 장면 분류의 기록을 모아 반복되는 결 · 가장 깊은 이유 · 이번 주 처방을 만든다.
+     지금은 이 브라우저 안의 규칙형(기록은 밖으로 보내지 않는다). 실제 생성형 AI는 서버리스 함수를 거쳐 이 함수만 바꿔 끼운다
+     (docs/기능_운영_요구사항.md: 1차 로컬 규칙형, 프론트에 API 키를 넣지 않는다, 기록은 동의 없이 외부로 보내지 않는다) */
+  function diaryPrescribe(record,all){
+    const same=all.filter(r=>r.category===record.category);
+    const top=list=>{ const c={}; list.filter(Boolean).forEach(x=>c[x]=(c[x]||0)+1); return Object.entries(c).sort((a,b)=>b[1]-a[1])[0]||null; };
+    const emo=top(same.flatMap(r=>r.emotions||[])), mot=top(same.flatMap(r=>r.motives||[]));
+    const deep=[...(record.whys||[])].reverse().find(Boolean)||'';
+    const pool=diaryTypeInfo.actions.length?diaryTypeInfo.actions:DIARY_NEXT_GENERIC;
+    const action=record.next||pool[(same.length+new Date().getDate())%pool.length];
+    const pattern=same.length>1
+      ?`‘${catLabel(record.category)}’ 장면을 ${same.length}번 연마했어요.${emo?` ‘${emo[0]}’을(를) ${emo[1]}번 느꼈고`:''}${mot?`, ‘${mot[0]}’을(를) 지키려 할 때가 많았어요.`:'.'}`
+      :'첫 연마예요. 같은 테마로 두세 번 더 쓰면 반복되는 결이 보여요.';
+    return {count:same.length,pattern,deep,action,fromNext:!!record.next};
+  }
+  function prescriptionHTML(rx,record){
+    const d=new Date(record.createdAt);
+    return `<article class="rx-card"><header class="rx-head"><strong>연마 처방전</strong><span>${esc(longDate(d))} · ${esc(catLabel(record.category))}</span></header>`
+      +`<dl class="rx-rows"><div><dt>반복되는 결</dt><dd>${esc(rx.pattern)}</dd></div>`
+      +(rx.deep?`<div><dt>가장 깊은 이유</dt><dd>${esc(rx.deep)}</dd></div>`:'')
+      +`<div><dt>이번 주 처방</dt><dd>${esc(rx.action)}</dd></div>`
+      +'<div><dt>복용법</dt><dd>비슷한 장면이 오면 한 번만 해 보세요. 못 했어도 괜찮아요.</dd></div></dl>'
+      +(rx.fromNext?'':`<button type="button" class="ui-btn ui-btn-secondary rx-add" data-rx-add="${esc(rx.action)}">보석 닦기에 담기</button>`)
+      +'<p class="rx-note">진단이나 치료가 아니라, 다음 연마를 위한 제안이에요.</p></article>';
+  }
   function chatSave(){
     const record=chatRecord();
     const arr=readReflections(); arr.unshift(record); write(STORAGE.reflections,arr);
     chat.saved=true;
     renderReflectionHistory(); renderExperiments(); renderDashboard();
     chatBot(record.next?'저장했어요. ‘기록’에서 다시 볼 수 있고, 해보기로 한 행동은 ‘보석 닦기’에 모였어요.':'저장했어요. ‘기록’에서 다시 볼 수 있어요.');
+    chatBot('오늘 연마한 기록으로 처방전을 써 봤어요.'+prescriptionHTML(diaryPrescribe(record,arr),record));
     renderChatComposer();
     chatScroll();
     /* 위험한 표현이 보이면 기록은 저장하고 도움 안내를 띄운다 (PRD SF-1·2) */
-    const text=[record.situation,record.reaction,record.whys[0],record.next,...record.emotions].join(' ');
+    const text=[record.situation,record.reaction,...record.whys,record.next,...record.emotions].join(' ');
     if(typeof window.prdHasCrisisSignal==='function' && window.prdHasCrisisSignal(text) && typeof window.openCrisisGuide==='function') window.openCrisisGuide({fromDiary:true});
   }
   function chatStart(){
     chat={step:0,answers:{},picks:[],saved:false};
     const log=g('diaryChatLog'); if(!log) return;
     log.innerHTML='';
-    chatBot('오늘 기억에 남은 장면 하나를 같이 정리해볼까요? 질문에 하나씩 답하면 다이어리 한 편으로 정리해줘요.');
+    chatBot('오늘의 장면 하나를 원석처럼 꺼내 함께 연마해 볼까요? 질문에 하나씩 답하면 다이어리 한 편과 연마 처방전이 나와요. ‘왜’는 한 단계씩 더 물어볼게요. 언제든 멈춰도 괜찮아요.');
     chatAsk();
   }
   function setDiaryTab(tab){
@@ -223,6 +325,8 @@
       if(tog){ const v=tog.dataset.chatToggle, i=chat.picks.indexOf(v); if(i>=0) chat.picks.splice(i,1); else chat.picks.push(v); tog.classList.toggle('active',i<0); tog.setAttribute('aria-pressed',i<0?'true':'false'); if(g('diaryChatError')) g('diaryChatError').hidden=true; chatNextLabel(); return; }
       if(e.target.closest('[data-chat-save]')){ chatSave(); return; }
       if(e.target.closest('[data-chat-restart]')){ chatStart(); return; }
+      const rx=e.target.closest('[data-rx-add]'); /* 연마 처방전의 처방을 보석 닦기 '해보기로 한 것'에 */
+      if(rx){ addCustomExperiment(rx.dataset.rxAdd,'연마 처방전'); rx.disabled=true; rx.textContent='보석 닦기에 담았어요'; renderExperiments(); return; }
       const go=e.target.closest('[data-chat-go]');
       if(go) setDiaryTab(go.dataset.chatGo);
     });
@@ -849,54 +953,83 @@
     if(v && v.schemaVersion===PREFS_SCHEMA) return {schemaVersion:PREFS_SCHEMA,showPrayer:v.showPrayer===true};
     return {schemaVersion:PREFS_SCHEMA,showPrayer:false};
   }
-  function polishStateHTML(t,have){
+  /* 보석 닦기 다시 정리 (2026-10-05): 컨셉 하나 — "이번 주 작은 행동 하나를 고르고, 해보고, 체크한다".
+     설명형 콘텐츠(1분 연습 · 신호 목록 · 고칠 점 · 키워드)는 유형 탐구 글로 넘기고, 여기는 고르기와 담기만 남긴다.
+     화면: 내 보석 카드(이번 주 방향) → ① 지금 내 상태 고르기 → 그 상태의 행동 담기 → ② 해보기로 한 것(아래 정적 영역) */
+  function polishPicksHTML(t,have){
     const [key,label,lead]=POLISH_STATES.find(([k])=>k===polishState);
-    const list=(items,cls)=>`<ul class="${cls}">${items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
-    let body='';
+    const acts=t?POLISH_STATE_TYPE[t][key].acts:POLISH_STATE_GENERAL[key].start;
+    const chips=POLISH_STATES.map(([k,l])=>`<button type="button" class="polish-mood${k===key?' is-on':''}" data-polish-state="${k}" aria-pressed="${k===key}">${l}</button>`).join('');
+    const items=acts.map(a=>{const on=have.has(a);return `<li class="polish-pick${on?' is-on':''}"><span>${esc(a)}</span>`
+      +(t?`<button class="polish-add" data-polish-add="${esc(a)}" data-polish-src="${esc(label)}" type="button"${on?' disabled':''}>${on?'담았어요':'담기'}</button>`:'')+'</li>';}).join('');
+    let extra='';
+    if(key==='low') extra+='<p class="polish-safe">여기 있는 내용은 성격 패턴을 이해하기 위한 것이지, 마음 상태를 진단하는 것이 아니에요. 힘든 마음이 여러 날 이어진다면 믿을 수 있는 사람이나 전문가에게 이야기해보세요.</p>';
+    return `<section class="polish-sec polish-state" aria-labelledby="polishStateTitle"><h2 class="polish-title" id="polishStateTitle"><span class="polish-no" aria-hidden="true">1</span>지금 내 상태는?</h2>`
+      +`<div class="polish-moods" role="group" aria-label="지금 내 상태">${chips}</div>`
+      +`<p class="polish-lead">${esc(lead)}</p><ul class="polish-picks">${items}</ul>${extra}</section>`;
+  }
+  /* ③ 소원과 기도 (2026-10-05, 보석 닦기 컨셉 실험): 닦은 보석에 이번 주 바라는 것(소원)과 기도를 담는다.
+     소원은 이뤄지면 '감사'로, 기도는 응답받으면 '응답'으로 바뀐다. 기도 제안은 내 유형 · 지금 고른 상태의 기도제목(강의 원고) */
+  function readWishes(){
+    const v=read(STORAGE.wishes,null);
+    const items=(v && Array.isArray(v.items)?v.items:Array.isArray(v)?v:[])
+      .filter(x=>x && typeof x.text==='string' && x.text.trim())
+      .map(x=>({id:String(x.id||('w_'+Math.random().toString(36).slice(2))),kind:x.kind==='prayer'?'prayer':'wish',text:x.text.trim().slice(0,200),at:String(x.at||''),done:x.done===true,doneAt:String(x.doneAt||'')}));
+    return {schemaVersion:WISH_SCHEMA,items};
+  }
+  function writeWishes(d){ write(STORAGE.wishes,{schemaVersion:WISH_SCHEMA,items:d.items}); }
+  function addWish(kind,text){
+    const tx=String(text||'').trim(); if(!tx) return false;
+    const d=readWishes();
+    if(d.items.some(x=>x.kind===kind && x.text===tx && !x.done)) return false;
+    d.items.unshift({id:'w_'+Date.now(),kind,text:tx.slice(0,200),at:new Date().toISOString(),done:false,doneAt:''});
+    writeWishes(d); return true;
+  }
+  function polishWishHTML(t){
+    const {items}=readWishes();
+    const day=d=>{ const x=new Date(d); return isNaN(x)?'':`${x.getMonth()+1}월 ${x.getDate()}일`; };
+    const row=x=>`<li class="wish-item${x.done?' is-done':''}"><span class="wish-mark" aria-hidden="true">${x.kind==='wish'?(x.done?'감사':'소원'):(x.done?'응답':'기도')}</span>`
+      +`<span class="wish-text">${esc(x.text)}<small>${esc(day(x.at))}${x.done?` · ${x.kind==='wish'?'이뤄졌어요':'응답받았어요'} ${esc(day(x.doneAt))}`:''}</small></span>`
+      +(x.done?'':`<button class="wish-done" data-wish-done="${esc(x.id)}" type="button">${x.kind==='wish'?'이뤄졌어요':'응답받았어요'}</button>`)
+      +`<button class="wish-del" data-wish-del="${esc(x.id)}" type="button" aria-label="지우기">×</button></li>`;
+    const wishes=items.filter(x=>x.kind==='wish'), prayers=items.filter(x=>x.kind==='prayer');
+    let suggest='';
     if(t){
-      const s=POLISH_STATE_TYPE[t][key];
-      body=`<h3 class="polish-sub">이런 신호</h3>${list(s.signs,'polish-signs')}`
-        +`<h3 class="polish-sub">이렇게 해보기</h3>`
-        +`<ul class="polish-actions">${s.acts.map(a=>{const on=have.has(a);return `<li><span>${esc(a)}</span><button class="ui-btn ${on?'ui-btn-ghost':'ui-btn-secondary'}" data-polish-add="${esc(a)}" data-polish-src="${esc(label)}" type="button"${on?' disabled':''}>${on?'담았어요':'담기'}</button></li>`;}).join('')}</ul>`;
-      if(readPrefs().showPrayer){
-        body+=`<div class="polish-pray"><h3 class="polish-sub">기도제목</h3>${list(s.prays,'polish-pray-list')}<p class="polish-verse">말씀 · ${esc(POLISH_STATE_TYPE[t].verse)}</p></div>`;
-      }
-    }else{
-      const s=POLISH_STATE_GENERAL[key];
-      body=`<h3 class="polish-sub">이런 느낌</h3>${list(s.feel,'polish-signs')}<h3 class="polish-sub">이렇게 시작</h3>${list(s.start,'polish-signs')}`;
+      const [key]=POLISH_STATES.find(([k])=>k===polishState);
+      const have=new Set(prayers.map(x=>x.text));
+      suggest=`<ul class="pray-suggest">${POLISH_STATE_TYPE[t][key].prays.map(p=>`<li><p>${esc(p)}</p><button class="polish-add" data-pray-add="${esc(p)}" type="button"${have.has(p)?' disabled':''}>${have.has(p)?'담았어요':'내 기도로 담기'}</button></li>`).join('')}</ul>`
+        +`<p class="polish-verse">함께 읽는 말씀 · ${esc(POLISH_STATE_TYPE[t].verse)}</p>`;
     }
-    if(key==='low') body+=`<p class="polish-safe">여기 있는 내용은 성격 패턴을 이해하기 위한 것이지, 마음 상태를 진단하는 것이 아니에요. 힘든 마음이 여러 날 이어진다면 믿을 수 있는 사람이나 전문가에게 이야기해보세요.</p>`;
-    if(t) body+=`<label class="polish-pray-opt"><input data-polish-pray type="checkbox"${readPrefs().showPrayer?' checked':''}><span>기도제목도 함께 보기</span></label>`;
-    return `<section class="polish-sec polish-state" aria-labelledby="polishStateTitle"><h2 class="polish-title" id="polishStateTitle">지금 내 상태는?</h2>`
-      +`<p class="polish-state-desc">지난 일주일을 떠올리며 가장 가까운 쪽을 골라요.</p>`
-      +`<div class="polish-state-tabs" role="tablist" aria-label="지금 내 상태">${POLISH_STATES.map(([k,l])=>`<button type="button" role="tab" id="polishStateTab-${k}" data-polish-state="${k}" aria-controls="polishStatePanel" aria-selected="${k===key}" tabindex="${k===key?0:-1}" class="${k===key?'active':''}">${l}</button>`).join('')}</div>`
-      +`<div class="polish-state-panel" id="polishStatePanel" role="tabpanel" aria-labelledby="polishStateTab-${key}"><p class="polish-state-lead">${esc(lead)}</p>${body}</div></section>`;
+    return `<section class="polish-sec polish-wish" aria-labelledby="polishWishTitle"><h2 class="polish-title" id="polishWishTitle"><span class="polish-no" aria-hidden="true">3</span>소원과 기도</h2>`
+      +'<p class="polish-lead">닦은 보석에 이번 주 바라는 것을 담아요. 소원이 이뤄지면 감사로, 기도가 응답되면 응답으로 바뀌어요.</p>'
+      +'<h3 class="polish-sub">나의 소원</h3>'
+      +'<form class="wish-form" data-wish-form="wish"><input class="ui-field" maxlength="80" placeholder="예: 이번 주엔 내 마음을 한 번 솔직하게 말하기" aria-label="이번 주 나의 소원"><button class="polish-add" type="submit">소원 담기</button></form>'
+      +(wishes.length?`<ul class="wish-list">${wishes.map(row).join('')}</ul>`:'<p class="wish-empty">아직 담은 소원이 없어요.</p>')
+      +'<h3 class="polish-sub">나의 기도</h3>'
+      +(t?`<p class="polish-lead">지금 고른 상태(${esc(POLISH_STATES.find(([k])=>k===polishState)[1])})의 ${t}번 기도제목이에요. 마음에 닿는 것을 담거나 직접 써요.</p>`+suggest:'')
+      +'<form class="wish-form" data-wish-form="prayer"><input class="ui-field" maxlength="120" placeholder="예: 서두르지 않고 오늘에 머물게 해주세요" aria-label="나의 기도"><button class="polish-add" type="submit">기도 담기</button></form>'
+      +(prayers.length?`<ul class="wish-list">${prayers.map(row).join('')}</ul>`:'')
+      +'</section>';
   }
   function renderPolish(){
     const host=g('polishApp'); if(!host) return;
     const t=diaryMyType();
     const gem=n=>typeof gemImg==='function'?gemImg(n,'',true):'';
     const name=n=>(typeof CHECK_TYPE_NAMES!=='undefined'&&CHECK_TYPE_NAMES[n])||TYPES[n]?.name||'';
-    const steps=[
-      ['1','알아차리기','“지금 내 성격이 작동하고 있구나”',t?`내 신호: ${POLISH.signals[t]}`:'몸·감정·생각의 변화를 판단 없이 관찰해요.'],
-      ['2','멈추기','자동반응을 바로 따르지 않기','“해야 해”, “이러면 안 돼” 같은 목소리를 사실이 아닌 하나의 생각으로 봐요.'],
-      ['3','선택하기','평소와 다른 작은 행동 하나',t?`통합 방향인 ${POLISH.integration[t]}번의 장점을 하나 골라 작게 연습해요.`:'통합 방향의 장점을 의식적으로 연습하고 작은 성공 경험을 쌓아요.']
-    ];
-    const stepsHTML=`<section class="polish-sec" aria-labelledby="polishStepsTitle"><h2 class="polish-title" id="polishStepsTitle">1분 연습</h2>`
-      +`<ol class="polish-steps">${steps.map(([n,h,q,d])=>`<li class="polish-step"><span class="polish-step-no" aria-hidden="true">${n}</span><div><strong>${h}</strong><p class="polish-step-q">${esc(q)}</p><p class="polish-step-d">${esc(d)}</p></div></li>`).join('')}</ol></section>`;
+    const vars=n=>typeof gemVars==='function'?gemVars(n):'';
+    const flow='<ol class="polish-flow" aria-label="보석 닦는 순서"><li>상태 고르기</li><li>행동 담기</li><li>소원과 기도</li></ol>';
     if(!t){
-      host.innerHTML=`<section class="polish-find"><span class="polish-find-gems" aria-hidden="true">${[2,5,7].map(gem).join('')}</span>`
-        +`<strong>내 보석을 먼저 찾아볼까요?</strong><p>유형을 알면 내 유형에 맞는 실천 행동을 골라 줄 수 있어요.</p>`
-        +`<button class="ui-btn ui-btn-primary" data-polish-check type="button">간편 검사하기</button></section>`+stepsHTML+polishStateHTML(null);
+      host.innerHTML=`<section class="polish-hero is-find"><span class="polish-hero-gems" aria-hidden="true">${[2,5,7].map(gem).join('')}</span>`
+        +'<strong class="polish-hero-title">내 보석을 먼저 찾아볼까요?</strong><p class="polish-hero-desc">유형을 알면 내 보석에 맞는 행동을 골라 줄 수 있어요.</p>'
+        +'<button class="ui-btn ui-btn-primary" data-polish-check type="button">간편 검사하기</button></section>'+flow+polishPicksHTML(null,new Set())+polishWishHTML(null);
       return;
     }
     const p=POLISH.practice[t], have=new Set(readExperiments().custom.map(x=>x.text));
-    host.innerHTML=stepsHTML+polishStateHTML(t,have)
-      +`<section class="polish-sec" aria-labelledby="polishPickTitle"><h2 class="polish-title" id="polishPickTitle">이번 주에 닦아 볼 것</h2>`
-      +`<div class="polish-type"><span class="polish-type-gem" aria-hidden="true">${gem(t)}</span><div><span class="polish-type-name">${t}번 ${esc(name(t))}</span><strong class="polish-type-dir">${esc(p.direction)}</strong></div></div>`
-      +`<p class="polish-fix"><b>이것만 고치면</b> ${esc(POLISH.fix[t])}</p>`
-      +`<div class="polish-keys" aria-label="자주 기억하면 좋은 방향">${POLISH.remember[t].map(k=>`<span>${esc(k)}</span>`).join('')}</div>`
-      +`<ul class="polish-actions">${p.actions.map(a=>{const on=have.has(a);return `<li><span>${esc(a)}</span><button class="ui-btn ${on?'ui-btn-ghost':'ui-btn-secondary'}" data-polish-add="${esc(a)}" type="button"${on?' disabled':''}>${on?'담았어요':'담기'}</button></li>`;}).join('')}</ul></section>`;
+    const gemName=(typeof HOME_PROFILES!=='undefined'&&HOME_PROFILES[t]?.gem)||'';
+    host.innerHTML=`<section class="polish-hero" style="${vars(t)}"><span class="polish-hero-gem" aria-hidden="true">${gem(t)}</span>`
+      +`<span class="polish-hero-name">${t}번 ${esc(name(t))}${gemName?` · ${esc(gemName)}`:''}</span>`
+      +`<strong class="polish-hero-title">${esc(p.direction)}</strong><span class="polish-hero-desc">이번 주에 닦을 방향이에요.</span></section>`
+      +flow+polishPicksHTML(t,have)+polishWishHTML(t);
   }
   /* state: 핸드북 '요즘 나는 어떤가요?'에서 고른 상태(low·mid·high)로 열 때 */
   window.showPolishPage=function(push=true,state){
@@ -910,20 +1043,26 @@
     renderPolish(); renderExperiments();
     document.getElementById('page-polish')?.scrollTo({top:0});
     if(fromState) document.querySelector('#polishApp .polish-state')?.scrollIntoView({block:'start'});
+    /* 담은 행동이 바로 아래 '해보기로 한 것'에 쌓인다 */
   };
   g('polishApp')?.addEventListener('click',e=>{
     const add=e.target.closest('[data-polish-add]');
-    if(add){ const t=diaryMyType(); addCustomExperiment(add.dataset.polishAdd,`보석 닦기 · ${t}번${add.dataset.polishSrc?' · '+add.dataset.polishSrc:''}`); renderPolish(); return; }
+    if(add){ const t=diaryMyType(); addCustomExperiment(add.dataset.polishAdd,`보석 닦기 · ${t}번${add.dataset.polishSrc?' · '+add.dataset.polishSrc:''}`); renderPolish(); renderExperiments(); return; }
     const st=e.target.closest('[data-polish-state]');
-    if(st){ polishState=st.dataset.polishState; renderPolish(); g('polishStateTab-'+polishState)?.focus(); return; }
+    if(st){ polishState=st.dataset.polishState; renderPolish(); document.querySelector(`#polishApp [data-polish-state="${polishState}"]`)?.focus(); return; }
     if(e.target.closest('[data-polish-check]') && typeof showCheckTarget==='function') showCheckTarget('quick');
+    const pa=e.target.closest('[data-pray-add]');
+    if(pa){ addWish('prayer',pa.dataset.prayAdd); renderPolish(); return; }
+    const wd=e.target.closest('[data-wish-done]');
+    if(wd){ const d=readWishes(); const it=d.items.find(x=>x.id===wd.dataset.wishDone); if(it){ it.done=true; it.doneAt=new Date().toISOString(); writeWishes(d); } renderPolish(); return; }
+    const wx=e.target.closest('[data-wish-del]');
+    if(wx){ const d=readWishes(); d.items=d.items.filter(x=>x.id!==wx.dataset.wishDel); writeWishes(d); renderPolish(); }
   });
-  /* 상태 탭: 왼쪽·오른쪽 화살표로 옮겨 다닌다 (다이어리 탭과 같음) */
-  g('polishApp')?.addEventListener('keydown',e=>{
-    if(!e.target.closest('[data-polish-state]') || (e.key!=='ArrowRight' && e.key!=='ArrowLeft')) return;
+  g('polishApp')?.addEventListener('submit',e=>{
+    const form=e.target.closest('[data-wish-form]'); if(!form) return;
     e.preventDefault();
-    const i=POLISH_STATES.findIndex(([k])=>k===polishState), n=(i+(e.key==='ArrowRight'?1:-1)+POLISH_STATES.length)%POLISH_STATES.length;
-    polishState=POLISH_STATES[n][0]; renderPolish(); g('polishStateTab-'+polishState)?.focus();
+    const kind=form.dataset.wishForm, input=form.querySelector('input');
+    if(addWish(kind,input.value)){ renderPolish(); document.querySelector(`#polishApp [data-wish-form="${kind}"] input`)?.focus(); }
   });
   g('polishApp')?.addEventListener('change',e=>{
     const box=e.target.closest('[data-polish-pray]');
