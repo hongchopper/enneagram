@@ -435,25 +435,16 @@ function hbSplitLife(chapter,tab,doc,n){
 
 function hbSummaryHTML(page,n){
   const d=typeProfileFromRoot(page,n);
-  const prof={desc:d.desc,quote:d.quote,tags:d.tags};
-  const name=d.name;
   const coreVal=label=>label==='기본적인 두려움'?d.fear:d.desire;
   const motive=label=>label==='반복되는 생각'?d.thought:d.lost;
   const listOf=arr=>arr.map(x=>`<div role="listitem" class="hb-li">${hbEsc(x)}</div>`).join('');
   const procon=[d.strengths,d.cautions];
   const list=arr=>listOf(arr||[]);
   const env=d.env, theme=d.theme, links=d.links;
-  /* 9점 도형: 내 번호만 강조 (핸드북 레이어가 svg를 display:none !important로 숨겨서 div + CSS 마스크로 그림) */
-  const pts={9:[180,52],1:[262,82],2:[306,154],3:[285,238],4:[222,299],5:[138,299],6:[75,238],7:[54,154],8:[98,82]};
-  const figure=`<div aria-hidden="true" class="hb-sum-figure"><span class="hb-fig-lines"></span>`
-    +Object.entries(pts).map(([k,[x,y]])=>`<span class="hb-fig-node${Number(k)===n?' is-me':''}" style="left:${(x/3.6).toFixed(1)}%;top:${(y/3.6).toFixed(1)}%">${k}</span>`).join('')+`</div>`;
   const box=(label,val)=>val?`<div class="hb-sum-box"><div class="hb-sum-label">${label}</div><div class="hb-sum-value">${hbEsc(val)}</div></div>`:'';
 
   return `<div class="hb-summary">`
-    +`<div class="hb-sum-hero"><div class="hb-sum-hero-copy"><div class="hb-sum-kicker">유형 요약</div>`
-    +`<div class="hb-sum-title"><span class="hb-sum-no">${n}</span><div><h2 class="hb-sum-name">${hbEsc(name)}</h2><div class="hb-sum-desc">${hbEsc(prof.desc)}</div></div></div>`
-    +`<div class="hb-sum-tags">${prof.tags.map(t=>'#'+hbEsc(t)).join(' ')}</div>`
-    +(prof.quote?`<div class="hb-sum-quote">“${hbEsc(prof.quote)}”</div>`:'')+`</div>${figure}</div>`
+    /* 맨 위 유형 소개 카드는 뺐다 (2026-10-05): 유형 탐구·나의 공간의 프로필 카드와 겹친다. 유형 이름은 위 유형 바꾸기 칸에 있다 */
     +`<div class="hb-sum-grid3">${box('핵심 두려움',coreVal('기본적인 두려움'))}${box('핵심 욕망',coreVal('기본적인 욕망'))}${box('반복되는 생각',motive('반복되는 생각'))}</div>`
     +`<div class="hb-sum-grid2"><div class="hb-sum-box"><div class="hb-sum-label">이런 모습이 멋져요</div><div role="list" class="hb-sum-list">${list(procon[0])}</div></div>`
     +`<div class="hb-sum-box"><div class="hb-sum-label">이런 점은 주의해요</div><div role="list" class="hb-sum-list is-caution">${list(procon[1])}</div></div></div>`
@@ -552,14 +543,17 @@ function layoutHandbookPage(page){
     +`<label class="hb-switch-current"><span class="sr-only">다른 유형 고르기</span>`
     +`<img class="hb-switch-gem" src="assets/gems/gem-${n}-${GEM_FILES[n]}.png" alt="" width="480" height="480" decoding="async"><select data-hb-type-select>`
     +[1,2,3,4,5,6,7,8,9].map(t=>`<option value="${t}"${t===n?' selected':''}>${t}번 ${CHECK_TYPE_NAMES[t]}</option>`).join('')+`</select></label>`
-    +`<button class="hb-switch-btn" data-hb-type-go="${nextT}" aria-label="다음 유형: ${nextT}번 ${CHECK_TYPE_NAMES[nextT]}" type="button">›</button></div></div>`
-    +`<div class="hb-tabs" role="tablist" aria-label="${n}번 핸드북">`
+    +`<button class="hb-switch-btn" data-hb-type-go="${nextT}" aria-label="다음 유형: ${nextT}번 ${CHECK_TYPE_NAMES[nextT]}" type="button">›</button></div></div>`;
+  /* 탭 줄만 따로 떼어 위에 붙인다 (2026-10-05): 뒤로 가기·유형 바꾸기까지 붙어 있으면 폰에서 본문이 안 보였다 */
+  const tabbar=doc.createElement('div');
+  tabbar.className='hb-tabbar';
+  tabbar.innerHTML=`<div class="hb-tabs" role="tablist" aria-label="${n}번 핸드북">`
     +HB_TABS.map(t=>`<button class="hb-tab" data-hb-tab-btn="${t.key}" role="tab" type="button">${t.label}</button>`).join('')+`</div>`;
   const summary=doc.createElement('section');
   summary.className='hb-panel';
   summary.dataset.hbTab='summary';
   summary.innerHTML=hbSummaryHTML(page,n);
-  page.prepend(top,summary);
+  page.prepend(top,tabbar,summary);
 
   page.addEventListener('click',e=>{
     const tabBtn=e.target.closest('[data-hb-tab-btn]');
@@ -625,7 +619,7 @@ function hbShow(page,tabKey,topic,scroll){
   try{ realWindow.history.replaceState(null,'',`#handbook-${n}`+(tab.key==='summary'?'':`-${tab.key}`)); }catch(e){}
   if(scroll==='topic' && openHead){ openHead.scrollIntoView({block:'start',behavior:'smooth'}); return; }
   if(scroll){
-    const bar=page.querySelector('.hb-top');
+    const bar=page.querySelector('.hb-tabbar');
     const panelEl=bar && bar.closest('.page-panel');
     if(bar && panelEl && bar.getBoundingClientRect().top<panelEl.getBoundingClientRect().top) bar.scrollIntoView({block:'start'});
   }
@@ -647,7 +641,7 @@ realWindow.revealHandbookAnchor=function(id,tries=0){
   const panel=el.closest('.hb-panel');
   const topicEl=el.closest('.hb-topic');
   if(page && panel) hbShow(page,panel.dataset.hbTab,topicEl?Number(topicEl.dataset.topic):0,false);
-  (el.classList.contains('hb-panel')?page.querySelector('.hb-top'):el).scrollIntoView({behavior:'smooth',block:'start'});
+  (el.classList.contains('hb-panel')?page.querySelector('.hb-tabbar'):el).scrollIntoView({behavior:'smooth',block:'start'});
 };
 
 async function mountType(n,token){
@@ -2149,44 +2143,21 @@ const PC_ORBIT=`<svg class="pcard-orbit" viewBox="0 0 250 350" preserveAspectRat
    상태(빛남/흐려짐)는 카드에 넣지 않는다 (공유되는 정보). */
 /* 컴포넌트는 --tc(base) · --ts(soft) · --td(deep) 세 변수만 쓰면 9유형이 자동으로 바뀐다 */
 const gemVars=t=>`--tc:var(--type-${t});--ts:var(--type-${t}-soft);--td:var(--type-${t}-deep)`;
-const svgOpen=(cls,vb)=>`<svg class="${cls}" viewBox="${vb}" aria-hidden="true" focusable="false">`;
-/* 잎 하나: (x,y)에서 각도 deg 방향으로 길이 len */
-const decoLeaf=(x,y,deg,len)=>`<path transform="translate(${x} ${y}) rotate(${deg})" d="M0 0C${len*.3} -${len*.28} ${len*.7} -${len*.28} ${len} 0C${len*.7} ${len*.28} ${len*.3} ${len*.28} 0 0Z"/>`;
-/* 모서리 잎줄기 (왼쪽 위 기준, 나머지 모서리는 CSS로 뒤집는다) */
-const DECO_SPRIG=svgOpen('deco-sprig','0 0 56 72')
-  +'<path d="M6 6C10 22 12 42 8 68"/><path d="M6 6C20 9 34 9 52 6"/>'
-  +[[9,18,60,11],[11,30,-60,12],[11,42,70,12],[10,54,-70,10],[18,8,-30,10],[30,9,30,11],[42,8,-25,9]].map(([x,y,d,l])=>decoLeaf(x,y,d,l)).join('')
-  +'<circle cx="6" cy="6" r="2"/></svg>';
-/* 위: 초승달 + 작은 별 두 개 */
-const DECO_MOON=svgOpen('deco-moon','0 0 96 32')
-  +'<path class="deco-fill" d="M50 4A12 12 0 0 0 50 28A7 12 0 0 1 50 4Z"/>'
-  +'<path class="deco-fill" d="M22 16l1.2 3 3 1.2-3 1.2-1.2 3-1.2-3-3-1.2 3-1.2Z"/><path class="deco-fill" d="M74 16l1.2 3 3 1.2-3 1.2-1.2 3-1.2-3-3-1.2 3-1.2Z"/>'
-  +'<circle class="deco-fill" cx="12" cy="20" r="1"/><circle class="deco-fill" cx="84" cy="20" r="1"/></svg>';
-/* 아래: 반쪽 해와 햇살 */
-const DECO_SUN=svgOpen('deco-sun','0 0 96 32')
-  +'<path d="M34 30A14 14 0 0 1 62 30"/><path d="M14 30H82"/>'
-  +[-70,-50,-30,-10,10,30,50,70].map(d=>`<path transform="rotate(${d} 48 30)" d="M48 12V4"/>`).join('')
-  +'</svg>';
-const decoFrame=()=>`<span class="deco-frame" aria-hidden="true">`
-  +['tl','tr','bl','br'].map(k=>`<span class="deco-corner deco-${k}">${DECO_SPRIG}</span>`).join('')
-  +`<span class="deco-top">${DECO_MOON}</span><span class="deco-bottom">${DECO_SUN}</span>`
-  +'<span class="deco-jewel deco-jewel-l"></span><span class="deco-jewel deco-jewel-r"></span></span>';
 /* 프로필 카드 앞면: 나의 공간 내 프로필과 유형 탐구 9장이 같은 모양을 쓴다 (2026-10-03 통일) */
 function pcardFrontHTML(t,{tags=false,eager=true}={}){
+  /* 크리스탈 글래스 카드 (2026-10-05 리디자인 F): 보석 색 빛이 뒤에서 번지고 그 위에 반투명 유리판. 타로 같던 잎줄기·달·해·필기체·이중 테두리는 뺐다 */
   const p=HOME_PROFILES[t], name=homeEsc(CHECK_TYPE_NAMES[t]);
-  const sparks=[1,2,3].map(i=>`<span class="pc-twinkle pc-twinkle-${i}">${pcSparkSVG('var(--color-gold)')}</span>`).join('');
-  return `<span class="pcard-face pcard-front" aria-hidden="true">${decoFrame()}`
-    +`<span class="deco-gem">${sparks}${gemImg(t,'',eager)}</span>`
-    +`<span class="deco-en">${homeEsc(p.en)}</span>`
-    +`<span class="deco-name">${name}</span>`
-    +`<span class="deco-meta">${t}번 · ${homeEsc(p.gem)} · ${homeEsc(p.key)}</span>`
-    +`<span class="deco-desc">${homeEsc(p.desc)}</span>`
-    +(tags?`<span class="deco-tags">${p.tags.map(k=>`<span class="tag-chip">#${homeEsc(k)}</span>`).join('')}</span>`:'')
-    +`</span>`;
+  return `<span class="pcard-face pcard-front gcard" aria-hidden="true"><span class="gcard-glow"></span>`
+    +`<span class="gcard-glass"><span class="gcard-no">${t}번 · ${homeEsc(p.gem)}</span>`
+    +`<span class="gcard-gem">${gemImg(t,'',eager)}</span>`
+    +`<span class="gcard-name">${name}</span><span class="gcard-key">${homeEsc(p.key)}</span>`
+    +`<span class="gcard-desc">${homeEsc(p.desc)}</span>`
+    +(tags?`<span class="gcard-tags">${p.tags.map(k=>`<span class="tag-chip">#${homeEsc(k)}</span>`).join('')}</span>`:'')
+    +`</span></span>`;
 }
 function homeProfileCardHTML(t,{mine=null,link=true,tags=false}={}){
   const p=HOME_PROFILES[t], name=homeEsc(CHECK_TYPE_NAMES[t]);
-  return `<article class="pcard deco type-${t}${mine?' is-mine':''}" style="${gemVars(t)};--i:${t-1}">`
+  return `<article class="pcard type-${t}${mine?' is-mine':''}" style="${gemVars(t)};--i:${t-1}">`
     /* 뒤집기 없이 앞면만 (2026-10-03, 토글 없애기). 뒷면의 '왜 이 보석일까요?'는 카드 아래 글로 보여준다 */
     +`<div class="pcard-flip" role="img" aria-label="${t}번 ${name} 카드, ${homeEsc(p.gem)}, ${homeEsc(p.key)}">`
     +`<span class="pcard-body">${pcardFrontHTML(t,{tags})}`
@@ -2309,14 +2280,15 @@ function renderTypeCardRail(profile=getHomeProfile()){
   };
   if(!grid.dataset.countBound){ grid.dataset.countBound='1'; grid.addEventListener('scroll',sync,{passive:true}); }
   const start=profile?grid.children[profile.type-1]:null;
-  grid.scrollLeft=start?start.offsetLeft-(grid.clientWidth-start.offsetWidth)/2:0;
+  /* 카드를 zoom으로 줄여 offset 값 대신 화면 위치로 가운데를 맞춘다 */
+  if(start){ const gr=grid.getBoundingClientRect(), sr=start.getBoundingClientRect(); grid.scrollLeft+=sr.left-gr.left-(gr.width-sr.width)/2; } else grid.scrollLeft=0;
   sync();
 }
 /* 유형 탐구 첫 화면 카드: 나의 공간 프로필 카드와 같은 모양. 누르면 유형 페이지로 */
 function exploreTypeCardHTML(t,mine){
   const p=HOME_PROFILES[t];
   /* 나의 공간 내 프로필 카드와 같은 앞면 (태그까지). 누르면 그 유형 핸드북으로 */
-  return `<button class="pcard deco is-explore type-${t}${mine?' is-mine':''}" data-explore-type="${t}" style="${gemVars(t)};--i:${t-1}" type="button" aria-label="${t}번 ${homeEsc(CHECK_TYPE_NAMES[t])} · ${homeEsc(p.gem)} 핸드북 보기">`
+  return `<button class="pcard is-explore type-${t}${mine?' is-mine':''}" data-explore-type="${t}" style="${gemVars(t)};--i:${t-1}" type="button" aria-label="${t}번 ${homeEsc(CHECK_TYPE_NAMES[t])} · ${homeEsc(p.gem)} 핸드북 보기">`
     +`<span class="pcard-flip"><span class="pcard-body">${pcardFrontHTML(t,{tags:true,eager:false})}</span>`
     +`<span class="pcard-shine" aria-hidden="true"></span></span>`
     +(mine?'<span class="deco-mine">나의 유형</span>':'')+'</button>';
@@ -2637,36 +2609,6 @@ document.addEventListener('click',e=>{
   const open=e.target.closest('.pcard [data-profile-open]');
   if(open && !open.closest('#page-home')){ e.preventDefault(); showHandbookType(Number(open.dataset.profileOpen)); }
 });
-
-/* 유형 탐구 > 각 유형 요약: 맨 위 유형 소개 박스를 프로필 카드로 꾸민다 (2026-10-03).
-   큰 뒤집기 카드는 페이지와 어울리지 않아 빼고, 소개 박스 자체에 프로필 카드와 같은 선 장식 액자(상아색 · 이중 선 · 잎줄기 · 달 · 해 · 보석)를 입힌다.
-   글(이름·설명·대표 문장)은 원래 박스의 것을 그대로 쓰고, 보석·키워드·태그 칩·왜 이 보석인지만 덧붙인다. 핸드북은 비동기로 그려지므로 나타날 때 꾸민다. */
-function injectHandbookCards(){
-  document.querySelectorAll('#page-handbook .type-page .hb-sum-hero').forEach(hero=>{
-    if(hero.classList.contains('hb-idcard')) return;
-    const t=Number((hero.closest('.type-page')?.id||'').replace('type-',''));
-    if(!(t>=1 && t<=9)) return;
-    const p=HOME_PROFILES[t];
-    hero.classList.add('hb-idcard','deco');
-    hero.setAttribute('style',gemVars(t));
-    const sparks=[1,2,3].map(i=>`<span class="pc-twinkle pc-twinkle-${i}">${pcSparkSVG('var(--color-gold)')}</span>`).join('');
-    hero.insertAdjacentHTML('afterbegin',decoFrame()
-      +`<div class="hb-idcard-top" aria-hidden="true">`
-      +`<span class="hb-idcard-gem">${sparks}${gemImg(t,'',true)}</span>`
-      +`<span class="hb-idcard-en">${homeEsc(p.en)}</span></div>`);
-    hero.querySelector('.hb-sum-desc')?.insertAdjacentHTML('afterend',`<div class="hb-idcard-key">${t}번 · ${homeEsc(p.gem)} · ${homeEsc(p.key)}</div>`);
-    hero.querySelector('.hb-sum-tags')?.insertAdjacentHTML('afterend',`<div class="hb-idcard-tags">${p.tags.map(k=>`<span class="tag-chip">#${homeEsc(k)}</span>`).join('')}</div>`);
-    /* 왜 이 보석인지: 보석만으로는 와닿지 않아 이유를 함께 적는다 */
-    const why=`<div class="hb-idcard-why"><strong>왜 ${homeEsc(p.gem)}일까요?</strong><p>${homeEsc(p.why)}</p></div>`;
-    const after=hero.querySelector('.hb-idcard-tags');
-    if(after) after.insertAdjacentHTML('afterend',why); else hero.insertAdjacentHTML('beforeend',why);
-  });
-}
-const hbRoot=document.getElementById('page-handbook');
-if(hbRoot){
-  injectHandbookCards();
-  new MutationObserver(()=>injectHandbookCards()).observe(hbRoot,{childList:true,subtree:true});
-}
 
 function refreshHome(){
   syncHomeResultButtons();

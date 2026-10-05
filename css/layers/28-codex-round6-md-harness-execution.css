@@ -1114,6 +1114,7 @@
    핸드북 레거시 레이어가 button·p·li·svg에 !important를 걸어두었다.
    새 !important 없이 맞추려고: 글은 div/span, 버튼은 레거시가 읽는 변수(--primary 등)를 요소 안에서만 바꾼다. */
 #page-handbook .hb-top,
+#page-handbook .hb-tabbar,
 #page-handbook .hb-panel {
   --radius-control:var(--radius-md);
   --ui-radius-sm:var(--radius-md);
@@ -1125,6 +1126,7 @@
 
 /* 레거시가 핸드북 button 높이를 33~36px로 고정 > 카드형 버튼 글자가 밖으로 넘침 */
 #page-handbook .hb-top button,
+#page-handbook .hb-tabbar button,
 #page-handbook .hb-panel button {
   height:auto;
 }
@@ -1134,15 +1136,26 @@
   display:none;
 }
 
-/* 탭 줄: 스크롤해도 위에 붙어 있음 */
+/* 뒤로 가기·유형 바꾸기는 스크롤하면 올라가고, 탭 줄(한 줄)만 위에 붙어 있다 (2026-10-05, 폰에서 고정 영역이 커 본문이 안 보였다) */
 #page-handbook .hb-top {
+  margin:0;
+  padding:var(--space-2) 0 var(--space-3);
+}
+
+#page-handbook .hb-tabbar {
   position:sticky;
   top:0;
   z-index:var(--z-sticky);
-  margin:0 0 var(--space-5);
-  padding:var(--space-2) 0 0;
+  margin:0 calc(var(--page-gutter) * -1) var(--space-5);
+  padding:0 var(--nav-gutter);
   border-bottom:1px solid var(--color-border);
   background:var(--color-bg);
+}
+
+/* 탭 줄 바탕은 앱 폭 끝까지, 탭은 메뉴 여백(--nav-gutter) 위치 */
+#page-handbook .hb-tabbar .hb-tabs {
+  margin-right:0;
+  margin-left:0;
 }
 
 #page-handbook .hb-tabs,
@@ -7109,176 +7122,6 @@ h3,
   margin-left:calc(var(--nav-gutter) - var(--page-gutter));
 }
 
-/* =========================================================
-   유형 탐구 프로필 카드 (2026-10-03) — 맨 위 유형 소개 박스를 프로필 카드 디자인으로
-   클래스 이름에 profile을 쓰면 옛 레이어 23의 #page-handbook [class*="profile"]{display:none}에 걸려 hb-idcard로 둔다
-   프로필 카드와 같은 선 장식 액자: 상아색 + 보석 색 살짝 · 이중 선 · 모서리 잎줄기 · 위 초승달 · 아래 반쪽 해 · 양옆 보석
-   위→아래: 보석 · 영문 필기체 · 유형 이름 · 번호·보석·키워드 · 설명 · 태그 칩 · 왜 이 보석일까요? · 대표 문장
-   ========================================================= */
-#page-handbook .hb-sum-hero.hb-idcard {
-  position:relative;
-  display:grid;
-  justify-items:center;
-  gap:var(--space-5);
-  overflow:hidden;
-  padding:var(--space-9) var(--space-7);
-  border:0;
-  border-radius:var(--radius-sm);
-  background:
-    radial-gradient(circle at 50% 18%, color-mix(in srgb, var(--tc) 30%, transparent) 0, transparent 34%),
-    var(--card-paper);
-  box-shadow:var(--shadow-lg);
-  text-align:center;
-}
-
-/* 이중 선: 프로필 카드와 같다 */
-#page-handbook .hb-idcard::before,
-#page-handbook .hb-idcard::after {
-  content:"";
-  position:absolute;
-  pointer-events:none;
-}
-
-#page-handbook .hb-idcard::before {
-  inset:var(--space-2);
-  border:1px solid var(--deco-line);
-  border-radius:var(--space-1);
-}
-
-#page-handbook .hb-idcard::after {
-  inset:var(--space-3);
-  border:1px solid color-mix(in srgb, var(--deco-line) 45%, transparent);
-}
-
-#page-handbook .hb-idcard > :not(.deco-frame) {
-  position:relative;
-}
-
-#page-handbook .hb-idcard-top {
-  display:grid;
-  justify-items:center;
-  gap:var(--space-1);
-}
-
-#page-handbook .hb-idcard-en {
-  --font-sans:var(--font-script);
-  color:var(--td);
-  font-family:var(--font-script);
-  font-weight:400;
-  line-height:1.15;
-}
-
-#page-handbook .hb-idcard-en {
-  font-size:var(--text-xl);
-}
-
-#page-handbook .hb-idcard-gem {
-  position:relative;
-  display:grid;
-  place-items:center;
-  width:calc(var(--space-10) * 1.75);
-  height:calc(var(--space-10) * 1.75);
-  margin:var(--space-2) 0;
-}
-
-#page-handbook .hb-idcard-gem .gem-img {
-  display:block;
-  width:80%;
-  height:auto;
-  filter:drop-shadow(0 10px 16px color-mix(in srgb, var(--td) 22%, transparent));
-}
-
-/* 소개 글: 가운데 정렬, 번호·라벨·작은 도형·글자 태그는 카드가 대신하므로 숨김 */
-#page-handbook .hb-idcard .hb-sum-hero-copy {
-  display:grid;
-  justify-items:center;
-  gap:var(--space-3);
-  width:100%;
-}
-
-#page-handbook .hb-idcard .hb-sum-kicker,
-#page-handbook .hb-idcard .hb-sum-no,
-#page-handbook .hb-idcard .hb-sum-figure,
-#page-handbook .hb-idcard .hb-sum-tags {
-  display:none;
-}
-
-#page-handbook .hb-idcard .hb-sum-title {
-  display:block;
-}
-
-#page-handbook .hb-idcard .hb-sum-name {
-  margin:0;
-  color:var(--color-text-primary);
-  font-size:var(--text-2xl);
-}
-
-#page-handbook .hb-idcard-key {
-  color:var(--td);
-  font-size:var(--text-md);
-  font-weight:700;
-}
-
-#page-handbook .hb-idcard .hb-sum-desc {
-  margin-top:var(--space-2);
-  color:var(--color-text-secondary);
-}
-
-#page-handbook .hb-idcard-tags {
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:var(--space-2);
-}
-
-/* 왜 이 보석일까요? */
-#page-handbook .hb-idcard-why {
-  display:grid;
-  gap:var(--space-2);
-  width:100%;
-  padding-top:var(--space-4);
-  border-top:1px solid color-mix(in srgb, var(--color-gold) 45%, transparent);
-  text-align:center;
-}
-
-#page-handbook .hb-idcard-why strong {
-  --font-sans:var(--font-display);
-  color:var(--color-text-primary);
-  font-family:var(--font-display);
-  font-size:var(--text-lg);
-  font-weight:700;
-}
-
-#page-handbook .hb-idcard-why p {
-  margin:0;
-  color:var(--color-text-secondary);
-  font-size:var(--text-md);
-  line-height:var(--body-line);
-  word-break:keep-all;
-}
-
-#page-handbook .hb-idcard .tag-chip {
-  display:inline-flex;
-  align-items:center;
-  min-height:calc(var(--space-6) - var(--space-1));
-  padding:0 var(--space-3);
-  border-radius:var(--radius-full);
-  background:var(--ts);
-  color:var(--td);
-  font-size:var(--text-xs);
-  font-weight:700;
-}
-
-#page-handbook .hb-idcard .hb-sum-quote {
-  width:100%;
-  margin-top:var(--space-2);
-  padding:var(--space-4) var(--space-5);
-  border:1px solid var(--glass-line);
-  border-radius:var(--radius-lg);
-  background:var(--glass-strong);
-  color:var(--color-text-primary);
-}
-
 /* 다이어리: 묶기만 하던 큰 카드 상자를 걷어낸다 (2026-10-03). 입력 칸·버튼 테두리는 그대로 두고, 섹션은 여백으로 구분.
    #page-diary .diary-form 의 안쪽 여백 규칙보다 세게 하려고 화면 id를 붙인다 */
 .ui-card.diary-form,
@@ -7892,9 +7735,8 @@ h3,
 
 
 /* =========================================================
-   정사각형 프로필 (보석 타일) — 프로필 카드의 작은 버전 (2026-10-03)
-   카드와 같은 종이(보라 계열 홀로그램 + 상아색) · 가운데 흰 빛 · 보석 둘레에 보석 색 · 안쪽 얇은 선 하나
-   작은 크기라 잎줄기·이중 선은 넣지 않는다
+   정사각형 프로필 (보석 타일) — 프로필 카드의 작은 버전
+   2026-10-05 크리스탈 글래스로: 보석 색 면 · 가운데 보석 색 빛 · 반투명 유리판 · 흰 테두리 (홀로그램 종이·금빛 선은 뺐다)
    ========================================================= */
 #page-home .deco-square,
 .deco-square {
@@ -7902,21 +7744,23 @@ h3,
   display:grid;
   place-items:center;
   overflow:hidden;
-  border:1px solid color-mix(in srgb, var(--color-surface-solid) 90%, transparent);
+  border:0;
   border-radius:var(--radius-lg);
+  /* 크리스탈 글래스 (2026-10-05, 프로필 카드와 같은 방식): 보석 색 면 + 가운데 보석 색 빛 */
   background:
-    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--color-surface-solid) 80%, transparent) 0, transparent 46%),
-    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--tc, var(--color-primary-light)) 30%, transparent) 0, transparent 70%),
-    var(--card-paper);
+    radial-gradient(circle at 50% 45%, var(--tc, var(--color-primary-light)) 0, transparent 64%),
+    color-mix(in srgb, var(--tc, var(--color-primary-light)) 25%, var(--color-surface));
   box-shadow:var(--shadow-md);
 }
 
+/* 반투명 유리판 + 흰 테두리 */
 .deco-square::before {
   content:"";
   position:absolute;
   inset:var(--space-1);
-  border:1px solid color-mix(in srgb, var(--deco-line) 45%, transparent);
+  border:1px solid color-mix(in srgb, var(--color-surface) 90%, transparent);
   border-radius:calc(var(--radius-lg) - var(--space-1));
+  background:color-mix(in srgb, var(--color-surface) 22%, transparent);
   pointer-events:none;
 }
 
@@ -8351,10 +8195,11 @@ h3,
 /* 9가지 카드: 크게, 옆으로 넘긴다 (2026-10-03). 한 장을 가운데에 두고 양옆 카드가 조금 보이게, 한 장씩 멈춘다 */
 #page-compare .explore-type-grid {
   --explore-card-w:min(calc(var(--space-10) * 3.75), calc(var(--app-vw) * 0.78)); /* 나의 공간 프로필 카드와 같은 300 (360 폰에서는 조금 작게) */
+  --explore-zoom:1; /* 카드를 통째로 줄이고 싶을 때 쓰는 비율 (지금은 원래 크기) */
   display:flex;
   gap:0; /* 옆 카드가 작아지면서 생기는 틈이 간격 역할 */
   margin:0 calc(var(--page-gutter) * -1);
-  padding:var(--space-2) calc((var(--app-vw) - var(--explore-card-w)) / 2) var(--space-3);
+  padding:var(--space-2) calc((var(--app-vw) - var(--explore-card-w) * var(--explore-zoom)) / 2) var(--space-3);
   overflow-x:auto;
   overscroll-behavior-x:contain;
   scroll-snap-type:x mandatory;
@@ -8368,6 +8213,7 @@ h3,
 #page-compare .explore-type-grid > .pcard {
   flex:none;
   width:var(--explore-card-w);
+  zoom:var(--explore-zoom);
   scroll-snap-align:center;
   /* 가운데 카드만 크게 (js가 --focus를 0~1로 넣는다). transform과 겹치지 않게 scale 속성을 쓴다 */
   scale:calc(0.84 + 0.16 * var(--focus, 1));
@@ -8621,7 +8467,7 @@ h3,
 }
 
 #page-handbook .hb-panel .hb-topic {
-  scroll-margin-top:calc(var(--space-10) + var(--space-4));
+  scroll-margin-top:calc(var(--space-8) + var(--space-4)); /* 위에 붙은 탭 줄 높이만큼 */
 }
 
 /* 유형 번호 옆 보석 (유형 탐구 라벨): 글자 크기에 맞춰 1.25배, 숫자 바로 앞에 */
@@ -8854,7 +8700,7 @@ h3,
 }
 
 /* 유형 탐구 카드 = 나의 공간 프로필 카드와 같은 모양 (2026-10-03). 바깥은 버튼이라 기본 버튼 모양만 지운다 */
-#page-compare .pcard.deco.is-explore {
+#page-compare .pcard.is-explore {
   display:block;
   padding:0;
   border:0;
@@ -8865,13 +8711,13 @@ h3,
   cursor:pointer;
 }
 
-#page-compare .pcard.deco.is-explore:focus-visible {
+#page-compare .pcard.is-explore:focus-visible {
   outline:2px solid var(--color-primary);
   outline-offset:var(--space-1);
   border-radius:var(--radius-profile);
 }
 
-#page-compare .pcard.deco.is-explore .deco-mine {
+#page-compare .pcard.is-explore .deco-mine {
   position:absolute;
   top:var(--space-4);
   left:50%;
@@ -9099,4 +8945,115 @@ h3,
 /* 해보기로 한 것: 이 화면에서는 위 '이번 주에 닦아 볼 것'이 추천을 맡아, 목록 아래 추천 칸은 숨긴다 */
 #page-polish .diary-exp-reco {
   display:none;
+}
+
+/* =========================================================
+   크리스탈 글래스 카드 (2026-10-05 리디자인 F) — 나의 공간 내 프로필 · 유형 탐구 9장 공통
+   보석 색 빛이 뒤에서 번지고(gcard-glow) 그 위에 반투명 유리판(gcard-glass). 타로 같던 액자 장식은 없다
+   ========================================================= */
+.pcard .gcard {
+  position:relative;
+  display:block;
+  width:100%;
+  aspect-ratio:5 / 7;
+  overflow:hidden;
+  border-radius:var(--radius-profile);
+  background:color-mix(in srgb, var(--tc) 25%, var(--color-surface));
+  box-shadow:var(--shadow-lg);
+}
+
+.pcard .gcard-glow {
+  position:absolute;
+  top:8%;
+  left:12%;
+  width:76%;
+  aspect-ratio:1;
+  border-radius:var(--radius-full);
+  background:var(--tc);
+  filter:blur(var(--space-6)) saturate(1.6);
+}
+
+.pcard .gcard-glass {
+  position:absolute;
+  inset:var(--space-3);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:var(--space-4) var(--space-4) var(--space-5);
+  border:1px solid color-mix(in srgb, var(--color-surface) 90%, transparent);
+  border-radius:var(--radius-lg);
+  background:color-mix(in srgb, var(--color-surface) 22%, transparent);
+  -webkit-backdrop-filter:blur(var(--space-2));
+  backdrop-filter:blur(var(--space-2));
+  color:var(--color-text-primary);
+  text-align:center;
+}
+
+.pcard .gcard-no {
+  align-self:flex-start;
+  color:var(--color-primary);
+  font-size:var(--text-xs);
+  font-weight:700;
+}
+
+.pcard .gcard-gem {
+  display:grid;
+  flex:1;
+  place-items:center;
+  width:100%;
+  min-height:0;
+}
+
+.pcard .gcard-gem .gem-img {
+  width:58%;
+  max-height:100%;
+  height:auto;
+  object-fit:contain;
+  filter:drop-shadow(0 var(--space-3) var(--space-4) color-mix(in srgb, var(--td) 25%, transparent));
+  animation:pc-float var(--duration-float) ease-in-out infinite;
+  animation-delay:calc(var(--i, 0) * -350ms);
+}
+
+.pcard .gcard-name {
+  font-size:var(--text-xl);
+  font-weight:700;
+  line-height:1.25;
+}
+
+.pcard .gcard-key {
+  margin-top:var(--space-1);
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+}
+
+.pcard .gcard-desc {
+  margin-top:var(--space-2);
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+  line-height:1.45;
+  word-break:keep-all;
+}
+
+.pcard .gcard-tags {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:var(--space-2);
+  margin-top:var(--space-3);
+}
+
+/* 내 카드 표시는 '나의 유형' 배지로 충분해 예전 보라 테두리는 뺀다 */
+.pcard.is-mine .gcard {
+  box-shadow:var(--shadow-lg);
+}
+
+:is(#page-home, #page-myspace, #page-compare) .gcard .tag-chip {
+  background:color-mix(in srgb, var(--color-surface) 80%, transparent);
+  color:var(--color-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pcard .gcard-gem .gem-img {
+    animation:none;
+  }
 }
