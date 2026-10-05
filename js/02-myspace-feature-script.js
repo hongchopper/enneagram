@@ -2,8 +2,10 @@
   const STORAGE={
     reflections:'enneagram_reflections_v1',
     myType:'enneagram_my_type_v1',
-    experiments:'enneagram_experiments_v1'
+    experiments:'enneagram_experiments_v1',
+    prefs:'enneagram_prefs_v1'
   };
+  const PREFS_SCHEMA=1; /* 보기 설정 저장 형식 버전 (readPrefs). v1: 기도제목 보기(showPrayer) */
   const REFLECTION_SCHEMA=2; /* 성찰 기록 한 건의 형식 버전 (readReflections에서 옮김) */
   const EXPERIMENT_SCHEMA=2; /* 성장 실험 저장 형식 버전 (readExperiments). v2: 항목마다 루틴(routine)과 날짜별 체크(log)를 더했다 */
 
@@ -791,6 +793,85 @@
       9:{direction:'평화를 지키며 내 삶에 참여하기',actions:['맞춰주기 전에 정말 동의하는지 확인','작은 일부터 능동적으로 참여하기','분노·불편함도 내 감정으로 인정하기','규칙적으로 몸을 움직여 감각 깨우기','믿을 만한 사람에게 욕구 말하기','하루의 첫 에너지를 내 목표에 쓰기']}
     }
   };
+
+  /* ---- 지금 내 상태는? (2026-10-05): 강의 슬라이드 #89~107 '상태별 플랜 · 기도제목'.
+     원고 docs/콘텐츠_유형별_액션플랜.md. 고른 상태는 저장하지 않는다(핸드북 '요즘 나는 어떤가요?'와 같음) ---- */
+  const POLISH_STATES=[['low','힘들 때','억지로 버티는 중이에요. 고치려 하기보다 몸부터 챙기고, 하루에 하나만 해요.'],['mid','애쓰는 중','그럭저럭 굴러가는 중이에요. 버릇 하나를 관찰하고, 작은 행동 하나를 더해요.'],['high','자연스러울 때','편안하게 흐르는 중이에요. 이 리듬을 지키고, 받은 것을 나눠요.']];
+  const POLISH_STATE_GENERAL={
+    low:{feel:['잠·식사가 흐트러졌어요','같은 생각이 계속 돌아요','작은 일에도 크게 반응해요','‘원래 나는 이렇지 않은데’라는 말이 자주 나와요'],start:['몸부터 챙기고 할 일 줄이기','하루 1개, 이번 주 1개만 하기']},
+    mid:{feel:['일상은 돌아가는데 즐거움이 적어요','내 버릇이 보이지만 멈추진 못해요'],start:['버릇 하나 골라 관찰하기','통합 방향의 행동 하나 더하기','오늘 1개, 이번 주 2개 해보기']},
+    high:{feel:['내가 나여서 편해요','내 장점이 남을 살려요','실수해도 금방 돌아와요'],start:['지키는 습관 2개를 달력에 고정하기','받은 것을 나누기']}
+  };
+  const POLISH_STATE_TYPE={
+    1:{verse:'마태복음 11:28-30',
+      low:{signs:['‘해야 한다’가 머릿속에서 쉬지 않아요','남의 실수가 계속 눈에 걸려요','쉬면 죄책감이 들어요'],acts:['할 일 2개에 줄 긋고 ‘안 함’ 쓰기','지적할 말은 메모하고 24시간 뒤 다시 보기','화난 순간 3번 기록하기 · 상황, 내 기준, 진짜 원한 것','메일 한 통은 한 번만 검토하고 보내기'],prays:['모든 것을 내가 바로잡아야 한다는 무게를 내려놓게 해주세요. 내가 고치지 않아도 세상을 붙드시는 분이 계심을 믿게 해주세요.','화 아래 있는 지침과 서러움을 숨기지 않고 꺼내놓게 해주세요.','실수한 나를 정죄하지 않고, 하나님이 보시는 눈으로 나를 보게 해주세요.']},
+      mid:{signs:['일은 되는데 즐거움이 적어요','칭찬보다 부족한 점이 먼저 떠올라요','‘내가 하는 게 빨라’ 하며 맡기지 못해요'],acts:['고칠 점보다 좋은 점 1개 먼저 말하기','일 하나 맡기고 결과에 손대지 않기','계획 없는 2시간 보내기'],prays:['내 기준이 아니라 은혜의 눈으로 사람을 보게 해주세요.','옳은 것보다 사랑하는 것을 먼저 고르게 해주세요.']},
+      high:{signs:['옳고 그름보다 사람이 먼저 보여요','다른 방식도 인정해요','쉬는 게 편해요'],acts:['매주 노는 시간 고정하기','하루 끝에 받은 것 3가지 적기','기준은 ‘이렇게 하면 어때요?’로 제안하기','실수한 사람에게 먼저 괜찮다고 말하기'],prays:['주신 분별력을 정죄가 아니라 세우는 데 쓰게 해주세요.','바르게 사는 기쁨이 다른 사람에게 짐이 아니라 초대가 되게 해주세요.']}},
+    2:{verse:'요한일서 4:19',
+      low:{signs:['거절을 못 해 일정이 넘쳐요','‘내가 이만큼 해줬는데’ 하는 서운함이 자주 올라와요','참다가 갑자기 강하게 따지게 돼요'],acts:['남을 위한 약속 1개 정중히 미루기','부탁엔 ‘확인하고 알려줄게요’라고 하고 하루 뒤 답하기','내가 먹고 싶은 메뉴로 혼자 한 끼 먹기','서운한 순간 기록하기 · 해준 것, 바란 반응, 말했는지'],prays:['무언가를 해줘야만 사랑받는다는 생각에서 놓여나게 해주세요. 아무것도 하지 않아도 사랑받는 존재임을 믿게 해주세요.','나에게도 필요가 있음을 인정하고 말할 용기를 주세요.','서운함 뒤에 있는 외로움을 하나님 앞에 정직하게 내려놓게 해주세요.']},
+      mid:{signs:['혼자 있으면 허전해요','고맙다는 말을 듣고 싶어 움직여요','내 감정보다 상대 기분이 먼저예요'],acts:['자기 전 5분, 내 감정 3개 적기','필요한 것 1가지 직접 부탁하기','연락을 받지 않는 나만의 2시간 보내기'],prays:['사람의 인정이 아니라 하나님의 사랑으로 마음이 채워지게 해주세요.','사랑해서 하는 일과 사랑받으려고 하는 일을 구별하게 해주세요.']},
+      high:{signs:['돌려받을 기대 없이 도와요','거절해도 관계가 괜찮아요','나도 남도 돌봐요'],acts:['일주일에 반나절, 나를 위한 시간 갖기','돕기 전 ‘원해서 하는 일인가?’ 묻기','대신해주기보다 옆에서 기다려주기','받은 도움에 먼저 고마워하기'],prays:['내 따뜻함이 사람을 묶지 않고 자유롭게 하는 사랑이 되게 해주세요.','받는 것도 은혜임을 알고 기쁘게 받게 해주세요.']}},
+    3:{verse:'시편 46:10',
+      low:{signs:['쉬는 날에도 일 생각이 끊기지 않아요','성과가 없으면 쓸모없게 느껴져요','갑자기 멍해지고 다 하기 싫어져요'],acts:['보여주기 위한 일 1개 빼기','휴대폰을 두고 10분 가만히 앉기','성과 없는 일 1개 하기 · 목적 없는 산책','믿는 사람 1명에게 힘든 점 그대로 말하기'],prays:['내가 이룬 것이 아니라 나라는 존재 자체로 사랑받고 있음을 믿게 해주세요.','바쁨 뒤에 숨겨둔 진짜 마음을 하나님 앞에서 마주할 용기를 주세요.','실패해도 나는 괜찮다는 것을 몸으로 알게 해주세요.']},
+      mid:{signs:['잘하는데 공허할 때가 있어요','나를 어떻게 보여줄지 먼저 계산해요','느린 사람에게 조급해져요'],acts:['대화에서 내 얘기 대신 질문 3개 하기','뒤에서 받쳐주는 팀 작업 1개 하기','실수 1개를 먼저 털어놓기'],prays:['성공보다 진실함을 고르게 해주세요.','내 목표가 하나님의 뜻과 같은 방향인지 멈춰서 묻게 해주세요.']},
+      high:{signs:['결과보다 과정과 사람이 보여요','있는 그대로 보여줘도 편해요','남의 성장을 진심으로 기뻐해요'],acts:['일주일에 하루는 일을 멈추는 날로 지키기','하루 한 번 ‘지금 내 기분은?’ 묻기','동료 1명의 목표를 함께 계획하기','받은 공을 함께한 사람에게 돌리기'],prays:['주신 실행력으로 내 이름이 아니라 다른 사람을 세우게 해주세요.','진짜 나로 사는 기쁨을 잃지 않게 해주세요.']}},
+    4:{verse:'시편 139:14',
+      low:{signs:['하루 종일 같은 감정에 머물러요','나만 못 가진 것 같아요','누군가에게 매달리게 돼요'],acts:['기분 말고 시간으로 정한 일 1개 하기 · 아침 9시 이불 개기','햇빛 아래 15분 걷기','감정 일기 끝에 괜찮았던 일 1개 적기','비교를 부르는 SNS 계정 일주일 숨기기'],prays:['내게 없는 것이 아니라 이미 주신 것을 보게 해주세요.','깊은 감정 속에서도 함께 계심을 느끼게 해주세요. 내가 버려진 사람이 아님을 믿게 해주세요.','기분이 아니라 신실함으로 오늘을 살아낼 힘을 주세요.']},
+      mid:{signs:['평범한 일상이 지루해요','특별하게 보이고 싶어요','기분 따라 몰입하거나 손을 놓아요'],acts:['감정과 상관없는 루틴 1개 정하기','끝내지 않은 일 1개 마무리하기','내 얘기를 얹지 않고 끝까지 듣기'],prays:['특별해지려 애쓰지 않아도 이미 고유한 존재임을 알게 해주세요.','평범한 하루 속 아름다움을 보는 눈을 주세요.']},
+      high:{signs:['감정을 느끼되 휩쓸리지 않아요','내 아픔이 남을 이해하는 힘이 돼요','작은 것에서 의미를 찾아요'],acts:['매일 창작 시간 30분 갖기','주 1회 누군가에게 감사 메모 쓰기','힘든 사람 곁에 조용히 있어주기','내 창작물을 1명과 나누기'],prays:['내 상처가 다른 사람을 위로하는 통로가 되게 해주세요.','나를 지으신 방식 그대로를 기뻐하게 해주세요.']}},
+    5:{verse:'잠언 3:5',
+      low:{signs:['연락을 피하고 혼자 숨어요','생각만 많고 행동이 안 돼요','이것저것 손대며 산만해져요'],acts:['제대로 된 식사 한 끼 먹기','미뤄둔 답장 1개 보내기','걷기나 스트레칭 30분, 이번 주 3번','지금 아는 만큼으로 작은 결정 1개 내리기'],prays:['다 알지 못해도 괜찮다는 것을, 모든 것을 아시는 분께 맡기게 해주세요.','에너지가 모자랄까 두려워 사람을 피할 때, 공급하시는 힘을 믿게 해주세요.','머릿속에서 나와 몸과 마음으로 오늘을 살게 해주세요.']},
+      mid:{signs:['혼자가 편하지만 조금 외로워요','아는 건 많은데 나서지 않아요','감정은 나중에 혼자 정리해요'],acts:['회의에서 내 의견 1개 먼저 말하기','배운 것을 1명에게 나누기','만나는 약속을 내가 먼저 잡기'],prays:['지식이 아니라 사랑으로 사람에게 다가가게 해주세요.','나를 지키는 벽을 조금씩 낮출 용기를 주세요.']},
+      high:{signs:['생각과 행동이 이어져요','지식을 나눌 때 기뻐요','사람과 있어도 덜 지쳐요'],acts:['충전 시간과 만남 시간을 둘 다 달력에 넣기','하루 한 번 몸 상태 확인하기 · 배고픔, 피곤, 긴장','필요한 사람에게 자료나 방법 건네기','분석보다 공감 먼저 하기'],prays:['주신 통찰이 사람을 살리는 데 쓰이게 해주세요.','하나님을 아는 지식이 머리에만 머물지 않고 삶으로 흘러가게 해주세요.']}},
+    6:{verse:'이사야 41:10',
+      low:{signs:['‘혹시 잘못되면?’이 멈추지 않아요','결정을 여러 사람에게 계속 물어요','불안을 잊으려 일을 과하게 해요'],acts:['걱정을 적고 할 수 있는 것과 없는 것 나누기','자기 전 30분은 뉴스와 SNS 끄기','걱정한 일이 실제로 어땠는지 기록하기','작은 결정 3개는 묻지 않고 내가 정하기'],prays:['두려움이 아니라 믿음으로 오늘을 살게 해주세요. 내가 붙들지 않아도 나를 붙들고 계신 분이 계심을 믿게 해주세요.','일어나지 않은 일을 미리 짊어지지 않게 해주세요.','의심하는 내 마음까지도 정직하게 내어놓게 해주세요.']},
+      mid:{signs:['책임감 있지만 늘 긴장해 있어요','확인을 여러 번 해요','권위에 기대거나 반발해요'],acts:['계획 없이 10분 쉬기','확인은 한 번만 하고 넘어가기','직감으로 내린 결정 1개와 결과 기록하기'],prays:['내 안에 주신 분별력과 직감을 신뢰하게 해주세요.','사람보다 하나님께 안전함을 두게 해주세요.']},
+      high:{signs:['불안해도 행동할 수 있어요','사람을 믿고 맡겨요','공동체를 든든하게 지켜요'],acts:['주 1회 걱정 대신 감사 적기','쉬는 시간을 일정처럼 지키기','불안한 사람 곁에서 ‘같이 있어요’ 말하기','공동체의 작은 책임 1개 먼저 맡기'],prays:['내 신실함이 공동체를 안전하게 하는 힘이 되게 해주세요.','담대하게 옳은 편에 서는 용기를 주세요.']}},
+    7:{verse:'시편 23:1',
+      low:{signs:['일정을 꽉 채워 혼자 있을 틈이 없어요','불편한 감정은 농담으로 넘겨요','예민해지고 날카롭게 비판해요'],acts:['오늘 저녁 일정 1개 비우기','피하는 감정에 이름 붙여 적기','새로 시작하지 말고 하던 일 1개 끝내기','사고 싶을 땐 장바구니에 담고 48시간 기다리기'],prays:['아픔을 피하지 않고 하나님 앞에서 마주할 용기를 주세요. 고통 속에서도 함께 계심을 믿게 해주세요.','더 가져야 행복하다는 생각에서 놓여나 이미 받은 것으로 충분함을 알게 해주세요.','흩어진 내 마음을 한곳에 모아주세요.']},
+      mid:{signs:['재밌지만 깊이가 부족해요','지루하면 견디기 힘들어요','계획은 많고 실행은 일부예요'],acts:['알림 끄고 한 가지에 30분 몰입하기','책 1권이나 강의 1개 끝까지 하기','친한 사람과 진지한 대화 1번 나누기'],prays:['지금 이 자리에 머무는 기쁨을 알게 해주세요.','가벼움 뒤에 숨은 내 마음을 정직하게 보게 해주세요.']},
+      high:{signs:['작은 것에도 만족해요','즐거움과 깊이가 함께 있어요','힘든 순간도 피하지 않아요'],acts:['하루 10분 조용히 머무는 시간 갖기','일주일 일정에 빈칸 2개 남기기','지친 사람을 밥 한 끼에 초대하기','아이디어를 실행할 사람과 연결하기'],prays:['내 기쁨이 다른 사람에게 소망이 되게 해주세요.','더 얻기보다 지금 주신 것에 감사하는 사람이 되게 해주세요.']}},
+    8:{verse:'고린도후서 12:9',
+      low:{signs:['화가 쉽게 나고 목소리가 커져요','지쳐도 계속 밀어붙여요','갑자기 사람들에게서 물러나 숨어요'],acts:['화가 나면 10까지 세고 물 한 잔 마시기','오늘 밤 7시간 이상 자기','믿는 사람에게 ‘요즘 좀 힘들어’ 말하기','상처 줬을 수 있는 사람에게 먼저 연락하기'],prays:['약해져도 괜찮다는 것을 알게 해주세요. 내가 강하지 않아도 나를 지키시는 분이 계심을 믿게 해주세요.','분노 아래 있는 상처를 하나님 앞에서 꺼내게 해주세요.','내 힘으로 상처를 준 사람에게 먼저 손 내밀 용기를 주세요.']},
+      mid:{signs:['잘 이끄는데 사람들이 나를 어려워해요','부드러운 감정 표현이 어색해요','내 방식이 아니면 답답해요'],acts:['‘고마워’, ‘미안해’를 구체적으로 말하기','결정 전에 다른 의견 먼저 다 듣기','약한 사람을 위해 힘 쓰는 일 1개 하기'],prays:['내 힘을 지배가 아니라 섬김에 쓰게 해주세요.','부드러움도 강함임을 알게 해주세요.']},
+      high:{signs:['강하면서도 따뜻해요','약한 사람을 지켜줘요','내 약함을 보여줘도 편해요'],acts:['잠, 운동, 절제 리듬 고정하기','하루 끝에 ‘오늘 누구를 지켜줬나’ 돌아보기','다른 사람에게 이끌 자리 내주기','억울한 사람 편에 서주기'],prays:['주신 힘이 정의와 보호를 위해 쓰이게 해주세요.','마음을 열고 사람들과 깊이 연결되는 기쁨을 누리게 해주세요.']}},
+    9:{verse:'이사야 43:4',
+      low:{signs:['할 일을 미루고 영상이나 잠으로 보내요','‘아무거나 괜찮아’가 입버릇이에요','갑자기 걱정과 불안이 커져요'],acts:['가장 미룬 일 5분만 하기 · 타이머 켜고','점심 메뉴는 내가 고르기','아침에 꼭 할 일 1개 적고 저녁에 체크하기','불편했던 마음 1개 짧게 말하기'],prays:['내가 이 자리에 있는 것이 중요하다는 것을 믿게 해주세요. 내 목소리도 귀하다는 것을 알게 해주세요.','갈등이 두려워 나를 지우지 않게 해주세요.','잠든 것 같은 마음을 깨워 오늘 할 일 하나를 해낼 힘을 주세요.']},
+      mid:{signs:['편하게 지내지만 내 목표는 흐릿해요','중요한 일보다 쉬운 일부터 해요','남의 계획에 맞추는 게 편해요'],acts:['이번 달 목표 1개 적고 첫 단계 하기','모임에서 내 의견 먼저 1번 말하기','하루 첫 1시간은 가장 중요한 일 하기'],prays:['주신 삶의 방향을 알고, 그 길로 한 걸음 걷게 해주세요.','평화를 지키는 것이 마음을 숨기는 것이 아니라 진실하게 함께하는 것이 되게 해주세요.']},
+      high:{signs:['내 의견을 말하며 남도 품어요','할 일을 하면서도 평안해요','사람들을 하나로 모아요'],acts:['아침마다 할 일 1개와 기도제목 1개 정하기','주 1회 ‘요즘 나는 무엇을 원하나?’ 적기','갈등 있는 사람들 사이에서 말 이어주기','불안한 사람 곁을 지켜주기'],prays:['갈등을 덮지 않고 회복시키는, 화평케 하는 사람이 되게 해주세요.','주신 자리에서 깨어 있는 사람이 되게 해주세요.']}}
+  };
+  let polishState='mid'; /* 처음에는 가장 많은 사람이 해당하는 '애쓰는 중' */
+
+  /* 보기 설정: 저장 키 enneagram_prefs_v1, schemaVersion 1: { schemaVersion, showPrayer:boolean }
+     v1이 첫 형식이라 옮길 이전 형식은 없다. 형식이 바뀌면 readPrefs에서 옮긴다. 기도제목은 원하는 사람만 본다(기본 꺼짐). */
+  function readPrefs(){
+    const v=read(STORAGE.prefs,null);
+    if(v && v.schemaVersion===PREFS_SCHEMA) return {schemaVersion:PREFS_SCHEMA,showPrayer:v.showPrayer===true};
+    return {schemaVersion:PREFS_SCHEMA,showPrayer:false};
+  }
+  function polishStateHTML(t,have){
+    const [key,label,lead]=POLISH_STATES.find(([k])=>k===polishState);
+    const list=(items,cls)=>`<ul class="${cls}">${items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
+    let body='';
+    if(t){
+      const s=POLISH_STATE_TYPE[t][key];
+      body=`<h3 class="polish-sub">이런 신호</h3>${list(s.signs,'polish-signs')}`
+        +`<h3 class="polish-sub">이렇게 해보기</h3>`
+        +`<ul class="polish-actions">${s.acts.map(a=>{const on=have.has(a);return `<li><span>${esc(a)}</span><button class="ui-btn ${on?'ui-btn-ghost':'ui-btn-secondary'}" data-polish-add="${esc(a)}" data-polish-src="${esc(label)}" type="button"${on?' disabled':''}>${on?'담았어요':'담기'}</button></li>`;}).join('')}</ul>`;
+      if(readPrefs().showPrayer){
+        body+=`<div class="polish-pray"><h3 class="polish-sub">기도제목</h3>${list(s.prays,'polish-pray-list')}<p class="polish-verse">말씀 · ${esc(POLISH_STATE_TYPE[t].verse)}</p></div>`;
+      }
+    }else{
+      const s=POLISH_STATE_GENERAL[key];
+      body=`<h3 class="polish-sub">이런 느낌</h3>${list(s.feel,'polish-signs')}<h3 class="polish-sub">이렇게 시작</h3>${list(s.start,'polish-signs')}`;
+    }
+    if(key==='low') body+=`<p class="polish-safe">여기 있는 내용은 성격 패턴을 이해하기 위한 것이지, 마음 상태를 진단하는 것이 아니에요. 힘든 마음이 여러 날 이어진다면 믿을 수 있는 사람이나 전문가에게 이야기해보세요.</p>`;
+    if(t) body+=`<label class="polish-pray-opt"><input data-polish-pray type="checkbox"${readPrefs().showPrayer?' checked':''}><span>기도제목도 함께 보기</span></label>`;
+    return `<section class="polish-sec polish-state" aria-labelledby="polishStateTitle"><h2 class="polish-title" id="polishStateTitle">지금 내 상태는?</h2>`
+      +`<p class="polish-state-desc">지난 일주일을 떠올리며 가장 가까운 쪽을 골라요.</p>`
+      +`<div class="polish-state-tabs" role="tablist" aria-label="지금 내 상태">${POLISH_STATES.map(([k,l])=>`<button type="button" role="tab" id="polishStateTab-${k}" data-polish-state="${k}" aria-controls="polishStatePanel" aria-selected="${k===key}" tabindex="${k===key?0:-1}" class="${k===key?'active':''}">${l}</button>`).join('')}</div>`
+      +`<div class="polish-state-panel" id="polishStatePanel" role="tabpanel" aria-labelledby="polishStateTab-${key}"><p class="polish-state-lead">${esc(lead)}</p>${body}</div></section>`;
+  }
   function renderPolish(){
     const host=g('polishApp'); if(!host) return;
     const t=diaryMyType();
@@ -806,18 +887,21 @@
     if(!t){
       host.innerHTML=`<section class="polish-find"><span class="polish-find-gems" aria-hidden="true">${[2,5,7].map(gem).join('')}</span>`
         +`<strong>내 보석을 먼저 찾아볼까요?</strong><p>유형을 알면 내 유형에 맞는 실천 행동을 골라 줄 수 있어요.</p>`
-        +`<button class="ui-btn ui-btn-primary" data-polish-check type="button">간편 검사하기</button></section>`+stepsHTML;
+        +`<button class="ui-btn ui-btn-primary" data-polish-check type="button">간편 검사하기</button></section>`+stepsHTML+polishStateHTML(null);
       return;
     }
     const p=POLISH.practice[t], have=new Set(readExperiments().custom.map(x=>x.text));
-    host.innerHTML=stepsHTML
+    host.innerHTML=stepsHTML+polishStateHTML(t,have)
       +`<section class="polish-sec" aria-labelledby="polishPickTitle"><h2 class="polish-title" id="polishPickTitle">이번 주에 닦아 볼 것</h2>`
       +`<div class="polish-type"><span class="polish-type-gem" aria-hidden="true">${gem(t)}</span><div><span class="polish-type-name">${t}번 ${esc(name(t))}</span><strong class="polish-type-dir">${esc(p.direction)}</strong></div></div>`
       +`<p class="polish-fix"><b>이것만 고치면</b> ${esc(POLISH.fix[t])}</p>`
       +`<div class="polish-keys" aria-label="자주 기억하면 좋은 방향">${POLISH.remember[t].map(k=>`<span>${esc(k)}</span>`).join('')}</div>`
       +`<ul class="polish-actions">${p.actions.map(a=>{const on=have.has(a);return `<li><span>${esc(a)}</span><button class="ui-btn ${on?'ui-btn-ghost':'ui-btn-secondary'}" data-polish-add="${esc(a)}" type="button"${on?' disabled':''}>${on?'담았어요':'담기'}</button></li>`;}).join('')}</ul></section>`;
   }
-  window.showPolishPage=function(push=true){
+  /* state: 핸드북 '요즘 나는 어떤가요?'에서 고른 상태(low·mid·high)로 열 때 */
+  window.showPolishPage=function(push=true,state){
+    const fromState=POLISH_STATES.some(([k])=>k===state);
+    if(fromState) polishState=state;
     if(typeof activateBasePage==='function') activateBasePage('polish');
     const mobileTitle=document.getElementById('shellMobileTitle');
     if(mobileTitle) mobileTitle.textContent='보석 닦기';
@@ -825,11 +909,28 @@
     if(typeof closeShellMenu==='function') closeShellMenu();
     renderPolish(); renderExperiments();
     document.getElementById('page-polish')?.scrollTo({top:0});
+    if(fromState) document.querySelector('#polishApp .polish-state')?.scrollIntoView({block:'start'});
   };
   g('polishApp')?.addEventListener('click',e=>{
     const add=e.target.closest('[data-polish-add]');
-    if(add){ const t=diaryMyType(); addCustomExperiment(add.dataset.polishAdd,`보석 닦기 · ${t}번`); renderPolish(); return; }
+    if(add){ const t=diaryMyType(); addCustomExperiment(add.dataset.polishAdd,`보석 닦기 · ${t}번${add.dataset.polishSrc?' · '+add.dataset.polishSrc:''}`); renderPolish(); return; }
+    const st=e.target.closest('[data-polish-state]');
+    if(st){ polishState=st.dataset.polishState; renderPolish(); g('polishStateTab-'+polishState)?.focus(); return; }
     if(e.target.closest('[data-polish-check]') && typeof showCheckTarget==='function') showCheckTarget('quick');
+  });
+  /* 상태 탭: 왼쪽·오른쪽 화살표로 옮겨 다닌다 (다이어리 탭과 같음) */
+  g('polishApp')?.addEventListener('keydown',e=>{
+    if(!e.target.closest('[data-polish-state]') || (e.key!=='ArrowRight' && e.key!=='ArrowLeft')) return;
+    e.preventDefault();
+    const i=POLISH_STATES.findIndex(([k])=>k===polishState), n=(i+(e.key==='ArrowRight'?1:-1)+POLISH_STATES.length)%POLISH_STATES.length;
+    polishState=POLISH_STATES[n][0]; renderPolish(); g('polishStateTab-'+polishState)?.focus();
+  });
+  g('polishApp')?.addEventListener('change',e=>{
+    const box=e.target.closest('[data-polish-pray]');
+    if(!box) return;
+    write(STORAGE.prefs,{...readPrefs(),showPrayer:box.checked});
+    renderPolish();
+    document.querySelector('#polishApp [data-polish-pray]')?.focus();
   });
   document.querySelector('.top-nav-main[data-top-page="polish"]')?.addEventListener('click',()=>showPolishPage());
 

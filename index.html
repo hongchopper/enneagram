@@ -160,13 +160,6 @@
 </div>
 </div>
 <div class="home-shelves" id="homeShelves"></div>
-<!-- 에니어그램 기초 · 비교 (2026-10-05 유형 탐구 첫 화면에서 홈으로 옮김) -->
-<div class="home-learn" id="homeLearn">
-<h2 class="explore-hub-sub">에니어그램 기초</h2>
-<div class="explore-compare-list" id="exploreBasicsList"></div>
-<h2 class="explore-hub-sub">비교하며 알아보기</h2>
-<div class="explore-compare-list" id="exploreCompareList"></div>
-</div>
 </div></section>
 <section class="page-panel" data-page-panel="check" id="page-check">
 <section class="check-mode-panel check-flow-panel active" data-check-mode-panel="start">
@@ -5152,12 +5145,21 @@
 
 <main class="wrap"><div id="handbookTypeHost"></div></main><script src="content/handbook-type-store.js"></script>
 </section>
+<!-- 유형 탐구 첫 화면 = 큐레이션 피드 (2026-10-05) -->
+<section class="page-panel" data-page-panel="explore" id="page-explore"><div class="explore-wrap">
+<section aria-labelledby="exploreHubTitle" class="explore-hub" id="exploreHub">
+<header class="explore-hub-head"><h1 class="explore-hub-title" id="exploreHubTitle">유형 탐구</h1>
+<p class="explore-hub-desc">궁금한 질문에서 시작해 9가지 유형을 알아가요.</p></header>
+<!-- 큐레이션 피드 (2026-10-05): 오늘의 VS · 내 유형으로 읽기 · 질문별 컬렉션. js renderExploreFeed가 채운다 -->
+<div class="explore-feed" id="exploreFeed"></div>
+</section>
+</div></section>
+<!-- 유형 탐구 글 상세 (2026-10-05): 모든 글이 같은 블로그 템플릿. js/10-explore-content.js가 채운다 -->
+<section class="page-panel" data-page-panel="post" id="page-post"><div class="post-wrap" id="postView"></div></section>
+<!-- 유형 요약 (2026-10-05): 유형 카드를 누르면 검사 결과와 같은 요약 카드 -->
+<section class="page-panel" data-page-panel="type" id="page-type"><div class="post-wrap" id="typeView"></div></section>
 <section class="page-panel" data-page-panel="compare" id="page-compare">
 <main class="all-types-compare-page-wrap">
-<section aria-labelledby="exploreHubTitle" class="explore-hub" hidden id="exploreHub">
-<header class="explore-hub-head"><h1 class="explore-hub-title" id="exploreHubTitle">유형 탐구</h1>
-<p class="explore-hub-desc">에니어그램의 기초를 익히고, 9가지 유형을 나란히 비교해요.</p></header>
-</section>
 <section class="compare-panel active" data-compare-panel="glance">
 <header class="compare-section-hero">
 <span>비교 · 시작</span>
@@ -5772,6 +5774,116 @@
 </div>
 </section>
 </main>
+</section><section class="page-panel" data-page-panel="diary" id="page-diary">
+<main class="page-wrap diary-wrap">
+<header class="ui-page-head diary-head">
+<div>
+<span class="ui-kicker">다이어리</span>
+<h1>오늘의 장면을 남겨요</h1>
+<p>기억에 남은 장면 하나를 적고 “왜 그랬을까?”를 따라가요. 마지막에 적은 <b>다음엔</b>은 <b>해보기로 한 것</b>에 모여요. 해보고 나면 다시 기록해요.</p>
+</div>
+</header>
+<div class="diary-layout">
+<form class="ui-card diary-form" id="diaryForm" novalidate="">
+<div class="diary-form-head">
+<div class="ui-label">언제 있었던 일인가요?</div>
+<div class="ui-chips" id="diaryDateChips"></div>
+<input aria-label="날짜 직접 고르기" class="ui-field diary-date-input" id="diaryDateInput" type="date">
+</div>
+
+<section class="diary-q" data-q="situation">
+<label class="ui-label" for="diarySituation">1. 무슨 일이 있었나요? <span class="diary-required">필수</span></label>
+<p class="ui-help">해석보다 실제로 있었던 일을 적어보세요. 언제, 누구와, 어떤 상황이었는지.</p>
+<div class="ui-chips" id="diaryCategoryChips"></div>
+<textarea class="ui-field" id="diarySituation" placeholder="예: 회의에서 내 의견이 바로 반려됐다" rows="3"></textarea>
+<p class="diary-error" hidden="" id="diarySituationError"></p>
+</section>
+
+<section class="diary-q" data-q="emotions">
+<div class="ui-label">2. 그때 어떤 감정이 들었나요?</div>
+<p class="ui-help">여러 개 골라도 괜찮아요. 없는 감정은 ‘기타’로 적어요.</p>
+<div class="ui-chips" id="diaryEmotionChips"></div>
+<input aria-label="기타 감정" class="ui-field diary-other" hidden="" id="diaryEmotionOther" maxlength="12" placeholder="예: 허탈함" type="text">
+</section>
+
+<section class="diary-q" data-q="reaction">
+<label class="ui-label" for="diaryReaction">3. 나는 어떻게 반응했나요?</label>
+<p class="ui-help">가까운 것을 고르고, 직접 쓰기에 더 적어도 돼요.</p>
+<div class="ui-chips" id="diaryReactionChips"></div>
+<textarea class="ui-field" id="diaryReaction" placeholder="예: 괜찮은 척 웃고 넘어갔다" rows="2"></textarea>
+</section>
+
+<section class="diary-q" data-q="why">
+<div class="ui-label">4. 왜 그랬을까요?</div>
+<p class="ui-help" id="diaryWhyHelp">한 번의 “왜?”로 끝내지 말고 한 단계씩 내려가요. 내 유형에서 자주 보이는 이유를 골라도 좋아요.</p>
+<div class="diary-why-list" id="diaryWhyList"></div>
+</section>
+
+<section class="diary-q" data-q="motives">
+<div class="ui-label">5. 이번 기록과 가까운 단서</div>
+<p class="ui-help">정답이 아니라, 지금 느끼기에 가까운 것을 골라주세요.</p>
+<div class="ui-chips" id="diaryMotiveChips"></div>
+</section>
+
+<section class="diary-q" data-q="next">
+<label class="ui-label" for="diaryNext">6. 다음에 비슷한 상황이 오면, 한 번 다르게 해볼 것은?</label>
+<p class="ui-help" id="diaryNextHelp">저장하면 ‘해보기로 한 것’에 들어가요. 아주 작은 행동 하나면 충분해요.</p>
+<div class="ui-chips" id="diaryNextChips"></div>
+<textarea class="ui-field" id="diaryNext" placeholder="예: “생각해보고 알려줄게”라고 말해보기" rows="2"></textarea>
+</section>
+
+<section class="diary-q" data-q="title">
+<label class="ui-label" for="diaryTitle">7. 이 기록의 제목 <span class="diary-optional">선택</span></label>
+<input class="ui-field" id="diaryTitle" maxlength="40" placeholder="비워 두면 첫 문장으로 정해요" type="text">
+</section>
+
+<div class="diary-form-actions">
+<p class="diary-notice" hidden="" id="diaryNotice" role="status"></p>
+<div class="ui-btn-row">
+<button class="ui-btn ui-btn-ghost" id="diaryClear" type="button">비우기</button>
+<button class="ui-btn ui-btn-primary" type="submit">저장하기</button>
+</div>
+</div>
+</form>
+
+</div>
+
+<section class="diary-list" aria-labelledby="diaryListTitle">
+<div class="diary-list-head">
+<h2 id="diaryListTitle">나의 기록</h2>
+<span class="count-badge" id="reflectionCountBadge">0</span>
+</div>
+<p class="diary-undo" hidden="" id="diaryUndo" role="status"></p>
+<div aria-label="장면별로 보기" class="ui-chips" id="diaryFilter" role="group"></div>
+<p class="diary-insight" id="diaryInsight"></p>
+<div class="diary-timeline" id="reflectionHistoryList"></div>
+</section>
+</main>
+</section><section class="page-panel" data-page-panel="polish" id="page-polish">
+<main class="page-wrap polish-wrap">
+<header class="ui-page-head polish-head">
+<div>
+<h1>보석 닦기</h1>
+<p>성격을 없애는 게 아니라, 성격이 나를 운전하지 않게 해요. 작은 행동 하나로 내 보석을 닦아요.</p>
+</div>
+</header>
+<div class="polish-app" id="polishApp"></div>
+<section class="ui-card diary-exp" aria-labelledby="diaryExpTitle">
+<div class="diary-card-head">
+<h2 id="diaryExpTitle">해보기로 한 것</h2>
+<span class="count-badge" id="experimentCountBadge">0 / 0</span>
+</div>
+<p class="ui-help">기록의 ‘다음엔’이 모이는 곳이에요. 꾸준히 하고 싶은 행동은 루틴으로 만들어 날마다 체크하고, 해봤다면 동그라미를 눌러 한 줄 남겨요.</p>
+<div class="ui-chips diary-exp-filter" id="experimentFilter" role="group" aria-label="보기"></div>
+<div class="experiment-list" id="experimentList"></div>
+<div class="diary-exp-reco" id="experimentReco"></div>
+<form class="experiment-add" id="experimentAddForm">
+<input aria-label="직접 추가" class="ui-field" id="experimentAddInput" maxlength="80" placeholder="예: 근거를 한 번 더 말해보기" type="text">
+<button class="ui-btn ui-btn-secondary" type="submit">추가하기</button>
+</form>
+<p class="diary-error" hidden="" id="experimentAddError"></p>
+</section>
+</main>
 </section><section class="page-panel" data-page-panel="share" id="page-share">
 <main class="share-wrap" id="shareApp"></main>
 </section>
@@ -5795,6 +5907,8 @@
 <script src="js/07-figma-capture-route-helper.js"></script>
 <script src="js/08-prd-care.js"></script>
 <script src="js/09-mobile-scroll.js"></script>
+<script src="content/explore-posts.js"></script>
+<script src="js/10-explore-content.js"></script>
 </body><div id="codex-browser-sidebar-comments-root" style="position: fixed; inset: 0px; pointer-events: none; z-index: 2147483647;"></div></html>
 
 

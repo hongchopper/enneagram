@@ -88,24 +88,14 @@
       });
     });
 
-    document.querySelectorAll('#page-handbook .type-page[data-type]').forEach(page=>{
-      const type=page.dataset.type;
+    /* 유형 탐구 글 (2026-10-05): 핸드북 대신 글 단위로. 제목·리드·분류·유형 이름으로 찾는다 (js/10-explore-content.js) */
+    (window.getExplorePostList?.()||[]).forEach(post=>{
       addEntry({
         category:'handbook',
         pageTitle:labels.handbook,
-        title:titleFrom(page,`${type}번 핸드북`),
-        /* 핸드북은 탭으로 나뉘어 숨은 내용이 있으므로 innerText 대신 textContent */
-        text:page.textContent,
-        route:{type:'handbook',n:type}
-      });
-      page.querySelectorAll('.chapter[id], section[id]').forEach(chapter=>{
-        addEntry({
-          category:'handbook',
-          pageTitle:labels.handbook,
-          title:titleFrom(chapter,`${type}번 세부 내용`),
-          text:chapter.textContent,
-          route:{type:'handbook',n:type,anchor:chapter.id}
-        });
+        title:post.title,
+        text:[post.title,post.lead,post.cat,post.typeName].filter(Boolean).join(' '),
+        route:{type:'post',id:post.id}
       });
     });
 
@@ -238,11 +228,8 @@
     if(route.type==='home') window.showHomePage?.();
     if(route.type==='overview') window.showOverviewSection?.(route.key);
     if(route.type==='check') window.showCheckTarget?.(route.target);
-    if(route.type==='handbook'){
-      window.showHandbookType?.(route.n);
-      /* 핸드북 본문은 탭·소주제 안에 있을 수 있어 해당 탭을 연 뒤 스크롤 */
-      if(route.anchor && window.revealHandbookAnchor){ window.revealHandbookAnchor(route.anchor); return; }
-    }
+    if(route.type==='handbook') window.showHandbookType?.(route.n); /* 유형 요약 화면 */
+    if(route.type==='post'){ window.showExplorePost?.(route.id); return; }
     if(route.type==='compare') window.showCompareSection?.(route.key);
     if(route.type==='sharing') window.showSharingTopic?.(route.index);
     if(route.type==='myspace') window.showMySpaceSection?.(route.key);
