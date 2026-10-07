@@ -1309,14 +1309,34 @@ function renderPageSubnav(pageName){
   }
 }
 
+/* 상단 뒤로 버튼 (2026-10-07): 들어간 화면(글·유형 요약·기초·비교·공유)에서는 로고 자리에 '‹ 돌아갈 곳'.
+   화면 안의 '‹ 유형 탐구' 알약 버튼은 쓰지 않는다. 특별한 곳으로 돌아가야 하면 activateBasePage 뒤에 setTopBack(이름, 함수) */
+const TOP_BACK={
+  post:['유형 탐구',()=>showExploreHub()],
+  type:['유형 탐구',()=>showExploreHub()],
+  overview:['유형 탐구',()=>showExploreHub()],
+  compare:['유형 탐구',()=>showExploreHub()],
+  sharing:['다이어리',()=>{ if(typeof showDiaryPage==='function') showDiaryPage(); }]
+};
+let topBackGo=null;
+function setTopBack(label,go){
+  const btn=document.getElementById('topBack');
+  if(!btn) return;
+  topBackGo=go||null;
+  btn.hidden=!go;
+  document.getElementById('topSiteHeader')?.classList.toggle('has-back',!!go);
+  if(go){ document.getElementById('topBackLabel').textContent=label; btn.setAttribute('aria-label',`${label}로 돌아가기`); }
+}
+document.getElementById('topBack')?.addEventListener('click',()=>topBackGo?.());
 function activateBasePage(name){
+  setTopBack(...(TOP_BACK[name]||['',null]));
   document.querySelectorAll('[data-page-panel]').forEach(p=>{
     p.classList.toggle('active',p.dataset.pagePanel===name);
   });
   document.querySelectorAll('.shell-menu-btn[data-page]').forEach(b=>{
     b.classList.toggle('active',b.dataset.page===name);
   });
-  const exploreGroup=['post','type','handbook','compare','overview'].includes(name); /* 유형 탐구 글·요약은 홈 묶음 (홈과 합침) */ /* 2026-10-05: 유형 탐구 = 피드 + 핸드북 · 기초 · 비교 글 */
+  const exploreGroup=['community','post','type','handbook','compare','overview'].includes(name); /* 2026-10-07: 유형 탐구 = 하단 탭(코드 id community) — 장면 게임 + 피드, 글·요약·기초·비교도 이 묶음 */
   document.querySelectorAll('.top-nav-main[data-top-page]').forEach(b=>{
     b.classList.toggle('active',b.dataset.topPage===name
       || (exploreGroup && b.dataset.topPage==='handbook')
@@ -1329,7 +1349,7 @@ function activateBasePage(name){
   });
   document.querySelectorAll('.bottom-tab[data-tab]').forEach(b=>{
     /* 유형 검사는 하단 탭 없이 홈에서 들어가므로 검사 화면에서는 '홈'을 켠다 */
-    const on=b.dataset.tab===name || (exploreGroup && b.dataset.tab==='home') || (name==='sharing' && b.dataset.tab==='diary') || (name==='check' && b.dataset.tab==='home');
+    const on=b.dataset.tab===name || (exploreGroup && b.dataset.tab==='community') || (name==='sharing' && b.dataset.tab==='diary') || (name==='check' && b.dataset.tab==='home');
     b.classList.toggle('active',on);
     if(on) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current');
   });
@@ -1364,32 +1384,8 @@ function renderExploreChips(name){
     host.prepend(bar);
   }
   bar.innerHTML='';
-  if(name==='compare'){
-    const back=document.createElement('button');
-    back.type='button';
-    back.className='explore-chip explore-back';
-    back.textContent='‹ 유형 탐구';
-    back.addEventListener('click',()=>showExploreHub());
-    bar.appendChild(back);
-    return;
-  }
-  if(name==='overview'){
-    const back=document.createElement('button');
-    back.type='button';
-    back.className='explore-chip explore-back';
-    back.textContent='‹ 유형 탐구';
-    back.addEventListener('click',()=>showExploreHub());
-    bar.appendChild(back);
-    return;
-  }
-  if(name==='sharing'){
-    const back=document.createElement('button');
-    back.type='button';
-    back.className='explore-chip explore-back';
-    back.textContent='‹ 다이어리';
-    back.addEventListener('click',()=>{ if(typeof showDiaryPage==='function') showDiaryPage(); });
-    bar.appendChild(back);
-  }
+  /* 뒤로는 상단 바(setTopBack)에서. 기초·비교 화면은 칩 줄 없이 (2026-10-07) */
+  if(name==='compare'||name==='overview'){ bar.remove(); return; }
   document.querySelectorAll(cfg.source).forEach(src=>{
     const b=document.createElement('button');
     b.type='button';
@@ -1413,7 +1409,6 @@ document.querySelectorAll('.shell-explore-link').forEach(b=>{
 function showHomePage(push=true){
   activateBasePage('home');
   refreshHome();
-  window.renderExploreFeed?.(); /* 홈 아래 유형 탐구 피드 (js/10) */
   document.getElementById('shellMobileTitle').textContent='홈';
   document.getElementById('page-home')?.scrollTo({top:0});
   if(push) history.replaceState(null,'','#home');
@@ -1723,11 +1718,11 @@ function setCompareSidebarActive(key){
     b.classList.toggle('active',b.dataset.compareTarget===key);
   });
 }
-/* 유형 탐구 = 홈 아래로 이어지는 콘텐츠 피드 (js/10-explore-content.js). 하단 탭 '유형 탐구'·뒤로 버튼은 그 자리로 */
+/* 유형 탐구 = 하단 탭 화면(#page-community)의 장면 게임 아래 콘텐츠 피드 (js/10-explore-content.js). 글에서 뒤로 오면 피드 시작점으로 */
 function showExploreHub(push=true){
-  /* 2026-10-05 홈과 합침: 홈을 열고 피드 시작점(#homeExplore)으로 내린다 */
-  showHomePage(false);
-  const page=document.getElementById('page-home'), feed=document.getElementById('homeExplore');
+  /* 2026-10-07 홈에서 유형 탐구 탭으로 옮김. js/11이 아직 안 읽혔으면(첫 주소 처리) 화면만 켜고 js/11이 다시 부른다 */
+  if(window.showCommunityPage) window.showCommunityPage(false); else activateBasePage('community');
+  const page=document.getElementById('page-community'), feed=document.getElementById('homeExplore');
   if(page && feed) page.scrollTo({top:Math.max(0,feed.offsetTop-page.offsetTop)});
   if(push) history.replaceState(null,'','#explore');
 }
@@ -1874,7 +1869,7 @@ document.querySelectorAll('[data-top-home]').forEach(b=>{
 
 document.querySelector('.top-nav-main[data-top-page="overview"]')?.addEventListener('click',()=>showOverviewSection('basics'));
 document.querySelector('.top-nav-main[data-top-page="check"]')?.addEventListener('click',()=>showCheckTarget('start'));
-document.querySelector('.top-nav-main[data-top-page="handbook"]')?.addEventListener('click',()=>showExploreHub());
+document.querySelector('.top-nav-main[data-top-page="handbook"]')?.addEventListener('click',()=>window.showCommunityPage?.()); /* 유형 탐구 탭 (js/11) */
 document.querySelector('.top-nav-main[data-top-page="compare"]')?.addEventListener('click',()=>showCompareSection('glance'));
 document.querySelector('.top-nav-main[data-top-page="sharing"]')?.addEventListener('click',()=>showSharingTopic(0));
 
@@ -2008,6 +2003,13 @@ document.addEventListener('click',e=>{
   const n=Number(card.dataset.type);
   if(e.target.closest('[data-tcp-posts]')){ window.setExploreFilter?.({t:n,tag:''}); showExploreHub(); return; }
   if(e.target.closest('[data-tcp-share]')){ showSharePage(); const b=document.querySelector(`#shareApp [data-share-type="${n}"]`); b?.click(); return; }
+  /* 지금 내 보석 상태 살펴보기 → 보석 닦기에서 상태 문항 바로 시작 (js/02). 결과 카드 유형을 내 유형으로 먼저 저장한다 */
+  if(e.target.closest('[data-tcp-state]')){
+    if(getHomeProfile()?.type!==n){ try{ localStorage.setItem('enneagram_my_type_v1',JSON.stringify(String(n))); }catch(err){} if(typeof refreshHome==='function') refreshHome(); }
+    window.showPolishPage?.(true,undefined,{check:true}); return;
+  }
+  /* 받은 친구 카드로 돌아가 비교 (공유 링크로 들어와 간편 검사를 한 사람) */
+  if(e.target.closest('[data-tcp-pending-share]')){ const h=takePendingShare(); if(h){ history.replaceState(null,'','#'+h); showSharePage(h,false); } return; }
   if(e.target.closest('[data-tcp-image]')){ saveTypeCardImage(n,card.dataset.source||'유형 검사'); return; }
   if(e.target.closest('[data-tcp-save]')){
     try{ localStorage.setItem('enneagram_my_type_v1',JSON.stringify(String(n))); }catch(err){}
@@ -2036,10 +2038,17 @@ async function renderCheckResultCards(){
   const profiles=await Promise.all(done.map(getTypeProfile));
   const cards=profiles.map((d,i)=>{
     const t=d.n, score=total(t), it=getInterpretation(t,score);
-    const actions=[
-      {label:`${t}번 글 모두 보기`,attr:'data-tcp-posts',primary:i===0},
+    /* 첫 카드 (2026-10-07): 친구와 비교하기 → 지금 내 보석 상태 살펴보기가 먼저. 나머지 카드는 글·비교·이미지만 */
+    const actions=i===0?[
+      ...pendingShareActions(),
+      ...(hasPendingShare()?[]:[{label:'친구와 비교하기',attr:'data-tcp-share',primary:true}]), /* 받은 카드가 기다리면 그쪽 버튼만 */
+      {label:'지금 내 보석 상태 살펴보기',attr:'data-tcp-state'},
+      {label:`${t}번 글 모두 보기`,attr:'data-tcp-posts'},
       {label:'내 유형으로 저장하기',attr:'data-tcp-save'},
-      {label:'링크로 공유하기',attr:'data-tcp-share'},
+      {label:'이미지로 저장하기',attr:'data-tcp-image'}
+    ]:[
+      {label:`${t}번 글 모두 보기`,attr:'data-tcp-posts'},
+      {label:'친구와 비교하기',attr:'data-tcp-share'},
       {label:'이미지로 저장하기',attr:'data-tcp-image'}
     ];
     return typeCardHTML(d,{
@@ -2047,7 +2056,7 @@ async function renderCheckResultCards(){
       badge:`${done.length>1?`${i+1}위 · `:''}${score}점`,
       score:{total:score,range:it.range,message:it.message},
       note:i===0?'점수는 유형을 확정하지 않아요. 행동보다 <b>왜 그렇게 반응하는지</b>가 실제로 맞는지 유형 탐구 글에서 확인해보세요.':'',
-      actions:i===0?actions:actions.slice(0,1).concat(actions.slice(2)),
+      actions,
       compact:i>0
     }).replace('<article class="type-card-pro','<article data-source="정식 검사 결과" class="type-card-pro');
   });
@@ -2071,10 +2080,12 @@ async function renderQuickResultCard(){
     badge:'가장 가까운 유형',
     note:'간편 검사는 유형을 확정하지 않아요. <b>살펴볼 유형을 좁히는 검사</b>예요.',
     actions:[
-      {label:'정식 검사로 확인하기',attr:'data-check-go="select"',primary:true},
+      ...pendingShareActions(),
+      {label:'정식 검사로 확인하기',attr:'data-check-go="select"',primary:!hasPendingShare()},
+      ...(hasPendingShare()?[]:[{label:'친구와 비교하기',attr:'data-tcp-share'}]),
+      {label:'지금 내 보석 상태 살펴보기',attr:'data-tcp-state'},
       {label:`${t}번 글 모두 보기`,attr:'data-tcp-posts'},
       {label:'내 유형으로 저장하기',attr:'data-tcp-save'},
-      {label:'링크로 공유하기',attr:'data-tcp-share'},
       {label:'이미지로 저장하기',attr:'data-tcp-image'},
       {label:'다시 고르기',attr:'data-check-go="quick"'}
     ]
@@ -2777,9 +2788,8 @@ const shareTypeChips=(sel,attr)=>`<div class="share-chips" role="group">${[1,2,3
 function renderShareComposer(){
   const t=shareState.type;
   return `<header class="share-head">
-      <p class="share-kicker">공유하기</p>
-      <h1>내 유형 카드를 링크로 보내요</h1>
-      <p>받은 사람은 내 카드를 보고, 자기 유형과 <b>서로 다르게 반응하는 지점</b>을 비교해볼 수 있어요.</p>
+      <h1>친구와 비교하기</h1>
+      <p>내 카드를 보내면 친구도 간편 검사로 자기 유형을 찾은 뒤, 두 사람이 <b>서로 다르게 반응하는 지점</b>을 나란히 볼 수 있어요. 궁합 점수는 없어요.</p>
     </header>
     <section class="share-panel">
       <h2 class="share-panel-title">어떤 유형으로 보낼까요?</h2>
@@ -2799,7 +2809,11 @@ function renderShareComposer(){
         <p class="share-status" id="shareStatus" role="status"></p>
       </div>`:''}
     </section>
-    ${t?`<section class="share-panel"><h2 class="share-panel-title">받는 사람에게 보이는 카드</h2>${shareCardHTML(t,shareState.name?`${shareState.name}님의 카드`:'내 카드')}</section>`:''}`;
+    ${t?`<section class="share-panel"><h2 class="share-panel-title">받는 사람에게 보이는 카드</h2>${shareCardHTML(t,shareState.name?`${shareState.name}님의 카드`:'내 카드')}</section>`:''}
+    <section class="share-panel"><h2 class="share-panel-title">장면으로도 비교해요</h2>
+      <p class="share-panel-desc">같은 장면에서 친구는 어떻게 반응할까요? 장면 하나에서 내 반응을 고르고 보내면, 친구가 먼저 고른 뒤 두 반응을 나란히 보여줘요.</p>
+      <div class="share-actions"><button class="share-btn" data-share-scene type="button">장면 골라 보내기</button></div>
+    </section>`;
 }
 
 function renderShareViewer(){
@@ -2816,9 +2830,11 @@ function renderShareViewer(){
     </section>
     <section class="share-panel">
       <h2 class="share-panel-title">나와 비교해볼까요?</h2>
-      <p class="share-panel-desc">${me?`내 카드는 <b>${me}번 ${homeEsc(CHECK_TYPE_NAMES[me])}</b>예요. 다른 유형으로 바꿔 볼 수도 있어요.`:'내 유형을 골라보세요. 아직 모르면 유형 검사부터 해도 좋아요.'}</p>
+      ${me?`<p class="share-panel-desc">내 카드는 <b>${me}번 ${homeEsc(CHECK_TYPE_NAMES[me])}</b>예요. 헷갈리는 유형이 있다면 바꿔 볼 수도 있어요.</p>
       ${shareTypeChips(shareState.compare,'data-share-compare')}
-      <div class="share-actions">${me?'':'<button class="share-btn is-primary" data-share-check type="button">간편 검사로 내 유형 찾기</button>'}<button class="share-btn is-ghost" data-share-own type="button">내 카드도 링크로 보내기</button></div>
+      <div class="share-actions"><button class="share-btn is-ghost" data-share-own type="button">내 카드도 친구에게 보내기</button></div>`
+      :`<p class="share-panel-desc">비교는 <b>나도 내 유형을 찾아야</b> 열려요. 서로 직접 해 본 결과로 봐야 ${homeEsc(josa(who,'을','를'))} 단정하지 않고 비교할 수 있거든요. 간편 검사는 1분이면 끝나고, 끝나면 이 카드로 바로 돌아와요.</p>
+      <div class="share-actions"><button class="share-btn is-primary" data-share-check type="button">간편 검사로 내 유형 찾기</button></div>`}
     </section>
     <div id="shareCompare">${shareState.compare?shareCompareHTML(t,shareState.compare,who,null,null):''}</div>`;
 }
@@ -2869,14 +2885,25 @@ function renderShare(){
   if(shareState.data && shareState.compare) fillShareCompare();
 }
 
+/* 공유 링크로 들어와 '간편 검사로 내 유형 찾기'를 누른 사람 (2026-10-07): 받은 카드 주소를 이 탭에만 잠깐 기억했다가
+   검사 결과 카드 맨 위 '친구 카드와 비교하기'로 돌려보낸다. 사용자 기록이 아니라 탭이 닫히면 사라지는 값 */
+function setPendingShare(h){ try{ sessionStorage.setItem('enneagram_pending_share',h); }catch(e){} }
+function hasPendingShare(){ try{ return /^share=/.test(sessionStorage.getItem('enneagram_pending_share')||''); }catch(e){ return false; } }
+function takePendingShare(){
+  let h='';
+  try{ h=sessionStorage.getItem('enneagram_pending_share')||''; sessionStorage.removeItem('enneagram_pending_share'); }catch(e){}
+  return /^share=/.test(h)?h:'';
+}
+function pendingShareActions(){ return hasPendingShare()?[{label:'친구 카드와 비교하기',attr:'data-tcp-pending-share',primary:true}]:[]; }
+
 function showSharePage(hashArg,push=true){
   activateBasePage('share');
   const m=typeof hashArg==='string'?hashArg.match(/^share=(.+)$/):null;
   const data=m?decodeShare(m[1]):null;
   const me=getHomeProfile()?.type||null;
-  shareState={data,me,compare:data?me:null,link:'',name:'',type:me};
+  shareState={data,me,compare:data?me:null,link:'',name:'',type:me,hash:data?hashArg:''};
   renderShare();
-  document.getElementById('shellMobileTitle').textContent=data?'받은 카드':'공유하기';
+  document.getElementById('shellMobileTitle').textContent=data?'받은 카드':'친구와 비교하기';
   if(push) history.replaceState(null,'','#share');
   document.getElementById('page-share')?.scrollTo({top:0});
   closeShellMenu();
@@ -2913,8 +2940,9 @@ document.getElementById('shareApp')?.addEventListener('click',e=>{
     return;
   }
   if(e.target.closest('[data-share-own]')){ showSharePage(); return; }
-  /* 공유 링크로 들어온 사람은 바로 간편 검사로 (PRD PC-4) */
-  if(e.target.closest('[data-share-check]')){ showCheckTarget('quick'); return; }
+  /* 공유 링크로 들어온 사람은 바로 간편 검사로 (PRD PC-4). 결과 화면에서 이 카드로 돌아오게 주소를 기억해 둔다 */
+  if(e.target.closest('[data-share-check]')){ if(shareState.hash) setPendingShare(shareState.hash); showCheckTarget('quick'); return; }
+  if(e.target.closest('[data-share-scene]')){ window.showCommunityPage?.(); return; }
   const hb=e.target.closest('[data-share-handbook]');
   if(hb){ showHandbookType(Number(hb.dataset.shareHandbook)); return; }
 });

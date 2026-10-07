@@ -134,10 +134,10 @@ function showSceneShare(s,friend,push=false){
   const sc=scenes()[s];
   if(!sc || !(friend>=1 && friend<=9)){ showExploreHub(false); return; }
   activateBasePage('post');
+  setTopBack('유형 탐구',()=>showCommunityPage());
   document.getElementById('shellMobileTitle').textContent='친구가 보낸 장면';
   const view=document.getElementById('postView');
-  view.innerHTML=`<div class="post-top game-back"><button class="feed-chip" data-scene-community type="button">‹ 커뮤니티</button></div>`
-    +`<article class="post"><figure class="post-hero"><img src="assets/photos/situations.jpg" alt="" width="900" height="600" decoding="async"></figure>`
+  view.innerHTML=`<article class="post"><figure class="post-hero"><img src="assets/photos/situations.jpg" alt="" width="900" height="600" decoding="async"></figure>`
     +`<header class="post-head"><p class="post-cat">친구가 보낸 장면</p><h1 class="post-title">${esc(sc.title)}</h1>`
     +'<p class="post-lead">친구가 이 장면에서 고른 반응은 아직 숨겨 두었어요. 먼저 나라면 어떻게 할지 골라 보세요.</p></header>'
     +`<div class="game-options is-share" data-share-scene="${s}" data-friend="${friend}">${options(sc,friend,s*3+friend).map(r=>optBtn('data-friend-pick',r)).join('')}</div>`
@@ -159,7 +159,8 @@ function compare(btn){
     +`<div class="game-vs">${side('나',me)}${side('친구',friend)}</div>`
     +`<p class="game-note">${me===friend?'이 장면에서 마음이 향하는 곳이 비슷할 수 있어요. 그래도 고른 이유는 다를 수 있으니 서로 물어보세요.':'누가 맞고 틀린 게 아니라, 같은 장면에서도 먼저 신경 쓰는 게 달라요. 서로 왜 그 반응을 골랐는지 물어보세요.'}</p>`
     +`<div class="game-actions"><button class="btn primary" data-scene-share="${s}-${me}" type="button">${SHARE_ICON}나도 친구에게 물어보기</button>`
-    +'<button class="btn secondary is-tinted" data-scene-home type="button">다른 장면 해보기</button></div><p class="game-status" role="status"></p>';
+    +'<button class="btn secondary is-tinted" data-scene-home type="button">다른 장면 해보기</button>'
+    +'<button class="btn secondary is-tinted" data-scene-card type="button">유형 카드로도 비교하기</button></div><p class="game-status" role="status"></p>';
   out.hidden=false;
   out.scrollIntoView({block:'start',behavior:'smooth'});
 }
@@ -167,7 +168,7 @@ function compare(btn){
 /* ---------- 누르기 ---------- */
 document.addEventListener('click',e=>{
   if(!e.target.closest('#page-community, #page-post')) return;
-  if(e.target.closest('[data-quiz-check]')){ showCheckTarget('quick'); return; }
+  /* [data-quiz-check](간편 검사 버튼)는 js/10이 #page-community·#page-post에서 맡는다 */
   const mood_=e.target.closest('[data-scene-mood]');
   if(mood_){ mood=mood_.dataset.sceneMood; document.getElementById('scenePick').outerHTML=pickCardHTML(); return; }
   const pick=e.target.closest('[data-scene-pick]');
@@ -180,15 +181,17 @@ document.addEventListener('click',e=>{
   if(sh){ const [s,t]=sh.dataset.sceneShare.split('-').map(Number); share(s,t,sh.closest('.game-result, .game-compare')?.querySelector('.game-status')); return; }
   const fp=e.target.closest('[data-friend-pick]');
   if(fp){ compare(fp); return; }
+  if(e.target.closest('[data-scene-card]')){ showSharePage(); return; } /* 친구와 비교하기 (js/00) */
   if(e.target.closest('[data-scene-home], [data-scene-community]')){ showCommunityPage(); }
 });
 
-/* 커뮤니티 화면 (하단 탭) */
+/* 유형 탐구 화면 (하단 탭, 코드 id community): 맨 위 장면 게임 + 아래 콘텐츠 피드(js/10) */
 function showCommunityPage(push=true){
   activateBasePage('community');
-  document.getElementById('shellMobileTitle').textContent='커뮤니티';
+  document.getElementById('shellMobileTitle').textContent='유형 탐구';
   const box=document.getElementById('communityGame');
   if(box) box.innerHTML=window.sceneGameHTML(!getHomeProfile());
+  window.renderExploreFeed?.();
   document.getElementById('page-community')?.scrollTo({top:0});
   window.scrollTo({top:0});
   if(push) history.replaceState(null,'','#community');
@@ -199,5 +202,5 @@ window.showCommunityPage=showCommunityPage;
 /* 받은 링크 #scene=<장면>-<친구가 고른 유형> */
 function route(){ const m=location.hash.match(/^#scene=(\d+)-([1-9])$/); if(m) showSceneShare(Number(m[1]),Number(m[2])); return !!m; }
 window.addEventListener('hashchange',route);
-if(!route() && location.hash==='#community') showCommunityPage(false);
+if(!route()){ if(location.hash==='#community') showCommunityPage(false); else if(location.hash==='#explore') showExploreHub(false); }
 })();

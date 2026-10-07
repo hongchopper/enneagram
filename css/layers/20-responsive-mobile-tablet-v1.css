@@ -157,10 +157,6 @@ button,a{
     width:calc(100% - var(--page-gutter) * 2)!important;
   }
 
-  /* 페이지 섹션 간격 */
-  #page-home section{
-    padding:52px 0!important;
-  }
   #page-overview .overview-panel,
   #page-compare .compare-panel{
     padding-top:36px!important;

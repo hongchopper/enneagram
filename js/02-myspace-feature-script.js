@@ -4,7 +4,9 @@
     myType:'enneagram_my_type_v1',
     experiments:'enneagram_experiments_v1',
     prefs:'enneagram_prefs_v1',
-    wishes:'enneagram_wishes_v1'
+    wishes:'enneagram_wishes_v1',
+    stateChecks:'enneagram_state_checks_v1',
+    interest:'enneagram_interest_v1'
   };
   const WISH_SCHEMA=1; /* 소원과 기도 저장 형식 (readWishes). v1: { schemaVersion, items:[{id, kind:'wish'|'prayer', text, at, done, doneAt}] } */
   const PREFS_SCHEMA=1; /* 보기 설정 저장 형식 버전 (readPrefs). v1: 기도제목 보기(showPrayer) */
@@ -410,6 +412,7 @@
   const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
 
   function renderDashboard(){
+    renderGemState(); /* 나의 공간 맨 위 '지금 내 보석 상태' (보석 닦기 영역) */
     const all=readReflections();
     const catName=v=>(DIARY_CATEGORIES.find(c=>c[0]===v)||[v,v])[1];
     /* 요즘 나의 흐름 한 줄 (2026-10-05): 최근 30일 기록이 2개 이상이면 그걸로, 아니면 전체 기록으로 */
@@ -900,7 +903,8 @@
 
   /* ---- 지금 내 상태는? (2026-10-05): 강의 슬라이드 #89~107 '상태별 플랜 · 기도제목'.
      원고 docs/콘텐츠_유형별_액션플랜.md. 고른 상태는 저장하지 않는다(핸드북 '요즘 나는 어떤가요?'와 같음) ---- */
-  const POLISH_STATES=[['low','힘들 때','억지로 버티는 중이에요. 고치려 하기보다 몸부터 챙기고, 하루에 하나만 해요.'],['mid','애쓰는 중','그럭저럭 굴러가는 중이에요. 버릇 하나를 관찰하고, 작은 행동 하나를 더해요.'],['high','자연스러울 때','편안하게 흐르는 중이에요. 이 리듬을 지키고, 받은 것을 나눠요.']];
+  /* 이름은 보석 상태(빛남 · 연마 중 · 흐려짐)와 같은 말로 (2026-10-07, 콘텐츠 가이드라인 용어표). 키(low·mid·high)는 그대로 */
+  const POLISH_STATES=[['high','빛남','편안하게 흐르는 중이에요. 이 리듬을 지키고, 받은 것을 나눠요.'],['mid','연마 중','그럭저럭 굴러가는 중이에요. 버릇 하나를 관찰하고, 작은 행동 하나를 더해요.'],['low','흐려짐','억지로 버티는 중이에요. 고치려 하기보다 몸부터 챙기고, 하루에 하나만 해요.']];
   const POLISH_STATE_GENERAL={
     low:{feel:['잠·식사가 흐트러졌어요','같은 생각이 계속 돌아요','작은 일에도 크게 반응해요','‘원래 나는 이렇지 않은데’라는 말이 자주 나와요'],start:['몸부터 챙기고 할 일 줄이기','하루 1개, 이번 주 1개만 하기']},
     mid:{feel:['일상은 돌아가는데 즐거움이 적어요','내 버릇이 보이지만 멈추진 못해요'],start:['버릇 하나 골라 관찰하기','통합 방향의 행동 하나 더하기','오늘 1개, 이번 주 2개 해보기']},
@@ -944,7 +948,153 @@
       mid:{signs:['편하게 지내지만 내 목표는 흐릿해요','중요한 일보다 쉬운 일부터 해요','남의 계획에 맞추는 게 편해요'],acts:['이번 달 목표 1개 적고 첫 단계 하기','모임에서 내 의견 먼저 1번 말하기','하루 첫 1시간은 가장 중요한 일 하기'],prays:['주신 삶의 방향을 알고, 그 길로 한 걸음 걷게 해주세요.','평화를 지키는 것이 마음을 숨기는 것이 아니라 진실하게 함께하는 것이 되게 해주세요.']},
       high:{signs:['내 의견을 말하며 남도 품어요','할 일을 하면서도 평안해요','사람들을 하나로 모아요'],acts:['아침마다 할 일 1개와 기도제목 1개 정하기','주 1회 ‘요즘 나는 무엇을 원하나?’ 적기','갈등 있는 사람들 사이에서 말 이어주기','불안한 사람 곁을 지켜주기'],prays:['갈등을 덮지 않고 회복시키는, 화평케 하는 사람이 되게 해주세요.','주신 자리에서 깨어 있는 사람이 되게 해주세요.']}}
   };
-  let polishState='mid'; /* 처음에는 가장 많은 사람이 해당하는 '애쓰는 중' */
+  let polishState='mid'; /* 처음에는 가장 많은 사람이 해당하는 '연마 중'. 상태를 살펴본 결과가 있으면 그 구간으로 */
+  let polishStatePicked=false; /* 빠르게 고르기 칩을 직접 누른 뒤에는 결과 구간으로 되돌리지 않는다 */
+
+  /* ---- 보석 상태 살펴보기 (2026-10-07, PRD DT-2~4): 내 유형 문항 15개 + 공통 5개 → 빛남 · 연마 중 · 흐려짐 + 압박 속 경향.
+     문항 content/state-check.js (원본 docs/상세검사_상태문항_초안.md, 계산은 그 문서 §4).
+     저장 키 enneagram_state_checks_v1, schemaVersion 1: { schemaVersion, results:[{type, at, s, band, stress, care, answers}] } 최근 것부터 12개.
+     v1이 첫 형식이라 옮길 이전 형식은 없다. 형식이 바뀌면 readStateChecks에서 옮긴다. 화면에는 구간과 경향만, s(1~7)는 보이지 않는다 (DT-4) ---- */
+  const STATE_SCHEMA=1, STATE_KEEP=12, STATE_RECHECK_DAYS=28;
+  const STATE_LABEL={high:'빛남',mid:'연마 중',low:'흐려짐'};
+  const STATE_STRESS={high:'압박 속에서도 빛을 지키는 편이에요.',mid:'압박이 클 때는 연마 중 쪽으로 기우는 편이에요.',low:'압박이 클 때는 흐려지는 쪽으로 기우는 편이에요.'};
+  /* 문항 순서: 빛남·연마 중·흐려짐이 묶여 보이지 않게 섞는다 (문서 순서 0~3 빛남, 4~7 연마 중, 8~11 흐려짐). 장면 선택지도 장면마다 순서를 돌린다 */
+  const STATE_ITEM_ORDER=[0,8,4,1,5,9,10,2,6,3,11,7];
+  const STATE_OPT_ORDER=[['high','mid','low'],['mid','low','high'],['low','high','mid']];
+  const stateData=()=>window.STATE_CHECK||null;
+  function readStateChecks(){
+    const v=read(STORAGE.stateChecks,null);
+    const results=(v && Array.isArray(v.results)?v.results:[])
+      .filter(r=>r && Number.isInteger(r.type) && r.type>=1 && r.type<=9 && STATE_LABEL[r.band] && !isNaN(new Date(r.at)));
+    return {schemaVersion:STATE_SCHEMA,results};
+  }
+  const lastStateCheck=t=>readStateChecks().results.find(r=>r.type===t)||null;
+  const stateDue=r=>!!r && (Date.now()-new Date(r.at).getTime())/864e5>=STATE_RECHECK_DAYS;
+  function saveStateCheck(r){
+    const d=readStateChecks();
+    d.results.unshift(r);
+    d.results=d.results.slice(0,STATE_KEEP);
+    write(STORAGE.stateChecks,d);
+  }
+  function scoreStateCheck(t,ans){
+    const T=stateData().types[t];
+    const avg=b=>{ const xs=T.items.filter(i=>i.band===b).map(i=>ans[i.id]); return xs.reduce((a,x)=>a+x,0)/xs.length; };
+    const L=avg('high'), M=avg('mid'), D=avg('low');
+    let s=1+(2*D+M-2*L+6)*6/15;
+    const c=['C1','C2','C3','C4'].reduce((a,k)=>a+ans[k],0)/4;
+    if(c>=2) s=Math.min(7,s+0.5);
+    const cnt={high:0,mid:0,low:0};
+    T.scenes.forEach(sc=>{ cnt[ans[sc.id]]++; });
+    return {s:Math.round(s*10)/10,band:s<3.5?'high':s<5.5?'mid':'low',stress:cnt.low>=2?'low':cnt.high>=2?'high':'mid',care:ans.C5===3};
+  }
+  const stateDay=v=>{ const x=new Date(v); return `${x.getMonth()+1}월 ${x.getDate()}일`; };
+  /* 심화 리포트 출시 알림 (2026-10-07, 지불 의향 측정용 '가짜 문'): 누른 것만 이 기기에 남긴다.
+     저장 키 enneagram_interest_v1, schemaVersion 1: { schemaVersion, report:{at, type, band} | null }. 집계 도구가 붙으면 그쪽으로도 보낸다 */
+  const INTEREST_SCHEMA=1;
+  function readInterest(){ const v=read(STORAGE.interest,null); return {schemaVersion:INTEREST_SCHEMA,report:v && v.report && v.report.at?v.report:null}; }
+
+  let stateRun=null; /* 살펴보는 중이면 { t, ans } */
+  function stateCheckHTML(){
+    const D=stateData(), t=stateRun.t, T=D.types[t], ans=stateRun.ans;
+    const total=T.items.length+T.scenes.length+D.common.length, done=Object.keys(ans).length;
+    const pick=(id,val,label)=>`<button type="button" class="polish-mood${ans[id]===val?' is-on':''}" data-sc-q="${esc(id)}" data-sc-v="${esc(String(val))}" aria-pressed="${ans[id]===val}">${esc(label)}</button>`;
+    const q=(id,text,opts,cls)=>`<li class="sc-q"><p class="sc-text" id="sc-${esc(id)}">${esc(text)}</p><div class="sc-opts${cls?' '+cls:''}" role="group" aria-labelledby="sc-${esc(id)}">${opts}</div></li>`;
+    const items=STATE_ITEM_ORDER.map(i=>T.items[i]).map(it=>q(it.id,it.text,D.scale.map((l,v)=>pick(it.id,v,l)).join(''),'is-scale')).join('');
+    const scenes=T.scenes.map((sc,i)=>q(sc.id,sc.text,STATE_OPT_ORDER[i%3].map(b=>pick(sc.id,b,sc.opts[b])).join(''))).join('');
+    const common=D.common.map(c=>q(c.id,c.q,c.opts.map((l,v)=>pick(c.id,v,l)).join(''))).join('');
+    return `<section class="polish-sec sc" aria-labelledby="scTitle"><h2 class="polish-title" id="scTitle">보석 상태 살펴보기</h2>`
+      +'<p class="polish-lead">최근 2주를 떠올리며 답해 주세요. 정답은 없어요. 답과 결과는 이 기기에만 저장돼요.</p>'
+      +'<h3 class="polish-sub">요즘의 나 · 최근 2주 동안 얼마나 자주 있었나요?</h3>'
+      +`<ol class="sc-list">${items}</ol>`
+      +'<h3 class="polish-sub">이런 장면이라면 · 나는 어떻게 할 것 같나요?</h3>'
+      +`<ol class="sc-list">${scenes}</ol>`
+      +'<h3 class="polish-sub">요즘 나를 둘러싼 것</h3>'
+      +`<ol class="sc-list">${common}</ol>`
+      +`<div class="sc-foot"><p class="sc-count" id="scCount" aria-live="polite">${done} / ${total} 답했어요</p>`
+      +`<div class="sc-actions"><button class="ui-btn ui-btn-primary" data-sc-done type="button"${done<total?' disabled':''}>결과 보기</button><button class="ui-btn ui-btn-ghost" data-sc-cancel type="button">그만하기</button></div></div></section>`;
+  }
+  /* ① 지금 내 상태는? 맨 위: 살펴본 결과 카드 또는 살펴보기 시작 */
+  function stateResultHTML(t){
+    const D=stateData();
+    if(!D || !D.types[t]) return '';
+    const r=lastStateCheck(t);
+    if(!r) return '<div class="sc-start"><strong class="sc-start-title">내 보석은 지금 어떤 빛일까요?</strong>'
+      +'<p>최근 2주를 떠올리며 20문항에 답하면 빛남 · 연마 중 · 흐려짐 중 어디쯤인지 살펴봐 줘요. 약 4분 걸려요.</p>'
+      +'<button class="ui-btn ui-btn-primary" data-sc-start type="button">자세히 살펴보기</button></div>';
+    const asked=readInterest().report;
+    const report=r.care?'<button class="ui-btn ui-btn-secondary" data-crisis-open type="button">도움이 필요할 때</button>'
+      :asked?'<p class="sc-report-done" role="status">심화 리포트는 준비 중이에요. 관심을 남겨 주셔서 고마워요.</p>'
+      :'<button class="ui-btn ui-btn-secondary" data-sc-report type="button">심화 리포트 받기</button>';
+    return `<div class="sc-result" style="${typeof gemVars==='function'?gemVars(t):''}">`
+      +`<span class="sc-result-k">${esc(stateDay(r.at))}에 살펴본 내 보석</span>`
+      +`<p class="sc-result-band">요즘은 주로 <b>${esc(STATE_LABEL[r.band])}</b> 구간이에요.</p>`
+      +`<p class="sc-result-stress">${esc(STATE_STRESS[r.stress])}</p>`
+      +`<p class="sc-result-line">${esc(D.types[t].result[r.band])}</p>`
+      +(stateDue(r)?`<p class="sc-result-due">${STATE_RECHECK_DAYS/7}주가 지났어요. 요즘의 나를 다시 살펴볼까요?</p>`:'')
+      +`<div class="sc-actions"><button class="ui-btn${stateDue(r)?' ui-btn-primary':' ui-btn-ghost'}" data-sc-start type="button">다시 살펴보기</button>${report}</div>`
+      +'<p class="sc-result-note">진단이 아니라 요즘의 나를 살펴보는 참고예요. 아래에서 지금 상태에 맞는 행동을 골라 담아요.</p></div>';
+  }
+  function startStateCheck(){
+    const t=diaryMyType();
+    if(!t || !stateData()) return;
+    stateRun={t,ans:{}};
+    renderPolish();
+    document.getElementById('scTitle')?.scrollIntoView({block:'start'});
+    document.querySelector('#polishApp .sc-q .polish-mood')?.focus({preventScroll:true});
+  }
+  function finishStateCheck(){
+    const {t,ans}=stateRun;
+    const r=scoreStateCheck(t,ans);
+    saveStateCheck({type:t,at:new Date().toISOString(),...r,answers:ans});
+    stateRun=null;
+    polishState=r.band; polishStatePicked=false;
+    renderPolish(); renderGemState();
+    document.querySelector('#polishApp .polish-state')?.scrollIntoView({block:'start'});
+    document.getElementById('polishStateTitle')?.focus?.();
+    if(r.care && typeof window.openCrisisGuide==='function') window.openCrisisGuide(); /* 마음의 짐 '일상을 버티기 어려울 만큼' → 위기 안내 먼저 (SF-2·3) */
+  }
+  /* 답 하나 고를 때는 화면을 다시 그리지 않는다 (스크롤·포커스 유지) */
+  function answerStateCheck(btn){
+    const id=btn.dataset.scQ, raw=btn.dataset.scV, val=/^[0-3]$/.test(raw)?Number(raw):raw;
+    stateRun.ans[id]=val;
+    btn.parentElement.querySelectorAll('[data-sc-q]').forEach(b=>{ const on=b===btn; b.classList.toggle('is-on',on); b.setAttribute('aria-pressed',String(on)); });
+    const D=stateData(), T=D.types[stateRun.t];
+    const total=T.items.length+T.scenes.length+D.common.length, done=Object.keys(stateRun.ans).length;
+    const count=document.getElementById('scCount'); if(count) count.textContent=`${done} / ${total} 답했어요`;
+    const go=document.querySelector('#polishApp [data-sc-done]'); if(go) go.disabled=done<total;
+  }
+
+  /* 나의 공간 맨 위 '지금 내 보석 상태' (2026-10-07, PRD MR-1·MR-4, 콘텐츠 가이드라인 A10): 마지막으로 살펴본 결과를 기준선으로 */
+  function renderGemState(){
+    const host=g('myGemState'); if(!host) return;
+    const t=diaryMyType();
+    if(!t || !stateData()){ host.hidden=true; host.innerHTML=''; return; }
+    const gemName=(typeof HOME_PROFILES!=='undefined'&&HOME_PROFILES[t]?.gem)||`${t}번 보석`;
+    const r=lastStateCheck(t);
+    const gem=typeof gemImg==='function'?`<span class="my-gem-state-gem${r?' is-'+r.band:''}" aria-hidden="true">${gemImg(t,'',true)}</span>`:'';
+    const TEXT={
+      high:{title:`요즘 ${gemName}${josa(gemName,'이','가')} 빛나요`,feel:'요즘 마음에 힘이 차 있는 것 같아요.',try:'이 빛을 만든 순간을 한 줄 남겨보는 건 어때요?'},
+      mid:{title:`${gemName}${josa(gemName,'을','를')} 다듬는 중이에요`,feel:'좋은 날도 버거운 날도 함께 지나가고 있네요.',try:'오늘 나를 다듬어준 일을 하나 떠올려보는 건 어때요?'},
+      low:{title:`${gemName}에 먼지가 좀 앉았네요`,feel:'요즘 마음이 많이 바빴던 것 같아요.',try:'닦아볼까요? 5분만 아무것도 하지 않는 시간을 가져보는 건 어때요?'}
+    };
+    host.hidden=false;
+    host.setAttribute('style',typeof gemVars==='function'?gemVars(t):'');
+    if(!r){
+      host.innerHTML=`<div class="my-gem-state-head">${gem}<div><h2 class="my-insight-title" id="myGemStateTitle">지금 내 보석 상태</h2><p class="my-insight-line">${esc(gemName)}${josa(gemName,'은','는')} 지금 어떤 빛일까요?</p></div></div>`
+        +'<p class="my-insight-meta">20문항으로 빛남 · 연마 중 · 흐려짐 중 어디쯤인지 살펴봐요. 약 4분 걸려요.</p>'
+        +'<div class="my-insight-actions"><button class="ui-btn ui-btn-primary" data-gem-state="check" type="button">자세히 살펴보기</button></div>';
+      return;
+    }
+    const x=TEXT[r.band];
+    host.innerHTML=`<div class="my-gem-state-head">${gem}<div><h2 class="my-insight-title" id="myGemStateTitle">${esc(x.title)}</h2><p class="my-insight-line">${esc(x.feel)} ${esc(x.try)}</p></div></div>`
+      +`<p class="my-insight-meta">${esc(stateDay(r.at))}에 살펴본 결과예요.${stateDue(r)?` ${STATE_RECHECK_DAYS/7}주가 지났으니 다시 살펴볼 때예요.`:''}</p>`
+      +`<div class="my-insight-actions"><button class="ui-btn ui-btn-primary" data-gem-state="${stateDue(r)?'check':'polish'}" type="button">${stateDue(r)?'다시 살펴보기':'보석 닦으러 가기'}</button>`
+      +(stateDue(r)?'<button class="ui-btn ui-btn-secondary" data-gem-state="polish" type="button">보석 닦으러 가기</button>':'')+'</div>';
+  }
+  g('myGemState')?.addEventListener('click',e=>{
+    const b=e.target.closest('[data-gem-state]'); if(!b) return;
+    showPolishPage(true,undefined,{check:b.dataset.gemState==='check'});
+  });
 
   /* 보기 설정: 저장 키 enneagram_prefs_v1, schemaVersion 1: { schemaVersion, showPrayer:boolean }
      v1이 첫 형식이라 옮길 이전 형식은 없다. 형식이 바뀌면 readPrefs에서 옮긴다. 기도제목은 원하는 사람만 본다(기본 꺼짐). */
@@ -964,7 +1114,10 @@
       +(t?`<button class="polish-add" data-polish-add="${esc(a)}" data-polish-src="${esc(label)}" type="button"${on?' disabled':''}>${on?'담았어요':'담기'}</button>`:'')+'</li>';}).join('');
     let extra='';
     if(key==='low') extra+='<p class="polish-safe">여기 있는 내용은 성격 패턴을 이해하기 위한 것이지, 마음 상태를 진단하는 것이 아니에요. 힘든 마음이 여러 날 이어진다면 믿을 수 있는 사람이나 전문가에게 이야기해보세요.</p>';
-    return `<section class="polish-sec polish-state" aria-labelledby="polishStateTitle"><h2 class="polish-title" id="polishStateTitle"><span class="polish-no" aria-hidden="true">1</span>지금 내 상태는?</h2>`
+    const checked=t?stateResultHTML(t):'';
+    return `<section class="polish-sec polish-state" aria-labelledby="polishStateTitle"><h2 class="polish-title" id="polishStateTitle" tabindex="-1"><span class="polish-no" aria-hidden="true">1</span>지금 내 상태는?</h2>`
+      +checked
+      +(checked?'<h3 class="polish-sub">빠르게 고르기</h3>':'')
       +`<div class="polish-moods" role="group" aria-label="지금 내 상태">${chips}</div>`
       +`<p class="polish-lead">${esc(lead)}</p><ul class="polish-picks">${items}</ul>${extra}</section>`;
   }
@@ -1017,7 +1170,7 @@
     const gem=n=>typeof gemImg==='function'?gemImg(n,'',true):'';
     const name=n=>(typeof CHECK_TYPE_NAMES!=='undefined'&&CHECK_TYPE_NAMES[n])||TYPES[n]?.name||'';
     const vars=n=>typeof gemVars==='function'?gemVars(n):'';
-    const flow='<ol class="polish-flow" aria-label="보석 닦는 순서"><li>상태 고르기</li><li>행동 담기</li><li>소원과 기도</li></ol>';
+    const flow='<ol class="polish-flow" aria-label="보석 닦는 순서"><li>상태 살펴보기</li><li>행동 담기</li><li>소원과 기도</li></ol>';
     if(!t){
       host.innerHTML=`<section class="polish-hero is-find"><span class="polish-hero-gems" aria-hidden="true">${[2,5,7].map(gem).join('')}</span>`
         +'<strong class="polish-hero-title">내 보석을 먼저 찾아볼까요?</strong><p class="polish-hero-desc">유형을 알면 내 보석에 맞는 행동을 골라 줄 수 있어요.</p>'
@@ -1026,15 +1179,20 @@
     }
     const p=POLISH.practice[t], have=new Set(readExperiments().custom.map(x=>x.text));
     const gemName=(typeof HOME_PROFILES!=='undefined'&&HOME_PROFILES[t]?.gem)||'';
-    host.innerHTML=`<section class="polish-hero" style="${vars(t)}"><span class="polish-hero-gem" aria-hidden="true">${gem(t)}</span>`
+    const hero=`<section class="polish-hero" style="${vars(t)}"><span class="polish-hero-gem" aria-hidden="true">${gem(t)}</span>`
       +`<span class="polish-hero-name">${t}번 ${esc(name(t))}${gemName?` · ${esc(gemName)}`:''}</span>`
-      +`<strong class="polish-hero-title">${esc(p.direction)}</strong><span class="polish-hero-desc">이번 주에 닦을 방향이에요.</span></section>`
-      +flow+polishPicksHTML(t,have)+polishWishHTML(t);
+      +`<strong class="polish-hero-title">${esc(p.direction)}</strong><span class="polish-hero-desc">이번 주에 닦을 방향이에요.</span></section>`;
+    if(stateRun && stateRun.t!==t) stateRun=null; /* 살펴보는 중에 내 유형을 바꿨으면 그만둔다 */
+    if(stateRun){ host.innerHTML=hero+stateCheckHTML(); return; }
+    const last=lastStateCheck(t);
+    if(last && !polishStatePicked) polishState=last.band;
+    host.innerHTML=hero+flow+polishPicksHTML(t,have)+polishWishHTML(t);
   }
-  /* state: 핸드북 '요즘 나는 어떤가요?'에서 고른 상태(low·mid·high)로 열 때 */
-  window.showPolishPage=function(push=true,state){
+  /* state: 핸드북 '요즘 나는 어떤가요?'에서 고른 상태(low·mid·high)로 열 때.
+     opts.check: 검사 결과·나의 공간의 '지금 내 보석 상태 살펴보기'에서 열 때 바로 상태 문항을 시작한다 */
+  window.showPolishPage=function(push=true,state,opts={}){
     const fromState=POLISH_STATES.some(([k])=>k===state);
-    if(fromState) polishState=state;
+    if(fromState){ polishState=state; polishStatePicked=true; }
     if(typeof activateBasePage==='function') activateBasePage('polish');
     const mobileTitle=document.getElementById('shellMobileTitle');
     if(mobileTitle) mobileTitle.textContent='보석 닦기';
@@ -1042,14 +1200,26 @@
     if(typeof closeShellMenu==='function') closeShellMenu();
     renderPolish(); renderExperiments();
     document.getElementById('page-polish')?.scrollTo({top:0});
+    if(opts.check && diaryMyType()){ startStateCheck(); return; }
     if(fromState) document.querySelector('#polishApp .polish-state')?.scrollIntoView({block:'start'});
     /* 담은 행동이 바로 아래 '해보기로 한 것'에 쌓인다 */
   };
   g('polishApp')?.addEventListener('click',e=>{
+    const sq=e.target.closest('[data-sc-q]');
+    if(sq && stateRun){ answerStateCheck(sq); return; }
+    if(e.target.closest('[data-sc-start]')){ startStateCheck(); return; }
+    if(e.target.closest('[data-sc-done]') && stateRun){ finishStateCheck(); return; }
+    if(e.target.closest('[data-sc-cancel]')){ stateRun=null; renderPolish(); document.getElementById('page-polish')?.scrollTo({top:0}); return; }
+    if(e.target.closest('[data-sc-report]')){
+      const t=diaryMyType(), r=lastStateCheck(t);
+      write(STORAGE.interest,{schemaVersion:INTEREST_SCHEMA,report:{at:new Date().toISOString(),type:t,band:r?r.band:null}});
+      renderPolish(); document.querySelector('#polishApp .sc-report-done')?.focus?.();
+      return;
+    }
     const add=e.target.closest('[data-polish-add]');
     if(add){ const t=diaryMyType(); addCustomExperiment(add.dataset.polishAdd,`보석 닦기 · ${t}번${add.dataset.polishSrc?' · '+add.dataset.polishSrc:''}`); renderPolish(); renderExperiments(); return; }
     const st=e.target.closest('[data-polish-state]');
-    if(st){ polishState=st.dataset.polishState; renderPolish(); document.querySelector(`#polishApp [data-polish-state="${polishState}"]`)?.focus(); return; }
+    if(st){ polishState=st.dataset.polishState; polishStatePicked=true; renderPolish(); document.querySelector(`#polishApp [data-polish-state="${polishState}"]`)?.focus(); return; }
     if(e.target.closest('[data-polish-check]') && typeof showCheckTarget==='function') showCheckTarget('quick');
     const pa=e.target.closest('[data-pray-add]');
     if(pa){ addWish('prayer',pa.dataset.prayAdd); renderPolish(); return; }
