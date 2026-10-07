@@ -2,6 +2,8 @@
 
 에니어그램을 이해하고 → 유형을 비교하고 → 실제 경험을 기록하며 → 반복 패턴을 발견하는 자기이해 웹서비스 (로컬 프로토타입)
 
+**사이트 바로 가기:** https://hongchopper.github.io/enneagram/ (GitHub Pages, main에 푸시하면 몇 분 안에 바뀝니다. 모바일 화면 기준)
+
 ## 실행
 
 - **Windows:** `start-server.bat` 더블클릭 → 브라우저에서 http://localhost:5500 이 열립니다.
