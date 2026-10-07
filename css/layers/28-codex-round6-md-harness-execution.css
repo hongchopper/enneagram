@@ -12376,6 +12376,11 @@ h3,
   gap:var(--space-3);
 }
 
+/* 덱 아래 '다음 카드': 브라우저 기본 버튼 테두리(검정 2px)가 남지 않게 */
+#page-community .deck-nav .btn {
+  border:0;
+}
+
 #page-community .deck-nav .btn[disabled] {
   opacity:0.45;
   cursor:default;
