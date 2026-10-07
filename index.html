@@ -35,7 +35,7 @@
 
 <link rel="stylesheet" href="css/layers/27-codex-round5-handbook-polish.css?v=721906ee" data-layer="codex-round5-handbook-polish">
 
-<link rel="stylesheet" href="css/layers/28-codex-round6-md-harness-execution.css?v=105b12ff" data-layer="codex-round6-md-harness-execution">
+<link rel="stylesheet" href="css/layers/28-codex-round6-md-harness-execution.css?v=6d47e0ce" data-layer="codex-round6-md-harness-execution">
 <script async src="https://mcp.figma.com/mcp/html-to-design/capture.js"></script>
 </head>
 <body>
@@ -150,7 +150,7 @@
 <div class="shell-note">메뉴를 고르면 그 화면으로 이동해요.</div>
 </aside>
 <main class="shell-main"><section class="page-panel active" data-page-panel="home" id="page-home"><div class="home-feed" id="home-top">
-<!-- 9가지 유형 카드 (2026-10-05 유형 탐구에서 홈 맨 위로 옮김) -->
+<!-- 홈 (2026-10-07, docs/정보구조_IA.md): 맨 위 9가지 유형 카드(항상 홈에) → 상태별 피드(js/00 renderHomeShelves) -->
 <div class="home-types"><div aria-label="9가지 유형" class="explore-type-grid" id="typeCardRail"></div></div>
 <div aria-labelledby="homeFindTitle" class="home-find" hidden="" id="home-find" role="region">
 <div class="home-find-card">
@@ -5149,16 +5149,19 @@
 
 <main class="wrap"><div id="handbookTypeHost"></div></main><script src="content/handbook-type-store.js?v=e2687a5e"></script>
 </section>
-<!-- 유형 탐구 첫 화면 = 큐레이션 피드 (2026-10-05) -->
-<!-- 유형 탐구 (2026-10-07, 하단 탭. 코드 id는 community 그대로): 맨 위 장면 게임(js/11-scene-game.js) → 콘텐츠 피드(js/10-explore-content.js).
-     피드는 홈 아래에 있던 것을 옮겼다. 스크롤하면 유형 칩 줄이 위에 붙는다 -->
-<section class="page-panel" data-page-panel="community" id="page-community"><div class="community-wrap">
-<h1 class="community-title" id="exploreHubTitle">유형 탐구</h1>
-<p class="community-desc">같은 장면에서도 우리는 다르게 반응해요. 골라 보고, 맞혀 보고, 친구와 비교해 보세요.</p>
-<div id="communityGame"></div>
+<!-- 유형 탐구 (2026-10-07 하단 탭, docs/정보구조_IA.md): 읽는 곳. 주제별 글 줄(js/10-explore-content.js). 줄마다 글은 새로고침할 때마다 섞인다.
+     9가지 유형 카드는 홈 맨 위 -->
+<section class="page-panel" data-page-panel="explore" id="page-explore"><div class="community-wrap">
+<h1 class="sr-only" id="exploreHubTitle">유형 탐구</h1>
 <section aria-label="유형 탐구 글" class="home-explore" id="homeExplore">
 <div class="explore-feed" id="exploreFeed"></div>
 </section>
+</div></section>
+<!-- 같이 보기 (2026-10-07 하단 탭, 코드 id community, docs/정보구조_IA.md): 관계. 놀이 피드(#playFeed, js/12):
+     내려 보면 나라면? · 몇 번일까? · 닮은 두 유형 · 둘이서 질문 · 말 연습 · 오늘 물어볼 말 카드가 섞여 나오고 그 자리에서 해 본다 -->
+<section class="page-panel" data-page-panel="community" id="page-community"><div class="community-wrap">
+<h1 class="sr-only">같이 보기</h1>
+<div class="play-feed" id="playFeed"></div>
 </div></section>
 <!-- 유형 탐구 글 상세 (2026-10-05): 모든 글이 같은 블로그 템플릿. js/10-explore-content.js가 채운다 -->
 <section class="page-panel" data-page-panel="post" id="page-post"><div class="post-wrap" id="postView"></div></section>
@@ -5748,49 +5751,57 @@
 </main>
 </section><section class="page-panel" data-page-panel="myspace" id="page-myspace">
 <main class="myspace-wrap">
-<header class="myspace-page-head">
-<div>
-<h1>나의 공간</h1>
-<p>유형을 맞히는 데서 끝내지 않고, 기록하면서 반복되는 나의 패턴을 찾아가요.</p>
+<h1 class="sr-only">나의 공간</h1>
+<!-- 나의 공간 = 나는 어떤 사람이고 무엇이 쌓였나 (2026-10-07, docs/정보구조_IA.md). 위에서 아래로:
+     내 유형 한 줄(가로 프로필, js/00 renderHomeMe) → 숫자 세 칸 · 보석 상태 변화(js/02 renderMyLog) → 이달의 리포트 → 도움이 필요할 때(js/08이 버튼을 넣는다).
+     홈(오늘 할 것 목록)과 다르게 프로필 · 기록장 모양
+     큰 프로필 카드 · 유형 검사 묶음 · 탐색 중인 유형 고르기는 뺐다 -->
+<section aria-label="내 유형" class="my-profile" id="homeMe"></section>
+<section aria-labelledby="myLogTitle" class="my-log" id="myLog"></section>
+<section aria-labelledby="myMonthTitle" class="my-month" id="myMonth"></section>
+<div class="my-help" id="myHelp"><p class="my-help-desc">마음이 많이 힘들 때 바로 연락할 수 있는 곳을 모아 뒀어요.</p></div>
+</main>
+</section><!-- 분석 노트 (2026-10-07 하단 탭, 코드 id state, docs/정보구조_IA.md): 이야기하고 → 분석이 쌓이고 → 내 패턴이 보이는 곳.
+     칸 나눔 없이 한 화면을 위에서 아래로: 보석 상태 → 오늘 이야기하기 → 이번 주 해볼 것 → 쌓인 분석.
+     이야기하기(#page-diary) · 행동 고르기(#page-polish) · 나의 기록(#page-records)은 이 탭의 안쪽 화면 (위 뒤로 가기 → 분석 노트) -->
+<section class="page-panel" data-page-panel="state" id="page-state">
+<main class="page-wrap state-wrap">
+<h1 class="sr-only">분석 노트</h1>
+<!-- 지금 내 보석 상태 (PRD MR-1, 나의 공간 · 보석 닦기에서 옮김): js/02 renderStatePage가 채운다. 살펴보는 중이면 20문항이 여기 나온다 -->
+<div class="state-app" id="stateApp"></div>
+<!-- 오늘 이야기하기: 채팅으로 장면 하나를 따라가면 분석 카드(연마 처방전)가 나온다 -->
+<section aria-labelledby="noteTalkTitle" class="note-talk">
+<h2 class="note-title" id="noteTalkTitle">오늘 이야기하기</h2>
+<p class="note-desc">기억에 남은 장면 하나를 질문에 따라 이야기해요. ‘왜 그랬을까?’를 한 단계씩 따라가면 분석 카드가 나와요. 5분쯤 걸려요.</p>
+<button class="ui-btn ui-btn-primary" data-state-go="write" type="button">이야기 시작하기</button>
+</section>
+<section class="ui-card diary-exp" aria-labelledby="diaryExpTitle">
+<div class="diary-card-head">
+<h2 id="diaryExpTitle">이번 주 해볼 것</h2>
+<span class="count-badge" id="experimentCountBadge">0 / 0</span>
 </div>
-</header>
-<!-- 지금 내 보석 상태 (2026-10-07, PRD MR-1): 보석 닦기의 상태 살펴보기 결과. js/02-myspace-feature-script.js renderGemState가 채운다 -->
-<section aria-labelledby="myGemStateTitle" class="my-insight my-gem-state" hidden="" id="myGemState"></section>
-<!-- 내 프로필 카드 (2026-10-03 홈에서 옮김: 홈은 큐레이션, 내 카드는 나의 공간) -->
-<div class="home-me" id="home-me">
-<div class="home-me-grid" id="homeMe"></div>
-</div>
-<!-- Dashboard -->
-<section class="myspace-panel active" data-myspace-panel="dashboard">
-<!-- 요즘 나의 흐름 (2026-10-05): 숫자·그래프 대시보드 대신, 기록을 분석한 한 줄 -->
-<section aria-labelledby="myInsightTitle" class="my-insight">
-<h2 class="my-insight-title" id="myInsightTitle">요즘 나의 흐름</h2>
+<p class="ui-help">분석 카드에서 담은 행동과 이야기 끝에 적은 ‘다음엔’이 모여요. 해봤다면 동그라미를 눌러 체크해요.</p>
+<div class="ui-chips diary-exp-filter" id="experimentFilter" role="group" aria-label="보기"></div>
+<div class="experiment-list" id="experimentList"></div>
+<form class="experiment-add" id="experimentAddForm">
+<input aria-label="직접 추가" class="ui-field" id="experimentAddInput" maxlength="80" placeholder="예: 근거를 한 번 더 말해보기" type="text">
+<button class="ui-btn ui-btn-secondary" type="submit">추가하기</button>
+</form>
+<p class="diary-error" hidden="" id="experimentAddError"></p>
+<button class="ui-btn ui-btn-ghost note-more" data-state-go="polish" type="button">지금 상태에 맞는 행동 더 고르기</button>
+</section>
+<!-- 쌓인 분석: 반복되는 흐름 한 줄(요즘 나의 흐름) + 최근 분석 세 개. 전체는 나의 기록 -->
+<section aria-labelledby="myInsightTitle" class="my-insight note-recent">
+<h2 class="my-insight-title" id="myInsightTitle">쌓인 분석</h2>
 <p class="my-insight-line" id="dashPatternSummary"></p>
 <p class="my-insight-meta" id="dashInsightMeta"></p>
-<div class="my-insight-actions"><button class="ui-btn ui-btn-primary" data-myspace-jump="reflection" type="button">다이어리 쓰기</button><button class="ui-btn ui-btn-secondary" data-share-open="" type="button">친구와 비교하기</button></div>
-</section>
-<div class="mytype-setting">
-<label for="dashboardMyType">내가 탐색 중인 유형</label>
-<select id="dashboardMyType">
-<option value="">아직 정하지 않았어요</option>
-<option value="1">1번 · 개혁가</option><option value="2">2번 · 조력가</option>
-<option value="3">3번 · 성취자</option><option value="4">4번 · 개인주의자</option>
-<option value="5">5번 · 탐구자</option><option value="6">6번 · 충실가</option>
-<option value="7">7번 · 열정가</option><option value="8">8번 · 도전자</option>
-<option value="9">9번 · 평화주의자</option>
-</select>
-</div>
+<div class="home-next-list" id="noteRecent"></div>
 </section>
 </main>
 </section><section class="page-panel" data-page-panel="diary" id="page-diary">
 <main class="page-wrap diary-wrap">
-<header class="ui-page-head diary-head">
-<div>
-<span class="ui-kicker">다이어리</span>
-<h1>오늘의 장면을 남겨요</h1>
-<p>기억에 남은 장면 하나를 적고 “왜 그랬을까?”를 따라가요. 마지막에 적은 <b>다음엔</b>은 <b>해보기로 한 것</b>에 모여요. 해보고 나면 다시 기록해요.</p>
-</div>
-</header>
+<header class="ui-page-head state-head diary-head"><h1>오늘 이야기하기</h1></header>
+<p class="state-lead">기억에 남은 장면 하나를 이야기하고 “왜 그랬을까?”를 따라가요. 마지막에 적은 <b>다음엔</b>은 분석 노트의 <b>이번 주 해볼 것</b>에 모여요.</p>
 <div class="diary-layout">
 <form class="ui-card diary-form" id="diaryForm" novalidate="">
 <div class="diary-form-head">
@@ -5856,7 +5867,13 @@
 
 </div>
 
-<section class="diary-list" aria-labelledby="diaryListTitle">
+
+</main>
+</section><!-- 나의 기록 (2026-10-07, docs/정보구조_IA.md): 쌓인 분석 전체 목록. 분석 노트의 안쪽 화면 (나의 공간에서 열면 뒤로 → 나의 공간).
+     다이어리 화면과 같은 모양을 쓰려고 바깥 상자 이름(diary-wrap)과 기록 칸 표시(data-diary-tab=history)를 그대로 둔다 -->
+<section class="page-panel" data-page-panel="records" id="page-records">
+<main class="page-wrap diary-wrap" data-diary-tab="history">
+<section class="diary-list" aria-labelledby="diaryListTitle" data-diary-panel="history">
 <div class="diary-list-head">
 <h2 id="diaryListTitle">나의 기록</h2>
 <span class="count-badge" id="reflectionCountBadge">0</span>
@@ -5869,27 +5886,10 @@
 </main>
 </section><section class="page-panel" data-page-panel="polish" id="page-polish">
 <main class="page-wrap polish-wrap">
-<header class="ui-page-head polish-head">
-<div>
-<h1>보석 닦기</h1>
-<p>성격을 없애는 게 아니라, 성격이 나를 운전하지 않게 해요. 작은 행동 하나로 내 보석을 닦아요.</p>
-</div>
-</header>
+<header class="ui-page-head state-head polish-head"><h1>보석 닦기</h1></header>
+<p class="state-lead">성격을 없애는 게 아니라, 성격이 나를 운전하지 않게 해요. 작은 행동 하나로 내 보석을 닦아요.</p>
 <div class="polish-app" id="polishApp"></div>
-<section class="ui-card diary-exp" aria-labelledby="diaryExpTitle">
-<div class="diary-card-head">
-<h2 id="diaryExpTitle"><span class="polish-no" aria-hidden="true">2</span>해보기로 한 것</h2>
-<span class="count-badge" id="experimentCountBadge">0 / 0</span>
-</div>
-<p class="ui-help">담은 행동과 다이어리의 ‘다음엔’이 모여요. 해봤다면 동그라미를 눌러 체크해요.</p>
-<div class="ui-chips diary-exp-filter" id="experimentFilter" role="group" aria-label="보기"></div>
-<div class="experiment-list" id="experimentList"></div>
-<form class="experiment-add" id="experimentAddForm">
-<input aria-label="직접 추가" class="ui-field" id="experimentAddInput" maxlength="80" placeholder="예: 근거를 한 번 더 말해보기" type="text">
-<button class="ui-btn ui-btn-secondary" type="submit">추가하기</button>
-</form>
-<p class="diary-error" hidden="" id="experimentAddError"></p>
-</section>
+
 </main>
 </section><section class="page-panel" data-page-panel="share" id="page-share">
 <main class="share-wrap" id="shareApp"></main>
@@ -5898,27 +5898,29 @@
 <nav aria-label="하단 메뉴" class="bottom-tabbar" id="bottomTabbar">
 <svg aria-hidden="true" class="bt-defs" focusable="false" height="0" width="0"><defs><linearGradient id="btGrad" x1="0" x2="1" y1="0" y2="1"><stop offset="0" style="stop-color:var(--grad-blue)"></stop><stop offset=".5" style="stop-color:var(--grad-violet)"></stop><stop offset="1" style="stop-color:var(--grad-plum)"></stop></linearGradient></defs></svg>
 <button class="bottom-tab active" data-tab="home" type="button" aria-current="page"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24" width="24"><path d="M4 11.2 12 4.5l8 6.7V19a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19z"/><path d="M10 20.5v-3.2a2 2 0 0 1 4 0v3.2"/><path class="bt-fill" stroke="none" d="M12 8.700000000000001C12.468 10.832 12.468 10.832 14.6 11.3C12.468 11.768 12.468 11.768 12 13.9C11.532 11.768 11.532 11.768 9.4 11.3C11.532 10.832 11.532 10.832 12 8.700000000000001Z"/></svg></span><span class="bottom-tab-label">홈</span></button>
-<button class="bottom-tab" data-tab="community" type="button"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24" width="24"><path d="M5.5 18.5 8.5 11l7.5 2 3-6.5" stroke-dasharray="1.2 2.6" stroke-width="1.5"/><circle cx="12" cy="12" r="9.2" stroke-width="1.25" opacity=".45"/><path class="bt-fill" stroke="none" d="M5.5 16.1C5.932 18.068 5.932 18.068 7.9 18.5C5.932 18.932 5.932 18.932 5.5 20.9C5.068 18.932 5.068 18.932 3.1 18.5C5.068 18.068 5.068 18.068 5.5 16.1Z"/><path class="bt-fill" stroke="none" d="M8.5 8.8C8.896 10.604 8.896 10.604 10.7 11C8.896 11.396 8.896 11.396 8.5 13.2C8.104 11.396 8.104 11.396 6.3 11C8.104 10.604 8.104 10.604 8.5 8.8Z"/><path class="bt-fill" stroke="none" d="M16 10.4C16.468 12.532 16.468 12.532 18.6 13C16.468 13.468 16.468 13.468 16 15.6C15.532 13.468 15.532 13.468 13.4 13C15.532 12.532 15.532 12.532 16 10.4Z"/><path class="bt-fill" stroke="none" d="M19 3.1C19.612 5.888 19.612 5.888 22.4 6.5C19.612 7.112 19.612 7.112 19 9.9C18.388 7.112 18.388 7.112 15.6 6.5C18.388 5.888 18.388 5.888 19 3.1Z"/></svg></span><span class="bottom-tab-label">유형 탐구</span></button>
-<button class="bottom-tab" data-tab="diary" type="button"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24" width="24"><path d="M5 18V6a2 2 0 0 1 2-2h11v13H7a2 2 0 0 0-2 2 2 2 0 0 0 2 2h11"/><path class="bt-fill" stroke="none" d="M13.3 6.9a3 3 0 1 0 2.2 5.1 2.4 2.4 0 1 1-2.2-5.1z"/><path class="bt-fill" stroke="none" d="M9.6 7.4C9.888 8.712 9.888 8.712 11.2 9C9.888 9.288 9.888 9.288 9.6 10.6C9.312 9.288 9.312 9.288 8 9C9.312 8.712 9.312 8.712 9.6 7.4Z"/></svg></span><span class="bottom-tab-label">다이어리</span></button>
-<button class="bottom-tab" data-tab="polish" type="button"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24" width="24"><path d="M7 9 9.5 5.5h6L18 9l-5.5 7z"/><path d="M7 9h11"/><path d="M4 19.5c2.5-1.6 5-1.6 7.5 0s5 1.6 8.5-.4"/><path class="bt-fill" stroke="none" d="M4.6 3.4C4.95 5 4.95 5 6.6 5.4C4.95 5.8 4.95 5.8 4.6 7.4C4.25 5.8 4.25 5.8 2.6 5.4C4.25 5 4.25 5 4.6 3.4Z"/></svg></span><span class="bottom-tab-label">보석 닦기</span></button>
+<button class="bottom-tab" data-tab="explore" type="button"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24" width="24"><path d="M5 18V6a2 2 0 0 1 2-2h11v13H7a2 2 0 0 0-2 2 2 2 0 0 0 2 2h11"/><path class="bt-fill" stroke="none" d="M13.3 6.9a3 3 0 1 0 2.2 5.1 2.4 2.4 0 1 1-2.2-5.1z"/><path class="bt-fill" stroke="none" d="M9.6 7.4C9.888 8.712 9.888 8.712 11.2 9C9.888 9.288 9.888 9.288 9.6 10.6C9.312 9.288 9.312 9.288 8 9C9.312 8.712 9.312 8.712 9.6 7.4Z"/></svg></span><span class="bottom-tab-label">유형 탐구</span></button>
+<button class="bottom-tab" data-tab="community" type="button"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24" width="24"><path d="M5.5 18.5 8.5 11l7.5 2 3-6.5" stroke-dasharray="1.2 2.6" stroke-width="1.5"/><circle cx="12" cy="12" r="9.2" stroke-width="1.25" opacity=".45"/><path class="bt-fill" stroke="none" d="M5.5 16.1C5.932 18.068 5.932 18.068 7.9 18.5C5.932 18.932 5.932 18.932 5.5 20.9C5.068 18.932 5.068 18.932 3.1 18.5C5.068 18.068 5.068 18.068 5.5 16.1Z"/><path class="bt-fill" stroke="none" d="M8.5 8.8C8.896 10.604 8.896 10.604 10.7 11C8.896 11.396 8.896 11.396 8.5 13.2C8.104 11.396 8.104 11.396 6.3 11C8.104 10.604 8.104 10.604 8.5 8.8Z"/><path class="bt-fill" stroke="none" d="M16 10.4C16.468 12.532 16.468 12.532 18.6 13C16.468 13.468 16.468 13.468 16 15.6C15.532 13.468 15.532 13.468 13.4 13C15.532 12.532 15.532 12.532 16 10.4Z"/><path class="bt-fill" stroke="none" d="M19 3.1C19.612 5.888 19.612 5.888 22.4 6.5C19.612 7.112 19.612 7.112 19 9.9C18.388 7.112 18.388 7.112 15.6 6.5C18.388 5.888 18.388 5.888 19 3.1Z"/></svg></span><span class="bottom-tab-label">같이 보기</span></button>
+<button class="bottom-tab" data-tab="state" type="button"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24" width="24"><path d="M7 9 9.5 5.5h6L18 9l-5.5 7z"/><path d="M7 9h11"/><path d="M4 19.5c2.5-1.6 5-1.6 7.5 0s5 1.6 8.5-.4"/><path class="bt-fill" stroke="none" d="M4.6 3.4C4.95 5 4.95 5 6.6 5.4C4.95 5.8 4.95 5.8 4.6 7.4C4.25 5.8 4.25 5.8 2.6 5.4C4.25 5 4.25 5 4.6 3.4Z"/></svg></span><span class="bottom-tab-label">분석 노트</span></button>
 <button class="bottom-tab" data-tab="myspace" type="button"><span class="bottom-tab-icon"><svg aria-hidden="true" fill="none" focusable="false" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24" width="24"><path d="M7.5 5h9l3.5 4.5L12 20 4 9.5z"/><path d="M4 9.5h16"/><path d="m9.8 5-1.8 4.5 4 10.5 4-10.5L14.2 5"/><path class="bt-fill" stroke="none" d="M18.6 1.4C18.996000000000002 3.204 18.996000000000002 3.204 20.8 3.6C18.996000000000002 3.996 18.996000000000002 3.996 18.6 5.800000000000001C18.204 3.996 18.204 3.996 16.400000000000002 3.6C18.204 3.204 18.204 3.204 18.6 1.4Z"/></svg></span><span class="bottom-tab-label">나의 공간</span></button>
 </nav>
 </div>
-<script src="js/00-app-core.js?v=7f6fc4a3"></script>
+<script src="js/00-app-core.js?v=df93b492"></script>
 <script src="content/state-check.js?v=586b39e3"></script>
-<script src="js/02-myspace-feature-script.js?v=1d2ced72"></script>
+<script src="js/02-myspace-feature-script.js?v=4cf98bc5"></script>
 
 <script src="js/03-codex-round2-behavior.js?v=48224052"></script>
 <script src="js/04-codex-round3-menu-spacing-cleanup.js?v=ff3cea86"></script>
 <script src="js/05-codex-round4-remove-left-quick-and-media-gap.js?v=7df1abd8"></script>
 <script src="js/06-codex-global-search-mvp.js?v=abfa1ccf"></script>
 <script src="js/07-figma-capture-route-helper.js?v=fdb2196f"></script>
-<script src="js/08-prd-care.js?v=d8e0dd49"></script>
+<script src="js/08-prd-care.js?v=b7341213"></script>
 <script src="js/09-mobile-scroll.js?v=8a455ce6"></script>
 <script src="content/explore-posts.js?v=059c2c47"></script>
 <script src="content/type-posts.js?v=474aed12"></script>
-<script src="js/10-explore-content.js?v=f947204b"></script>
-<script src="js/11-scene-game.js?v=93ad89c5"></script>
+<script src="js/10-explore-content.js?v=1105cfa5"></script>
+<script src="js/11-scene-game.js?v=16c66d92"></script>
+<script src="content/relation-cards.js?v=6d4aca32"></script>
+<script src="js/12-relation.js?v=7e391526"></script>
 </body><div id="codex-browser-sidebar-comments-root" style="position: fixed; inset: 0px; pointer-events: none; z-index: 2147483647;"></div></html>
 
 

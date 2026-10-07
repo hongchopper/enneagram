@@ -10,6 +10,9 @@ states = [
  ("compare","showCompareSection('glance',false)"),("compare-centers","showCompareSection('centers',false)"),
  ("sharing","showSharingTopic(0,false)"),("myspace","showMySpaceSection('dashboard',false)"),
  ("reflection","showMySpaceSection('reflection',false)"),
+ # 하단 탭 다섯 개 (2026-10-07, docs/정보구조_IA.md)
+ ("explore","showExploreHub(false)"),("community","showCommunityPage(false)"),
+ ("state","showStatePage(false)"),("records","showRecordsPage(false)"),("polish","showPolishPage(false)"),
 ]
 widths=[int(w) for w in (sys.argv[3] if len(sys.argv)>3 else "360,390,768,1024,1440").split(',')]
 H=900; MAXF=14

@@ -2544,27 +2544,27 @@
 
 /* ---------- 다이어리 (성찰 기록 · 삶의 장면으로 돌아보기) ----------
    나의 공간과 같은 모양: 레거시가 #page-myspace에만 준 배경·폭·제목·입력칸 스타일을 토큰으로 맞춘다 */
-#page-diary {
+:is(#page-diary, #page-records) {
   background:var(--color-bg);
   color:var(--color-text-primary);
   overflow-x:hidden;
 }
 
-#page-diary h1 {
+:is(#page-diary, #page-records) h1 {
   font-size:var(--text-4xl);
   font-weight:700;
   line-height:1.24;
 }
 
-#page-diary h2 {
+:is(#page-diary, #page-records) h2 {
   font-size:var(--text-3xl);
   font-weight:700;
   line-height:1.32;
 }
 
-#page-diary input,
-#page-diary select,
-#page-diary textarea {
+:is(#page-diary, #page-records) input,
+:is(#page-diary, #page-records) select,
+:is(#page-diary, #page-records) textarea {
   width:100%;
   box-sizing:border-box;
   padding:var(--space-3);
@@ -2577,26 +2577,26 @@
   outline:none;
 }
 
-#page-diary textarea {
+:is(#page-diary, #page-records) textarea {
   resize:vertical;
   line-height:1.65;
 }
 
-#page-diary input:focus,
-#page-diary select:focus,
-#page-diary textarea:focus {
+:is(#page-diary, #page-records) input:focus,
+:is(#page-diary, #page-records) select:focus,
+:is(#page-diary, #page-records) textarea:focus {
   border-color:var(--color-primary);
   box-shadow:0 0 0 3px var(--color-primary-soft);
 }
 
 /* 모바일: 체크박스는 입력칸 폭 규칙에서 제외 */
-#page-diary input[type="checkbox"] {
+:is(#page-diary, #page-records) input[type="checkbox"] {
   width:auto;
   padding:0;
 }
 
 /* ---------- 다이어리: 한 페이지 작성 폼 + 해보기로 한 것 + 나의 기록 ---------- */
-#page-diary .diary-wrap {
+:is(#page-diary, #page-records) .diary-wrap {
   display:grid;
   gap:var(--space-6);
   width:min(var(--harness-container), calc(100% - var(--space-8)));
@@ -2604,7 +2604,7 @@
   padding:var(--space-5) 0 var(--space-10);
 }
 
-#page-diary .diary-head {
+:is(#page-diary, #page-records) .diary-head {
   display:flex;
   align-items:flex-end;
   justify-content:space-between;
@@ -2612,7 +2612,7 @@
   margin:0;
 }
 
-#page-diary .diary-storage {
+:is(#page-diary, #page-records) .diary-storage {
   flex:none;
   padding:var(--space-2) var(--space-3);
   border-radius:var(--radius-full);
@@ -2623,42 +2623,42 @@
   font-weight:700;
 }
 
-#page-diary .diary-layout {
+:is(#page-diary, #page-records) .diary-layout {
   display:grid;
   grid-template-columns:minmax(0, 1fr) calc(var(--space-10) * 4.5);
   gap:var(--space-5);
   align-items:start;
 }
 
-#page-diary .diary-form {
+:is(#page-diary, #page-records) .diary-form {
   display:grid;
   gap:var(--space-6);
   padding:var(--space-6);
 }
 
-#page-diary .diary-form-head {
+:is(#page-diary, #page-records) .diary-form-head {
   display:grid;
   gap:var(--space-3);
   padding-bottom:var(--space-5);
   border-bottom:1px solid var(--color-border-subtle);
 }
 
-#page-diary .diary-date-input {
+:is(#page-diary, #page-records) .diary-date-input {
   width:auto;
   max-width:calc(var(--space-10) * 2.5);
 }
 
-#page-diary .diary-q {
+:is(#page-diary, #page-records) .diary-q {
   display:grid;
   gap:var(--space-3);
 }
 
-#page-diary .diary-q .ui-help {
+:is(#page-diary, #page-records) .diary-q .ui-help {
   margin:calc(var(--space-2) * -1) 0 0;
 }
 
-#page-diary .diary-required,
-#page-diary .diary-optional {
+:is(#page-diary, #page-records) .diary-required,
+:is(#page-diary, #page-records) .diary-optional {
   margin-left:var(--space-2);
   padding:var(--space-1) var(--space-2);
   border-radius:var(--radius-full);
@@ -2669,21 +2669,21 @@
   vertical-align:middle;
 }
 
-#page-diary .diary-optional {
+:is(#page-diary, #page-records) .diary-optional {
   background:var(--color-surface-subtle);
   color:var(--color-text-tertiary);
 }
 
-#page-diary .diary-other {
+:is(#page-diary, #page-records) .diary-other {
   max-width:calc(var(--space-10) * 3);
 }
 
-#page-diary .diary-why-list {
+:is(#page-diary, #page-records) .diary-why-list {
   display:grid;
   gap:var(--space-4);
 }
 
-#page-diary .diary-why {
+:is(#page-diary, #page-records) .diary-why {
   display:grid;
   gap:var(--space-2);
   padding:var(--space-4);
@@ -2691,7 +2691,7 @@
   background:var(--color-surface-subtle);
 }
 
-#page-diary .diary-why-label {
+:is(#page-diary, #page-records) .diary-why-label {
   display:flex;
   align-items:center;
   gap:var(--space-2);
@@ -2700,7 +2700,7 @@
   font-weight:700;
 }
 
-#page-diary .diary-why-no {
+:is(#page-diary, #page-records) .diary-why-no {
   display:grid;
   place-items:center;
   flex:none;
@@ -2713,23 +2713,23 @@
   font-weight:700;
 }
 
-#page-diary .diary-why .ui-chip {
+:is(#page-diary, #page-records) .diary-why .ui-chip {
   min-height:36px;
   background:var(--color-surface);
 }
 
-#page-diary .diary-why .ui-chip.active {
+:is(#page-diary, #page-records) .diary-why .ui-chip.active {
   background:var(--color-primary);
 }
 
-#page-diary .diary-error {
+:is(#page-diary, #page-records) .diary-error {
   margin:0;
   color:var(--color-danger);
   font-size:var(--text-sm);
   font-weight:700;
 }
 
-#page-diary .diary-form-actions {
+:is(#page-diary, #page-records) .diary-form-actions {
   display:flex;
   flex-wrap:wrap;
   align-items:center;
@@ -2739,7 +2739,7 @@
   border-top:1px solid var(--color-border-subtle);
 }
 
-#page-diary .diary-notice {
+:is(#page-diary, #page-records) .diary-notice {
   margin:0;
   color:var(--color-success);
   font-size:var(--text-sm);
@@ -2747,44 +2747,44 @@
 }
 
 /* 해보기로 한 것 (오른쪽) */
-#page-diary .diary-side {
+:is(#page-diary, #page-records) .diary-side {
   position:sticky;
   top:var(--space-4);
 }
 
-:is(#page-diary, #page-polish) .diary-exp {
+:is(#page-diary, #page-records, #page-polish, #page-state) .diary-exp {
   display:grid;
   gap:var(--space-3);
 }
 
-:is(#page-diary, #page-polish) .diary-card-head,
-#page-diary .diary-list-head {
+:is(#page-diary, #page-records, #page-polish, #page-state) .diary-card-head,
+:is(#page-diary, #page-records) .diary-list-head {
   display:flex;
   align-items:center;
   gap:var(--space-3);
 }
 
-:is(#page-diary, #page-polish) .diary-card-head h2,
-#page-diary .diary-list-head h2 {
+:is(#page-diary, #page-records, #page-polish, #page-state) .diary-card-head h2,
+:is(#page-diary, #page-records) .diary-list-head h2 {
   margin:0;
   font-size:var(--text-xl);
   font-weight:700;
 }
 
-#page-diary .diary-list-head h2 {
+:is(#page-diary, #page-records) .diary-list-head h2 {
   font-size:var(--text-2xl);
 }
 
-:is(#page-diary, #page-polish) .diary-exp .ui-help {
+:is(#page-diary, #page-records, #page-polish, #page-state) .diary-exp .ui-help {
   margin:0;
 }
 
-:is(#page-diary, #page-polish) .experiment-list {
+:is(#page-diary, #page-records, #page-polish, #page-state) .experiment-list {
   display:grid;
   gap:var(--space-2);
 }
 
-:is(#page-diary, #page-polish) .experiment-item {
+:is(#page-diary, #page-records, #page-polish, #page-state) .experiment-item {
   display:grid;
   grid-template-columns:auto minmax(0, 1fr) auto;
   align-items:start;
@@ -2795,11 +2795,11 @@
   background:var(--color-surface);
 }
 
-:is(#page-diary, #page-polish) .experiment-item.is-done {
+:is(#page-diary, #page-records, #page-polish, #page-state) .experiment-item.is-done {
   background:var(--color-surface-subtle);
 }
 
-:is(#page-diary, #page-polish) .experiment-check {
+:is(#page-diary, #page-records, #page-polish, #page-state) .experiment-check {
   display:grid;
   place-items:center;
   width:calc(var(--space-9) - var(--space-5));
@@ -2813,56 +2813,56 @@
   cursor:pointer;
 }
 
-:is(#page-diary, #page-polish) .experiment-check:hover {
+:is(#page-diary, #page-records, #page-polish, #page-state) .experiment-check:hover {
   border-color:var(--color-primary);
 }
 
-:is(#page-diary, #page-polish) .experiment-check[aria-pressed="true"] {
+:is(#page-diary, #page-records, #page-polish, #page-state) .experiment-check[aria-pressed="true"] {
   border-color:var(--color-primary);
   background:var(--color-primary);
 }
 
-:is(#page-diary, #page-polish) .experiment-text {
+:is(#page-diary, #page-records, #page-polish, #page-state) .experiment-text {
   margin:0;
   color:var(--color-text-primary);
   font-size:var(--text-md);
   font-weight:700;
 }
 
-:is(#page-diary, #page-polish) .experiment-item.is-done .experiment-text {
+:is(#page-diary, #page-records, #page-polish, #page-state) .experiment-item.is-done .experiment-text {
   color:var(--color-text-secondary);
   text-decoration:line-through;
 }
 
-:is(#page-diary, #page-polish) .experiment-src {
+:is(#page-diary, #page-records, #page-polish, #page-state) .experiment-src {
   display:block;
   margin-top:var(--space-1);
   color:var(--color-text-tertiary);
   font-size:var(--text-sm);
 }
 
-:is(#page-diary, #page-polish) .experiment-note {
+:is(#page-diary, #page-records, #page-polish, #page-state) .experiment-note {
   margin-top:var(--space-2);
   padding:var(--space-2) var(--space-3);
   font-size:var(--text-sm);
 }
 
-:is(#page-diary, #page-polish) .diary-exp-reco {
+:is(#page-diary, #page-records, #page-polish, #page-state) .diary-exp-reco {
   display:grid;
   gap:var(--space-2);
 }
 
-:is(#page-diary, #page-polish) .diary-exp-reco:empty {
+:is(#page-diary, #page-records, #page-polish, #page-state) .diary-exp-reco:empty {
   display:none;
 }
 
-:is(#page-diary, #page-polish) .diary-exp-reco-head {
+:is(#page-diary, #page-records, #page-polish, #page-state) .diary-exp-reco-head {
   color:var(--color-primary-hover);
   font-size:var(--text-sm);
   font-weight:700;
 }
 
-:is(#page-diary, #page-polish) .diary-exp-reco-item {
+:is(#page-diary, #page-records, #page-polish, #page-state) .diary-exp-reco-item {
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -2879,61 +2879,61 @@
   cursor:pointer;
 }
 
-:is(#page-diary, #page-polish) .diary-exp-reco-item:hover {
+:is(#page-diary, #page-records, #page-polish, #page-state) .diary-exp-reco-item:hover {
   border-color:var(--color-primary);
 }
 
-:is(#page-diary, #page-polish) .diary-exp-reco-item b {
+:is(#page-diary, #page-records, #page-polish, #page-state) .diary-exp-reco-item b {
   flex:none;
   color:var(--color-primary);
 }
 
-:is(#page-diary, #page-polish) .experiment-add {
+:is(#page-diary, #page-records, #page-polish, #page-state) .experiment-add {
   display:grid;
   grid-template-columns:minmax(0, 1fr) auto;
   gap:var(--space-2);
 }
 
 /* 나의 기록 */
-#page-diary .diary-list {
+:is(#page-diary, #page-records) .diary-list {
   display:grid;
   gap:var(--space-4);
 }
 
-#page-diary .diary-insight {
+:is(#page-diary, #page-records) .diary-insight {
   margin:0;
   color:var(--color-text-secondary);
   font-size:var(--text-md);
 }
 
-#page-diary .diary-insight:empty {
+:is(#page-diary, #page-records) .diary-insight:empty {
   display:none;
 }
 
-#page-diary .diary-insight b {
+:is(#page-diary, #page-records) .diary-insight b {
   color:var(--color-primary);
 }
 
-#page-diary .diary-timeline {
+:is(#page-diary, #page-records) .diary-timeline {
   display:grid;
   gap:var(--space-6);
 }
 
-#page-diary .diary-day {
+:is(#page-diary, #page-records) .diary-day {
   display:grid;
   gap:var(--space-3);
   padding-left:var(--space-5);
   border-left:2px solid var(--color-border);
 }
 
-#page-diary .diary-day-label {
+:is(#page-diary, #page-records) .diary-day-label {
   position:relative;
   color:var(--color-text-secondary);
   font-size:var(--text-sm);
   font-weight:700;
 }
 
-#page-diary .diary-day-label::before {
+:is(#page-diary, #page-records) .diary-day-label::before {
   content:"";
   position:absolute;
   top:50%;
@@ -2945,7 +2945,7 @@
   transform:translateY(-50%);
 }
 
-#page-diary .diary-card {
+:is(#page-diary, #page-records) .diary-card {
   display:grid;
   gap:var(--space-2);
   padding:var(--space-5);
@@ -2954,13 +2954,13 @@
   background:var(--color-surface);
 }
 
-#page-diary .diary-card-head h3 {
+:is(#page-diary, #page-records) .diary-card-head h3 {
   margin:0;
   font-size:var(--text-lg);
   font-weight:700;
 }
 
-#page-diary .diary-card-emotions {
+:is(#page-diary, #page-records) .diary-card-emotions {
   display:flex;
   flex-wrap:wrap;
   justify-content:flex-end;
@@ -2968,7 +2968,7 @@
   margin-left:auto;
 }
 
-#page-diary .diary-card-emotions span {
+:is(#page-diary, #page-records) .diary-card-emotions span {
   padding:var(--space-1) var(--space-2);
   border-radius:var(--radius-full);
   background:var(--color-primary-soft);
@@ -2977,56 +2977,56 @@
   font-weight:700;
 }
 
-#page-diary .diary-card-meta {
+:is(#page-diary, #page-records) .diary-card-meta {
   color:var(--color-text-tertiary);
   font-size:var(--text-sm);
   font-weight:700;
 }
 
-#page-diary .diary-card-text {
+:is(#page-diary, #page-records) .diary-card-text {
   margin:0;
   color:var(--color-text-primary);
   font-size:var(--text-md);
 }
 
-#page-diary .diary-card-line {
+:is(#page-diary, #page-records) .diary-card-line {
   color:var(--color-text-secondary);
   font-size:var(--text-md);
 }
 
-#page-diary .diary-card-line span {
+:is(#page-diary, #page-records) .diary-card-line span {
   margin-right:var(--space-2);
   color:var(--color-primary);
   font-size:var(--text-sm);
   font-weight:700;
 }
 
-#page-diary .diary-card-actions {
+:is(#page-diary, #page-records) .diary-card-actions {
   display:flex;
   justify-content:flex-end;
   gap:var(--space-2);
 }
 
-#page-diary .diary-review {
+:is(#page-diary, #page-records) .diary-review {
   display:grid;
   gap:var(--space-3);
   margin:0;
 }
 
-#page-diary .diary-review > div {
+:is(#page-diary, #page-records) .diary-review > div {
   padding:var(--space-3) var(--space-4);
   border-radius:var(--radius-md);
   background:var(--color-surface-subtle);
 }
 
-#page-diary .diary-review dt {
+:is(#page-diary, #page-records) .diary-review dt {
   margin:0 0 var(--space-1);
   color:var(--color-text-secondary);
   font-size:var(--text-sm);
   font-weight:700;
 }
 
-#page-diary .diary-review dd {
+:is(#page-diary, #page-records) .diary-review dd {
   margin:0;
   color:var(--color-text-primary);
   font-size:var(--text-md);
@@ -3278,7 +3278,7 @@
 
 /* 페이지 제목: 같은 크기·굵기 */
 #page-check .check-flow-head h1,
-#page-diary .ui-page-head h1,
+:is(#page-diary, #page-records) .ui-page-head h1,
 #page-share .share-head h1,
 #page-myspace .myspace-page-head h1 {
   margin:0;
@@ -3302,7 +3302,7 @@
 #page-home .btn.primary,
 #page-myspace .home-check .btn.primary,
 #page-myspace .primary-action,
-#page-diary .primary-action,
+:is(#page-diary, #page-records) .primary-action,
 #page-check .check-flow-primary,
 #page-check .quick-primary,
 #page-share .share-btn.is-primary {
@@ -3321,7 +3321,7 @@
 #page-home .btn.primary:hover,
 #page-myspace .home-check .btn.primary:hover,
 #page-myspace .primary-action:hover,
-#page-diary .primary-action:hover,
+:is(#page-diary, #page-records) .primary-action:hover,
 #page-check .check-flow-primary:hover,
 #page-check .quick-primary:hover,
 #page-share .share-btn.is-primary:hover {
@@ -3334,7 +3334,7 @@
 #page-home .btn.secondary,
 #page-home .home-deck-actions .btn,
 #page-myspace .secondary-action,
-#page-diary .secondary-action,
+:is(#page-diary, #page-records) .secondary-action,
 #page-check .quick-secondary,
 #page-check .reset,
 #page-share .share-btn {
@@ -3352,7 +3352,7 @@
 
 #page-home .btn.secondary:hover,
 #page-myspace .secondary-action:hover,
-#page-diary .secondary-action:hover,
+:is(#page-diary, #page-records) .secondary-action:hover,
 #page-check .quick-secondary:hover,
 #page-check .reset:hover,
 #page-share .share-btn:hover {
@@ -3363,7 +3363,7 @@
 /* 텍스트(고스트) 버튼 */
 #page-home .section-more,
 #page-myspace .text-action,
-#page-diary .text-action,
+:is(#page-diary, #page-records) .text-action,
 #page-check .check-flow-back,
 #page-share .share-btn.is-ghost,
 #page-sharing .explore-back,
@@ -3418,7 +3418,7 @@
 #page-check .check-select-type,
 #page-myspace .feature-card,
 #page-myspace .dashboard-stat,
-#page-diary .feature-card,
+:is(#page-diary, #page-records) .feature-card,
 #page-share .share-panel,
 #page-handbook .hb-sum-box,
 #page-handbook .hb-more-card {
@@ -3443,7 +3443,7 @@
 
 /* 빈 상태: 같은 모양 */
 #page-myspace .empty-state,
-#page-diary .empty-state {
+:is(#page-diary, #page-records) .empty-state {
   display:grid;
   gap:var(--space-2);
   padding:var(--space-5);
@@ -3898,29 +3898,29 @@
 
 /* ---------- 다이어리 모바일 ---------- */
 
-  #page-diary .diary-layout {
+  :is(#page-diary, #page-records) .diary-layout {
     grid-template-columns:1fr;
   }
 
-  #page-diary .diary-side {
+  :is(#page-diary, #page-records) .diary-side {
     position:static;
   }
 
-  #page-diary .diary-head {
+  :is(#page-diary, #page-records) .diary-head {
     flex-direction:column;
     align-items:flex-start;
   }
 
-  #page-diary .diary-wrap {
+  :is(#page-diary, #page-records) .diary-wrap {
     width:calc(100% - var(--space-6));
     padding:var(--space-5) 0 var(--space-9);
   }
 
-  #page-diary .diary-form {
+  :is(#page-diary, #page-records) .diary-form {
     padding:var(--space-5);
   }
 
-  :is(#page-diary, #page-polish) .experiment-add {
+  :is(#page-diary, #page-records, #page-polish, #page-state) .experiment-add {
     grid-template-columns:1fr;
   }
 
@@ -3978,7 +3978,7 @@
 #page-handbook .hb-sum-kicker,
 #page-share .share-kicker,
 #page-sharing .reflection-category,
-#page-diary .ui-kicker {
+:is(#page-diary, #page-records) .ui-kicker {
   display:none;
 }
 
@@ -4031,7 +4031,7 @@
 /* 카드 안의 카드: 유형 프로필 카드·핸드북 요약·다이어리 '왜'는 상자 대신 구분선 */
 .tcp-box,
 #page-handbook .hb-sum-box,
-#page-diary .diary-why {
+:is(#page-diary, #page-records) .diary-why {
   padding:var(--space-4) 0 0;
   border:0;
   border-top:1px solid var(--color-border-subtle);
@@ -4065,11 +4065,11 @@
   box-shadow:none;
 }
 
-#page-diary .diary-why .ui-chip {
+:is(#page-diary, #page-records) .diary-why .ui-chip {
   background:var(--color-surface);
 }
 
-#page-diary .diary-why .ui-chip.active {
+:is(#page-diary, #page-records) .diary-why .ui-chip.active {
   background:var(--color-primary);
 }
 
@@ -4103,7 +4103,7 @@
 }
 
 /* 삭제 되돌리기 줄 */
-#page-diary .diary-undo {
+:is(#page-diary, #page-records) .diary-undo {
   display:flex;
   flex-wrap:wrap;
   align-items:center;
@@ -4118,7 +4118,7 @@
   font-size:var(--text-sm);
 }
 
-#page-diary .diary-undo[hidden] {
+:is(#page-diary, #page-records) .diary-undo[hidden] {
   display:none;
 }
 
@@ -5447,7 +5447,7 @@ body {
 #page-home .btn.primary,
 #page-myspace .home-check .btn.primary,
 #page-myspace .primary-action,
-#page-diary .primary-action,
+:is(#page-diary, #page-records) .primary-action,
 #page-check .check-flow-primary,
 #page-check .quick-primary,
 #page-share .share-btn.is-primary,
@@ -5466,7 +5466,7 @@ body {
 #page-home .btn.primary:hover,
 #page-myspace .home-check .btn.primary:hover,
 #page-myspace .primary-action:hover,
-#page-diary .primary-action:hover,
+:is(#page-diary, #page-records) .primary-action:hover,
 #page-check .check-flow-primary:hover,
 #page-check .quick-primary:hover,
 #page-share .share-btn.is-primary:hover,
@@ -5478,7 +5478,7 @@ body {
 
 #page-home .btn.primary:active,
 #page-myspace .primary-action:active,
-#page-diary .primary-action:active,
+:is(#page-diary, #page-records) .primary-action:active,
 #page-check .check-flow-primary:active,
 #page-check .quick-primary:active,
 #page-share .share-btn.is-primary:active,
@@ -5491,7 +5491,7 @@ body {
 #page-home .btn.secondary,
 #page-myspace .home-check .btn.secondary,
 #page-myspace .secondary-action,
-#page-diary .secondary-action,
+:is(#page-diary, #page-records) .secondary-action,
 #page-check .quick-secondary,
 #page-check .reset,
 #page-share .share-btn {
@@ -5508,7 +5508,7 @@ body {
 
 #page-home .btn.secondary:hover,
 #page-myspace .secondary-action:hover,
-#page-diary .secondary-action:hover,
+:is(#page-diary, #page-records) .secondary-action:hover,
 #page-check .quick-secondary:hover,
 #page-check .reset:hover,
 #page-share .share-btn:hover {
@@ -5605,7 +5605,7 @@ body {
   grid-template-columns:repeat(auto-fit, minmax(min(100%, calc(var(--space-10) * 3.5)), 1fr));
 }
 
-#page-home .pcard-en {
+:is(#page-home, #page-explore) .pcard-en {
   font-size:var(--text-xl);
 }
 
@@ -7178,11 +7178,11 @@ h3,
 }
 
 /* 다이어리: 묶기만 하던 큰 카드 상자를 걷어낸다 (2026-10-03). 입력 칸·버튼 테두리는 그대로 두고, 섹션은 여백으로 구분.
-   #page-diary .diary-form 의 안쪽 여백 규칙보다 세게 하려고 화면 id를 붙인다 */
+   :is(#page-diary, #page-records) .diary-form 의 안쪽 여백 규칙보다 세게 하려고 화면 id를 붙인다 */
 .ui-card.diary-form,
 .ui-card.diary-exp,
-#page-diary .ui-card.diary-form,
-:is(#page-diary, #page-polish) .ui-card.diary-exp {
+:is(#page-diary, #page-records) .ui-card.diary-form,
+:is(#page-diary, #page-records, #page-polish, #page-state) .ui-card.diary-exp {
   padding:0;
   border:0;
   border-radius:0;
@@ -7191,14 +7191,14 @@ h3,
 }
 
 .ui-card.diary-exp,
-:is(#page-diary, #page-polish) .ui-card.diary-exp {
+:is(#page-diary, #page-records, #page-polish, #page-state) .ui-card.diary-exp {
   margin-top:var(--space-9);
   padding-top:var(--space-7);
   border-top:1px solid var(--glass-line);
 }
 
 /* 다이어리 추천 항목: 작은 상자 대신 목록 줄 (줄 사이 얇은 선) */
-:is(#page-diary, #page-polish) .diary-exp-reco-item,
+:is(#page-diary, #page-records, #page-polish, #page-state) .diary-exp-reco-item,
 #page-myspace .diary-exp-reco-item {
   padding:var(--space-4) 0;
   border:0;
@@ -7209,7 +7209,7 @@ h3,
 }
 
 /* 다이어리 빈 상태 안내: 상자를 걷어낸 뒤 남은 들여쓰기 제거 */
-:is(#page-diary, #page-polish) .diary-exp .ui-empty {
+:is(#page-diary, #page-records, #page-polish, #page-state) .diary-exp .ui-empty {
   padding-right:0;
   padding-left:0;
   border:0;
@@ -7230,13 +7230,13 @@ h3,
 }
 
 /* 기존 긴 폼은 쓰지 않는다 (채팅이 대신) */
-#page-diary .diary-form {
+:is(#page-diary, #page-records) .diary-form {
   display:none;
 }
 
 /* 탭: 세 칸 나눔 버튼 */
 /* 분할 탭 (2026-10-05): 회색 줄 위에 선택된 칸만 흰색으로 떠 있다. 칸 수만큼 나눈다 */
-#page-diary .diary-tabs,
+:is(#page-diary, #page-records) .diary-tabs,
 #page-polish .polish-state-tabs {
   display:grid;
   grid-auto-columns:minmax(0, 1fr);
@@ -7249,7 +7249,7 @@ h3,
   background:color-mix(in srgb, var(--color-primary) 8%, transparent); /* 흰 바탕·채팅 바탕 어디서든 보이는 옅은 라벤더 줄 */
 }
 
-#page-diary .diary-tabs button,
+:is(#page-diary, #page-records) .diary-tabs button,
 #page-polish .polish-state-tabs button {
   min-height:44px;
   border:0;
@@ -7261,7 +7261,7 @@ h3,
   cursor:pointer;
 }
 
-#page-diary .diary-tabs button.active,
+:is(#page-diary, #page-records) .diary-tabs button.active,
 #page-polish .polish-state-tabs button.active {
   background:var(--color-surface);
   box-shadow:var(--shadow-card);
@@ -7269,51 +7269,51 @@ h3,
   font-weight:700;
 }
 
-#page-diary .diary-tabs button:focus-visible,
+:is(#page-diary, #page-records) .diary-tabs button:focus-visible,
 #page-polish .polish-state-tabs button:focus-visible {
   outline:2px solid var(--color-primary-light);
   outline-offset:2px;
 }
 
 /* 탭에 따라 한 영역만 */
-#page-diary .diary-wrap[data-diary-tab="write"] [data-diary-panel]:not([data-diary-panel="write"]),
-#page-diary .diary-wrap[data-diary-tab="history"] [data-diary-panel]:not([data-diary-panel="history"]),
-#page-diary .diary-wrap[data-diary-tab="practice"] [data-diary-panel]:not([data-diary-panel="practice"]) {
+:is(#page-diary, #page-records) .diary-wrap[data-diary-tab="write"] [data-diary-panel]:not([data-diary-panel="write"]),
+:is(#page-diary, #page-records) .diary-wrap[data-diary-tab="history"] [data-diary-panel]:not([data-diary-panel="history"]),
+:is(#page-diary, #page-records) .diary-wrap[data-diary-tab="practice"] [data-diary-panel]:not([data-diary-panel="practice"]) {
   display:none;
 }
 
-#page-diary .diary-wrap[data-diary-tab="practice"] .diary-layout {
+:is(#page-diary, #page-records) .diary-wrap[data-diary-tab="practice"] .diary-layout {
   display:block;
 }
 
-#page-diary .diary-wrap[data-diary-tab="practice"] .ui-card.diary-exp {
+:is(#page-diary, #page-records) .diary-wrap[data-diary-tab="practice"] .ui-card.diary-exp {
   margin-top:0;
   padding-top:0;
   border-top:0;
 }
 
 /* 채팅 */
-#page-diary .diary-chat {
+:is(#page-diary, #page-records) .diary-chat {
   display:grid;
   gap:var(--space-5);
 }
 
-#page-diary .chat-log {
+:is(#page-diary, #page-records) .chat-log {
   display:grid;
   gap:var(--space-4);
 }
 
-#page-diary .chat-msg {
+:is(#page-diary, #page-records) .chat-msg {
   display:flex;
   align-items:flex-end;
   gap:var(--space-2);
 }
 
-#page-diary .chat-msg.is-me {
+:is(#page-diary, #page-records) .chat-msg.is-me {
   justify-content:flex-end;
 }
 
-#page-diary .chat-avatar {
+:is(#page-diary, #page-records) .chat-avatar {
   display:grid;
   flex:none;
   place-items:center;
@@ -7324,12 +7324,12 @@ h3,
   background:var(--color-surface);
 }
 
-#page-diary .chat-avatar .gem-img {
+:is(#page-diary, #page-records) .chat-avatar .gem-img {
   width:72%;
   height:auto;
 }
 
-#page-diary .chat-bubble {
+:is(#page-diary, #page-records) .chat-bubble {
   max-width:85%;
   padding:var(--space-3) var(--space-4);
   border-radius:var(--radius-lg);
@@ -7338,20 +7338,20 @@ h3,
   word-break:keep-all;
 }
 
-#page-diary .chat-msg.is-bot .chat-bubble {
+:is(#page-diary, #page-records) .chat-msg.is-bot .chat-bubble {
   border-bottom-left-radius:var(--space-1);
   background:var(--color-surface);
   color:var(--color-text-primary);
 }
 
-#page-diary .chat-msg.is-me .chat-bubble {
+:is(#page-diary, #page-records) .chat-msg.is-me .chat-bubble {
   border-bottom-right-radius:var(--space-1);
   background:var(--color-primary);
   color:var(--color-on-primary);
 }
 
 /* 정리된 다이어리 (요약 카드) */
-#page-diary .chat-summary {
+:is(#page-diary, #page-records) .chat-summary {
   display:grid;
   gap:var(--space-2);
   margin-top:var(--space-3);
@@ -7361,12 +7361,12 @@ h3,
   background:var(--color-surface);
 }
 
-#page-diary .chat-summary-meta {
+:is(#page-diary, #page-records) .chat-summary-meta {
   color:var(--color-text-secondary);
   font-size:var(--text-sm);
 }
 
-#page-diary .chat-summary-title {
+:is(#page-diary, #page-records) .chat-summary-title {
   --font-sans:var(--font-display);
   margin:0;
   font-family:var(--font-display);
@@ -7374,33 +7374,33 @@ h3,
   font-weight:700;
 }
 
-#page-diary .chat-summary .diary-review {
+:is(#page-diary, #page-records) .chat-summary .diary-review {
   display:grid;
   gap:var(--space-2);
   margin:0;
 }
 
-#page-diary .chat-summary .diary-review dt {
+:is(#page-diary, #page-records) .chat-summary .diary-review dt {
   color:var(--color-text-secondary);
   font-size:var(--text-sm);
   font-weight:700;
 }
 
-#page-diary .chat-summary .diary-review dd {
+:is(#page-diary, #page-records) .chat-summary .diary-review dd {
   margin:0;
 }
 
 /* 입력창: 화면 아래(떠 있는 하단 탭 바로 위)에 늘 붙어 있다. 대화 끝이 가리지 않게 패널 아래를 비워 둔다 */
-#page-diary .diary-chat {
+:is(#page-diary, #page-records) .diary-chat {
   padding-bottom:calc(var(--space-10) + var(--space-6));
 }
 
-#page-diary .chat-log > * {
+:is(#page-diary, #page-records) .chat-log > * {
   scroll-margin-top:calc(var(--space-10) + var(--space-3)); /* 위 머리글에 가리지 않게 */
   scroll-margin-bottom:calc(var(--space-10) * 2 + var(--space-6) + env(safe-area-inset-bottom));
 }
 
-#page-diary .chat-bar {
+:is(#page-diary, #page-records) .chat-bar {
   position:fixed;
   bottom:calc(var(--space-10) + var(--space-2) + env(safe-area-inset-bottom));
   left:0;
@@ -7416,71 +7416,71 @@ h3,
   background:var(--color-bg);
 }
 
-#page-diary .chat-bar .diary-error {
+:is(#page-diary, #page-records) .chat-bar .diary-error {
   grid-column:1 / -1;
   margin:0;
 }
 
-#page-diary .chat-bar .ui-field {
+:is(#page-diary, #page-records) .chat-bar .ui-field {
   min-height:48px;
   max-height:calc(var(--space-10) + var(--space-5));
   resize:none;
 }
 
-#page-diary .chat-bar .ui-field:disabled {
+:is(#page-diary, #page-records) .chat-bar .ui-field:disabled {
   background:var(--color-fill);
   cursor:not-allowed;
 }
 
-#page-diary .chat-bar .ui-btn {
+:is(#page-diary, #page-records) .chat-bar .ui-btn {
   min-height:48px;
 }
 
 /* 선택지: 마지막 질문 말풍선 아래, 말풍선 글 시작선에 맞춘다 */
-#page-diary .chat-quick {
+:is(#page-diary, #page-records) .chat-quick {
   padding-left:calc(var(--space-7) + var(--space-2));
 }
 
-#page-diary .chat-chips {
+:is(#page-diary, #page-records) .chat-chips {
   display:flex;
   flex-wrap:wrap;
   gap:var(--space-2);
 }
 
-#page-diary .chat-actions {
+:is(#page-diary, #page-records) .chat-actions {
   display:grid;
   grid-template-columns:repeat(2, minmax(0, 1fr));
   gap:var(--space-2);
 }
 
 /* 실천: 루틴 */
-:is(#page-diary, #page-polish) .routine-start {
+:is(#page-diary, #page-records, #page-polish, #page-state) .routine-start {
   display:grid;
   gap:var(--space-2);
   margin-top:var(--space-2);
 }
 
 /* 루틴으로 만들기: 버튼 대신 라벨 + 늘 보이는 세 가지 선택 */
-:is(#page-diary, #page-polish) .routine-start-label {
+:is(#page-diary, #page-records, #page-polish, #page-state) .routine-start-label {
   color:var(--color-text-secondary);
   font-size:var(--text-sm);
   font-weight:600;
 }
 
-:is(#page-diary, #page-polish) .routine {
+:is(#page-diary, #page-records, #page-polish, #page-state) .routine {
   display:grid;
   gap:var(--space-3);
   margin-top:var(--space-3);
 }
 
-:is(#page-diary, #page-polish) .routine-head {
+:is(#page-diary, #page-records, #page-polish, #page-state) .routine-head {
   display:flex;
   flex-wrap:wrap;
   align-items:center;
   gap:var(--space-2);
 }
 
-:is(#page-diary, #page-polish) .routine-freq {
+:is(#page-diary, #page-records, #page-polish, #page-state) .routine-freq {
   padding:var(--space-1) var(--space-2);
   border-radius:var(--radius-full);
   background:var(--color-primary-soft);
@@ -7489,13 +7489,13 @@ h3,
   font-weight:700;
 }
 
-:is(#page-diary, #page-polish) .routine-stat {
+:is(#page-diary, #page-records, #page-polish, #page-state) .routine-stat {
   color:var(--color-text-secondary);
   font-size:var(--text-sm);
   font-weight:700;
 }
 
-:is(#page-diary, #page-polish) .routine-week {
+:is(#page-diary, #page-records, #page-polish, #page-state) .routine-week {
   display:grid;
   grid-template-columns:repeat(7, minmax(0, 1fr));
   gap:var(--space-1);
@@ -7504,7 +7504,7 @@ h3,
   list-style:none;
 }
 
-:is(#page-diary, #page-polish) .routine-week li {
+:is(#page-diary, #page-records, #page-polish, #page-state) .routine-week li {
   display:grid;
   justify-items:center;
   gap:var(--space-1);
@@ -7512,7 +7512,7 @@ h3,
   font-size:var(--text-xs);
 }
 
-:is(#page-diary, #page-polish) .routine-week i {
+:is(#page-diary, #page-records, #page-polish, #page-state) .routine-week i {
   display:grid;
   place-items:center;
   width:100%;
@@ -7526,42 +7526,42 @@ h3,
   font-weight:700;
 }
 
-:is(#page-diary, #page-polish) .routine-week li.is-done i {
+:is(#page-diary, #page-records, #page-polish, #page-state) .routine-week li.is-done i {
   border-color:var(--color-primary);
   background:var(--color-primary);
 }
 
-:is(#page-diary, #page-polish) .routine-week li.is-today span {
+:is(#page-diary, #page-records, #page-polish, #page-state) .routine-week li.is-today span {
   color:var(--color-primary);
   font-weight:700;
 }
 
-:is(#page-diary, #page-polish) .routine-week li.is-today i {
+:is(#page-diary, #page-records, #page-polish, #page-state) .routine-week li.is-today i {
   border-color:var(--color-primary-light);
 }
 
-:is(#page-diary, #page-polish) .routine-week li.is-future i {
+:is(#page-diary, #page-records, #page-polish, #page-state) .routine-week li.is-future i {
   border-style:dashed;
 }
 
-:is(#page-diary, #page-polish) .routine-actions {
+:is(#page-diary, #page-records, #page-polish, #page-state) .routine-actions {
   display:flex;
   flex-wrap:wrap;
   gap:var(--space-2);
 }
 
-:is(#page-diary, #page-polish) .routine-today.is-done {
+:is(#page-diary, #page-records, #page-polish, #page-state) .routine-today.is-done {
   border-color:var(--color-primary);
   color:var(--color-primary);
 }
 
 /* 정리 카드가 든 말풍선은 폭을 다 쓰고, 항목 사이는 촘촘하게 */
-#page-diary .chat-bubble:has(.chat-summary) {
+:is(#page-diary, #page-records) .chat-bubble:has(.chat-summary) {
   flex:1;
   max-width:none;
 }
 
-#page-diary .chat-summary .diary-review > div {
+:is(#page-diary, #page-records) .chat-summary .diary-review > div {
   display:grid;
   gap:var(--space-1);
   margin:0;
@@ -7571,7 +7571,7 @@ h3,
 }
 
 /* 기록 카드의 감정 칩이 세로로 꺾이지 않게 */
-#page-diary .diary-card-emotions span {
+:is(#page-diary, #page-records) .diary-card-emotions span {
   white-space:nowrap;
 }
 
@@ -7871,7 +7871,7 @@ h3,
   gap:var(--space-5);
 }
 
-#page-community .feed-card {
+:is(#page-community, #page-explore) .feed-card {
   position:relative;
   display:grid;
   align-content:start;
@@ -7894,14 +7894,14 @@ h3,
   border-color:var(--color-primary-light);
 }
 
-#page-community .feed-card:focus-visible,
+:is(#page-community, #page-explore) .feed-card:focus-visible,
 #page-home .quiz-option:focus-visible,
-#page-community .feed-more:focus-visible {
+:is(#page-community, #page-explore) .feed-more:focus-visible {
   outline:2px solid var(--color-primary-light);
   outline-offset:var(--space-1);
 }
 
-#page-community .feed-tag {
+:is(#page-community, #page-explore) .feed-tag {
   justify-self:start;
   padding:var(--space-1) var(--space-3);
   border-radius:var(--radius-full);
@@ -7911,12 +7911,12 @@ h3,
   font-weight:600;
 }
 
-#page-community .feed-tag.is-soft {
+:is(#page-community, #page-explore) .feed-tag.is-soft {
   background:var(--color-primary-soft);
   color:var(--color-primary);
 }
 
-#page-community .feed-title {
+:is(#page-community, #page-explore) .feed-title {
   --font-sans:var(--font-display);
   margin:0;
   font-family:var(--font-display);
@@ -7926,13 +7926,13 @@ h3,
   word-break:keep-all;
 }
 
-#page-community .feed-sub {
+:is(#page-community, #page-explore) .feed-sub {
   margin:0;
   color:var(--color-text-secondary);
   font-size:var(--text-sm);
 }
 
-#page-community .feed-more {
+:is(#page-community, #page-explore) .feed-more {
   justify-self:start;
   padding:0;
   border:0;
@@ -7945,7 +7945,7 @@ h3,
 }
 
 /* 오늘의 VS: 카드 종이 바탕 + 두 보석이 마주 본다 */
-#page-community .feed-vs {
+:is(#page-community, #page-explore) .feed-vs {
   justify-items:center;
   text-align:center;
 }
@@ -7985,7 +7985,7 @@ h3,
   line-height:1;
 }
 
-#page-community .feed-vs-answer {
+:is(#page-community, #page-explore) .feed-vs-answer {
   display:grid;
   justify-items:center;
   gap:var(--space-3);
@@ -7993,15 +7993,15 @@ h3,
   border-top:1px solid var(--color-border);
 }
 
-#page-community .feed-vs-answer[hidden] {
+:is(#page-community, #page-explore) .feed-vs-answer[hidden] {
   display:none;
 }
 
-#page-community .feed-vs .feed-more {
+:is(#page-community, #page-explore) .feed-vs .feed-more {
   justify-self:center;
 }
 
-#page-community .feed-vs-answer p {
+:is(#page-community, #page-explore) .feed-vs-answer p {
   margin:0;
   font-size:var(--text-md);
   line-height:var(--body-line);
@@ -8028,17 +8028,17 @@ h3,
   cursor:pointer;
 }
 
-#page-community .feed-quiz:not(.is-answered) .quiz-option:hover {
+:is(#page-community, #page-explore) .feed-quiz:not(.is-answered) .quiz-option:hover {
   border-color:var(--color-primary-light);
   background:var(--color-primary-soft);
 }
 
-#page-community .feed-quiz.is-answered .quiz-option {
+:is(#page-community, #page-explore) .feed-quiz.is-answered .quiz-option {
   color:var(--color-text-secondary);
   cursor:default;
 }
 
-#page-community .feed-quiz.is-answered .quiz-option.is-picked {
+:is(#page-community, #page-explore) .feed-quiz.is-answered .quiz-option.is-picked {
   border-color:var(--color-primary);
   background:var(--color-primary-soft);
   color:var(--color-text-primary);
@@ -8145,29 +8145,29 @@ h3,
 }
 
 /* 2열: 1분 읽기 + 작은 VS */
-#page-community .feed-grid {
+:is(#page-community, #page-explore) .feed-grid {
   display:grid;
   grid-template-columns:repeat(2, minmax(0, 1fr));
   gap:var(--space-3);
 }
 
-#page-community .feed-grid .feed-card {
+:is(#page-community, #page-explore) .feed-grid .feed-card {
   gap:var(--space-2);
   padding:var(--space-4);
   border-radius:var(--radius-lg);
 }
 
-#page-community .feed-read-gem {
+:is(#page-community, #page-explore) .feed-read-gem {
   width:var(--space-8);
   height:var(--space-8);
 }
 
-#page-community .feed-read-gem .gem-img {
+:is(#page-community, #page-explore) .feed-read-gem .gem-img {
   width:72%;
   height:auto;
 }
 
-#page-community .feed-q {
+:is(#page-community, #page-explore) .feed-q {
   --font-sans:var(--font-display);
   font-family:var(--font-display);
   font-size:var(--text-md);
@@ -8176,7 +8176,7 @@ h3,
   word-break:keep-all;
 }
 
-#page-community .feed-preview {
+:is(#page-community, #page-explore) .feed-preview {
   display:-webkit-box;
   overflow:hidden;
   color:var(--color-text-secondary);
@@ -8187,26 +8187,26 @@ h3,
   -webkit-line-clamp:2;
 }
 
-#page-community .feed-grid .feed-tag {
+:is(#page-community, #page-explore) .feed-grid .feed-tag {
   margin-top:auto;
 }
 
 
-#page-community .feed-vs-mini .vs-gems {
+:is(#page-community, #page-explore) .feed-vs-mini .vs-gems {
   justify-content:flex-start;
   gap:var(--space-1);
 }
 
-#page-community .feed-vs-mini .vs-side .gem-tile {
+:is(#page-community, #page-explore) .feed-vs-mini .vs-side .gem-tile {
   width:var(--space-7);
   height:var(--space-7);
 }
 
-#page-community .feed-vs-mini .vs-name {
+:is(#page-community, #page-explore) .feed-vs-mini .vs-name {
   display:none;
 }
 
-#page-community .feed-vs-mini .vs-mark {
+:is(#page-community, #page-explore) .feed-vs-mini .vs-mark {
   font-size:var(--text-xl);
   white-space:nowrap;
 }
@@ -8768,19 +8768,20 @@ h3,
   border-radius:var(--radius-profile);
 }
 
+/* 나의 유형 표시 (2026-10-07): 카드 테두리에 걸친 진한 알약 대신, 카드 안 오른쪽 위에 '6번 · 에메랄드' 줄과 나란한 옅은 태그 */
 #page-home .pcard.is-explore .deco-mine {
   position:absolute;
-  top:var(--space-4);
-  left:50%;
+  top:var(--space-5);
+  right:var(--space-6);
   z-index:1;
   padding:var(--space-1) var(--space-2);
   border-radius:var(--radius-full);
-  background:var(--color-primary);
-  color:var(--color-on-primary);
+  background:var(--color-surface);
+  color:var(--td, var(--color-primary));
   font-size:var(--text-xs);
-  font-weight:700;
+  font-weight:600;
   white-space:nowrap;
-  transform:translateX(-50%);
+  box-shadow:var(--shadow-card);
 }
 
 /* =========================================================
@@ -8789,7 +8790,7 @@ h3,
    ========================================================= */
 #page-polish .polish-wrap {
   display:grid;
-  gap:var(--space-7);
+  gap:var(--space-6); /* 2026-10-07 내 상태의 다른 칸(다이어리)과 같은 간격 */
   padding:var(--space-5) 0 var(--space-10); /* 양옆 여백은 앱 열이 이미 준다 */
 }
 
@@ -8806,12 +8807,12 @@ h3,
   gap:var(--space-7);
 }
 
-#page-polish .polish-sec {
+:is(#page-polish, #page-state) .polish-sec {
   display:grid;
   gap:var(--space-4);
 }
 
-#page-polish .polish-title {
+:is(#page-polish, #page-state) .polish-title {
   margin:0;
   color:var(--color-text-primary);
   font-size:var(--text-xl);
@@ -9027,7 +9028,7 @@ h3,
   word-break:keep-all;
 }
 
-#page-polish .polish-sub {
+:is(#page-polish, #page-state) .polish-sub {
   margin:var(--space-3) 0 0;
   color:var(--color-text-primary);
   font-size:var(--text-sm);
@@ -9275,48 +9276,6 @@ h3,
   color:var(--color-text-primary);
   font-size:var(--text-xl);
   font-weight:700;
-}
-
-/* 홈 바로가기 (2026-10-05): 배달·쇼핑 앱 홈의 카테고리 줄처럼 4칸 × 2줄. 아이콘은 보석 타일(크리스탈 글래스) */
-#page-home .home-quick {
-  display:grid;
-  grid-template-columns:repeat(4, minmax(0, 1fr));
-  gap:var(--space-4) var(--space-2);
-  margin:0;
-}
-
-#page-home .home-quick-item {
-  display:grid;
-  justify-items:center;
-  gap:var(--space-2);
-  min-width:0;
-  padding:0;
-  border:0;
-  background:none;
-  color:var(--color-text-primary);
-  font:inherit;
-  cursor:pointer;
-}
-
-#page-home .home-quick-item .gem-tile {
-  width:var(--space-9);
-  height:var(--space-9);
-  border-radius:var(--radius-lg);
-}
-
-#page-home .home-quick-item .gem-tile .gem-img {
-  width:66%;
-  height:auto;
-}
-
-#page-home .home-quick-label {
-  max-width:100%;
-  color:var(--color-text-primary);
-  font-size:var(--text-xs);
-  font-weight:500;
-  line-height:1.3;
-  text-align:center;
-  word-break:keep-all;
 }
 
 /* 핸드북 성장 끝: 보석 닦기로 */
@@ -9678,7 +9637,7 @@ h3,
 }
 
 /* 다이어리 쓰기(채팅): 화면 바탕을 메신저처럼 옅은 라벤더 회색으로, 상대 말풍선은 흰색 */
-#page-diary:has(.diary-wrap[data-diary-tab="write"]) {
+:is(#page-diary, #page-records):has(.diary-wrap[data-diary-tab="write"]) {
   background:var(--color-chat-bg);
 }
 
@@ -9687,7 +9646,7 @@ h3,
    카드 = 흰 면 + 그림자 (2026-10-05). 바탕은 흰색 그대로, 카드는 선이나 회색 면 대신 은은한 그림자로 띄운다
    (카드 안의 작은 상자·선택지는 그대로 회색 면이나 얇은 선)
    ========================================================= */
-#page-community .feed-card,
+:is(#page-community, #page-explore) .feed-card,
 #page-check .check-choice-card,
 #page-overview .overview-hero-layout,
 #page-overview .learning-steps > article,
@@ -9708,7 +9667,7 @@ h3,
 #page-sharing .reflection-explanation,
 #page-sharing .reflection-summary-sentence,
 #page-myspace .mytype-setting,
-#page-myspace .my-insight,
+#page-state .my-insight,
 #page-myspace .feature-card,
 #page-myspace .home-check,
 #page-polish .polish-step {
@@ -9735,7 +9694,7 @@ h3,
   filter:drop-shadow(0 var(--space-2) var(--space-3) rgba(60, 40, 140, 0.14));
 }
 
-#page-community .feed-read-art .art3d {
+:is(#page-community, #page-explore) .feed-read-art .art3d {
   width:var(--space-8);
   margin-bottom:var(--space-1);
 }
@@ -9796,7 +9755,7 @@ h3,
 }
 
 /* 나의 공간 · 요즘 나의 흐름 (2026-10-05): 대시보드 대신 기록을 분석한 한 줄 */
-#page-myspace .my-insight {
+#page-state .my-insight {
   display:grid;
   gap:var(--space-3);
   margin-top:var(--space-6);
@@ -9804,14 +9763,14 @@ h3,
   border-radius:var(--radius-lg);
 }
 
-#page-myspace .my-insight-title {
+#page-state .my-insight-title {
   margin:0;
   color:var(--color-text-primary);
   font-size:var(--text-lg);
   font-weight:700;
 }
 
-#page-myspace .my-insight-line {
+#page-state .my-insight-line {
   margin:0;
   color:var(--color-text-primary);
   font-size:var(--text-md);
@@ -9819,30 +9778,26 @@ h3,
   word-break:keep-all;
 }
 
-#page-myspace .my-insight-line b {
+#page-state .my-insight-line b {
   color:var(--color-primary);
   font-weight:700;
 }
 
-#page-myspace .my-insight-meta {
+#page-state .my-insight-meta {
   margin:0;
   color:var(--color-text-secondary);
   font-size:var(--text-xs);
 }
 
-#page-myspace .my-insight-meta:empty {
+#page-state .my-insight-meta:empty {
   display:none;
 }
 
-#page-myspace .my-insight-actions {
+#page-state .my-insight-actions {
   display:flex;
   flex-wrap:wrap;
   gap:var(--space-2);
   margin-top:var(--space-1);
-}
-
-#page-myspace .my-insight + .mytype-setting {
-  margin-top:var(--space-4);
 }
 
 #page-home .home-gem {
@@ -9851,30 +9806,30 @@ h3,
 
 /* 유형 탐구 피드 (2026-10-05 두 번째): 오늘의 VS → 내 유형으로 읽기 → 질문별 컬렉션 7개.
    컬렉션 = 질문 제목 + 한 줄 설명 + (VS 줄 · 나라면? 퀴즈) + 2열 타일 */
-#page-community .explore-feed {
+:is(#page-community, #page-explore) .explore-feed {
   display:grid;
   gap:var(--space-7);
   padding-bottom:var(--space-6);
 }
 
-#page-community .feed-collection {
+:is(#page-community, #page-explore) .feed-collection {
   display:grid;
   gap:var(--space-3);
   min-width:0;
 }
 
-#page-community .feed-collection .explore-hub-sub {
+:is(#page-community, #page-explore) .feed-collection .explore-hub-sub {
   margin:0;
 }
 
-#page-community .feed-collection-desc {
+:is(#page-community, #page-explore) .feed-collection-desc {
   margin:calc(var(--space-2) * -1) 0 var(--space-1);
   color:var(--color-text-secondary);
   font-size:var(--text-sm);
   word-break:keep-all;
 }
 
-#page-community .feed-vs-rail > .feed-vs-mini {
+:is(#page-community, #page-explore) .feed-vs-rail > .feed-vs-mini {
   width:calc(var(--space-10) * 2.5);
 }
 
@@ -9893,7 +9848,7 @@ h3,
   height:auto;
 }
 
-#page-community .feed-care {
+:is(#page-community, #page-explore) .feed-care {
   display:grid;
   gap:var(--space-2);
   margin:0;
@@ -9906,12 +9861,12 @@ h3,
   word-break:keep-all;
 }
 
-#page-community .feed-care-tel a {
+:is(#page-community, #page-explore) .feed-care-tel a {
   color:var(--color-text-primary);
   font-weight:700;
 }
 
-#page-community .feed-foot {
+:is(#page-community, #page-explore) .feed-foot {
   margin:0;
   color:var(--color-text-secondary);
   font-size:var(--text-xs);
@@ -9927,7 +9882,7 @@ h3,
 }
 
 /* 콘텐츠 카드 (2026-10-05): 아이콘 타일 대신 사진이 먼저 보이는 카드. 카드 면·그림자 없이 사진 + 제목 + 한 줄 */
-:is(#page-community, #page-post, #page-type) .feed-post {
+:is(#page-home, #page-community, #page-explore, #page-post, #page-type) .feed-post {
   display:grid;
   align-content:start;
   gap:var(--space-1);
@@ -9941,13 +9896,13 @@ h3,
   cursor:pointer;
 }
 
-:is(#page-community, #page-post, #page-type) .feed-post:focus-visible {
+:is(#page-home, #page-community, #page-explore, #page-post, #page-type) .feed-post:focus-visible {
   outline:2px solid var(--color-primary-light);
   outline-offset:var(--space-1);
   border-radius:var(--radius-md);
 }
 
-:is(#page-community, #page-post, #page-type) .feed-post-pic {
+:is(#page-home, #page-community, #page-explore, #page-post, #page-type) .feed-post-pic {
   display:grid;
   place-items:center;
   overflow:hidden;
@@ -9957,23 +9912,23 @@ h3,
   background:var(--color-fill);
 }
 
-:is(#page-community, #page-post, #page-type) .feed-post-pic > img {
+:is(#page-home, #page-community, #page-explore, #page-post, #page-type) .feed-post-pic > img {
   display:block;
   width:100%;
   height:100%;
   object-fit:cover;
 }
 
-:is(#page-community, #page-post, #page-type) .feed-post-pic.is-gem {
+:is(#page-home, #page-community, #page-explore, #page-post, #page-type) .feed-post-pic.is-gem {
   background:var(--ts);
 }
 
-:is(#page-community, #page-post, #page-type) .feed-post-pic.is-gem .gem-img {
+:is(#page-home, #page-community, #page-explore, #page-post, #page-type) .feed-post-pic.is-gem .gem-img {
   width:55%;
   height:auto;
 }
 
-:is(#page-community, #page-post, #page-type) .feed-post-title {
+:is(#page-home, #page-community, #page-explore, #page-post, #page-type) .feed-post-title {
   display:-webkit-box;
   overflow:hidden;
   font-size:var(--text-md);
@@ -9984,7 +9939,7 @@ h3,
   -webkit-line-clamp:2;
 }
 
-:is(#page-community, #page-post, #page-type) .feed-post-meta {
+:is(#page-home, #page-community, #page-explore, #page-post, #page-type) .feed-post-meta {
   color:var(--color-text-secondary);
   font-size:var(--text-xs);
   line-height:1.45;
@@ -9992,41 +9947,41 @@ h3,
 }
 
 /* 큰 카드 줄 (처음이라면 · 내 유형으로 읽기): 한 장이 화면을 거의 채우고 다음 장이 살짝 보이게 */
-:is(#page-community, #page-post, #page-type) .feed-post-rail.is-wide > .feed-post {
+:is(#page-home, #page-community, #page-explore, #page-post, #page-type) .feed-post-rail.is-wide > .feed-post {
   width:calc((var(--app-vw) - var(--feed-pad) * 2) * 0.82);
 }
 
-:is(#page-community, #page-post, #page-type) .feed-post-rail.is-wide .feed-post-pic {
+:is(#page-home, #page-community, #page-explore, #page-post, #page-type) .feed-post-rail.is-wide .feed-post-pic {
   aspect-ratio:16 / 10;
 }
 
 /* 항목이 하나뿐인 컬렉션: 한 줄을 다 쓰는 카드 */
-:is(#page-community, #page-post, #page-type) .feed-post-single > .feed-post {
+:is(#page-home, #page-community, #page-explore, #page-post, #page-type) .feed-post-single > .feed-post {
   width:100%;
 }
 
-:is(#page-community, #page-post, #page-type) .feed-post-single .feed-post-pic {
+:is(#page-home, #page-community, #page-explore, #page-post, #page-type) .feed-post-single .feed-post-pic {
   aspect-ratio:16 / 9;
 }
 
 /* 오늘의 글: 한 줄을 다 쓰는 카드는 제목을 조금 크게 */
-#page-community .feed-post-single .feed-post-title {
+:is(#page-community, #page-explore) .feed-post-single .feed-post-title {
   font-size:var(--text-lg);
   font-weight:700;
 }
 
 /* 모든 글: 2열 */
-#page-community .feed-post-grid {
+:is(#page-community, #page-explore) .feed-post-grid {
   display:grid;
   grid-template-columns:repeat(2, minmax(0, 1fr));
   gap:var(--space-5) var(--space-3);
 }
 
-#page-community .feed-post-grid > .feed-post {
+:is(#page-community, #page-explore) .feed-post-grid > .feed-post {
   width:auto;
 }
 
-#page-community .feed-all-more {
+:is(#page-community, #page-explore) .feed-all-more {
   width:100%;
   margin-top:var(--space-2);
 }
@@ -10337,18 +10292,18 @@ h3,
 }
 
 /* 필터 (2026-10-05): 유형 칩 한 줄 + 주제 태그 한 줄. 고른 칩은 진하게 (오늘의집 필터 칩 문법) */
-#page-community .feed-filters {
+:is(#page-community, #page-explore) .feed-filters {
   display:grid;
   gap:var(--space-2);
   margin-bottom:var(--space-2);
 }
 
-#page-community .feed-chip-row {
+:is(#page-community, #page-explore) .feed-chip-row {
   gap:var(--space-2);
   padding-bottom:var(--space-1);
 }
 
-:is(#page-community, #page-post, #page-type) .feed-chip {
+:is(#page-community, #page-explore, #page-post, #page-type) .feed-chip {
   flex:none;
   padding:var(--space-2) var(--space-4);
   border:1px solid var(--color-border);
@@ -10362,18 +10317,18 @@ h3,
   cursor:pointer;
 }
 
-:is(#page-community, #page-post, #page-type) .feed-chip[aria-pressed="true"] {
+:is(#page-community, #page-explore, #page-post, #page-type) .feed-chip[aria-pressed="true"] {
   border-color:var(--color-text-primary);
   background:var(--color-text-primary);
   color:var(--color-on-primary);
 }
 
-:is(#page-community, #page-post, #page-type) .feed-chip:focus-visible {
+:is(#page-community, #page-explore, #page-post, #page-type) .feed-chip:focus-visible {
   outline:2px solid var(--color-primary-light);
   outline-offset:2px;
 }
 
-#page-community .feed-empty {
+:is(#page-community, #page-explore) .feed-empty {
   margin:var(--space-6) 0;
   color:var(--color-text-secondary);
   font-size:var(--text-md);
@@ -10403,7 +10358,7 @@ h3,
   margin-bottom:var(--space-5);
 }
 
-#page-community .feed-sentinel {
+:is(#page-community, #page-explore) .feed-sentinel {
   height:var(--space-1);
 }
 
@@ -10650,7 +10605,7 @@ h3,
   font-weight:700;
 }
 
-#page-community .feed-collection-desc {
+:is(#page-community, #page-explore) .feed-collection-desc {
   margin:calc(var(--space-2) * -1) 0 var(--space-1);
   color:var(--color-text-secondary);
   font-size:var(--text-sm);
@@ -10658,12 +10613,12 @@ h3,
   word-break:keep-all;
 }
 
-#page-community .feed-quiz-go {
+:is(#page-community, #page-explore) .feed-quiz-go {
   width:100%;
 }
 
 /* 홈 + 유형 탐구 (2026-10-05): 홈 아래로 피드가 이어지고, 유형 칩 줄은 스크롤하면 화면 위에 붙는다 */
-#page-community .home-explore {
+:is(#page-community, #page-explore) .home-explore {
   --feed-pad:var(--page-gutter);
   display:grid;
   gap:var(--space-3);
@@ -10671,18 +10626,18 @@ h3,
 }
 
 /* 옛 #page-home section 규칙(위아래 52)이 유형 탐구 피드의 section에도 닿아 간격이 두 배가 되던 것 지우기 */
-#page-community .home-explore,
-#page-community .feed-collection {
+:is(#page-community, #page-explore) .home-explore,
+:is(#page-community, #page-explore) .feed-collection {
   padding:0;
 }
 
-#page-community .home-explore-title {
+:is(#page-community, #page-explore) .home-explore-title {
   margin:0;
   font-size:var(--text-xl);
   font-weight:700;
 }
 
-#page-community .feed-filters {
+:is(#page-community, #page-explore) .feed-filters {
   position:sticky;
   top:0;
   z-index:var(--z-sticky);
@@ -10694,12 +10649,12 @@ h3,
 /* =========================================================
    장면 게임 (2026-10-05): 나라면? · 맞히기 · 내 반응 지도 · 친구와 비교 (js/11-scene-game.js)
    ========================================================= */
-#page-community .game-stack {
+:is(#page-community, #page-explore) .game-stack {
   display:grid;
   gap:var(--space-3);
 }
 
-:is(#page-community, #page-post) .game-card {
+:is(#page-community, #page-explore, #page-post) .game-card {
   display:grid;
   gap:var(--space-3);
   padding:var(--space-5);
@@ -10708,11 +10663,11 @@ h3,
   box-shadow:var(--shadow-card);
 }
 
-:is(#page-community, #page-post) .game-card .feed-tag {
+:is(#page-community, #page-explore, #page-post) .game-card .feed-tag {
   justify-self:start;
 }
 
-:is(#page-community, #page-post) .game-title {
+:is(#page-community, #page-explore, #page-post) .game-title {
   margin:0;
   font-size:var(--text-lg);
   font-weight:700;
@@ -10720,32 +10675,32 @@ h3,
   word-break:keep-all;
 }
 
-:is(#page-community, #page-post) .game-sub {
+:is(#page-community, #page-explore, #page-post) .game-sub {
   margin:0;
   color:var(--color-text-secondary);
   font-size:var(--text-sm);
 }
 
-#page-community .game-mood {
+:is(#page-community, #page-explore) .game-mood {
   display:flex;
   gap:var(--space-2);
 }
 
-#page-community .game-mood .feed-chip {
+:is(#page-community, #page-explore) .game-mood .feed-chip {
   padding:var(--space-1) var(--space-3);
   font-size:var(--text-xs);
 }
 
-:is(#page-community, #page-post) .game-options {
+:is(#page-community, #page-explore, #page-post) .game-options {
   display:grid;
   gap:var(--space-2);
 }
 
-:is(#page-community, #page-post) .game-options.is-types {
+:is(#page-community, #page-explore, #page-post) .game-options.is-types {
   grid-template-columns:repeat(3, minmax(0, 1fr));
 }
 
-:is(#page-community, #page-post) .game-option {
+:is(#page-community, #page-explore, #page-post) .game-option {
   padding:var(--space-3) var(--space-4);
   border:1px solid var(--color-border);
   border-radius:var(--radius-md);
@@ -10759,40 +10714,40 @@ h3,
   cursor:pointer;
 }
 
-:is(#page-community, #page-post) .game-options.is-types .game-option {
+:is(#page-community, #page-explore, #page-post) .game-options.is-types .game-option {
   padding:var(--space-3) var(--space-2);
   text-align:center;
 }
 
-:is(#page-community, #page-post) .game-option:focus-visible {
+:is(#page-community, #page-explore, #page-post) .game-option:focus-visible {
   outline:2px solid var(--color-primary-light);
   outline-offset:2px;
 }
 
-:is(#page-community, #page-post) :is(.is-answered) .game-option {
+:is(#page-community, #page-explore, #page-post) :is(.is-answered) .game-option {
   cursor:default;
   opacity:.55;
 }
 
-:is(#page-community, #page-post) .is-answered .game-option:is(.is-picked, .is-answer, .is-friend) {
+:is(#page-community, #page-explore, #page-post) .is-answered .game-option:is(.is-picked, .is-answer, .is-friend) {
   opacity:1;
 }
 
-:is(#page-community, #page-post) .is-answered .game-option.is-picked {
+:is(#page-community, #page-explore, #page-post) .is-answered .game-option.is-picked {
   border-color:var(--color-primary);
   background:var(--color-primary-soft);
 }
 
-:is(#page-community, #page-post) .is-answered .game-option.is-answer:not(.is-picked) {
+:is(#page-community, #page-explore, #page-post) .is-answered .game-option.is-answer:not(.is-picked) {
   border-color:var(--color-primary);
 }
 
-:is(#page-community, #page-post) .is-answered .game-option.is-friend:not(.is-picked) {
+:is(#page-community, #page-explore, #page-post) .is-answered .game-option.is-friend:not(.is-picked) {
   border-style:dashed;
   border-color:var(--color-text-secondary);
 }
 
-:is(#page-community, #page-post) .game-quote {
+:is(#page-community, #page-explore, #page-post) .game-quote {
   margin:0;
   padding:var(--space-4);
   border-radius:var(--radius-md);
@@ -10804,18 +10759,18 @@ h3,
   word-break:keep-all;
 }
 
-:is(#page-community, #page-post) .game-result,
-:is(#page-community, #page-post) .game-compare {
+:is(#page-community, #page-explore, #page-post) .game-result,
+:is(#page-community, #page-explore, #page-post) .game-compare {
   display:grid;
   gap:var(--space-3);
 }
 
-:is(#page-community, #page-post) .game-result[hidden],
-:is(#page-community, #page-post) .game-compare[hidden] {
+:is(#page-community, #page-explore, #page-post) .game-result[hidden],
+:is(#page-community, #page-explore, #page-post) .game-compare[hidden] {
   display:none;
 }
 
-:is(#page-community, #page-post) .game-answer {
+:is(#page-community, #page-explore, #page-post) .game-answer {
   margin:0;
   padding:var(--space-3) var(--space-4);
   border-radius:var(--radius-md);
@@ -10824,11 +10779,11 @@ h3,
   font-size:var(--text-md);
 }
 
-:is(#page-community, #page-post) .game-answer b {
+:is(#page-community, #page-explore, #page-post) .game-answer b {
   color:var(--td, var(--color-primary));
 }
 
-:is(#page-community, #page-post) .game-note {
+:is(#page-community, #page-explore, #page-post) .game-note {
   margin:0;
   color:var(--color-text-secondary);
   font-size:var(--text-xs);
@@ -10836,38 +10791,38 @@ h3,
   word-break:keep-all;
 }
 
-:is(#page-community, #page-post) .game-actions {
+:is(#page-community, #page-explore, #page-post) .game-actions {
   display:flex;
   flex-wrap:wrap;
   align-items:center;
   gap:var(--space-2);
 }
 
-:is(#page-community, #page-post) .game-actions .btn svg {
+:is(#page-community, #page-explore, #page-post) .game-actions .btn svg {
   width:var(--space-4);
   height:var(--space-4);
   margin-right:var(--space-1);
   vertical-align:-3px;
 }
 
-:is(#page-community, #page-post) .game-status:empty {
+:is(#page-community, #page-explore, #page-post) .game-status:empty {
   display:none;
 }
 
-:is(#page-community, #page-post) .game-status,
-#page-community .game-score {
+:is(#page-community, #page-explore, #page-post) .game-status,
+:is(#page-community, #page-explore) .game-score {
   margin:0;
   color:var(--color-text-secondary);
   font-size:var(--text-xs);
 }
 
 /* 내 반응 지도 */
-#page-community .game-bars {
+:is(#page-community, #page-explore) .game-bars {
   display:grid;
   gap:var(--space-2);
 }
 
-#page-community .game-bar {
+:is(#page-community, #page-explore) .game-bar {
   display:grid;
   grid-template-columns:calc(var(--space-10) + var(--space-5)) minmax(0, 1fr) var(--space-7);
   align-items:center;
@@ -10875,44 +10830,44 @@ h3,
   font-size:var(--text-xs);
 }
 
-#page-community .game-bar-name {
+:is(#page-community, #page-explore) .game-bar-name {
   color:var(--color-text-primary);
   font-weight:600;
   white-space:nowrap;
 }
 
-#page-community .game-bar-track {
+:is(#page-community, #page-explore) .game-bar-track {
   height:var(--space-2);
   overflow:hidden;
   border-radius:var(--radius-full);
   background:var(--color-fill);
 }
 
-#page-community .game-bar-fill {
+:is(#page-community, #page-explore) .game-bar-fill {
   display:block;
   height:100%;
   border-radius:var(--radius-full);
   background:var(--td, var(--color-primary));
 }
 
-#page-community .game-bar-n {
+:is(#page-community, #page-explore) .game-bar-n {
   color:var(--color-text-secondary);
   text-align:right;
 }
 
-#page-community .game-moods {
+:is(#page-community, #page-explore) .game-moods {
   display:grid;
   grid-template-columns:repeat(2, minmax(0, 1fr));
   gap:var(--space-2);
 }
 
-#page-community .game-moods > div {
+:is(#page-community, #page-explore) .game-moods > div {
   padding:var(--space-3);
   border-radius:var(--radius-md);
   background:var(--color-fill);
 }
 
-#page-community .game-moods b {
+:is(#page-community, #page-explore) .game-moods b {
   font-size:var(--text-md);
 }
 
@@ -10925,19 +10880,19 @@ h3,
   margin-top:var(--space-6);
 }
 
-#page-post .game-compare-title {
+:is(#page-post, #page-community) .game-compare-title {
   margin:0;
   font-size:var(--text-xl);
   font-weight:700;
 }
 
-#page-post .game-vs {
+:is(#page-post, #page-community) .game-vs {
   display:grid;
   grid-template-columns:repeat(2, minmax(0, 1fr));
   gap:var(--space-2);
 }
 
-#page-post .game-side {
+:is(#page-post, #page-community) .game-side {
   display:grid;
   align-content:start;
   gap:var(--space-1);
@@ -10946,12 +10901,12 @@ h3,
   background:color-mix(in srgb, var(--ts, var(--color-primary-soft)) 60%, var(--color-surface));
 }
 
-#page-post .game-side b {
+:is(#page-post, #page-community) .game-side b {
   color:var(--td, var(--color-primary));
   font-size:var(--text-sm);
 }
 
-#page-post .game-side p {
+:is(#page-post, #page-community) .game-side p {
   margin:0;
   color:var(--color-text-primary);
   font-size:var(--text-sm);
@@ -10959,7 +10914,7 @@ h3,
   word-break:keep-all;
 }
 
-#page-post .game-side .game-why {
+:is(#page-post, #page-community) .game-side .game-why {
   color:var(--color-text-secondary);
   font-size:var(--text-xs);
 }
@@ -10981,19 +10936,19 @@ h3,
 }
 
 /* 커뮤니티 화면 (2026-10-05): main 대신 div (옛 레이어 24의 .page-panel > main 폭 규칙 피함) */
-#page-community .community-wrap {
+:is(#page-community, #page-explore) .community-wrap {
   display:grid;
   gap:var(--space-4);
   padding:var(--space-6) var(--page-gutter) var(--space-10);
 }
 
-#page-community .community-title {
+:is(#page-community, #page-explore) .community-title {
   margin:0;
   font-size:var(--text-3xl);
   font-weight:700;
 }
 
-#page-community .community-desc {
+:is(#page-community, #page-explore) .community-desc {
   margin:calc(var(--space-2) * -1) 0 var(--space-2);
   color:var(--color-text-secondary);
   font-size:var(--text-md);
@@ -11001,7 +10956,7 @@ h3,
   word-break:keep-all;
 }
 
-#page-community .feed-tag {
+:is(#page-community, #page-explore) .feed-tag {
   padding:var(--space-1) var(--space-3);
   border-radius:var(--radius-full);
   background:var(--color-primary-soft);
@@ -11010,7 +10965,7 @@ h3,
   font-weight:600;
 }
 
-#page-community .feed-quiz-go {
+:is(#page-community, #page-explore) .feed-quiz-go {
   width:100%;
 }
 
@@ -11108,13 +11063,13 @@ h3,
   vertical-align:2px;
 }
 
-#page-polish .polish-moods {
+:is(#page-polish, #page-state) .polish-moods {
   display:flex;
   gap:var(--space-2);
   margin-top:var(--space-3);
 }
 
-#page-polish .polish-mood {
+:is(#page-polish, #page-state) .polish-mood {
   flex:1;
   padding:var(--space-3) var(--space-2);
   border:1px solid var(--color-border);
@@ -11127,19 +11082,19 @@ h3,
   cursor:pointer;
 }
 
-#page-polish .polish-mood.is-on {
+:is(#page-polish, #page-state) .polish-mood.is-on {
   border-color:var(--color-text-primary);
   background:var(--color-text-primary);
   color:var(--color-on-primary);
 }
 
-#page-polish .polish-mood:focus-visible,
+:is(#page-polish, #page-state) .polish-mood:focus-visible,
 #page-polish .polish-add:focus-visible {
   outline:2px solid var(--color-primary-light);
   outline-offset:2px;
 }
 
-#page-polish .polish-lead {
+:is(#page-polish, #page-state) .polish-lead {
   margin:var(--space-4) 0 var(--space-3);
   color:var(--color-text-secondary);
   font-size:var(--text-sm);
@@ -11196,11 +11151,11 @@ h3,
 
 /* 보석 닦기 ① 보석 상태 살펴보기 (2026-10-07, js/02 stateCheckHTML · stateResultHTML): 상태 문항 20개 → 결과 카드.
    빈도 답(4단계)은 알약 칩 2×2, 장면·공통 답은 장면 게임 선택지와 같은 안쪽 상자 */
-#page-polish .sc .polish-sub {
+:is(#page-polish, #page-state) .sc .polish-sub {
   margin-top:var(--space-6);
 }
 
-#page-polish .sc-list {
+:is(#page-polish, #page-state) .sc-list {
   display:grid;
   gap:var(--space-3);
   margin:var(--space-3) 0 0;
@@ -11208,7 +11163,7 @@ h3,
   list-style:none;
 }
 
-#page-polish .sc-q {
+:is(#page-polish, #page-state) .sc-q {
   display:grid;
   gap:var(--space-3);
   padding:var(--space-4);
@@ -11217,7 +11172,7 @@ h3,
   box-shadow:var(--shadow-card);
 }
 
-#page-polish .sc-text {
+:is(#page-polish, #page-state) .sc-text {
   margin:0;
   color:var(--color-text-primary);
   font-size:var(--text-md);
@@ -11226,52 +11181,52 @@ h3,
   word-break:keep-all;
 }
 
-#page-polish .sc-opts {
+:is(#page-polish, #page-state) .sc-opts {
   display:grid;
   gap:var(--space-2);
 }
 
-#page-polish .sc-opts.is-scale {
+:is(#page-polish, #page-state) .sc-opts.is-scale {
   grid-template-columns:repeat(2, minmax(0, 1fr));
 }
 
-#page-polish .sc-opts .polish-mood {
+:is(#page-polish, #page-state) .sc-opts .polish-mood {
   flex:none;
   font-size:var(--text-sm);
   word-break:keep-all;
 }
 
-#page-polish .sc-opts:not(.is-scale) .polish-mood {
+:is(#page-polish, #page-state) .sc-opts:not(.is-scale) .polish-mood {
   padding:var(--space-3) var(--space-4);
   border-radius:var(--radius-md);
   line-height:1.5;
   text-align:left;
 }
 
-#page-polish .sc-foot {
+:is(#page-polish, #page-state) .sc-foot {
   display:grid;
   gap:var(--space-3);
   margin-top:var(--space-6);
 }
 
-#page-polish .sc-count {
+:is(#page-polish, #page-state) .sc-count {
   margin:0;
   color:var(--color-text-secondary);
   font-size:var(--text-sm);
   text-align:center;
 }
 
-#page-polish .sc-actions {
+:is(#page-polish, #page-state) .sc-actions {
   display:flex;
   flex-wrap:wrap;
   gap:var(--space-2);
 }
 
-#page-polish .sc-foot .sc-actions .ui-btn {
+:is(#page-polish, #page-state) .sc-foot .sc-actions .ui-btn {
   flex:1;
 }
 
-#page-polish :is(.sc-start, .sc-result) {
+:is(#page-polish, #page-state) :is(.sc-start, .sc-result) {
   display:grid;
   gap:var(--space-2);
   margin-top:var(--space-4);
@@ -11281,65 +11236,65 @@ h3,
   box-shadow:var(--shadow-card);
 }
 
-#page-polish .sc-result {
+:is(#page-polish, #page-state) .sc-result {
   background:color-mix(in srgb, var(--tc, var(--gem-lavender)) 14%, var(--color-surface));
 }
 
-#page-polish :is(.sc-start, .sc-result) p {
+:is(#page-polish, #page-state) :is(.sc-start, .sc-result) p {
   margin:0;
   word-break:keep-all;
 }
 
-#page-polish .sc-start-title {
+:is(#page-polish, #page-state) .sc-start-title {
   color:var(--color-text-primary);
   font-size:var(--text-lg);
   font-weight:700;
 }
 
-#page-polish .sc-start p,
-#page-polish .sc-result-stress,
-#page-polish .sc-result-note {
+:is(#page-polish, #page-state) .sc-start p,
+:is(#page-polish, #page-state) .sc-result-stress,
+:is(#page-polish, #page-state) .sc-result-note {
   color:var(--color-text-secondary);
   font-size:var(--text-sm);
   line-height:1.6;
 }
 
-#page-polish .sc-start .ui-btn {
+:is(#page-polish, #page-state) .sc-start .ui-btn {
   justify-self:start;
   margin-top:var(--space-2);
 }
 
-#page-polish .sc-result-k {
+:is(#page-polish, #page-state) .sc-result-k {
   color:var(--color-text-secondary);
   font-size:var(--text-xs);
   font-weight:600;
 }
 
-#page-polish .sc-result-band {
+:is(#page-polish, #page-state) .sc-result-band {
   color:var(--color-text-primary);
   font-size:var(--text-lg);
   font-weight:700;
   line-height:1.5;
 }
 
-#page-polish .sc-result-band b {
+:is(#page-polish, #page-state) .sc-result-band b {
   color:var(--td, var(--color-primary));
 }
 
-#page-polish .sc-result-line {
+:is(#page-polish, #page-state) .sc-result-line {
   color:var(--color-text-primary);
   font-size:var(--text-md);
   line-height:1.6;
 }
 
-#page-polish .sc-result-due,
-#page-polish .sc-report-done {
+:is(#page-polish, #page-state) .sc-result-due,
+:is(#page-polish, #page-state) .sc-report-done {
   color:var(--color-primary);
   font-size:var(--text-sm);
   font-weight:600;
 }
 
-#page-polish .sc-result .sc-actions {
+:is(#page-polish, #page-state) .sc-result .sc-actions {
   margin-top:var(--space-2);
 }
 
@@ -11348,40 +11303,40 @@ h3,
 }
 
 /* 나의 공간 맨 위 '지금 내 보석 상태' (2026-10-07): 요즘 나의 흐름과 같은 카드 + 보석 */
-#page-myspace .my-gem-state {
+#page-state .my-gem-state {
   margin:0 0 var(--space-6);
   background:color-mix(in srgb, var(--tc, var(--gem-lavender)) 14%, var(--color-surface));
   box-shadow:var(--shadow-card);
 }
 
-#page-myspace .my-gem-state[hidden] {
+#page-state .my-gem-state[hidden] {
   display:none;
 }
 
-#page-myspace .my-gem-state-head {
+#page-state .my-gem-state-head {
   display:flex;
   align-items:center;
   gap:var(--space-4);
 }
 
-#page-myspace .my-gem-state-head > div {
+#page-state .my-gem-state-head > div {
   display:grid;
   gap:var(--space-1);
   min-width:0;
 }
 
-#page-myspace .my-gem-state-gem {
+#page-state .my-gem-state-gem {
   flex:none;
   width:calc(var(--space-10) + var(--space-3));
 }
 
-#page-myspace .my-gem-state-gem .gem-img {
+#page-state .my-gem-state-gem .gem-img {
   width:100%;
   height:auto;
 }
 
 /* 흐려짐은 벌이 아니다: 보석을 지우지 않고 살짝만 흐리게 */
-#page-myspace .my-gem-state-gem.is-low .gem-img {
+#page-state .my-gem-state-gem.is-low .gem-img {
   filter:saturate(0.6) brightness(1.04);
   opacity:0.8;
 }
@@ -11514,7 +11469,7 @@ h3,
 }
 
 /* 다이어리 연마 처방전 (2026-10-05): 약 봉투처럼 점선으로 나눈 카드 */
-#page-diary .rx-card {
+:is(#page-diary, #page-records) .rx-card {
   display:grid;
   gap:var(--space-3);
   margin-top:var(--space-3);
@@ -11524,7 +11479,7 @@ h3,
   background:var(--color-surface);
 }
 
-#page-diary .rx-head {
+:is(#page-diary, #page-records) .rx-head {
   display:flex;
   flex-wrap:wrap;
   align-items:baseline;
@@ -11534,35 +11489,35 @@ h3,
   border-bottom:1px dashed var(--color-border);
 }
 
-#page-diary .rx-head strong {
+:is(#page-diary, #page-records) .rx-head strong {
   color:var(--color-primary);
   font-size:var(--text-md);
   font-weight:700;
 }
 
-#page-diary .rx-head span {
+:is(#page-diary, #page-records) .rx-head span {
   color:var(--color-text-secondary);
   font-size:var(--text-xs);
 }
 
-#page-diary .rx-rows {
+:is(#page-diary, #page-records) .rx-rows {
   display:grid;
   gap:var(--space-3);
   margin:0;
 }
 
-#page-diary .rx-rows > div {
+:is(#page-diary, #page-records) .rx-rows > div {
   display:grid;
   gap:var(--space-1);
 }
 
-#page-diary .rx-rows dt {
+:is(#page-diary, #page-records) .rx-rows dt {
   color:var(--color-primary);
   font-size:var(--text-xs);
   font-weight:600;
 }
 
-#page-diary .rx-rows dd {
+:is(#page-diary, #page-records) .rx-rows dd {
   margin:0;
   color:var(--color-text-primary);
   font-size:var(--text-sm);
@@ -11570,14 +11525,958 @@ h3,
   word-break:keep-all;
 }
 
-#page-diary .rx-add {
+:is(#page-diary, #page-records) .rx-add {
   justify-self:start;
 }
 
-#page-diary .rx-note {
+:is(#page-diary, #page-records) .rx-note {
   margin:0;
   padding-top:var(--space-3);
   border-top:1px dashed var(--color-border);
   color:var(--color-text-secondary);
   font-size:var(--text-xs);
+}
+
+/* =========================================================
+   메뉴 구조 정리 (2026-10-07, docs/정보구조_IA.md)
+   하단 탭: 홈 · 유형 탐구 · 같이 보기 · 내 상태 · 나의 공간
+   ========================================================= */
+
+/* 분석 노트(#page-state)와 안쪽 화면 이야기하기(#page-diary) · 보석 닦기(#page-polish): 같은 머리(제목 28) + 설명 한 줄 */
+#page-state .state-wrap {
+  display:grid;
+  gap:var(--space-6);
+  padding:var(--space-5) 0 var(--space-10); /* 양옆 여백은 앱 열이 이미 준다 */
+}
+
+:is(#page-state, #page-diary, #page-polish) .state-head {
+  display:block;
+  margin:0;
+}
+
+:is(#page-state, #page-diary, #page-polish) .state-head h1 {
+  margin:0;
+  font-size:var(--text-3xl);
+  font-weight:700;
+  line-height:1.3;
+}
+
+:is(#page-state, #page-diary, #page-polish) .state-lead {
+  max-width:var(--readable-lg);
+  margin:0;
+  color:var(--color-text-secondary);
+  font-size:var(--text-md);
+  line-height:var(--body-line);
+  word-break:keep-all;
+}
+
+:is(#page-state, #page-diary, #page-polish) .state-lead[hidden] {
+  display:none;
+}
+
+/* 분석 노트: 보석 상태 → 오늘 이야기하기 → 이번 주 해볼 것 → 쌓인 분석 */
+#page-state .state-app:empty {
+  display:none;
+}
+
+#page-state .state-app .my-gem-state {
+  margin:0;
+}
+
+#page-state .my-insight {
+  margin-top:0;
+}
+
+#page-state .note-talk {
+  display:grid;
+  justify-items:start;
+  gap:var(--space-3);
+  padding:var(--space-5);
+  border-radius:var(--radius-lg);
+  background:var(--color-primary-soft);
+}
+
+#page-state .note-title {
+  margin:0;
+  color:var(--color-text-primary);
+  font-size:var(--text-lg);
+  font-weight:700;
+}
+
+#page-state .note-desc {
+  margin:0;
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+  line-height:1.6;
+  word-break:keep-all;
+}
+
+#page-state .note-more {
+  justify-self:start;
+}
+
+/* 쌓인 분석: 카드 안의 줄 목록은 면 없이 (카드 안 카드 피하기) */
+#page-state .note-recent .home-next-list {
+  overflow:visible;
+  border-radius:0;
+  background:none;
+  box-shadow:none;
+}
+
+#page-state .note-recent .home-next {
+  padding:var(--space-3) 0;
+}
+
+#page-state .note-recent .home-next:hover {
+  background:none;
+}
+
+#page-state .note-recent .home-next-list[hidden] {
+  display:none;
+}
+
+/* 보석 닦기 ①의 '살펴보기로 가요' 글자 링크 */
+#page-polish .polish-inline-link {
+  padding:0;
+  border:0;
+  background:none;
+  color:var(--color-primary);
+  font:inherit;
+  font-weight:600;
+  text-decoration:underline;
+  text-underline-offset:3px;
+  cursor:pointer;
+}
+
+/* 홈 '오늘' (상태별 피드): 담는 층은 하나, 줄 사이는 얇은 선 */
+#page-home .home-sec {
+  display:grid;
+  padding:0; /* 옛 레이어 14의 #page-home section 위아래 여백을 쓰지 않는다 */
+  gap:var(--space-3);
+  margin:0; /* 배너와의 간격은 #homeShelves의 gap */
+}
+
+#page-home .home-sec-title {
+  margin:0;
+  color:var(--color-text-primary);
+  font-size:var(--text-xl);
+  font-weight:700;
+}
+
+:is(#page-home, #page-myspace, #page-state) .home-next-list {
+  display:grid;
+  overflow:hidden;
+  border-radius:var(--radius-lg);
+  background:var(--color-surface);
+  box-shadow:var(--shadow-card);
+}
+
+:is(#page-home, #page-myspace, #page-state) .home-next {
+  display:grid;
+  grid-template-columns:auto minmax(0, 1fr) auto;
+  align-items:center;
+  gap:var(--space-3);
+  width:100%;
+  padding:var(--space-4);
+  border:0;
+  border-top:1px solid var(--color-border-subtle);
+  background:none;
+  color:var(--color-text-primary);
+  font:inherit;
+  text-align:left;
+  cursor:pointer;
+}
+
+:is(#page-home, #page-myspace, #page-state) .home-next:first-child {
+  border-top:0;
+}
+
+:is(#page-home, #page-myspace, #page-state) .home-next:hover {
+  background:color-mix(in srgb, var(--color-primary) 4%, var(--color-surface));
+}
+
+:is(#page-home, #page-myspace, #page-state) .home-next:focus-visible {
+  outline:2px solid var(--color-primary-light);
+  outline-offset:-2px;
+}
+
+:is(#page-home, #page-myspace, #page-state) .home-next :is(.icon-tile, .gem-tile) {
+  width:var(--space-8);
+  height:var(--space-8);
+  border-radius:var(--radius-sm);
+}
+
+:is(#page-home, #page-myspace, #page-state) .home-next .gem-tile .gem-img {
+  width:70%;
+  height:auto;
+}
+
+:is(#page-home, #page-myspace, #page-state) .home-next .icon-tile .ui-icon {
+  width:var(--space-5);
+  height:var(--space-5);
+}
+
+:is(#page-home, #page-myspace, #page-state) .home-next-copy {
+  display:grid;
+  gap:var(--space-1);
+  min-width:0;
+}
+
+:is(#page-home, #page-myspace, #page-state) .home-next-title {
+  font-size:var(--text-md);
+  font-weight:600;
+  line-height:1.45;
+  word-break:keep-all;
+}
+
+:is(#page-home, #page-myspace, #page-state) .home-next-desc {
+  color:var(--color-text-secondary);
+  font-size:var(--text-xs);
+  line-height:1.5;
+  word-break:keep-all;
+}
+
+:is(#page-home, #page-myspace, #page-state) .home-next-go {
+  color:var(--color-primary);
+  font-size:var(--text-sm);
+  font-weight:600;
+  white-space:nowrap;
+}
+
+/* 홈 오늘의 장면 (같이 보기): 카드 하나가 통째로 버튼 */
+#page-home .home-scene {
+  display:grid;
+  justify-items:start;
+  gap:var(--space-2);
+  width:100%;
+  padding:var(--space-5);
+  border:0;
+  border-radius:var(--radius-lg);
+  background:var(--color-surface);
+  box-shadow:var(--shadow-card);
+  color:var(--color-text-primary);
+  font:inherit;
+  text-align:left;
+  cursor:pointer;
+}
+
+#page-home .home-scene:focus-visible {
+  outline:2px solid var(--color-primary-light);
+  outline-offset:2px;
+}
+
+#page-home .home-scene-tag {
+  padding:var(--space-1) var(--space-3);
+  border-radius:var(--radius-full);
+  background:var(--color-primary-soft);
+  color:var(--color-primary);
+  font-size:var(--text-xs);
+  font-weight:600;
+}
+
+#page-home .home-scene-title {
+  font-size:var(--text-lg);
+  font-weight:700;
+  line-height:1.4;
+  word-break:keep-all;
+}
+
+#page-home .home-scene-desc {
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+  line-height:1.6;
+  word-break:keep-all;
+}
+
+#page-home .home-scene-go {
+  margin-top:var(--space-1);
+  color:var(--color-primary);
+  font-size:var(--text-sm);
+  font-weight:600;
+}
+
+/* 홈 오늘 읽을 글: 유형 탐구 피드와 같은 사진 카드 줄. 줄은 화면 끝까지 */
+#page-home .home-sec .feed-post-rail {
+  margin:0 calc(var(--page-gutter) * -1);
+  padding:0 var(--page-gutter) var(--space-2);
+}
+
+#page-home .home-more {
+  justify-self:start;
+  padding:0;
+  border:0;
+  background:none;
+  color:var(--color-primary);
+  font:inherit;
+  font-size:var(--text-sm);
+  font-weight:600;
+  cursor:pointer;
+}
+
+/* 나의 공간 '나에게 쌓인 것': 홈 '오늘'과 같은 줄 목록 */
+#page-myspace .my-log {
+  display:grid;
+  gap:var(--space-3);
+  margin:var(--space-6) 0 0;
+}
+
+#page-myspace .my-log:empty {
+  display:none;
+}
+
+#page-myspace .my-log-title {
+  margin:0;
+  color:var(--color-text-primary);
+  font-size:var(--text-xl);
+  font-weight:700;
+}
+
+/* 나의 공간 내 유형 한 줄 (2026-10-07): 보석 | 유형 · 키워드 / 할 수 있는 일 둘. 면은 내 보석 색을 옅게 */
+#page-myspace .my-profile {
+  display:grid;
+  grid-template-columns:auto minmax(0, 1fr);
+  grid-template-areas:"gem copy" "gem actions";
+  align-items:center;
+  gap:var(--space-2) var(--space-4);
+  margin:var(--space-2) 0 0;
+  padding:var(--space-4) var(--space-5);
+  border-radius:var(--radius-lg);
+  background:color-mix(in srgb, var(--tc, var(--color-primary)) 12%, var(--color-surface));
+  box-shadow:var(--shadow-card);
+}
+
+#page-myspace .my-profile-gem {
+  display:grid;
+  grid-area:gem;
+  place-items:center;
+  width:var(--space-9);
+  height:var(--space-9);
+  border-radius:var(--radius-lg);
+  background:var(--color-surface);
+}
+
+#page-myspace .my-profile-gem .gem-img {
+  width:72%;
+  height:auto;
+}
+
+#page-myspace .my-profile-gem.is-empty .ui-icon {
+  width:var(--space-6);
+  height:var(--space-6);
+}
+
+#page-myspace .my-profile-copy {
+  display:grid;
+  grid-area:copy;
+  gap:var(--space-1);
+  min-width:0;
+}
+
+#page-myspace .my-profile-name {
+  color:var(--color-text-primary);
+  font-size:var(--text-lg);
+  font-weight:700;
+  line-height:1.35;
+  word-break:keep-all;
+}
+
+#page-myspace .my-profile-sub {
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+  word-break:keep-all;
+}
+
+#page-myspace .my-profile-actions {
+  display:flex;
+  flex-wrap:wrap;
+  grid-area:actions;
+  gap:var(--space-1) var(--space-4);
+}
+
+#page-myspace .my-profile-link {
+  padding:0;
+  border:0;
+  background:none;
+  color:var(--td, var(--color-primary));
+  font:inherit;
+  font-size:var(--text-sm);
+  font-weight:600;
+  cursor:pointer;
+}
+
+#page-myspace .my-profile-link:focus-visible {
+  outline:2px solid var(--color-primary-light);
+  outline-offset:2px;
+  border-radius:var(--radius-sm);
+}
+
+/* 나의 공간 숫자 세 칸 (2026-10-07): 프로필의 게시물 · 팔로워 줄처럼. 누르면 그곳으로 */
+#page-myspace .my-stats {
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+  gap:var(--space-2);
+}
+
+#page-myspace .my-stat {
+  display:grid;
+  justify-items:center;
+  gap:var(--space-1);
+  padding:var(--space-4) var(--space-2);
+  border:0;
+  border-radius:var(--radius-lg);
+  background:var(--color-surface);
+  box-shadow:var(--shadow-card);
+  color:var(--color-text-primary);
+  font:inherit;
+  cursor:pointer;
+}
+
+#page-myspace .my-stat b {
+  font-size:var(--text-4xl);
+  font-weight:700;
+  line-height:1.1;
+}
+
+#page-myspace .my-stat span {
+  color:var(--color-text-secondary);
+  font-size:var(--text-xs);
+}
+
+#page-myspace .my-stat:focus-visible {
+  outline:2px solid var(--color-primary-light);
+  outline-offset:2px;
+}
+
+/* 보석 상태 변화: 점을 선으로 이은 줄. 빛남은 진하게, 흐려짐은 옅게 (흐려짐은 벌이 아니라 그때의 기록) */
+#page-myspace .my-states {
+  display:grid;
+  justify-items:start;
+  gap:var(--space-3);
+  margin-top:var(--space-6);
+}
+
+#page-myspace .my-state-line {
+  display:grid;
+  grid-auto-columns:minmax(0, 1fr);
+  grid-auto-flow:column;
+  width:100%;
+  margin:0;
+  padding:var(--space-4) var(--space-3);
+  border-radius:var(--radius-lg);
+  background:var(--color-surface);
+  box-shadow:var(--shadow-card);
+  list-style:none;
+}
+
+#page-myspace .my-state-line li {
+  position:relative;
+  display:grid;
+  justify-items:center;
+  gap:var(--space-1);
+  text-align:center;
+}
+
+#page-myspace .my-state-line li + li::before {
+  content:"";
+  position:absolute;
+  top:calc(var(--space-3) / 2 + var(--space-1) / 2);
+  right:50%;
+  width:100%;
+  height:2px;
+  background:var(--color-border-subtle);
+}
+
+#page-myspace .my-state-dot {
+  position:relative;
+  z-index:1;
+  width:var(--space-4);
+  height:var(--space-4);
+  border:2px solid var(--color-surface);
+  border-radius:var(--radius-full);
+  background:var(--td, var(--color-primary));
+}
+
+#page-myspace .my-state-line li.is-mid .my-state-dot {
+  background:color-mix(in srgb, var(--td, var(--color-primary)) 50%, var(--color-surface));
+}
+
+#page-myspace .my-state-line li.is-low .my-state-dot {
+  background:color-mix(in srgb, var(--td, var(--color-primary)) 18%, var(--color-surface));
+}
+
+#page-myspace .my-state-line b {
+  font-size:var(--text-xs);
+  font-weight:600;
+  white-space:nowrap;
+}
+
+#page-myspace .my-state-line small {
+  color:var(--color-text-secondary);
+  font-size:var(--text-xs);
+  white-space:nowrap;
+}
+
+#page-myspace .my-states-note {
+  margin:0;
+  color:var(--color-text-secondary);
+  font-size:var(--text-xs);
+  line-height:1.6;
+}
+
+/* 나의 공간 맨 아래 도움이 필요할 때 */
+#page-myspace .my-help {
+  display:grid;
+  justify-items:start;
+  gap:var(--space-2);
+  margin:var(--space-7) 0 0;
+  padding-top:var(--space-5);
+  border-top:1px solid var(--color-border-subtle);
+}
+
+#page-myspace .my-help-desc {
+  margin:0;
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+  line-height:1.6;
+}
+
+/* 나의 공간 이달의 리포트: 항목 · 값 두 칸 줄 */
+#page-myspace .my-month {
+  display:grid;
+  gap:var(--space-3);
+  margin:var(--space-6) 0 0;
+  padding:var(--space-5);
+  border-radius:var(--radius-lg);
+  background:var(--color-surface);
+  box-shadow:var(--shadow-card);
+}
+
+#page-myspace .my-month:empty {
+  display:none;
+}
+
+#page-myspace .my-month .my-log-title {
+  margin:0;
+  font-size:var(--text-xl);
+  font-weight:700;
+}
+
+#page-myspace .my-month-rows {
+  display:grid;
+  margin:0;
+}
+
+#page-myspace .my-month-rows > div {
+  display:grid;
+  grid-template-columns:minmax(0, 7.5em) minmax(0, 1fr);
+  gap:var(--space-3);
+  padding:var(--space-3) 0;
+  border-top:1px solid var(--color-border-subtle);
+}
+
+#page-myspace .my-month-rows > div:first-child {
+  border-top:0;
+}
+
+#page-myspace .my-month-rows dt {
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+}
+
+#page-myspace .my-month-rows dd {
+  margin:0;
+  color:var(--color-text-primary);
+  font-size:var(--text-md);
+  font-weight:600;
+  word-break:keep-all;
+}
+
+#page-myspace .my-month-note {
+  margin:0;
+  color:var(--color-text-secondary);
+  font-size:var(--text-xs);
+  line-height:1.6;
+  word-break:keep-all;
+}
+
+#page-myspace .my-month .ui-btn {
+  justify-self:start;
+}
+
+/* 같이 보기 관계 (2026-10-07, js/12-relation.js): 우리 사이 질문 카드 · 이렇게 말해 보기. 카드는 장면 게임과 같은 game-card */
+#page-community .rel-sec {
+  display:grid;
+  gap:var(--space-3);
+  margin-top:var(--space-5);
+}
+
+#page-community .rel-sec:empty {
+  display:none;
+}
+
+#page-community .rel-title {
+  margin:0;
+  font-size:var(--text-xl);
+  font-weight:700;
+}
+
+#page-community .rel-desc,
+#page-community .rel-note {
+  margin:0;
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+  line-height:1.6;
+  word-break:keep-all;
+}
+
+#page-community .rel-note {
+  padding:var(--space-3) var(--space-4);
+  border-radius:var(--radius-md);
+  background:var(--color-primary-soft);
+  color:var(--color-text-primary);
+}
+
+#page-community .rel-card {
+  gap:var(--space-3);
+}
+
+#page-community .rel-sub {
+  margin:var(--space-2) 0 0;
+  font-size:var(--text-lg);
+  font-weight:700;
+}
+
+#page-community .rel-ask {
+  display:grid;
+  gap:var(--space-1);
+  margin:0;
+  padding:var(--space-3) var(--space-4);
+  border-radius:var(--radius-md);
+  background:var(--color-primary-soft);
+  font-size:var(--text-md);
+  line-height:1.6;
+  word-break:keep-all;
+}
+
+#page-community .rel-ask b {
+  color:var(--color-primary);
+  font-size:var(--text-xs);
+  font-weight:600;
+}
+
+#page-community .rel-form {
+  display:grid;
+  gap:var(--space-2);
+}
+
+#page-community .rel-form .ui-label {
+  margin-top:var(--space-1);
+}
+
+#page-community .rel-opt {
+  color:var(--color-text-secondary);
+  font-weight:400;
+}
+
+#page-community .rel-actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:var(--space-2);
+}
+
+#page-community .rel-tip {
+  display:grid;
+  justify-items:start;
+  gap:var(--space-1);
+  padding:var(--space-3) var(--space-4);
+  border-radius:var(--radius-md);
+  background:var(--color-primary-soft);
+}
+
+#page-community .rel-tip p {
+  margin:0;
+  color:var(--color-text-primary);
+  font-size:var(--text-sm);
+  line-height:1.6;
+  word-break:keep-all;
+}
+
+#page-community .rel-lines {
+  display:grid;
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+
+#page-community .rel-lines li {
+  display:grid;
+  grid-template-columns:minmax(0, 1fr) auto;
+  align-items:center;
+  gap:var(--space-3);
+  padding:var(--space-3) 0;
+  border-top:1px solid var(--color-border-subtle);
+}
+
+#page-community .rel-lines li:first-child {
+  border-top:0;
+}
+
+#page-community .rel-lines p {
+  margin:0;
+  font-size:var(--text-md);
+  line-height:1.6;
+  word-break:keep-all;
+}
+
+/* 같이 보기 놀이 피드 (2026-10-07, js/12): 그 자리에서 해 보는 카드가 섞여 나온다. 카드 면은 종류마다 분야 색(--icon-*)을 아주 옅게 */
+#page-community .play-feed {
+  display:grid;
+  gap:var(--space-4);
+}
+
+#page-community .play-list {
+  display:grid;
+  gap:var(--space-4);
+}
+
+#page-community .play-item {
+  --play-tone:var(--icon-lav-1);
+  background:color-mix(in srgb, var(--play-tone) 7%, var(--color-surface));
+}
+
+#page-community .play-item.is-guess,
+#page-community .play-item.is-vs { --play-tone:var(--icon-sky-1); }
+#page-community .play-item.is-pair,
+#page-community .play-item.is-ask,
+#page-community .play-item.is-card { --play-tone:var(--icon-pch-1); }
+#page-community .play-item.is-talk { --play-tone:var(--icon-mnt-1); }
+
+#page-community .play-item .feed-tag {
+  background:color-mix(in srgb, var(--play-tone) 14%, var(--color-surface));
+  color:color-mix(in srgb, var(--play-tone) 85%, var(--color-text-primary));
+}
+
+#page-community .pf-text,
+#page-community .pf-hint {
+  margin:0;
+  color:var(--color-text-primary);
+  font-size:var(--text-md);
+  line-height:1.6;
+  word-break:keep-all;
+}
+
+#page-community .pf-hint {
+  color:var(--color-text-secondary);
+  font-size:var(--text-xs);
+}
+
+#page-community .pf-ask {
+  font-size:var(--text-lg);
+  font-weight:600;
+}
+
+/* 오늘의 놀이 덱 (2026-10-07): 한 장씩. 위에 몇 번째인지 점, 카드 뒤로 다음 카드가 살짝 겹쳐 보인다 */
+#page-community .deck-stage {
+  display:grid;
+  gap:var(--space-3);
+}
+
+#page-community .deck-top {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:var(--space-3);
+}
+
+#page-community .deck-count {
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+  font-weight:600;
+}
+
+#page-community .deck-count b {
+  color:var(--color-primary);
+}
+
+#page-community .deck-dots {
+  display:flex;
+  align-items:center;
+  gap:var(--space-1);
+}
+
+#page-community .deck-dots i {
+  width:var(--space-2);
+  height:var(--space-2);
+  border-radius:var(--radius-full);
+  background:color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+}
+
+#page-community .deck-dots i.is-done {
+  background:var(--color-primary-light);
+}
+
+#page-community .deck-dots i.is-now {
+  width:var(--space-5);
+  background:var(--color-primary);
+}
+
+#page-community .deck {
+  position:relative;
+  padding-bottom:var(--space-3);
+}
+
+#page-community .deck-behind {
+  position:absolute;
+  right:var(--space-4);
+  bottom:0;
+  left:var(--space-4);
+  height:var(--space-8);
+  border-radius:var(--radius-lg);
+  background:color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+  box-shadow:var(--shadow-card);
+}
+
+#page-community .deck-card {
+  position:relative;
+  min-height:calc(var(--space-10) * 5);
+  align-content:start;
+}
+
+#page-community .deck-card.is-enter {
+  animation:deck-in var(--duration-fast) var(--ease-soft);
+}
+
+@keyframes deck-in {
+  from { opacity:0; transform:translateX(var(--space-5)); }
+  to { opacity:1; transform:none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #page-community .deck-card.is-enter { animation:none; }
+}
+
+#page-community .deck-card-top {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:var(--space-3);
+}
+
+#page-community .deck-card-top .art3d {
+  flex:none;
+  width:var(--space-9);
+  height:var(--space-9);
+  margin:calc(var(--space-2) * -1) calc(var(--space-1) * -1) 0 0;
+}
+
+#page-community .deck-nav {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:var(--space-3);
+}
+
+#page-community .deck-nav .btn[disabled] {
+  opacity:0.45;
+  cursor:default;
+}
+
+#page-community .deck-gems {
+  display:flex;
+  flex-wrap:wrap;
+  gap:var(--space-2);
+}
+
+#page-community .deck-gems .gem-tile {
+  display:grid;
+  place-items:center;
+  width:var(--space-8);
+  height:var(--space-8);
+  border-radius:var(--radius-md);
+  background:var(--color-surface);
+}
+
+#page-community .deck-gems .gem-img {
+  width:70%;
+  height:auto;
+}
+
+#page-community .deck-pick-title {
+  margin:var(--space-2) 0 0;
+  color:var(--color-text-primary);
+  font-size:var(--text-sm);
+  font-weight:600;
+}
+
+/* 닮은 두 유형: 두 보석이 마주 본다 */
+#page-community .pf-vs {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:var(--space-4);
+  padding:var(--space-2) 0;
+}
+
+#page-community .pf-vs-side {
+  display:grid;
+  justify-items:center;
+  gap:var(--space-1);
+}
+
+#page-community .pf-vs-side .gem-tile {
+  display:grid;
+  place-items:center;
+  width:var(--space-9);
+  height:var(--space-9);
+  border-radius:var(--radius-lg);
+  background:var(--color-surface);
+}
+
+#page-community .pf-vs-side .gem-img {
+  width:70%;
+  height:auto;
+}
+
+#page-community .pf-vs-side b {
+  color:var(--td, var(--color-text-primary));
+  font-size:var(--text-sm);
+}
+
+#page-community .pf-vs-mark {
+  color:var(--color-text-secondary);
+  font-size:var(--text-sm);
+  font-weight:700;
+}
+
+
+/* =========================================================
+   버튼은 모두 알약형 (2026-10-07, CLAUDE.md 6-1). 옛 레이어마다 반경 12 · 20을 따로 준 버튼이 남아 있어 한 곳에서 맞춘다.
+   옛 규칙(#page-share .share-btn.is-primary 등, id 1 + 클래스 2)보다 뒤에서 이기도록 :is 목록에 클래스 두 개짜리를 하나 넣었다
+   (!important를 쓰지 않으려고). 고르는 보기(.game-option 등 여러 줄 선택지)는 버튼이 아니라 선택 카드라 그대로 둔다
+   ========================================================= */
+:is(#page-home, #page-explore, #page-community, #page-state, #page-diary, #page-polish, #page-records, #page-myspace, #page-share, #page-check, #page-type, #page-post, #page-sharing, #page-compare, #page-overview, #page-handbook)
+  :is(.btn, .ui-btn, button.primary, button.secondary, .share-btn, .quick-action, .quick-primary, .quick-secondary, .check-flow-primary, .check-flow-back, .reflection-action, .primary-action, .secondary-action, .reset, .navbtn, .share-btn.is-primary) {
+  /* 검사 · 기초 · 핸드북 · 돌아보기 화면은 옛 레이어 00 · 01이 'button { border-radius: var(--radius-control) !important }'로 묶어 둬서,
+     그 토큰 값을 이 버튼들에서만 알약으로 바꿔 준다 */
+  --radius-control:var(--radius-full);
+  --ui-radius-sm:var(--radius-full);
+  border-radius:var(--radius-full);
+}
+
+/* =========================================================
+   칩 · 탭 (2026-10-07): 버튼(진한 보라 알약)과 헷갈리지 않게, 고른 칩은 옅은 보라 바탕 + 보라 글씨 + 보라 테두리.
+   안 고른 칩은 흰 바탕 + 회색 글씨. 예전에는 고른 칩이 검정(유형 탐구 · 보석 닦기) 또는 진한 보라(분석 노트 · 돌아보기)로 섞여 있었다.
+   옛 규칙(id 1 + 클래스 2)보다 뒤에서 이기도록 :is 목록에 클래스 두 개짜리를 넣었다
+   ========================================================= */
+:is(#page-home, #page-explore, #page-community, #page-state, #page-diary, #page-polish, #page-records, #page-myspace, #page-share, #page-check, #page-type, #page-post, #page-sharing, #page-compare, #page-overview, #page-handbook)
+  :is(.feed-chip, .ui-chip, .polish-mood, .explore-chip):not([aria-pressed="true"], [aria-selected="true"], .active, .is-on):is(.feed-chip, .ui-chip, .polish-mood, .explore-chip, .x.x) {
+  color:var(--color-text-secondary);
+}
+
+:is(#page-home, #page-explore, #page-community, #page-state, #page-diary, #page-polish, #page-records, #page-myspace, #page-share, #page-check, #page-type, #page-post, #page-sharing, #page-compare, #page-overview, #page-handbook)
+  :is(.feed-chip[aria-pressed="true"], .ui-chip.active, .ui-chip[aria-pressed="true"], .polish-mood.is-on, .explore-chip.active, .explore-chip[aria-selected="true"]) {
+  border-color:var(--color-primary-light);
+  background:var(--color-primary-soft);
+  color:var(--color-primary);
+  font-weight:700;
 }

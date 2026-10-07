@@ -1,6 +1,6 @@
 /* =========================================================
    유형 탐구 = 콘텐츠 피드 + 글 상세 (2026-10-05)
-   - 피드(유형 탐구 탭 #page-community의 장면 게임 아래 #homeExplore, 2026-10-07 홈에서 옮김): 오늘의 글 → 내 유형 이야기 → 주제별 줄(옆으로 넘김) → 더 많은 글(위에 나온 글 빼고 전부, 2열, 스크롤하면 끝까지)
+   - 피드(유형 탐구 탭 #page-explore의 #homeExplore. 2026-10-07 같이 보기(장면 게임)와 나눔): 오늘의 글 → 내 유형 이야기 → 주제별 줄(옆으로 넘김) → 더 많은 글(위에 나온 글 빼고 전부, 2열, 스크롤하면 끝까지)
    - 글 상세(#page-post): 모든 글이 같은 블로그 템플릿. 사진 → 분류 → 제목 → 리드 → 본문 → 질문 → 안내 → 이어 읽기
    - 글 목록과 제목은 content/explore-posts.js. 유형별 글 본문은 핸드북 데이터에서 소제목(h3) 단위로 읽어 블로그 문단으로 바꾼다
    카드 그림은 모두 사진(assets/photos). 아이콘·입체 그림은 쓰지 않는다
@@ -10,7 +10,12 @@ const D=window.EXPLORE_DATA;
 if(!D) return;
 const esc=homeEsc, NAME=CHECK_TYPE_NAMES;
 const N=t=>`${t}번 ${NAME[t]}`;
-const day=homeDayNum();
+/* 2026-10-07: 날마다 → 새로고침할 때마다 바뀌게. 페이지를 열 때 한 번 정한 수라, 연 동안에는 글을 보고 돌아와도 같은 줄 */
+const day=Math.floor(Math.random()*9973);
+/* 줄마다 정해 둔 글 목록도 섞는다: 글마다 페이지를 열 때 한 번 정한 무작위 값 순서로 (연 동안에는 같은 순서) */
+const mixKey=new Map();
+const keyOf=id=>{ if(!mixKey.has(id)) mixKey.set(id,Math.random()); return mixKey.get(id); };
+const mix=ids=>[...ids].sort((a,b)=>keyOf(a)-keyOf(b));
 
 /* ---------- 글 목록 ---------- */
 const POSTS=new Map();
@@ -34,7 +39,7 @@ homeVsPairs().forEach(v=>{
     title:`${a}번 vs ${b}번, ${hook.replace(", "," ")}`,lead:v.same,same:v.same,diff:v.diff,ask:VS_ASK,try:VS_TRY});
 });
 /* 피드에만 있는 바로가기 카드 (글이 아니라 기능 화면으로) */
-const GO={'go-diary':{title:'오늘 있었던 장면 하나 적어 보기',cat:'다이어리',pic:'diary'},'go-polish':{title:'이번 주에 해볼 작은 행동 고르기',cat:'보석 닦기',pic:'polish'}};
+const GO={'go-diary':{title:'오늘 있었던 장면 하나 이야기하기',cat:'분석 노트',pic:'diary'},'go-polish':{title:'이번 주에 해볼 작은 행동 고르기',cat:'보석 닦기',pic:'polish'}};
 
 const myType=()=>getHomeProfile()?.type||0;
 /* 'more'에 적힌 종류 이름(예: 'mbti')은 내 유형(없으면 오늘의 유형) 글로 */
@@ -80,6 +85,18 @@ function filteredHTML(){
 window.setExploreFilter=(f)=>{ Object.assign(filter,f); };
 
 /* ---------- 피드 ---------- */
+/* 오늘의 글: 유형이 있으면 내 유형 글 중 하나, 없으면 처음 오는 사람을 위한 글. 홈 '오늘 읽을 글'도 같은 글로 시작 */
+function todayPostId(t){
+  const kinds=D.KINDS.map(k=>k.k);
+  return t?`${kinds[day%kinds.length]}-${t}`:['a-mbti','r-guess','a-many','r-money','ov-basics','r-love','a-allme','r-science','cmp-glance','a-change'][day%10];
+}
+window.exploreTodayPost=()=>{ const p=POSTS.get(todayPostId(myType())); return p?{id:p.id,title:p.title}:null; };
+/* 홈 '오늘 읽을 글' (2026-10-07): 오늘의 글 + 내 유형(없으면 처음 오는 사람을 위한) 글 넷. 사진 카드 줄. 나머지는 유형 탐구에서 */
+window.exploreHomeRailHTML=function(){
+  const t=myType(), kinds=D.KINDS.map(k=>k.k), hero=todayPostId(t);
+  const more=t?kinds.map((_,i)=>`${kinds[(day+i)%kinds.length]}-${t}`):mix(['a-mbti','r-guess','a-change','r-science','ov-basics','r-colors']);
+  return rail([hero,...more.filter(id=>id!==hero && POSTS.has(id))].slice(0,5),true);
+};
 let allOrder=null;
 window.renderExploreFeed=function(){
   const box=document.getElementById('exploreFeed');
@@ -87,11 +104,10 @@ window.renderExploreFeed=function(){
   if(filter.t||filter.tag){ feedList=[...POSTS.values()].filter(p=>(!filter.t||p.t===filter.t)&&(!filter.tag||p.cat===filter.tag)).map(p=>p.id); feedShown=12; box.innerHTML=filterHTML()+filteredHTML(); watchSentinel(); return; }
   const t=myType(), vs=homeVsPairs();
   const kinds=D.KINDS.map(k=>k.k);
-  /* 오늘의 글: 유형이 있으면 내 유형 글 중 하나, 없으면 처음 오는 사람을 위한 글 */
-  const heroId=t?`${kinds[day%kinds.length]}-${t}`:['a-mbti','r-guess','a-many','r-money','ov-basics','r-love','a-allme','r-science','cmp-glance','a-change'][day%10];
+  const heroId=todayPostId(t);
   /* 한 화면에 같은 글(같은 사진)은 한 번만: 줄마다 앞에서 나온 글을 뺀다 */
   const seen=new Set([heroId]);
-  const railOnce=(ids,wide)=>rail(ids.filter(id=>!seen.has(id) && seen.add(id)),wide);
+  const railOnce=(ids,wide)=>rail(mix(ids).filter(id=>!seen.has(id) && seen.add(id)),wide);
   let html=filterHTML()+section('today','오늘의 글',`<div class="feed-post-single">${card(heroId)}</div>`);
   if(t){
     const mine=kinds.map((_,i)=>`${kinds[(day+i)%kinds.length]}-${t}`).filter(id=>id!==heroId).slice(0,10);
@@ -100,7 +116,7 @@ window.renderExploreFeed=function(){
   html+=section('start','처음 왔다면 여기부터',railOnce(['a-mbti','r-guess','a-change','r-science','ov-basics','r-colors','ov-core','r-mbti9','ov-centers','cmp-glance','ov-use'],true));
   html+=section('confused','나 혹시 몇 번? 헷갈릴 때 읽는 글',railOnce(['a-many','a-allme','cmp-confused','cmp-motives','cmp-situations',...pick(['confused','traits'],8)]));
   /* 두 유형 비교(VS)는 한 섹션에 줄이 두 개면 헷갈려서 따로 (2026-10-05) */
-  html+=section('vs','닮은 두 유형, 뭐가 다를까?',railOnce([...POSTS.values()].filter(x=>x.src==='vs').map(x=>x.id).sort((x,y)=>((x.length*7+day)%5)-((y.length*7+day)%5))));
+  html+=section('vs','닮은 두 유형, 뭐가 다를까?',railOnce([...POSTS.values()].filter(x=>x.src==='vs').map(x=>x.id)));
   html+=section('auto','머릿속 자동 재생 버튼',railOnce(pick(['auto','theme','fixation'],9,1)));
   html+=section('people','사람 사이에서 우리는',railOnce(['a-other','r-seen','cmp-hornevian',...pick(['talk','conflict','relemo','praise'],8,2)]));
   html+=section('love','연애할 때, 가족일 때',railOnce(['r-love','r-fight','r-marriage',...pick(['love','parenting'],8,3)]));
@@ -142,7 +158,7 @@ function watchSentinel(){
 }
 /* 관찰자를 못 쓰는 환경 대비: 스크롤할 때마다 끝 표시가 화면 아래 600px 안에 오면 이어 붙인다 */
 document.addEventListener('scroll',()=>{
-  const end=document.querySelector('#page-community.active .feed-sentinel');
+  const end=document.querySelector('#page-explore.active .feed-sentinel');
   if(end && end.getBoundingClientRect().top<innerHeight+600) loadMore();
 },{capture:true,passive:true});
 
@@ -399,6 +415,8 @@ function onClick(e){
   if(tt||tc){ window.setExploreFilter(tt?{t:Number(tt.dataset.tagType),tag:''}:{t:0,tag:tc.dataset.tagCat}); showExploreHub(); return; }
 
 }
+/* 같이 보기(#page-community)의 '간편 검사로 내 유형 확인하기'도 여기서 맡는다 */
+document.getElementById('page-explore')?.addEventListener('click',onClick);
 document.getElementById('page-community')?.addEventListener('click',onClick);
 document.getElementById('page-post')?.addEventListener('click',onClick);
 

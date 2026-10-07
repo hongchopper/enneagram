@@ -1316,7 +1316,29 @@ const TOP_BACK={
   type:['유형 탐구',()=>showExploreHub()],
   overview:['유형 탐구',()=>showExploreHub()],
   compare:['유형 탐구',()=>showExploreHub()],
-  sharing:['다이어리',()=>{ if(typeof showDiaryPage==='function') showDiaryPage(); }]
+  share:['같이 보기',()=>window.showCommunityPage?.()],
+  /* 분석 노트의 안쪽 화면: 이야기하기 · 행동 고르기 · 나의 기록 · 나를 돌아보기 (2026-10-07) */
+  diary:['분석 노트',()=>window.showStatePage?.()],
+  polish:['분석 노트',()=>window.showStatePage?.()],
+  records:['분석 노트',()=>window.showStatePage?.()],
+  sharing:['분석 노트',()=>window.showStatePage?.()]
+};
+/* 메뉴 구조 (2026-10-07, docs/정보구조_IA.md): 화면(page-panel) → 그 화면이 속한 하단 탭. 새 화면을 만들면 여기에 한 줄 넣는다.
+   홈 = 다음 한 걸음 / 유형 탐구 = 읽기 / 같이 보기 = 관계 / 분석 노트 = 이야기하기 → 분석 → 해볼 것 / 나의 공간 = 내 유형 · 쌓인 나 */
+const PAGE_TAB={
+  home:'home',check:'home',
+  explore:'explore',post:'explore',type:'explore',handbook:'explore',compare:'explore',overview:'explore',
+  community:'community',share:'community',
+  state:'state',diary:'state',polish:'state',sharing:'state',records:'state',
+  myspace:'myspace'
+};
+/* 하단 탭을 누르면 여는 첫 화면 */
+const TAB_OPEN={
+  home:()=>showHomePage(),
+  explore:()=>showExploreHub(),
+  community:()=>window.showCommunityPage?.(),
+  state:()=>window.showStatePage?.(),
+  myspace:()=>window.showMySpaceSection?.('dashboard')
 };
 let topBackGo=null;
 function setTopBack(label,go){
@@ -1336,7 +1358,7 @@ function activateBasePage(name){
   document.querySelectorAll('.shell-menu-btn[data-page]').forEach(b=>{
     b.classList.toggle('active',b.dataset.page===name);
   });
-  const exploreGroup=['community','post','type','handbook','compare','overview'].includes(name); /* 2026-10-07: 유형 탐구 = 하단 탭(코드 id community) — 장면 게임 + 피드, 글·요약·기초·비교도 이 묶음 */
+  const exploreGroup=PAGE_TAB[name]==='explore'; /* 유형 탐구 묶음: 피드 · 글 · 요약 · 기초 · 비교 */
   document.querySelectorAll('.top-nav-main[data-top-page]').forEach(b=>{
     b.classList.toggle('active',b.dataset.topPage===name
       || (exploreGroup && b.dataset.topPage==='handbook')
@@ -1348,8 +1370,8 @@ function activateBasePage(name){
     b.classList.toggle('active',name==='home');
   });
   document.querySelectorAll('.bottom-tab[data-tab]').forEach(b=>{
-    /* 유형 검사는 하단 탭 없이 홈에서 들어가므로 검사 화면에서는 '홈'을 켠다 */
-    const on=b.dataset.tab===name || (exploreGroup && b.dataset.tab==='community') || (name==='sharing' && b.dataset.tab==='diary') || (name==='check' && b.dataset.tab==='home');
+    /* 유형 검사는 하단 탭 없이 홈에서 들어가므로 검사 화면에서는 '홈'을 켠다 (PAGE_TAB) */
+    const on=b.dataset.tab===(PAGE_TAB[name]||name);
     b.classList.toggle('active',on);
     if(on) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current');
   });
@@ -1718,13 +1740,16 @@ function setCompareSidebarActive(key){
     b.classList.toggle('active',b.dataset.compareTarget===key);
   });
 }
-/* 유형 탐구 = 하단 탭 화면(#page-community)의 장면 게임 아래 콘텐츠 피드 (js/10-explore-content.js). 글에서 뒤로 오면 피드 시작점으로 */
+/* 유형 탐구 = 하단 탭 화면(#page-explore): 9가지 유형 카드 + 콘텐츠 피드 (js/10-explore-content.js).
+   2026-10-07 같이 보기(장면 게임)와 나눴다. 글에서 뒤로 와도 맨 위부터 */
 function showExploreHub(push=true){
-  /* 2026-10-07 홈에서 유형 탐구 탭으로 옮김. js/11이 아직 안 읽혔으면(첫 주소 처리) 화면만 켜고 js/11이 다시 부른다 */
-  if(window.showCommunityPage) window.showCommunityPage(false); else activateBasePage('community');
-  const page=document.getElementById('page-community'), feed=document.getElementById('homeExplore');
-  if(page && feed) page.scrollTo({top:Math.max(0,feed.offsetTop-page.offsetTop)});
+  activateBasePage('explore');
+  document.getElementById('shellMobileTitle').textContent='유형 탐구';
+  window.renderExploreFeed?.(); /* js/10이 아직 안 읽혔으면(첫 주소 처리) js/10이 읽힐 때 그린다 */
+  document.getElementById('page-explore')?.scrollTo({top:0});
+  window.scrollTo({top:0});
   if(push) history.replaceState(null,'','#explore');
+  closeShellMenu();
 }
 
 /* 유형 탐구 목록의 짧은 한 줄 (2026-10-05): 화면 첫 문단은 길어 목록에서는 이 한 줄만 보여준다 */
@@ -1850,12 +1875,7 @@ document.querySelectorAll('#page-home .journey-item[data-home-route]').forEach(i
 document.getElementById('bottomTabbar')?.addEventListener('click',e=>{
   const tab=e.target.closest('.bottom-tab[data-tab]');
   if(!tab) return;
-  const key=tab.dataset.tab;
-  if(key==='community'){ window.showCommunityPage?.(); return; } /* js/11-scene-game.js */
-  const target=key==='home'
-    ? document.querySelector('.top-home-link[data-top-home]')
-    : document.querySelector(`.top-nav-main[data-top-page="${key}"]`);
-  target?.click();
+  TAB_OPEN[tab.dataset.tab]?.();
   window.scrollTo({top:0});
 });
 
@@ -1869,7 +1889,7 @@ document.querySelectorAll('[data-top-home]').forEach(b=>{
 
 document.querySelector('.top-nav-main[data-top-page="overview"]')?.addEventListener('click',()=>showOverviewSection('basics'));
 document.querySelector('.top-nav-main[data-top-page="check"]')?.addEventListener('click',()=>showCheckTarget('start'));
-document.querySelector('.top-nav-main[data-top-page="handbook"]')?.addEventListener('click',()=>window.showCommunityPage?.()); /* 유형 탐구 탭 (js/11) */
+document.querySelector('.top-nav-main[data-top-page="handbook"]')?.addEventListener('click',()=>showExploreHub()); /* 유형 탐구 탭 */
 document.querySelector('.top-nav-main[data-top-page="compare"]')?.addEventListener('click',()=>showCompareSection('glance'));
 document.querySelector('.top-nav-main[data-top-page="sharing"]')?.addEventListener('click',()=>showSharingTopic(0));
 
@@ -2003,10 +2023,10 @@ document.addEventListener('click',e=>{
   const n=Number(card.dataset.type);
   if(e.target.closest('[data-tcp-posts]')){ window.setExploreFilter?.({t:n,tag:''}); showExploreHub(); return; }
   if(e.target.closest('[data-tcp-share]')){ showSharePage(); const b=document.querySelector(`#shareApp [data-share-type="${n}"]`); b?.click(); return; }
-  /* 지금 내 보석 상태 살펴보기 → 보석 닦기에서 상태 문항 바로 시작 (js/02). 결과 카드 유형을 내 유형으로 먼저 저장한다 */
+  /* 지금 내 보석 상태 살펴보기 → 내 상태 > 살펴보기에서 상태 문항 바로 시작 (js/02). 결과 카드 유형을 내 유형으로 먼저 저장한다 */
   if(e.target.closest('[data-tcp-state]')){
     if(getHomeProfile()?.type!==n){ try{ localStorage.setItem('enneagram_my_type_v1',JSON.stringify(String(n))); }catch(err){} if(typeof refreshHome==='function') refreshHome(); }
-    window.showPolishPage?.(true,undefined,{check:true}); return;
+    window.showStatePage?.(true,{check:true}); return;
   }
   /* 받은 친구 카드로 돌아가 비교 (공유 링크로 들어와 간편 검사를 한 사람) */
   if(e.target.closest('[data-tcp-pending-share]')){ const h=takePendingShare(); if(h){ history.replaceState(null,'','#'+h); showSharePage(h,false); } return; }
@@ -2347,35 +2367,26 @@ function homeTodayQuestion(){
 }
 
 /* 유형 검사 다시 하기: 내 프로필 카드 아래 (2026-10-03 홈에서 나의 공간으로 옮김. 유형이 없으면 홈 맨 위 '내 보석 찾기'가 그 역할) */
-const MY_CHECK_HTML=`<div class="home-check" role="region" aria-label="유형 검사"><div class="home-check-copy"><strong class="home-check-title">유형 검사</strong>`
-  +'<p class="home-check-desc">헷갈리는 유형이 있다면 정식 검사로 그 유형만 자세히 확인해보세요.</p></div>'
-  +'<div class="home-check-actions"><button class="btn primary" data-home-action="quick" type="button">간편 검사하기</button>'
-  +'<button class="btn secondary is-tinted" data-home-action="find" type="button">정식 검사하기</button></div></div>';
-
 /* 나의 공간 '내 프로필' 영역 (2026-10-03 홈에서 옮김. 함수 이름·id는 예전 그대로) (디자인 시스템 v1 '오늘의 보석 카드' 바탕): 유리 패널 하나에
    카드 | 머리(보석 타일·유형·키워드·태그·한 줄 소개) / 오늘의 질문 / 할 수 있는 일. 모바일은 머리 → 카드 → 질문 → 버튼 순서 */
 function renderHomeMe(profile){
+  /* 2026-10-07: 큰 프로필 카드 · 소개 글 · 유형 검사 묶음 대신 가로 한 줄 (보석 · 유형 · 키워드 · 어디서 정했는지 · 할 수 있는 일 둘) */
   const box=document.getElementById('homeMe');
   if(!box) return;
-  /* 유형 이름·보석·키워드는 카드에 이미 있어 머리에서는 뺐다. 위에 '내 프로필' 라벨, 태그는 카드 앞면 아래, 카드 밑에 한 줄 소개만 (2026-10-03) */
-  /* 다이어리가 완성되기 전까지 홈의 '오늘의 질문'은 뺀다 (2026-10-03). 핸드북·공유·이미지 저장 버튼도 홈에서는 뺐다 */
   if(!profile){
-    box.className='home-me-grid is-empty';
     box.removeAttribute('style');
-    box.innerHTML='';
+    box.innerHTML=`<span class="my-profile-gem is-empty">${uiIcon('check')}</span>`
+      +'<div class="my-profile-copy"><strong class="my-profile-name">아직 내 유형을 찾지 않았어요</strong><span class="my-profile-sub">두 번만 고르면 가장 가까운 유형을 보여줘요</span></div>'
+      +'<div class="my-profile-actions"><button class="my-profile-link" data-home-action="quick" type="button">간편 검사하기</button></div>';
     return;
   }
   const t=profile.type, p=HOME_PROFILES[t];
-  box.className='home-me-grid me-panel';
   box.setAttribute('style',gemVars(t));
-  box.innerHTML=`<div class="me-card"><span class="me-label">내 프로필</span>${homeProfileCardHTML(t,{mine:profile,link:false,tags:true})}</div>`
-    +`<header class="me-head">`
-    +`<h2 class="sr-only">${t}번 ${homeEsc(CHECK_TYPE_NAMES[t])}</h2>`
-    +`<p class="me-desc">${homeEsc(p.intro)}</p>`
-    +`<h3 class="me-why-title">왜 ${homeEsc(p.gem)}일까요?</h3><p class="me-desc">${homeEsc(p.why)}</p>`
-    +`</header>`
-    +MY_CHECK_HTML
-    ;
+  box.innerHTML=`<span class="my-profile-gem">${gemImg(t,'',true)}</span>`
+    +`<div class="my-profile-copy"><strong class="my-profile-name">${t}번 ${homeEsc(CHECK_TYPE_NAMES[t])} · ${homeEsc(p.gem)}</strong>`
+    +`<span class="my-profile-sub">${homeEsc(p.key)} · ${homeEsc(profile.source)}</span></div>`
+    +`<div class="my-profile-actions"><button class="my-profile-link" data-profile-open="${t}" type="button">내 유형 자세히</button>`
+    +'<button class="my-profile-link" data-home-action="quick" type="button">다시 검사하기</button></div>';
 }
 
 /* 홈 = 큐레이션 피드 (2026-10-01). 소개 글 대신 바로 볼거리를 선반(옆으로 넘기는 줄)으로 보여준다.
@@ -2522,37 +2533,73 @@ function homeQuizReveal(btn){
   res.hidden=false;
 }
 
-/* 내 보석 찾기 (2026-10-05 배너를 빼면서 이 칸만 남김): 유형이 없으면 검사로, 있으면 내 보석과 다시 검사 */
+/* 홈 검사 배너 (2026-10-07: 항상 홈에). 유형이 없으면 '내 보석 찾기', 있으면 '다시 확인해 볼까요?'.
+   내 유형 이름 · 보석은 바로 위 카드가 이미 보여주므로 배너에서는 되풀이하지 않고 검사에만 집중한다 */
 function homeFindHTML(profile){
   const gems=ts=>`<span class="banner-art is-${ts.length}">${ts.map(t=>gemImg(t,'',true)).join('')}</span>`;
   if(!profile) return `<div class="home-gem"><div class="banner-slide is-find" style="${gemVars(5)}"><span class="banner-copy"><span class="banner-tag">처음이라면</span>`
     +'<strong class="banner-title">내 보석을 찾아볼까요?</strong><span class="banner-desc">두 번만 고르면 가장 가까운 유형의 보석을 보여줘요.</span>'
     +'<span class="banner-actions"><button class="btn primary" data-home-action="quick" type="button">간편 검사하기</button>'
     +`<button class="btn secondary is-tinted" data-home-action="find" type="button">정식 검사하기</button></span></span>${gems([2,5,7])}</div></div>`;
-  const t=profile.type, gem=HOME_PROFILES[t].gem;
-  const c=String(gem).charCodeAt(String(gem).length-1)-0xAC00, eul=c>=0&&c<11172&&c%28?'을':'를';
-  return `<div class="home-gem"><div class="banner-slide is-find" style="${gemVars(t)}"><span class="banner-copy"><span class="banner-tag">내 보석</span>`
-    +`<strong class="banner-title">${homeEsc(gem)}${eul} 닮은 나</strong><span class="banner-desc">${t}번 ${homeEsc(CHECK_TYPE_NAMES[t])} · ${homeEsc(HOME_PROFILES[t].key)}</span>`
-    +`<span class="banner-actions"><button class="btn primary" data-profile-open="${t}" type="button">내 유형 보기</button>`
-    +`<button class="btn secondary is-tinted" data-home-action="quick" type="button">다시 검사하기</button></span></span>${gems([t])}</div></div>`;
+  return `<div class="home-gem"><div class="banner-slide is-find" style="${gemVars(5)}"><span class="banner-copy"><span class="banner-tag">유형 검사</span>`
+    +'<strong class="banner-title">내 유형, 다시 확인해 볼까요?</strong><span class="banner-desc">헷갈리는 유형이 있다면 정식 검사로 그 유형만 자세히 볼 수 있어요.</span>'
+    +'<span class="banner-actions"><button class="btn primary" data-home-action="find" type="button">정식 검사하기</button>'
+    +`<button class="btn secondary is-tinted" data-home-action="quick" type="button">간편 검사하기</button></span></span>${gems([2,5,7])}</div></div>`;
 }
 
+/* 홈 = 상태별 피드 (2026-10-07, docs/정보구조_IA.md): 홈은 자기 콘텐츠를 갖지 않고, 각 탭에서 '지금 필요한 것'을 조금씩 꺼내 보여준다.
+   누르면 그 탭(집)으로 간다. 예전 바로가기 8칸은 하단 탭과 겹쳐서 뺐다.
+   맨 위 9가지 유형 카드(마크업)는 항상. 그 아래
+   검사 전: 내 보석 찾기 → 오늘의 장면(같이 보기) → 오늘 읽을 글(유형 탐구)
+   검사 후: 내 보석 → 오늘(분석 노트: 보석 상태 · 이야기하기 · 해볼 것) → 오늘의 장면 → 오늘 읽을 글
+   값은 js/02 myStateToday · js/10 exploreHomeRailHTML · js/11 sceneSummary가 준다 (마지막 파일 js/11이 다시 그린다) */
+function homeNextHTML(go,icon,title,desc,action){
+  return `<button class="home-next" data-home-go="${homeEsc(go)}" type="button">${icon}`
+    +`<span class="home-next-copy"><strong class="home-next-title">${homeEsc(title)}</strong><span class="home-next-desc">${homeEsc(desc)}</span></span>`
+    +`<span class="home-next-go">${homeEsc(action)}</span></button>`;
+}
+const homeSecHTML=(key,title,inner)=>`<section class="home-sec" aria-labelledby="homeSec-${key}"><h2 class="home-sec-title" id="homeSec-${key}">${title}</h2>${inner}</section>`;
 function renderHomeShelves(profile){
   const box=document.getElementById('homeShelves');
   if(!box) return;
-  /* 바로가기 메뉴 (2026-10-05): 홈에서 뺀 9가지 보석·장면·세 중심 선반 대신, 각 내용의 집으로 가는 아이콘 8개 (배달·쇼핑 앱 홈의 카테고리 줄처럼).
-     유형이 있으면 첫 칸이 '내 유형'(핸드북)으로 바뀐다 */
-  const quick=[
-    profile?['mytype','내 유형']:['check','유형 검사'],
-    ['types','9가지 유형'],['basics','에니어그램이란'],['centers','세 중심'],
-    ['confused','헷갈리는 유형'],['life','삶의 장면'],['diary','다이어리'],['polish','보석 닦기']
-  ];
-  /* 보석은 유형을 가리킬 때만: '내 유형' 칸만 내 보석, 나머지는 선 아이콘 */
-  const quickIcon=k=>k==='mytype'?`<span class="gem-tile deco-square" style="${gemVars(profile.type)}">${gemImg(profile.type,'',true)}</span>`:`<span class="icon-tile">${['check','centers','diary'].includes(k)?iconSpark():''}${uiIcon(k)}</span>`; /* 별빛은 몇 칸에만 */
-  const quickHTML=`<nav class="home-quick" aria-label="바로가기">${quick.map(([k,label])=>`<button class="home-quick-item" data-quick="${k}" type="button">${quickIcon(k)}<span class="home-quick-label">${label}</span></button>`).join('')}</nav>`;
+  const tile=k=>`<span class="icon-tile">${uiIcon(k)}</span>`;
+  const me=window.myStateToday?.()||{};
+  /* 검사 배너는 항상 (유형이 있으면 다시 확인하기). 내 보석은 맨 위 카드 줄이 보여준다 */
+  let html=homeFindHTML(profile);
 
-  /* 홈 = 9가지 유형 카드 → 내 보석 찾기 → 바로가기 (2026-10-05 두 번째: 오늘의 VS · 나라면? · 기초 · 비교 목록은 유형 탐구 피드로 옮김) */
-  box.innerHTML=homeFindHTML(profile)+quickHTML;
+  if(profile){
+    const t=profile.type, gem=HOME_PROFILES[t].gem;
+    const gemTile=`<span class="gem-tile deco-square" style="${gemVars(t)}">${gemImg(t,'',true)}</span>`;
+    const st=me.state, day=v=>{ const x=new Date(v); return `${x.getMonth()+1}월 ${x.getDate()}일`; };
+    let rows=!st?homeNextHTML('state',gemTile,`${gem}${homeJosa(gem,'은','는')} 지금 어떤 빛일까요?`,'20문항으로 빛남 · 연마 중 · 흐려짐 중 어디쯤인지 살펴봐요','살펴보기')
+      :st.due?homeNextHTML('state-check',gemTile,`요즘 ${st.label} 구간이었어요`,`${day(st.at)}에 살펴본 지 4주가 지났어요. 다시 살펴볼까요?`,'다시 살펴보기')
+      :homeNextHTML('state',gemTile,`요즘 ${st.label} 구간이에요`,`${day(st.at)}에 살펴본 결과예요`,'결과 보기');
+    rows+=me.wroteToday
+      ?homeNextHTML('records',tile('diary'),'오늘 이야기를 남겼어요',`지금까지 쌓인 분석 ${me.records}개`,'기록 보기')
+      :homeNextHTML('write',tile('diary'),'오늘 있었던 장면을 이야기해 볼까요?',me.records?`지금까지 쌓인 분석 ${me.records}개`:'질문에 답하면 분석 카드가 나와요','이야기하기');
+    rows+=me.practice
+      ?homeNextHTML('practice',tile('polish'),me.practice.text,me.practice.routine?'오늘의 루틴이에요. 해봤다면 체크해요':`이번 주 해볼 것 ${me.practice.left}개가 남았어요`,'체크하기')
+      :homeNextHTML('polish',tile('polish'),'이번 주 해볼 작은 행동 고르기','지금 상태에 맞는 행동을 골라 담아요','고르기');
+    html+=homeSecHTML('today','오늘',`<div class="home-next-list">${rows}</div>`);
+  }
+
+  /* 오늘의 장면 (같이 보기): 카드 전체가 같이 보기로 가는 버튼 */
+  const sc=window.sceneSummary?.();
+  if(sc && sc.title) html+=homeSecHTML('scene','오늘의 장면',`<button class="home-scene" data-home-go="community" type="button">`
+    +`<span class="home-scene-tag">나라면?</span><strong class="home-scene-title">${homeEsc(sc.title)}</strong>`
+    +`<span class="home-scene-desc">여유 있을 때와 지쳤을 때, 나라면 어떻게 할까요? 고르고 나면 9가지 유형의 반응과 나란히 볼 수 있어요.</span>`
+    +`<span class="home-scene-go">${sc.picks?`지금까지 ${sc.picks}번 골랐어요 · `:''}골라 보기</span></button>`);
+
+  /* 오늘 읽을 글 (유형 탐구): 사진 카드 줄 + 더 보기 */
+  const rail=window.exploreHomeRailHTML?.();
+  if(rail) html+=homeSecHTML('read','오늘 읽을 글',rail+'<button class="home-more" data-home-go="explore" type="button">유형 탐구에서 더 보기</button>');
+
+  box.innerHTML=html;
+}
+/* 받침에 맞는 조사 (보석 이름 뒤) */
+function homeJosa(word,withBatchim,without){
+  const c=String(word).charCodeAt(String(word).length-1)-0xAC00;
+  return c>=0&&c<11172&&c%28?withBatchim:without;
 }
 
 /* 하단 탭 '나의 공간' 아이콘: 유형을 정했으면 내 보석 이미지로 (디자인 시스템 §6 하단 탭) */
@@ -2651,21 +2698,24 @@ async function saveTypeCardImage(t,source){
 document.querySelector('[data-side-quick]')?.addEventListener('click',()=>showCheckTarget('quick'));
 
 document.getElementById('page-home')?.addEventListener('click',e=>{
-  /* 9가지 유형 카드 (홈 맨 위): 누르면 그 유형 핸드북 */
-  const typeCard=e.target.closest('[data-explore-type]');
-  if(typeCard){ showHandbookType(Number(typeCard.dataset.exploreType)); return; }
-  const qk=e.target.closest('[data-quick]');
-  if(qk){
-    const k=qk.dataset.quick, my=getHomeProfile();
-    if(k==='check') showCheckTarget('start');
-    else if(k==='mytype') showHandbookType(my?my.type:1);
-    else if(k==='types') showCompareSection('glance'); /* 카드는 홈 맨 위로 옮겨 '9가지 유형 한눈에'로 */
-    else if(k==='basics') showOverviewSection('basics');
-    else if(k==='centers') showCompareSection('centers');
-    else if(k==='confused') showCompareSection('confused');
-    else if(k==='life'){ window.setExploreFilter?.({t:my?my.type:0,tag:''}); showExploreHub(); }
-    else if(k==='diary' && typeof showDiaryPage==='function') showDiaryPage();
-    else if(k==='polish' && typeof showPolishPage==='function') showPolishPage();
+  /* 맨 위 9가지 유형 카드 → 유형 요약, 오늘 읽을 글 → 글 */
+  const gemBtn=e.target.closest('[data-explore-type]');
+  if(gemBtn){ showHandbookType(Number(gemBtn.dataset.exploreType)); return; }
+  const postBtn=e.target.closest('[data-post]');
+  if(postBtn){ window.showExplorePost?.(postBtn.dataset.post); return; }
+  /* 홈 '오늘' 줄: 그 기능이 있는 탭으로 */
+  const next=e.target.closest('[data-home-go]');
+  if(next){
+    const k=next.dataset.homeGo;
+    if(k==='explore') showExploreHub();
+    else if(k==='community') window.showCommunityPage?.();
+    else if(k==='write') window.showDiaryPage?.(true,'write');
+    else if(k==='records') window.showRecordsPage?.();
+    else if(k==='polish') window.showPolishPage?.();
+    else if(k==='state') window.showStatePage?.();
+    else if(k==='practice'){ window.showStatePage?.(); document.getElementById('diaryExpTitle')?.scrollIntoView({block:'start'}); }
+    else if(k==='state-check') window.showStatePage?.(true,{check:true});
+    else if(k.startsWith('post:')) window.showExplorePost?.(k.slice(5));
     return;
   }
   const bs=e.target.closest('[data-banner-scroll]');
@@ -2699,10 +2749,10 @@ document.getElementById('page-home')?.addEventListener('click',e=>{
 });
 
 document.addEventListener('click',e=>{
-  /* 나의 공간 내 프로필 아래 유형 검사 버튼 (홈 버튼과 같은 동작) */
+  /* 나의 공간 내 유형 줄의 검사 버튼 (홈 버튼과 같은 동작) */
   const myAct=e.target.closest('#page-myspace [data-home-action]');
   if(myAct){ e.preventDefault(); showCheckTarget(myAct.dataset.homeAction==='find'?'start':'quick'); return; }
-  const open=e.target.closest('.pcard [data-profile-open]');
+  const open=e.target.closest('.pcard [data-profile-open], #page-myspace [data-profile-open]');
   if(open && !open.closest('#page-home')){ e.preventDefault(); showHandbookType(Number(open.dataset.profileOpen)); }
 });
 

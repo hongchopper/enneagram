@@ -108,6 +108,10 @@ function mapCardHTML(){
 }
 function refreshMap(){ const m=document.getElementById('sceneMap'); if(m) m.outerHTML=mapCardHTML(); }
 
+/* 같이 보기의 놀이 카드 하나씩 (2026-10-07, js/12가 고른 놀이만 그린다): 'pick' 나라면? · 'guess' 몇 번일까? · 'map' 내 반응 지도 */
+window.scenePart=k=>k==='pick'?pickCardHTML():k==='guess'?guessCardHTML():k==='map'?mapCardHTML():'';
+/* 같이 보기 놀이 피드(js/12)에서 고른 반응도 같은 기록(내 반응 지도)에 쌓는다 */
+window.sceneAddPick=(s,t,state)=>addPick(s,t,state);
 /* 피드에 넣는 묶음 (js/10이 '나라면 어떻게 할까' 섹션에 넣는다) */
 window.sceneGameHTML=function(noType){
   return `<div class="game-stack">${pickCardHTML()}${guessCardHTML()}${mapCardHTML()}`
@@ -134,7 +138,9 @@ function showSceneShare(s,friend,push=false){
   const sc=scenes()[s];
   if(!sc || !(friend>=1 && friend<=9)){ showExploreHub(false); return; }
   activateBasePage('post');
-  setTopBack('유형 탐구',()=>showCommunityPage());
+  setTopBack('같이 보기',()=>window.openPlay?.('scene'));
+  /* 글 화면(post)을 빌려 쓰지만 하단 탭은 같이 보기 */
+  document.querySelectorAll('.bottom-tab[data-tab]').forEach(b=>{ const on=b.dataset.tab==='community'; b.classList.toggle('active',on); if(on) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
   document.getElementById('shellMobileTitle').textContent='친구가 보낸 장면';
   const view=document.getElementById('postView');
   view.innerHTML=`<article class="post"><figure class="post-hero"><img src="assets/photos/situations.jpg" alt="" width="900" height="600" decoding="async"></figure>`
@@ -182,22 +188,29 @@ document.addEventListener('click',e=>{
   const fp=e.target.closest('[data-friend-pick]');
   if(fp){ compare(fp); return; }
   if(e.target.closest('[data-scene-card]')){ showSharePage(); return; } /* 친구와 비교하기 (js/00) */
-  if(e.target.closest('[data-scene-home], [data-scene-community]')){ showCommunityPage(); }
+  if(e.target.closest('[data-scene-home], [data-scene-community]')){ if(window.openPlay) window.openPlay('scene'); else showCommunityPage(); }
 });
 
-/* 유형 탐구 화면 (하단 탭, 코드 id community): 맨 위 장면 게임 + 아래 콘텐츠 피드(js/10) */
+/* 같이 보기 화면 (하단 탭, 코드 id community, 2026-10-07): 놀이 카드를 고르는 첫 화면. 카드와 고른 놀이는 js/12가 그린다 */
 function showCommunityPage(push=true){
   activateBasePage('community');
-  document.getElementById('shellMobileTitle').textContent='유형 탐구';
-  const box=document.getElementById('communityGame');
-  if(box) box.innerHTML=window.sceneGameHTML(!getHomeProfile());
-  window.renderExploreFeed?.();
+  document.getElementById('shellMobileTitle').textContent='같이 보기';
   document.getElementById('page-community')?.scrollTo({top:0});
   window.scrollTo({top:0});
   if(push) history.replaceState(null,'','#community');
   closeShellMenu();
 }
 window.showCommunityPage=showCommunityPage;
+
+/* 홈 '오늘의 장면' · 나의 공간 '내 반응 지도' 요약 (2026-10-07): 오늘 장면 제목, 지금까지 고른 수, 가장 자주 기운 유형 */
+window.sceneSummary=function(){
+  const {picks}=load(), c={};
+  picks.forEach(p=>c[p.t]=(c[p.t]||0)+1);
+  const top=Object.entries(c).sort((a,b)=>b[1]-a[1]||a[0]-b[0])[0];
+  return {title:scenes()[sceneIdx]?.title||'',picks:picks.length,top:top?Number(top[0]):0};
+};
+/* 홈은 js/00이 먼저 그려서 js/02 · 10 · 11 값이 없었다. 마지막 파일인 여기서 다시 그린다 */
+if(typeof renderHomeShelves==='function') renderHomeShelves(getHomeProfile());
 
 /* 받은 링크 #scene=<장면>-<친구가 고른 유형> */
 function route(){ const m=location.hash.match(/^#scene=(\d+)-([1-9])$/); if(m) showSceneShare(Number(m[1]),Number(m[2])); return !!m; }

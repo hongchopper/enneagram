@@ -45,19 +45,42 @@
   let currentMySpace='dashboard';
   let libraryFilter='전체';
 
-  /* 다이어리(성찰 기록)는 상단 메뉴의 별도 페이지. 예전 '나의 공간 > 성찰 기록' 링크는 다이어리로 */
-  window.showDiaryPage=function(push=true){
+  let diaryTab='write'; /* 이제 'write'만 쓴다. 기록 목록은 #page-records */
+  function setDiaryTab(tab){
+    diaryTab=tab;
+    const wrap=document.querySelector('#page-diary .diary-wrap');
+    if(wrap) wrap.dataset.diaryTab=tab;
+    /* 쓰기 칸에만 있는 설명 한 줄 */
+    const lead=wrap?.querySelector('.state-lead'); if(lead) lead.hidden=tab!=='write';
+    if(tab==='history') renderReflectionHistory();
+  }
+
+  /* ---- 분석 노트 안에서 오가기 (2026-10-07) ----
+     분석 노트(#page-state) 한 화면 + 안쪽 화면: 이야기하기(#page-diary) · 행동 고르기(#page-polish) · 나의 기록(#page-records).
+     예전 칸 나눔 메뉴(살펴보기 · 다이어리 · 보석 닦기)는 한 과정을 셋으로 잘라 어색해서 뺐다 */
+  function goState(k,push=true){
+    if(k==='state') showStatePage(push);
+    else if(k==='history') showRecordsPage(push);
+    else if(k==='polish') showPolishPage(push);
+    else showDiaryPage(push,k);
+  }
+  /* 메뉴 칸과 화면 안의 '다이어리 쓰기' 같은 버튼이 같이 쓴다 */
+  document.addEventListener('click',e=>{ const b=e.target.closest('[data-state-go]'); if(b) goState(b.dataset.stateGo); });
+
+  /* 다이어리(성찰 기록)는 '내 상태' 탭의 쓰기 · 기록 칸 (2026-10-07). 예전 '나의 공간 > 성찰 기록' 링크도 여기로.
+     tab: 'write'(쓰기) · 'history'(기록). 주소는 #diary · #records */
+  window.showDiaryPage=function(push=true,tab){
+    if(tab==='history'){ showRecordsPage(push); return; } /* 기록 목록은 분석 노트 > 나의 기록 */
     if(typeof activateBasePage==='function') activateBasePage('diary');
     const mobileTitle=document.getElementById('shellMobileTitle');
-    if(mobileTitle) mobileTitle.textContent='다이어리';
+    if(mobileTitle) mobileTitle.textContent='오늘 이야기하기';
+    setDiaryTab('write');
     if(push) history.replaceState(null,'','#diary');
     if(typeof closeShellMenu==='function') closeShellMenu();
     renderReflectionHistory();
     /* ---- 다이어리 탭: 쓰기(채팅) · 기록 · 실천 (2026-10-03) ----
      쓰기는 긴 폼 대신 채팅: 정해진 순서로 질문이 하나씩 말풍선으로 나오고, 답을 모아 다이어리 한 편으로 정리해 저장한다.
      저장 형식은 기존 성찰 기록(schemaVersion 2)과 같다 — '왜'는 다섯 단계 대신 한 번(whys[0])만 묻는다. */
-  const DIARY_TABS=[['write','쓰기'],['history','기록']]; /* '실천'은 하단 메뉴 '보석 닦기'로 옮겼다 (2026-10-03) */
-  let diaryTab='write';
   function chatWhyOptions(){
     const t=diaryTypeInfo.type, out=[];
     if(t && DIARY_WHY_BY_TYPE[t]) out.push([DIARY_WHY_BY_TYPE[t],`${DIARY_WHY_BY_TYPE[t]} · 내 유형`]);
@@ -150,7 +173,7 @@
     {key:'why3',ask:()=>`‘${lastWhy('why2')}’ ${DIARY_WHY_LABELS[2][0]}`,type:'multi',options:()=>whyDeepOptions(3),text:'직접 쓰기',skip:true,stop:true,when:()=>answered('why2')},
     {key:'why5',ask:()=>`거의 다 왔어요. ${DIARY_WHY_LABELS[4][0]}`,type:'multi',options:()=>whyDeepOptions(5),text:'직접 쓰기',skip:true,stop:true,when:()=>answered('why3')},
     {key:'motives',ask:DIARY_WHY_LABELS[3][0],type:'multi',options:chatMotiveOptions,skip:true},
-    {key:'next',ask:'다음에 비슷한 일이 생기면 해보고 싶은 작은 행동이 있나요? 적어 두면 ‘보석 닦기’에 모여요.',type:'multi',options:chatNextOptions,text:'직접 쓰기',skip:true}
+    {key:'next',ask:'다음에 비슷한 일이 생기면 해보고 싶은 작은 행동이 있나요? 적어 두면 분석 노트의 ‘이번 주 해볼 것’에 모여요.',type:'multi',options:chatNextOptions,text:'직접 쓰기',skip:true}
   ];
   let chat={step:0,answers:{},picks:[],saved:false};
 
@@ -266,15 +289,15 @@
       +(rx.deep?`<div><dt>가장 깊은 이유</dt><dd>${esc(rx.deep)}</dd></div>`:'')
       +`<div><dt>이번 주 처방</dt><dd>${esc(rx.action)}</dd></div>`
       +'<div><dt>복용법</dt><dd>비슷한 장면이 오면 한 번만 해 보세요. 못 했어도 괜찮아요.</dd></div></dl>'
-      +(rx.fromNext?'':`<button type="button" class="ui-btn ui-btn-secondary rx-add" data-rx-add="${esc(rx.action)}">보석 닦기에 담기</button>`)
+      +(rx.fromNext?'':`<button type="button" class="ui-btn ui-btn-secondary rx-add" data-rx-add="${esc(rx.action)}">이번 주 해볼 것에 담기</button>`)
       +'<p class="rx-note">진단이나 치료가 아니라, 다음 연마를 위한 제안이에요.</p></article>';
   }
   function chatSave(){
     const record=chatRecord();
     const arr=readReflections(); arr.unshift(record); write(STORAGE.reflections,arr);
     chat.saved=true;
-    renderReflectionHistory(); renderExperiments(); renderDashboard();
-    chatBot(record.next?'저장했어요. ‘기록’에서 다시 볼 수 있고, 해보기로 한 행동은 ‘보석 닦기’에 모였어요.':'저장했어요. ‘기록’에서 다시 볼 수 있어요.');
+    renderReflectionHistory(); renderExperiments(); renderDashboard(); renderNoteRecent();
+    chatBot(record.next?'분석 노트에 쌓았어요. 해보기로 한 행동은 ‘이번 주 해볼 것’에 모였어요.':'분석 노트에 쌓았어요. ‘나의 기록’에서 다시 볼 수 있어요.');
     chatBot('오늘 연마한 기록으로 처방전을 써 봤어요.'+prescriptionHTML(diaryPrescribe(record,arr),record));
     renderChatComposer();
     chatScroll();
@@ -286,39 +309,20 @@
     chat={step:0,answers:{},picks:[],saved:false};
     const log=g('diaryChatLog'); if(!log) return;
     log.innerHTML='';
-    chatBot('오늘의 장면 하나를 원석처럼 꺼내 함께 연마해 볼까요? 질문에 하나씩 답하면 다이어리 한 편과 연마 처방전이 나와요. ‘왜’는 한 단계씩 더 물어볼게요. 언제든 멈춰도 괜찮아요.');
+    chatBot('오늘의 장면 하나를 원석처럼 꺼내 함께 연마해 볼까요? 질문에 하나씩 답하면 오늘의 이야기와 연마 처방전이 나와요. ‘왜’는 한 단계씩 더 물어볼게요. 언제든 멈춰도 괜찮아요.');
     chatAsk();
   }
-  function setDiaryTab(tab){
-    diaryTab=tab;
-    document.querySelectorAll('#diaryTabs [data-diary-tab]').forEach(b=>{
-      const on=b.dataset.diaryTab===tab;
-      b.setAttribute('aria-selected',on?'true':'false');
-      b.classList.toggle('active',on);
-      b.tabIndex=on?0:-1;
-    });
-    const wrap=document.querySelector('#page-diary .diary-wrap');
-    if(wrap) wrap.dataset.diaryTab=tab;
-    if(tab==='history') renderReflectionHistory();
-    if(tab==='practice') renderExperiments();
-  }
+
   function setupDiaryTabs(){
     const wrap=document.querySelector('#page-diary .diary-wrap');
-    if(!wrap || g('diaryTabs')) return;
-    const head=wrap.querySelector('.diary-head');
-    head?.insertAdjacentHTML('afterend',`<div class="diary-tabs" id="diaryTabs" role="tablist" aria-label="다이어리">${DIARY_TABS.map(([k,l])=>`<button type="button" role="tab" id="diaryTab-${k}" data-diary-tab="${k}" aria-selected="false">${l}</button>`).join('')}</div>`
-      +'<section class="diary-chat" data-diary-panel="write" role="tabpanel" aria-labelledby="diaryTab-write"><div class="chat-log" id="diaryChatLog" role="log" aria-live="polite"></div>'
+    if(!wrap || wrap.querySelector('.diary-chat')) return;
+    (wrap.querySelector('.state-lead')||wrap.querySelector('.state-head'))?.insertAdjacentHTML('afterend',
+      '<section class="diary-chat" data-diary-panel="write" aria-label="다이어리 쓰기"><div class="chat-log" id="diaryChatLog" role="log" aria-live="polite"></div>'
       +'<form class="chat-bar" id="diaryChatComposer" data-chat-form><p class="diary-error" hidden id="diaryChatError" role="alert"></p>'
       +'<textarea class="ui-field" id="diaryChatText" rows="1" aria-label="대화 입력"></textarea>'
       +'<button type="submit" class="ui-btn ui-btn-primary" id="diaryChatSend">보내기</button></form></section>');
     wrap.querySelector('.diary-layout')?.setAttribute('data-diary-panel','practice');
     wrap.querySelector('.diary-list')?.setAttribute('data-diary-panel','history');
-    g('diaryTabs').addEventListener('click',e=>{ const b=e.target.closest('[data-diary-tab]'); if(b) setDiaryTab(b.dataset.diaryTab); });
-    g('diaryTabs').addEventListener('keydown',e=>{
-      if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft') return;
-      const i=DIARY_TABS.findIndex(([k])=>k===diaryTab), n=(i+(e.key==='ArrowRight'?1:-1)+DIARY_TABS.length)%DIARY_TABS.length;
-      setDiaryTab(DIARY_TABS[n][0]); g('diaryTab-'+DIARY_TABS[n][0])?.focus();
-    });
     const composer=g('diaryChatComposer'), chatPanel=wrap.querySelector('.diary-chat');
     chatPanel.addEventListener('click',e=>{
       const pick=e.target.closest('[data-chat-pick]');
@@ -328,9 +332,9 @@
       if(e.target.closest('[data-chat-save]')){ chatSave(); return; }
       if(e.target.closest('[data-chat-restart]')){ chatStart(); return; }
       const rx=e.target.closest('[data-rx-add]'); /* 연마 처방전의 처방을 보석 닦기 '해보기로 한 것'에 */
-      if(rx){ addCustomExperiment(rx.dataset.rxAdd,'연마 처방전'); rx.disabled=true; rx.textContent='보석 닦기에 담았어요'; renderExperiments(); return; }
+      if(rx){ addCustomExperiment(rx.dataset.rxAdd,'연마 처방전'); rx.disabled=true; rx.textContent='이번 주 해볼 것에 담았어요'; renderExperiments(); return; }
       const go=e.target.closest('[data-chat-go]');
-      if(go) setDiaryTab(go.dataset.chatGo);
+      if(go) showDiaryPage(true,go.dataset.chatGo);
     });
     composer.addEventListener('input',chatNextLabel);
     composer.addEventListener('submit',e=>{
@@ -349,7 +353,7 @@
     composer.addEventListener('keydown',e=>{
       if(e.key==='Enter' && !e.shiftKey && e.target.matches('textarea#diaryChatText')){ e.preventDefault(); e.target.form?.requestSubmit(); }
     });
-    setDiaryTab('write');
+    setDiaryTab(diaryTab);
     loadDiaryTypeInfo().then(chatStart);
   }
   setupDiaryTabs();
@@ -369,7 +373,7 @@
     if(mobileTitle) mobileTitle.textContent='나의 공간';
     if(push) history.replaceState(null,'',`#myspace-${key}`);
     if(typeof closeShellMenu==='function') closeShellMenu();
-    renderDashboard();
+    renderDashboard(); renderMonthReport(); renderMyLog();
     document.getElementById('page-myspace')?.scrollTo({top:0});
   };
 
@@ -412,7 +416,7 @@
   const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
 
   function renderDashboard(){
-    renderGemState(); /* 나의 공간 맨 위 '지금 내 보석 상태' (보석 닦기 영역) */
+    renderStatePage(); /* 내 상태 > 살펴보기의 '지금 내 보석 상태' */
     const all=readReflections();
     const catName=v=>(DIARY_CATEGORIES.find(c=>c[0]===v)||[v,v])[1];
     /* 요즘 나의 흐름 한 줄 (2026-10-05): 최근 30일 기록이 2개 이상이면 그걸로, 아니면 전체 기록으로 */
@@ -626,7 +630,7 @@
     if(insight) insight.innerHTML=(motive||emotion)?[motive?`자주 나온 단서 <b>${esc(motive[0])}</b> ${motive[1]}회`:'',emotion?`자주 느낀 감정 <b>${esc(emotion[0])}</b> ${emotion[1]}회`:''].filter(Boolean).join(' · '):'';
     const arr=all.filter(r=>diaryFilter==='전체'||r.category===diaryFilter);
     if(!arr.length){
-      list.innerHTML='<div class="ui-empty"><img class="art3d is-empty" src="assets/illust/notebook.png" alt="" width="256" height="256"><strong>아직 기록이 없어요.</strong><p>위에서 오늘의 장면 하나를 적어보세요.</p></div>';
+      list.innerHTML='<div class="ui-empty"><img class="art3d is-empty" src="assets/illust/notebook.png" alt="" width="256" height="256"><strong>아직 기록이 없어요.</strong><p>‘쓰기’에서 오늘의 장면 하나를 적어보세요.</p><button class="ui-btn ui-btn-primary" data-state-go="write" type="button">다이어리 쓰기</button></div>';
       return;
     }
     const groups=[];
@@ -732,7 +736,7 @@
     const custom=store.custom.map(c=>({id:c.id,text:c.text,src:c.src||'직접 추가',custom:true,createdAt:c.createdAt}));
     return [...fromDiary,...custom]
       .sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt))
-      .map(it=>({...it,done:!!store.status[it.id]?.done,note:store.status[it.id]?.note||'',routine:store.status[it.id]?.routine||null,log:store.status[it.id]?.log||{}}));
+      .map(it=>({...it,done:!!store.status[it.id]?.done,note:store.status[it.id]?.note||'',routine:store.status[it.id]?.routine||null,log:store.status[it.id]?.log||{},updatedAt:store.status[it.id]?.updatedAt||''}));
   }
   function experimentSummary(){
     const items=experimentItems();
@@ -1013,44 +1017,69 @@
       +`<div class="sc-foot"><p class="sc-count" id="scCount" aria-live="polite">${done} / ${total} 답했어요</p>`
       +`<div class="sc-actions"><button class="ui-btn ui-btn-primary" data-sc-done type="button"${done<total?' disabled':''}>결과 보기</button><button class="ui-btn ui-btn-ghost" data-sc-cancel type="button">그만하기</button></div></div></section>`;
   }
-  /* ① 지금 내 상태는? 맨 위: 살펴본 결과 카드 또는 살펴보기 시작 */
-  function stateResultHTML(t){
+  /* 내 상태 > 살펴보기 (2026-10-07, docs/정보구조_IA.md): 지금 내 보석 상태 한 곳.
+     예전에는 나의 공간 맨 위(요약)와 보석 닦기 ①(결과·20문항)에 나뉘어 있었다. 마지막으로 살펴본 결과를 기준선으로 (PRD MR-1·MR-4, 콘텐츠 가이드라인 A10) */
+  const STATE_TEXT={
+    high:{title:n=>`요즘 ${n}${josa(n,'이','가')} 빛나요`,feel:'요즘 마음에 힘이 차 있는 것 같아요.'},
+    mid:{title:n=>`${n}${josa(n,'을','를')} 다듬는 중이에요`,feel:'좋은 날도 버거운 날도 함께 지나가고 있네요.'},
+    low:{title:n=>`${n}에 먼지가 좀 앉았네요`,feel:'요즘 마음이 많이 바빴던 것 같아요.'}
+  };
+  /* 분석 노트의 기본 행동은 '이야기 시작하기' 하나라서 이 카드의 버튼은 모두 보조 (2026-10-07) */
+  function stateCardHTML(t){
     const D=stateData();
-    if(!D || !D.types[t]) return '';
+    const gemName=(typeof HOME_PROFILES!=='undefined'&&HOME_PROFILES[t]?.gem)||`${t}번 보석`;
     const r=lastStateCheck(t);
-    if(!r) return '<div class="sc-start"><strong class="sc-start-title">내 보석은 지금 어떤 빛일까요?</strong>'
-      +'<p>최근 2주를 떠올리며 20문항에 답하면 빛남 · 연마 중 · 흐려짐 중 어디쯤인지 살펴봐 줘요. 약 4분 걸려요.</p>'
-      +'<button class="ui-btn ui-btn-primary" data-sc-start type="button">자세히 살펴보기</button></div>';
-    const asked=readInterest().report;
+    const gem=typeof gemImg==='function'?`<span class="my-gem-state-gem${r?' is-'+r.band:''}" aria-hidden="true">${gemImg(t,'',true)}</span>`:'';
+    const open=`<section aria-labelledby="myGemStateTitle" class="my-insight my-gem-state" style="${typeof gemVars==='function'?gemVars(t):''}">`;
+    if(!r) return open+`<div class="my-gem-state-head">${gem}<div><h2 class="my-insight-title" id="myGemStateTitle" tabindex="-1">지금 내 보석 상태</h2><p class="my-insight-line">${esc(gemName)}${josa(gemName,'은','는')} 지금 어떤 빛일까요?</p></div></div>`
+      +'<p class="my-insight-meta">최근 2주를 떠올리며 20문항에 답하면 빛남 · 연마 중 · 흐려짐 중 어디쯤인지 살펴봐 줘요. 약 4분 걸려요.</p>'
+      +'<div class="my-insight-actions"><button class="ui-btn ui-btn-secondary" data-sc-start type="button">자세히 살펴보기</button></div></section>';
+    const x=STATE_TEXT[r.band], due=stateDue(r), asked=readInterest().report;
     const report=r.care?'<button class="ui-btn ui-btn-secondary" data-crisis-open type="button">도움이 필요할 때</button>'
-      :asked?'<p class="sc-report-done" role="status">심화 리포트는 준비 중이에요. 관심을 남겨 주셔서 고마워요.</p>'
-      :'<button class="ui-btn ui-btn-secondary" data-sc-report type="button">심화 리포트 받기</button>';
-    return `<div class="sc-result" style="${typeof gemVars==='function'?gemVars(t):''}">`
-      +`<span class="sc-result-k">${esc(stateDay(r.at))}에 살펴본 내 보석</span>`
-      +`<p class="sc-result-band">요즘은 주로 <b>${esc(STATE_LABEL[r.band])}</b> 구간이에요.</p>`
-      +`<p class="sc-result-stress">${esc(STATE_STRESS[r.stress])}</p>`
-      +`<p class="sc-result-line">${esc(D.types[t].result[r.band])}</p>`
-      +(stateDue(r)?`<p class="sc-result-due">${STATE_RECHECK_DAYS/7}주가 지났어요. 요즘의 나를 다시 살펴볼까요?</p>`:'')
-      +`<div class="sc-actions"><button class="ui-btn${stateDue(r)?' ui-btn-primary':' ui-btn-ghost'}" data-sc-start type="button">다시 살펴보기</button>${report}</div>`
-      +'<p class="sc-result-note">진단이 아니라 요즘의 나를 살펴보는 참고예요. 아래에서 지금 상태에 맞는 행동을 골라 담아요.</p></div>';
+      :asked?'':'<button class="ui-btn ui-btn-secondary" data-sc-report type="button">심화 리포트 받기</button>';
+    const actions=due
+      ?'<button class="ui-btn ui-btn-secondary" data-sc-start type="button">다시 살펴보기</button><button class="ui-btn ui-btn-secondary" data-state-go="polish" type="button">보석 닦으러 가기</button>'
+      :'<button class="ui-btn ui-btn-secondary" data-state-go="polish" type="button">보석 닦으러 가기</button><button class="ui-btn ui-btn-ghost" data-sc-start type="button">다시 살펴보기</button>';
+    /* 보석 옆에는 제목과 언제 살펴봤는지만, 풀어 쓴 말은 아래에 전체 폭으로 */
+    return open+`<div class="my-gem-state-head">${gem}<div><h2 class="my-insight-title" id="myGemStateTitle" tabindex="-1">${esc(x.title(gemName))}</h2>`
+      +`<p class="my-insight-meta">${esc(stateDay(r.at))}에 살펴봤어요 · <b>${esc(STATE_LABEL[r.band])}</b></p></div></div>`
+      +`<p class="my-insight-line">${esc(x.feel)} ${esc(STATE_STRESS[r.stress])}</p>`
+      +`<p class="my-insight-line">${esc(D.types[t].result[r.band])}</p>`
+      +(due?`<p class="my-insight-line">${STATE_RECHECK_DAYS/7}주가 지났어요. 요즘의 나를 다시 살펴볼까요?</p>`:'')
+      +`<div class="my-insight-actions">${actions}${report}</div>`
+      +(asked&&!r.care?'<p class="sc-report-done my-insight-meta" role="status" tabindex="-1">심화 리포트는 준비 중이에요. 관심을 남겨 주셔서 고마워요.</p>':'')
+      +'<p class="my-insight-meta">진단이 아니라 요즘의 나를 살펴보는 참고예요.</p></section>';
+  }
+  function renderStatePage(){
+    const host=g('stateApp'); if(!host) return;
+    const t=diaryMyType();
+    if(!t){
+      host.innerHTML='<section aria-labelledby="stateFindTitle" class="my-insight my-gem-state"><h2 class="my-insight-title" id="stateFindTitle">내 보석을 먼저 찾아볼까요?</h2>'
+        +'<p class="my-insight-line">유형을 알면 내 보석이 지금 어떤 빛인지 살펴볼 수 있어요.</p>'
+        +'<div class="my-insight-actions"><button class="ui-btn ui-btn-secondary" data-state-quick type="button">간편 검사하기</button></div></section>';
+      return;
+    }
+    if(!stateData()){ host.innerHTML=''; return; }
+    if(stateRun && stateRun.t!==t) stateRun=null; /* 살펴보는 중에 내 유형을 바꿨으면 그만둔다 */
+    host.innerHTML=stateRun?stateCheckHTML():stateCardHTML(t);
   }
   function startStateCheck(){
     const t=diaryMyType();
     if(!t || !stateData()) return;
     stateRun={t,ans:{}};
-    renderPolish();
+    renderStatePage();
     document.getElementById('scTitle')?.scrollIntoView({block:'start'});
-    document.querySelector('#polishApp .sc-q .polish-mood')?.focus({preventScroll:true});
+    document.querySelector('#stateApp .sc-q .polish-mood')?.focus({preventScroll:true});
   }
   function finishStateCheck(){
     const {t,ans}=stateRun;
     const r=scoreStateCheck(t,ans);
     saveStateCheck({type:t,at:new Date().toISOString(),...r,answers:ans});
     stateRun=null;
-    polishState=r.band; polishStatePicked=false;
-    renderPolish(); renderGemState();
-    document.querySelector('#polishApp .polish-state')?.scrollIntoView({block:'start'});
-    document.getElementById('polishStateTitle')?.focus?.();
+    polishState=r.band; polishStatePicked=false; /* 보석 닦기의 행동 추천도 이 상태로 */
+    renderStatePage(); renderPolish();
+    document.getElementById('page-state')?.scrollTo({top:0});
+    document.getElementById('myGemStateTitle')?.focus?.({preventScroll:true});
     if(r.care && typeof window.openCrisisGuide==='function') window.openCrisisGuide(); /* 마음의 짐 '일상을 버티기 어려울 만큼' → 위기 안내 먼저 (SF-2·3) */
   }
   /* 답 하나 고를 때는 화면을 다시 그리지 않는다 (스크롤·포커스 유지) */
@@ -1061,40 +1090,123 @@
     const D=stateData(), T=D.types[stateRun.t];
     const total=T.items.length+T.scenes.length+D.common.length, done=Object.keys(stateRun.ans).length;
     const count=document.getElementById('scCount'); if(count) count.textContent=`${done} / ${total} 답했어요`;
-    const go=document.querySelector('#polishApp [data-sc-done]'); if(go) go.disabled=done<total;
+    const go=document.querySelector('#stateApp [data-sc-done]'); if(go) go.disabled=done<total;
   }
-
-  /* 나의 공간 맨 위 '지금 내 보석 상태' (2026-10-07, PRD MR-1·MR-4, 콘텐츠 가이드라인 A10): 마지막으로 살펴본 결과를 기준선으로 */
-  function renderGemState(){
-    const host=g('myGemState'); if(!host) return;
-    const t=diaryMyType();
-    if(!t || !stateData()){ host.hidden=true; host.innerHTML=''; return; }
-    const gemName=(typeof HOME_PROFILES!=='undefined'&&HOME_PROFILES[t]?.gem)||`${t}번 보석`;
-    const r=lastStateCheck(t);
-    const gem=typeof gemImg==='function'?`<span class="my-gem-state-gem${r?' is-'+r.band:''}" aria-hidden="true">${gemImg(t,'',true)}</span>`:'';
-    const TEXT={
-      high:{title:`요즘 ${gemName}${josa(gemName,'이','가')} 빛나요`,feel:'요즘 마음에 힘이 차 있는 것 같아요.',try:'이 빛을 만든 순간을 한 줄 남겨보는 건 어때요?'},
-      mid:{title:`${gemName}${josa(gemName,'을','를')} 다듬는 중이에요`,feel:'좋은 날도 버거운 날도 함께 지나가고 있네요.',try:'오늘 나를 다듬어준 일을 하나 떠올려보는 건 어때요?'},
-      low:{title:`${gemName}에 먼지가 좀 앉았네요`,feel:'요즘 마음이 많이 바빴던 것 같아요.',try:'닦아볼까요? 5분만 아무것도 하지 않는 시간을 가져보는 건 어때요?'}
-    };
-    host.hidden=false;
-    host.setAttribute('style',typeof gemVars==='function'?gemVars(t):'');
-    if(!r){
-      host.innerHTML=`<div class="my-gem-state-head">${gem}<div><h2 class="my-insight-title" id="myGemStateTitle">지금 내 보석 상태</h2><p class="my-insight-line">${esc(gemName)}${josa(gemName,'은','는')} 지금 어떤 빛일까요?</p></div></div>`
-        +'<p class="my-insight-meta">20문항으로 빛남 · 연마 중 · 흐려짐 중 어디쯤인지 살펴봐요. 약 4분 걸려요.</p>'
-        +'<div class="my-insight-actions"><button class="ui-btn ui-btn-primary" data-gem-state="check" type="button">자세히 살펴보기</button></div>';
+  g('stateApp')?.addEventListener('click',e=>{
+    const sq=e.target.closest('[data-sc-q]');
+    if(sq && stateRun){ answerStateCheck(sq); return; }
+    if(e.target.closest('[data-sc-start]')){ startStateCheck(); return; }
+    if(e.target.closest('[data-sc-done]') && stateRun){ finishStateCheck(); return; }
+    if(e.target.closest('[data-sc-cancel]')){ stateRun=null; renderStatePage(); document.getElementById('page-state')?.scrollTo({top:0}); return; }
+    if(e.target.closest('[data-sc-report]')){
+      const t=diaryMyType(), r=lastStateCheck(t);
+      write(STORAGE.interest,{schemaVersion:INTEREST_SCHEMA,report:{at:new Date().toISOString(),type:t,band:r?r.band:null}});
+      renderStatePage(); document.querySelector('#stateApp .sc-report-done')?.focus?.();
       return;
     }
-    const x=TEXT[r.band];
-    host.innerHTML=`<div class="my-gem-state-head">${gem}<div><h2 class="my-insight-title" id="myGemStateTitle">${esc(x.title)}</h2><p class="my-insight-line">${esc(x.feel)} ${esc(x.try)}</p></div></div>`
-      +`<p class="my-insight-meta">${esc(stateDay(r.at))}에 살펴본 결과예요.${stateDue(r)?` ${STATE_RECHECK_DAYS/7}주가 지났으니 다시 살펴볼 때예요.`:''}</p>`
-      +`<div class="my-insight-actions"><button class="ui-btn ui-btn-primary" data-gem-state="${stateDue(r)?'check':'polish'}" type="button">${stateDue(r)?'다시 살펴보기':'보석 닦으러 가기'}</button>`
-      +(stateDue(r)?'<button class="ui-btn ui-btn-secondary" data-gem-state="polish" type="button">보석 닦으러 가기</button>':'')+'</div>';
-  }
-  g('myGemState')?.addEventListener('click',e=>{
-    const b=e.target.closest('[data-gem-state]'); if(!b) return;
-    showPolishPage(true,undefined,{check:b.dataset.gemState==='check'});
+    if(e.target.closest('[data-state-quick]') && typeof showCheckTarget==='function') showCheckTarget('quick');
   });
+  /* opts.check: 검사 결과 카드·홈의 '다시 살펴보기'에서 열 때 바로 20문항을 시작한다 */
+  window.showStatePage=function(push=true,opts={}){
+    if(typeof activateBasePage==='function') activateBasePage('state');
+    const mobileTitle=document.getElementById('shellMobileTitle');
+    if(mobileTitle) mobileTitle.textContent='분석 노트';
+    if(push) history.replaceState(null,'','#state');
+    if(typeof closeShellMenu==='function') closeShellMenu();
+    renderDashboard(); renderExperiments(); renderNoteRecent(); /* 보석 상태 · 이번 주 해볼 것 · 쌓인 분석 */
+    document.getElementById('page-state')?.scrollTo({top:0});
+    if(opts.check && diaryMyType()) startStateCheck();
+  };
+  /* 나의 공간 > 나의 기록 (2026-10-07): 다이어리 기록 목록. 하단 탭은 나의 공간, 위 뒤로 가기도 나의 공간 (js/00 PAGE_TAB · TOP_BACK) */
+  window.showRecordsPage=function(push=true){
+    if(typeof activateBasePage==='function') activateBasePage('records');
+    const mobileTitle=document.getElementById('shellMobileTitle');
+    if(mobileTitle) mobileTitle.textContent='나의 기록';
+    if(push) history.replaceState(null,'','#records');
+    if(typeof closeShellMenu==='function') closeShellMenu();
+    renderReflectionHistory();
+    document.getElementById('page-records')?.scrollTo({top:0});
+  };
+  /* 분석 노트 '쌓인 분석': 최근 분석 세 개. 누르면 나의 기록 */
+  function renderNoteRecent(){
+    const host=g('noteRecent'); if(!host) return;
+    const recs=readReflections();
+    const icon=typeof uiIcon==='function'?`<span class="icon-tile">${uiIcon('diary')}</span>`:'';
+    const row=(title,desc,action)=>`<button class="home-next" data-state-go="history" type="button">${icon}<span class="home-next-copy"><strong class="home-next-title">${esc(title)}</strong><span class="home-next-desc">${esc(desc)}</span></span><span class="home-next-go">${esc(action)}</span></button>`;
+    host.innerHTML=recs.length
+      ?recs.slice(0,3).map(r=>{ const d=new Date(r.createdAt); return row(r.title||'제목 없는 이야기',`${isNaN(d)?'':longDate(d)+' · '}${catLabel(r.category)}${r.next?` · 다음엔 ${r.next}`:''}`,'보기'); }).join('')
+        +(recs.length>3?row(`나의 기록 ${recs.length}개 모두 보기`,'지금까지 쌓인 분석을 날짜별로 봐요','전체'):'')
+      :'';
+    host.hidden=!recs.length;
+  }
+  /* 나의 공간 '이달의 리포트' (2026-10-07): 이번 달 이야기에서 자주 나온 것. 두 번 넘게 나온 것만 '자주'로 본다 */
+  function renderMonthReport(){
+    const host=g('myMonth'); if(!host) return;
+    const now=new Date(), mon=now.getMonth()+1;
+    const recs=readReflections().filter(r=>{ const d=new Date(r.createdAt); return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth(); });
+    const top=list=>{ const t=list[0]; return t&&t[1]>=2?t[0]:''; };
+    const cat=top(aggregateCategories(recs)), emo=top(aggregateEmotions(recs)), mot=top(aggregateMotives(recs));
+    const done=experimentItems().filter(i=>i.done && (i.updatedAt||'').slice(0,7)===now.toISOString().slice(0,7)).length;
+    const t=diaryMyType(), lastState=t&&stateData()?lastStateCheck(t):null;
+    const rows=[['이야기한 장면',`${recs.length}개`],['자주 나온 장면',cat?catLabel(cat):''],['자주 느낀 감정',emo],['지키려 한 것',mot],['해 본 행동',done?`${done}개`:''],['요즘 보석 상태',lastState?STATE_LABEL[lastState.band]:'']].filter(([,v])=>v);
+    host.innerHTML=`<h2 class="my-log-title" id="myMonthTitle">${mon}월의 나</h2>`
+      +(recs.length>=2
+        ?`<dl class="my-month-rows">${rows.map(([k,v])=>`<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>`
+          +'<p class="my-month-note">두 번 넘게 나온 것만 적었어요. 판정이 아니라 이번 달 이야기에서 보인 흐름이에요.</p>'
+        :`<p class="my-month-note">이번 달 이야기가 두 개 넘게 쌓이면 ${mon}월의 나를 정리해 드려요. 지금 ${recs.length}개예요.</p><button class="ui-btn ui-btn-secondary" data-state-go="write" type="button">이야기 시작하기</button>`);
+  }
+  /* 나의 공간 '쌓인 나' (2026-10-07 두 번째): 홈 '오늘' 줄 목록과 같은 모양이라 두 화면이 비슷해 보여서, 프로필처럼 바꿨다.
+     숫자 세 칸(쌓인 분석 · 해본 것 · 장면 반응, 누르면 그곳으로) + 보석 상태 변화 줄(최근 여섯 번, 왼쪽이 예전) */
+  function renderMyLog(){
+    const host=g('myLog'); if(!host) return;
+    const t=diaryMyType(), recs=readReflections(), items=experimentItems();
+    const done=items.filter(i=>i.done).length;
+    const checks=t&&stateData()?readStateChecks().results.filter(r=>r.type===t):[];
+    const sc=window.sceneSummary?.()||{picks:0,top:0};
+    const stat=(go,n,label)=>`<button class="my-stat" data-mylog-go="${go}" type="button"><b>${n}</b><span>${esc(label)}</span></button>`;
+    let html=`<h2 class="sr-only" id="myLogTitle">나에게 쌓인 것</h2><div class="my-stats">`
+      +stat(recs.length?'records':'write',recs.length,'쌓인 분석')
+      +stat('practice',done,'해본 것')
+      +stat('community',sc.picks,'장면 반응')+'</div>';
+    if(t){
+      const line=checks.slice(0,6).reverse();
+      html+='<section class="my-states" aria-labelledby="myStatesTitle"><h2 class="my-log-title" id="myStatesTitle">보석 상태 변화</h2>'
+        +(line.length
+          ?`<ol class="my-state-line" style="${typeof gemVars==='function'?gemVars(t):''}">${line.map(r=>`<li class="is-${r.band}"><span class="my-state-dot" aria-hidden="true"></span><b>${esc(STATE_LABEL[r.band])}</b><small>${esc(stateDay(r.at))}</small></li>`).join('')}</ol>`
+            +'<p class="my-states-note">빛남 · 연마 중 · 흐려짐은 판정이 아니라 그때의 나를 살펴본 기록이에요.</p>'
+            +'<button class="my-profile-link" data-mylog-go="state" type="button">다시 살펴보기</button>'
+          :'<p class="my-states-note">20문항으로 살펴보면 여기에 그때그때의 보석 상태가 쌓여요.</p><button class="my-profile-link" data-mylog-go="state" type="button">처음 살펴보기</button>')
+        +'</section>';
+    }
+    host.innerHTML=html;
+  }
+  g('myLog')?.addEventListener('click',e=>{
+    const b=e.target.closest('[data-mylog-go]'); if(!b) return;
+    const k=b.dataset.mylogGo;
+    if(k==='state') showStatePage();
+    else if(k==='records'){
+      /* 나의 공간에서 열었으면 뒤로 가기 · 켜진 탭도 나의 공간 */
+      showRecordsPage();
+      if(typeof setTopBack==='function') setTopBack('나의 공간',()=>showMySpaceSection('dashboard'));
+      document.querySelectorAll('.bottom-tab[data-tab]').forEach(b=>{ const on=b.dataset.tab==='myspace'; b.classList.toggle('active',on); if(on) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
+    }
+    else if(k==='write') showDiaryPage(true,'write');
+    else if(k==='practice'){ showStatePage(); g('diaryExpTitle')?.scrollIntoView({block:'start'}); }
+    else if(k==='community') window.showCommunityPage?.();
+  });
+  /* 홈 '오늘' 줄에 쓰는 요약 (js/00 renderHomeShelves): 보석 상태 · 오늘 쓴 기록 · 다음에 해볼 것 */
+  window.myStateToday=function(){
+    const t=diaryMyType(), r=t&&stateData()?lastStateCheck(t):null;
+    const recs=readReflections(), todayKey=dayKeyOf(new Date());
+    const todo=experimentItems().filter(i=>!i.done);
+    const next=todo.find(i=>i.routine && !routineStats(i).todayDone)||todo.find(i=>!i.routine)||null;
+    return {
+      state:r?{band:r.band,label:STATE_LABEL[r.band],at:r.at,due:stateDue(r)}:null,
+      records:recs.length,
+      wroteToday:recs.some(x=>{ const d=new Date(x.createdAt); return !isNaN(d) && dayKeyOf(d)===todayKey; }),
+      practice:next?{text:next.text,routine:!!next.routine,left:todo.length}:null
+    };
+  };
 
   /* 보기 설정: 저장 키 enneagram_prefs_v1, schemaVersion 1: { schemaVersion, showPrayer:boolean }
      v1이 첫 형식이라 옮길 이전 형식은 없다. 형식이 바뀌면 readPrefs에서 옮긴다. 기도제목은 원하는 사람만 본다(기본 꺼짐). */
@@ -1105,7 +1217,8 @@
   }
   /* 보석 닦기 다시 정리 (2026-10-05): 컨셉 하나 — "이번 주 작은 행동 하나를 고르고, 해보고, 체크한다".
      설명형 콘텐츠(1분 연습 · 신호 목록 · 고칠 점 · 키워드)는 유형 탐구 글로 넘기고, 여기는 고르기와 담기만 남긴다.
-     화면: 내 보석 카드(이번 주 방향) → ① 지금 내 상태 고르기 → 그 상태의 행동 담기 → ② 해보기로 한 것(아래 정적 영역) */
+     화면: 내 보석 카드(이번 주 방향) → ① 지금 상태에 맞는 행동 담기 → ② 해보기로 한 것(아래 정적 영역) → ③ 소원과 기도.
+     2026-10-07: 상태를 자세히 살펴보는 20문항과 결과는 '내 상태 > 살펴보기'로 옮겼다. 여기서는 살펴본 상태를 기본으로 빠르게 고르기만 */
   function polishPicksHTML(t,have){
     const [key,label,lead]=POLISH_STATES.find(([k])=>k===polishState);
     const acts=t?POLISH_STATE_TYPE[t][key].acts:POLISH_STATE_GENERAL[key].start;
@@ -1114,10 +1227,11 @@
       +(t?`<button class="polish-add" data-polish-add="${esc(a)}" data-polish-src="${esc(label)}" type="button"${on?' disabled':''}>${on?'담았어요':'담기'}</button>`:'')+'</li>';}).join('');
     let extra='';
     if(key==='low') extra+='<p class="polish-safe">여기 있는 내용은 성격 패턴을 이해하기 위한 것이지, 마음 상태를 진단하는 것이 아니에요. 힘든 마음이 여러 날 이어진다면 믿을 수 있는 사람이나 전문가에게 이야기해보세요.</p>';
-    const checked=t?stateResultHTML(t):'';
-    return `<section class="polish-sec polish-state" aria-labelledby="polishStateTitle"><h2 class="polish-title" id="polishStateTitle" tabindex="-1"><span class="polish-no" aria-hidden="true">1</span>지금 내 상태는?</h2>`
-      +checked
-      +(checked?'<h3 class="polish-sub">빠르게 고르기</h3>':'')
+    const last=t&&stateData()?lastStateCheck(t):null;
+    const from=last?`<p class="polish-lead">${esc(stateDay(last.at))}에 살펴본 상태는 <b>${esc(STATE_LABEL[last.band])}</b>이에요. 오늘 느낌이 다르면 바꿔 골라요.</p>`
+      :t?'<p class="polish-lead">지금 상태를 골라요. 20문항으로 자세히 보려면 <button class="polish-inline-link" data-state-go="state" type="button">살펴보기</button>로 가요.</p>':'';
+    return `<section class="polish-sec polish-state" aria-labelledby="polishStateTitle"><h2 class="polish-title" id="polishStateTitle" tabindex="-1">지금 상태에 맞는 행동</h2>`
+      +from
       +`<div class="polish-moods" role="group" aria-label="지금 내 상태">${chips}</div>`
       +`<p class="polish-lead">${esc(lead)}</p><ul class="polish-picks">${items}</ul>${extra}</section>`;
   }
@@ -1153,7 +1267,7 @@
       suggest=`<ul class="pray-suggest">${POLISH_STATE_TYPE[t][key].prays.map(p=>`<li><p>${esc(p)}</p><button class="polish-add" data-pray-add="${esc(p)}" type="button"${have.has(p)?' disabled':''}>${have.has(p)?'담았어요':'내 기도로 담기'}</button></li>`).join('')}</ul>`
         +`<p class="polish-verse">함께 읽는 말씀 · ${esc(POLISH_STATE_TYPE[t].verse)}</p>`;
     }
-    return `<section class="polish-sec polish-wish" aria-labelledby="polishWishTitle"><h2 class="polish-title" id="polishWishTitle"><span class="polish-no" aria-hidden="true">3</span>소원과 기도</h2>`
+    return `<section class="polish-sec polish-wish" aria-labelledby="polishWishTitle"><h2 class="polish-title" id="polishWishTitle">소원과 기도</h2>`
       +'<p class="polish-lead">닦은 보석에 이번 주 바라는 것을 담아요. 소원이 이뤄지면 감사로, 기도가 응답되면 응답으로 바뀌어요.</p>'
       +'<h3 class="polish-sub">나의 소원</h3>'
       +'<form class="wish-form" data-wish-form="wish"><input class="ui-field" maxlength="80" placeholder="예: 이번 주엔 내 마음을 한 번 솔직하게 말하기" aria-label="이번 주 나의 소원"><button class="polish-add" type="submit">소원 담기</button></form>'
@@ -1170,7 +1284,7 @@
     const gem=n=>typeof gemImg==='function'?gemImg(n,'',true):'';
     const name=n=>(typeof CHECK_TYPE_NAMES!=='undefined'&&CHECK_TYPE_NAMES[n])||TYPES[n]?.name||'';
     const vars=n=>typeof gemVars==='function'?gemVars(n):'';
-    const flow='<ol class="polish-flow" aria-label="보석 닦는 순서"><li>상태 살펴보기</li><li>행동 담기</li><li>소원과 기도</li></ol>';
+    const flow=''; /* 순서 띠(상태 고르기 · 행동 담기 · 소원과 기도)는 섹션 번호와 겹쳐서 뺐다 (2026-10-07) */
     if(!t){
       host.innerHTML=`<section class="polish-hero is-find"><span class="polish-hero-gems" aria-hidden="true">${[2,5,7].map(gem).join('')}</span>`
         +'<strong class="polish-hero-title">내 보석을 먼저 찾아볼까요?</strong><p class="polish-hero-desc">유형을 알면 내 보석에 맞는 행동을 골라 줄 수 있어요.</p>'
@@ -1182,40 +1296,27 @@
     const hero=`<section class="polish-hero" style="${vars(t)}"><span class="polish-hero-gem" aria-hidden="true">${gem(t)}</span>`
       +`<span class="polish-hero-name">${t}번 ${esc(name(t))}${gemName?` · ${esc(gemName)}`:''}</span>`
       +`<strong class="polish-hero-title">${esc(p.direction)}</strong><span class="polish-hero-desc">이번 주에 닦을 방향이에요.</span></section>`;
-    if(stateRun && stateRun.t!==t) stateRun=null; /* 살펴보는 중에 내 유형을 바꿨으면 그만둔다 */
-    if(stateRun){ host.innerHTML=hero+stateCheckHTML(); return; }
     const last=lastStateCheck(t);
     if(last && !polishStatePicked) polishState=last.band;
     host.innerHTML=hero+flow+polishPicksHTML(t,have)+polishWishHTML(t);
   }
   /* state: 핸드북 '요즘 나는 어떤가요?'에서 고른 상태(low·mid·high)로 열 때.
-     opts.check: 검사 결과·나의 공간의 '지금 내 보석 상태 살펴보기'에서 열 때 바로 상태 문항을 시작한다 */
+     opts.check: 예전 주소 호환. 상태 문항은 이제 '내 상태 > 살펴보기'에서 한다 */
   window.showPolishPage=function(push=true,state,opts={}){
+    if(opts.check){ showStatePage(push,{check:true}); return; }
     const fromState=POLISH_STATES.some(([k])=>k===state);
     if(fromState){ polishState=state; polishStatePicked=true; }
     if(typeof activateBasePage==='function') activateBasePage('polish');
     const mobileTitle=document.getElementById('shellMobileTitle');
-    if(mobileTitle) mobileTitle.textContent='보석 닦기';
+    if(mobileTitle) mobileTitle.textContent='분석 노트';
     if(push) history.replaceState(null,'','#polish');
     if(typeof closeShellMenu==='function') closeShellMenu();
     renderPolish(); renderExperiments();
     document.getElementById('page-polish')?.scrollTo({top:0});
-    if(opts.check && diaryMyType()){ startStateCheck(); return; }
     if(fromState) document.querySelector('#polishApp .polish-state')?.scrollIntoView({block:'start'});
     /* 담은 행동이 바로 아래 '해보기로 한 것'에 쌓인다 */
   };
   g('polishApp')?.addEventListener('click',e=>{
-    const sq=e.target.closest('[data-sc-q]');
-    if(sq && stateRun){ answerStateCheck(sq); return; }
-    if(e.target.closest('[data-sc-start]')){ startStateCheck(); return; }
-    if(e.target.closest('[data-sc-done]') && stateRun){ finishStateCheck(); return; }
-    if(e.target.closest('[data-sc-cancel]')){ stateRun=null; renderPolish(); document.getElementById('page-polish')?.scrollTo({top:0}); return; }
-    if(e.target.closest('[data-sc-report]')){
-      const t=diaryMyType(), r=lastStateCheck(t);
-      write(STORAGE.interest,{schemaVersion:INTEREST_SCHEMA,report:{at:new Date().toISOString(),type:t,band:r?r.band:null}});
-      renderPolish(); document.querySelector('#polishApp .sc-report-done')?.focus?.();
-      return;
-    }
     const add=e.target.closest('[data-polish-add]');
     if(add){ const t=diaryMyType(); addCustomExperiment(add.dataset.polishAdd,`보석 닦기 · ${t}번${add.dataset.polishSrc?' · '+add.dataset.polishSrc:''}`); renderPolish(); renderExperiments(); return; }
     const st=e.target.closest('[data-polish-state]');
@@ -1248,8 +1349,10 @@
     const hash=location.hash.replace(/^#/,'');
     const m=hash.match(/^myspace-(dashboard|ai|reflection|library|community)$/); /* 없앤 영역 주소는 대시보드로, 성찰 기록은 다이어리로 */
     if(m) showMySpaceSection(m[1],false);
-    else if(hash==='diary') showDiaryPage(false);
+    else if(hash==='diary') showDiaryPage(false,'write');
+    else if(hash==='records') showRecordsPage(false);
     else if(hash==='polish') showPolishPage(false);
+    else if(hash==='state') showStatePage(false);
   }
   window.addEventListener('hashchange',handleMySpaceHash);
   handleMySpaceHash();

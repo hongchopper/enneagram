@@ -56,7 +56,7 @@
   window.openCrisisGuide=openCrisisGuide;
   window.prdHasCrisisSignal=hasCrisisSignal; /* 채팅 다이어리(02 스크립트)에서도 같은 확인을 쓴다 */
 
-  /* 진입점: 전체 메뉴 아래 · 나의 공간 머리 */
+  /* 진입점: 전체 메뉴 아래 · 나의 공간 맨 아래 */
   function addHelpEntry(host,cls){
     if(!host || host.querySelector('[data-crisis-open]')) return;
     const b=document.createElement('button');
@@ -67,7 +67,7 @@
     host.appendChild(b);
   }
   addHelpEntry(document.querySelector('.shell-sidebar'),'help-entry help-entry-menu');
-  addHelpEntry(document.querySelector('#page-myspace .myspace-page-head'),'help-entry');
+  addHelpEntry(document.getElementById('myHelp'),'help-entry'); /* 나의 공간 맨 아래 (2026-10-07) */
   document.addEventListener('click',e=>{
     if(!e.target.closest('[data-crisis-open]')) return;
     if(typeof closeShellMenu==='function') closeShellMenu();
