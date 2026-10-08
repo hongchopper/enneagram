@@ -89,7 +89,7 @@ function talkHTML(){
   const card=cur?(()=>{ const cr=relOf(cur.r,cur.tt), tp=topicOf(cur,drawn.length), kd=kindOf(cur), x=cardOf(cur); return `<div class="talk-show${landing?' is-landing':''}" style="--rc:var(${tp.color});--rc2:var(${tp.color2})"><span class="talk-show-back is-a" aria-hidden="true"></span><span class="talk-show-back is-b" aria-hidden="true"></span>`
       +`<article class="talk-card is-${cur.d}" aria-live="polite"><span class="talk-glow" aria-hidden="true"></span>`
       +`<div class="talk-card-corner"><span class="talk-card-depth">${kd==='q'?pips(cur.d)+esc(TC.DEPTH[cur.d]):kd==='bal'?'밸런스 게임':'미션'}</span><span class="talk-card-no">No.${String(drawn.length).padStart(2,'0')}</span></div>`
-      +`<p class="talk-card-rel">${kd==='q'?`${esc(cr.label)}${cr.k==='type'?(cur.tt==='center'?' 카드':'에 가까운 사람에게 묻기'):'에게 묻기'}`:kd==='bal'?'둘 중 하나만 고른다면?':'지금 바로 해 봐요'}</p>`
+      +`<p class="talk-card-rel">${kd==='q'?`${cr.ask?esc(cr.ask):esc(cr.label)+(cr.k==='type'?(cur.tt==='center'?' 카드':'에 가까운 사람에게 묻기'):'에게 묻기')}`:kd==='bal'?'둘 중 하나만 고른다면?':'지금 바로 해 봐요'}</p>`
       +(kd==='bal'
         ?`<div class="talk-bal"><span>${esc(x.a)}</span><b aria-hidden="true">VS</b><span>${esc(x.b)}</span></div>`
         :`<h3 class="talk-q">${esc(kd==='mis'?x.q:qOf(cur))}</h3>`)
