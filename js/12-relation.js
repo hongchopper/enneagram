@@ -30,29 +30,47 @@ const REL_KEY='enneagram_talk_rel_v1';
 let mode=TC?'talk':'play'; /* 위 분할 탭: talk 대화 카드 · play 놀이 */
 let rel=(()=>{ try{ return localStorage.getItem(REL_KEY)||''; }catch(e){ return ''; } })();
 let depth='all';
-let drawn=[]; /* 이번에 뽑은 카드 {r,d,q}. 맨 뒤가 지금 카드 */
+let ttype=myType()||1; /* '에니어그램 번호'를 골랐을 때 상대 번호(1~9) 또는 'center'(머리 · 가슴 · 장) */
+let drawn=[]; /* 이번에 뽑은 카드 {r,tt,d,q}. 맨 뒤가 지금 카드 */
 const usedT=new Set();
-const relOf=k=>TC.RELS.find(x=>x.k===k)||TC.RELS[0];
+/* 관계 하나 = {k,label,color,color2,art,hint,light,mid,deep}. 'type'은 고른 번호의 카드(TC.TYPE[번호])로 그때그때 만든다 */
+function relOf(k,tt=ttype){
+  if(k==='type' && TC.TYPE){
+    const base=TC.RELS.find(x=>x.k==='type')||{}, T=TC.TYPE[tt]||TC.TYPE[1];
+    const isC=tt==='center';
+    return {...base,k:'type',tt,label:isC?'머리 · 가슴 · 장':N(tt),color:isC?base.color:`--type-${tt}`,color2:isC?base.color2:`--type-${tt}-soft`,light:T.light||[],mid:T.mid||[],deep:T.deep||[]};
+  }
+  return TC.RELS.find(x=>x.k===k)||TC.RELS[0];
+}
 if(TC && !TC.RELS.some(x=>x.k===rel)) rel=TC.RELS[0].k;
-const qOf=c=>relOf(c.r)[c.d][c.q][0];          /* 카드 = [질문, 예시 답 1, 예시 답 2] */
-const exOf=c=>relOf(c.r)[c.d][c.q].slice(1);
-/* 앞면 그림 · 색: 질문 주제로 (content/talk-cards.js TOPICS). 안 맞으면 관계 그림 + 카드 번호로 돌아가는 색 */
+/* 카드 한 장의 모양 (2026-10-08 세 번째): [질문, 예시1, 예시2] 질문 · {t:'bal',a,b} 밸런스 게임 · {t:'mis',q,tip} 미션 */
+const cardOf=c=>relOf(c.r,c.tt)[c.d][c.q];
+const kindOf=c=>{ const x=cardOf(c); return Array.isArray(x)?'q':x.t; };
+const qOf=c=>{ const x=cardOf(c); return Array.isArray(x)?x[0]:x.t==='bal'?`${x.a} vs ${x.b}`:x.q; };
+const exOf=c=>{ const x=cardOf(c); return Array.isArray(x)?x.slice(1):[]; };
+/* 앞면 그림 · 색: 질문 주제로 (content/talk-cards.js TOPICS). 밸런스 게임은 저울, 미션은 폭죽, 번호 카드는 그 유형 보석 */
 function topicOf(c,no){
+  const sp=TC.SPARE||[relOf(c.r,c.tt).color], spin={color:sp[no%sp.length],color2:sp[(no+3)%sp.length]};
+  const k=kindOf(c);
+  if(k==='bal') return {art:'balance_scale',...spin};
+  if(k==='mis') return {art:'party_popper',...spin};
+  if(c.r==='type' && c.tt!=='center') return {gem:c.tt,color:`--type-${c.tt}`,color2:`--type-${c.tt}-soft`};
   const q=qOf(c), t=(TC.TOPICS||[]).find(([re])=>re.test(q));
   if(t) return {art:t[1],color:t[2],color2:t[3]};
-  const sp=TC.SPARE||[relOf(c.r).color];
-  return {art:relOf(c.r).art,color:sp[no%sp.length],color2:sp[(no+3)%sp.length]};
+  return {art:relOf(c.r,c.tt).art,...spin};
 }
+const keyOf=c=>`${c.r}-${c.tt||''}-${c.d}-${c.q}`;
 function talkPool(){
   const r=relOf(rel), ds=depth==='all'?['light','mid','deep']:[depth];
-  const all=ds.flatMap(d=>r[d].map((_,q)=>({r:r.k,d,q})));
-  let pool=all.filter(c=>!usedT.has(`${c.r}-${c.d}-${c.q}`));
-  if(!pool.length){ all.forEach(c=>usedT.delete(`${c.r}-${c.d}-${c.q}`)); pool=all; } /* 다 뽑으면 다시 섞는다 */
+  const all=ds.flatMap(d=>r[d].map((_,q)=>({r:r.k,tt:r.k==='type'?ttype:undefined,d,q})));
+  let pool=all.filter(c=>!usedT.has(keyOf(c)));
+  if(!pool.length){ all.forEach(c=>usedT.delete(keyOf(c))); pool=all; } /* 다 뽑으면 다시 섞는다 */
   return pool;
 }
 function drawTalk(){
-  const c=pickOne(talkPool());
-  usedT.add(`${c.r}-${c.d}-${c.q}`);
+  const pool=talkPool(); if(!pool.length) return;
+  const c=pickOne(pool);
+  usedT.add(keyOf(c));
   drawn.push(c);
 }
 /* 카드 뽑기 느낌 (2026-10-08): 뒷면이 보이는 카드 더미(남은 장수만큼 두께) → 누르거나 위로 밀면 맨 위 카드가 들려 올라가고,
@@ -68,14 +86,16 @@ function talkHTML(){
   const left=talkPool().length, layers=Math.min(3,Math.max(0,left-1));
   const rc=x=>`--rc:var(${relOf(x).color});--rc2:var(${relOf(x).color2||relOf(x).color})`;
   /* 토스 연말 카드처럼: 뒤에 색이 다른 카드 두 장이 비껴 겹치고, 앞면은 보석 색 면 + 그림 뒤로 번지는 빛 */
-  const card=cur?(()=>{ const cr=relOf(cur.r), tp=topicOf(cur,drawn.length); return `<div class="talk-show${landing?' is-landing':''}" style="--rc:var(${tp.color});--rc2:var(${tp.color2})"><span class="talk-show-back is-a" aria-hidden="true"></span><span class="talk-show-back is-b" aria-hidden="true"></span>`
+  const card=cur?(()=>{ const cr=relOf(cur.r,cur.tt), tp=topicOf(cur,drawn.length), kd=kindOf(cur), x=cardOf(cur); return `<div class="talk-show${landing?' is-landing':''}" style="--rc:var(${tp.color});--rc2:var(${tp.color2})"><span class="talk-show-back is-a" aria-hidden="true"></span><span class="talk-show-back is-b" aria-hidden="true"></span>`
       +`<article class="talk-card is-${cur.d}" aria-live="polite"><span class="talk-glow" aria-hidden="true"></span>`
-      +`<div class="talk-card-corner"><span class="talk-card-depth">${pips(cur.d)}${esc(TC.DEPTH[cur.d])}</span><span class="talk-card-no">No.${String(drawn.length).padStart(2,'0')}</span></div>`
-      +`<p class="talk-card-rel">${esc(cr.label)}에게 묻기</p>`
-      +`<h3 class="talk-q">${esc(qOf(cur))}</h3>`
-      +`<div class="talk-card-art"><img class="art3d" src="assets/illust/${tp.art}.png" alt="" width="256" height="256" decoding="async"></div>`
-      +`<div class="talk-ex"><p class="talk-ex-title">이렇게 답해도 좋아요</p><ul>${exOf(cur).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`
-      +`<p class="talk-tip">${esc(TC.TIP[cur.d])}</p>`
+      +`<div class="talk-card-corner"><span class="talk-card-depth">${kd==='q'?pips(cur.d)+esc(TC.DEPTH[cur.d]):kd==='bal'?'밸런스 게임':'미션'}</span><span class="talk-card-no">No.${String(drawn.length).padStart(2,'0')}</span></div>`
+      +`<p class="talk-card-rel">${kd==='q'?`${esc(cr.label)}${cr.k==='type'?(cur.tt==='center'?' 카드':'에 가까운 사람에게 묻기'):'에게 묻기'}`:kd==='bal'?'둘 중 하나만 고른다면?':'지금 바로 해 봐요'}</p>`
+      +(kd==='bal'
+        ?`<div class="talk-bal"><span>${esc(x.a)}</span><b aria-hidden="true">VS</b><span>${esc(x.b)}</span></div>`
+        :`<h3 class="talk-q">${esc(kd==='mis'?x.q:qOf(cur))}</h3>`)
+      +`<div class="talk-card-art">${tp.gem?gemImg(tp.gem,'art3d',true):`<img class="art3d" src="assets/illust/${tp.art}.png" alt="" width="256" height="256" decoding="async">`}</div>`
+      +(kd==='q'?`<div class="talk-ex"><p class="talk-ex-title">이렇게 답해도 좋아요</p><ul>${exOf(cur).map(e=>`<li>${esc(e)}</li>`).join('')}</ul></div>`:'')
+      +`<p class="talk-tip">${esc(kd==='q'?TC.TIP[cur.d]:kd==='bal'?'동시에 손가락으로 가리키고, 고른 이유를 한 문장씩 말해요.':(x.tip||''))}</p>`
       +'<div class="talk-card-actions"><button class="talk-copy" data-talk-copy type="button">질문 복사</button></div>'
       +'<p class="game-status" role="status"></p></article></div>'; })():'';
   const back=(cls,inner)=>`<span class="talk-glow" aria-hidden="true"></span><span class="talk-back-face"><img class="art3d" src="assets/illust/${r.art}.png" alt="" width="256" height="256" decoding="async">${inner}</span>`;
@@ -92,9 +112,10 @@ function talkHTML(){
   return '<section class="talk-draw" aria-label="대화 카드">'
     +'<div class="pf-rel-bar"><p class="pf-rel-title" id="pfRelTitle">누구와 이야기해요?</p>'
     +`<div class="shelf-rail feed-chip-row" role="group" aria-labelledby="pfRelTitle">${TC.RELS.map(x=>chip('data-talk-rel',x.k,x.label,x.k===rel)).join('')}</div></div>`
+    +(rel==='type'&&TC.TYPE?`<div class="shelf-rail feed-chip-row talk-types" role="group" aria-label="상대 번호">${[1,2,3,4,5,6,7,8,9].map(t=>chip('data-talk-type',t,N(t),ttype===t)).join('')}${chip('data-talk-type','center','머리 · 가슴 · 장',ttype==='center')}</div>`:'')
     +`<div class="ui-chips talk-depths" role="group" aria-label="질문 깊이">${[['all','전부'],...Object.entries(TC.DEPTH)].map(([k,l])=>chip('data-talk-depth',k,l,k===depth)).join('')}</div>`
     +card+stack
-    +(past.length?`<div class="talk-past"><h3 class="talk-past-title">앞에서 뽑은 카드</h3><ol>${past.map(c=>`<li><span>${esc(relOf(c.r).label)} · ${esc(TC.DEPTH[c.d])}</span>${esc(qOf(c))}</li>`).join('')}</ol></div>`:'')
+    +(past.length?`<div class="talk-past"><h3 class="talk-past-title">앞에서 뽑은 카드</h3><ol>${past.map(c=>`<li><span>${esc(relOf(c.r,c.tt).label)} · ${esc(kindOf(c)==='q'?TC.DEPTH[c.d]:kindOf(c)==='bal'?'밸런스 게임':'미션')}</span>${esc(qOf(c))}</li>`).join('')}</ol></div>`:'')
     +'</section>';
 }
 const reduceMotion=()=>window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
@@ -177,6 +198,9 @@ function makeCard(kind){
 const optBtn=(attr,val,text,cls='')=>`<button class="game-option${cls}" data-${attr}="${esc(String(val))}" type="button">${esc(text)}</button>`;
 const ART={pick:'thinking_face',guess:'magnifying_glass_tilted_left',vs:'balance_scale',pair:'handshake',ask:'light_bulb',talk:'key'};
 const head=(tag,title,kind)=>`<div class="deck-card-top"><span class="feed-tag">${esc(tag)}</span>${ART[kind]?`<img class="art3d" src="assets/illust/${ART[kind]}.png" alt="" width="256" height="256" decoding="async">`:''}</div><h3 class="game-title">${esc(title)}</h3>`;
+/* 놀이 카드 꾸미기 (2026-10-08): 대화 카드와 같은 크리스탈 글래스. 종류마다 보석 색 [앞면, 뒤에 겹치는 카드] */
+const KC={pick:['--gem-lavender','--gem-pink'],guess:['--gem-sky','--gem-blue'],vs:['--gem-lilac','--gem-peach'],pair:['--gem-peach','--gem-yellow'],talk:['--gem-mint','--gem-sky'],ask:['--gem-yellow','--gem-mint'],done:['--gem-mint','--gem-lavender']};
+const deckWrap=(kind,inner)=>{ const [a,b]=KC[kind]||KC.done; return `<div class="deck play-deck" style="--rc:var(${a});--rc2:var(${b})"><span class="play-back is-a" aria-hidden="true"></span><span class="play-back is-b" aria-hidden="true"></span>${inner.replace('<div class="deck-card-top">','<span class="talk-glow" aria-hidden="true"></span><div class="deck-card-top">')}</div>`; };
 function cardHTML(c){
   const open=`<article class="game-card play-item is-${c.kind}" data-pf="${c.id}">`, end='<div class="game-result" hidden></div><p class="game-status" role="status"></p></article>';
   const sc=homeScenes();
@@ -185,7 +209,7 @@ function cardHTML(c){
     +`<div class="game-options">${c.rows.map((r,i)=>optBtn('pf-pick',i,r.text)).join('')}</div>`+end;
   if(c.kind==='guess') return open+head('맞히기','이 반응, 몇 번일까?','guess')
     +`<p class="game-sub">${esc(sc[c.s].title)}</p><blockquote class="game-quote">${esc(c.quote)}</blockquote>`
-    +`<div class="game-options is-types">${c.opts.map(t=>optBtn('pf-guess',t,N(t))).join('')}</div>`+end;
+    +`<div class="game-options is-types">${c.opts.map(t=>`<button class="game-option is-type" data-pf-guess="${t}" type="button" style="${gemVars(t)}"><span class="gem-tile deco-square">${gemImg(t,'',false)}</span><span>${esc(N(t))}</span></button>`).join('')}</div>`+end;
   if(c.kind==='vs'){
     const side=t=>`<span class="pf-vs-side" style="${gemVars(t)}"><span class="gem-tile deco-square">${gemImg(t,'',false)}</span><b>${esc(N(t))}</b></span>`;
     return open+head('닮은 두 유형',`${c.a}번 vs ${c.b}번, 뭐가 다를까?`,'vs')
@@ -235,12 +259,12 @@ function doneHTML(){
     +`<p class="deck-pick-title">하나만 골라서 해 볼까요?</p><div class="ui-chips deck-kinds">${FILTERS.filter(x=>x[0]!=='all').map(([k,l])=>`<button class="feed-chip" data-pf-filter="${k}" type="button">${esc(l)}</button>`).join('')}</div></article>`;
 }
 function stageHTML(){
-  if(at>=deck.length) return `<div class="deck">${doneHTML()}</div>`;
+  if(at>=deck.length) return deckWrap('done',doneHTML());
   const c=deck[at];
   const label=filter==='all'?'오늘의 놀이':FILTERS.find(x=>x[0]===filter)[1];
   const dots=deck.map((_,i)=>`<i class="${i<at?'is-done':i===at?'is-now':''}"></i>`).join('');
   return `<div class="deck-top"><span class="deck-count">${esc(label)} <b>${at+1}</b> / ${deck.length}</span><span class="deck-dots" aria-hidden="true">${dots}</span></div>`
-    +`<div class="deck">${at<deck.length-1?'<span class="deck-behind" aria-hidden="true"></span>':''}${cardHTML(c).replace('class="game-card play-item','class="game-card play-item deck-card')}</div>`
+    +deckWrap(c.kind,cardHTML(c).replace('class="game-card play-item','class="game-card play-item deck-card'))
     +`<div class="deck-nav"><button class="feed-more" data-deck-skip type="button">건너뛰기</button><button class="btn primary" data-deck-next type="button"${NEEDS_ANSWER.has(c.kind)?' disabled':''}>${at===deck.length-1?'마무리':'다음 카드'}</button></div>`;
 }
 /* ---------- 받은 질문 카드 (#pair=…) : 피드 맨 위에 고정 ---------- */
@@ -299,6 +323,8 @@ document.getElementById('page-community')?.addEventListener('click',e=>{
   if(md){ mode=md.dataset.playMode; render(); document.querySelector(`#playFeed [data-play-mode="${mode}"]`)?.focus({preventScroll:true}); return; }
   const tr=e.target.closest('[data-talk-rel]');
   if(tr){ rel=tr.dataset.talkRel; try{ localStorage.setItem(REL_KEY,rel); }catch(err){} drawn=[]; shuffling=true; renderTalk(); const on=document.querySelector(`#playFeed [data-talk-rel="${rel}"]`); on?.focus({preventScroll:true}); on?.scrollIntoView({inline:'center',block:'nearest'}); return; }
+  const tt=e.target.closest('[data-talk-type]');
+  if(tt){ const v=tt.dataset.talkType; ttype=v==='center'?'center':Number(v); drawn=[]; shuffling=true; renderTalk(); const on=document.querySelector(`#playFeed [data-talk-type="${v}"]`); on?.focus({preventScroll:true}); on?.scrollIntoView({inline:'center',block:'nearest'}); return; }
   const td=e.target.closest('[data-talk-depth]');
   if(td){ depth=td.dataset.talkDepth; drawn=[]; shuffling=true; renderTalk(); document.querySelector(`#playFeed [data-talk-depth="${depth}"]`)?.focus({preventScroll:true}); return; }
   const dr=e.target.closest('[data-talk-draw]');
