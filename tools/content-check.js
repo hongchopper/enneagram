@@ -9,8 +9,9 @@ eval(fs.readFileSync('content/mbti-posts.js','utf8'));
 eval(fs.readFileSync('content/group-posts.js','utf8'));
 eval(fs.readFileSync('content/type-posts.js','utf8'));
 eval(fs.readFileSync('content/type-posts-inner.js','utf8'));
+eval(fs.readFileSync('content/posts-long.js','utf8'));
 const posts={...window.EXPLORE_TEXT};
-for(const a of window.EXPLORE_DATA.ARTICLES) posts[a.id]=a;
+for(const a of window.EXPLORE_DATA.ARTICLES) posts[a.id]={...a,...(window.EXPLORE_TEXT[a.id]||{})}; /* posts-long.js 덮어쓰기까지 */
 
 const plain=h=>(h||'').replace(/<[^>]+>/g,'');
 const BAN=/진단|검진|점수|레벨|등급|치료|증상|결함|불량|최악|당신|무조건|반드시|…|\.\.\.|!|[✓★※→✨💎💭🌱]/;
@@ -25,6 +26,8 @@ for(const [id,p] of Object.entries(posts)){
   const why=[];
   if(p.title.length>20) why.push(`제목 ${p.title.length}자`);
   if((p.lead||'').length>80) why.push(`리드 ${p.lead.length}자`);
+  if(body.length<700) why.push(`본문 ${body.length}자(700 이상, 2026-10-08 블로그형)`);
+  if(/<blockquote/.test(p.body||'')) why.push('편지·인용 형식');
   if(!p.ask||!p.ask.length||p.ask.length>2) why.push(`질문 ${p.ask?.length||0}개`);
   if(!p.try) why.push('해볼 것 없음');
   if(/<table/i.test(p.body||'')) why.push('표');

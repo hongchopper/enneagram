@@ -7,6 +7,8 @@
    마무리 카드의 칩(나라면? · 맞히기 · 둘이서 · 말 연습)을 고르면 그 종류로만 다섯 장을 다시 섞는다.
    장면 · 반응 원문은 비교 > 같은 상황, 다른 이유(homeScenes), 닮은 두 유형은 비교 > 헷갈리는 유형(homeVsPairs).
    '나라면?'에서 고른 반응은 장면 게임과 같은 기록(enneagram_scene_picks_v1, js/11)에 쌓인다.
+   2026-10-08: 위에 분할 탭 [대화 카드 | 놀이]. 대화 카드(content/talk-cards.js)는 덱과 따로, 관계를 고르고 카드 더미에서 한 장씩 뽑는다.
+   마주 앉아 돌아가며 답하는 질문이라 답을 받거나 기록하지 않는다. 고른 관계만 이 기기에 기억(enneagram_talk_rel_v1), 뽑은 카드는 이번에 연 동안만
    받은 질문 링크 #pair=<base64url(JSON)> {v:1, m, q, a, x(40자), n(12자)}는 덱 위에 고정 카드로 연다. 이 파일은 따로 기록을 남기지 않는다
    ========================================================= */
 (function(){
@@ -21,6 +23,116 @@ const shuffle=list=>{ const a=[...list]; for(let i=a.length-1;i>0;i--){ const j=
 const PAIR_VERSION=1;
 const modeOf=k=>R.PAIR.find(x=>x.k===k)||R.PAIR[0];
 const talkOf=k=>R.TALK.find(x=>x.k===k)||R.TALK[0];
+
+/* ---------- 대화 카드: 카드 더미에서 한 장씩 뽑기 ---------- */
+const TC=window.TALK_CARDS;
+const REL_KEY='enneagram_talk_rel_v1';
+let mode=TC?'talk':'play'; /* 위 분할 탭: talk 대화 카드 · play 놀이 */
+let rel=(()=>{ try{ return localStorage.getItem(REL_KEY)||''; }catch(e){ return ''; } })();
+let depth='all';
+let drawn=[]; /* 이번에 뽑은 카드 {r,d,q}. 맨 뒤가 지금 카드 */
+const usedT=new Set();
+const relOf=k=>TC.RELS.find(x=>x.k===k)||TC.RELS[0];
+if(TC && !TC.RELS.some(x=>x.k===rel)) rel=TC.RELS[0].k;
+const qOf=c=>relOf(c.r)[c.d][c.q][0];          /* 카드 = [질문, 예시 답 1, 예시 답 2] */
+const exOf=c=>relOf(c.r)[c.d][c.q].slice(1);
+/* 앞면 그림 · 색: 질문 주제로 (content/talk-cards.js TOPICS). 안 맞으면 관계 그림 + 카드 번호로 돌아가는 색 */
+function topicOf(c,no){
+  const q=qOf(c), t=(TC.TOPICS||[]).find(([re])=>re.test(q));
+  if(t) return {art:t[1],color:t[2],color2:t[3]};
+  const sp=TC.SPARE||[relOf(c.r).color];
+  return {art:relOf(c.r).art,color:sp[no%sp.length],color2:sp[(no+3)%sp.length]};
+}
+function talkPool(){
+  const r=relOf(rel), ds=depth==='all'?['light','mid','deep']:[depth];
+  const all=ds.flatMap(d=>r[d].map((_,q)=>({r:r.k,d,q})));
+  let pool=all.filter(c=>!usedT.has(`${c.r}-${c.d}-${c.q}`));
+  if(!pool.length){ all.forEach(c=>usedT.delete(`${c.r}-${c.d}-${c.q}`)); pool=all; } /* 다 뽑으면 다시 섞는다 */
+  return pool;
+}
+function drawTalk(){
+  const c=pickOne(talkPool());
+  usedT.add(`${c.r}-${c.d}-${c.q}`);
+  drawn.push(c);
+}
+/* 카드 뽑기 느낌 (2026-10-08): 뒷면이 보이는 카드 더미(남은 장수만큼 두께) → 누르거나 위로 밀면 맨 위 카드가 들려 올라가고,
+   질문 카드가 위에서 떨어지듯 내려앉는다. 관계 · 깊이를 바꾸면 더미를 섞는다. 깊이 카드는 표시를 따로. 움직임 줄이기 설정이면 바로 바뀐다 */
+let landing=false, shuffling=false, busy=false;
+/* 세로 카드 (2026-10-08 두 번째): 트럼프 카드처럼 3:4. 관계마다 보석 색(--rc), 앞면은 그림 · 질문 · 예시 답 · 답하는 요령.
+   처음엔 큰 카드 더미 하나, 뽑은 뒤엔 질문 카드 아래에 작은 더미 + '한 장 더 뽑기' */
+const DEPTH_N={light:1,mid:2,deep:3};
+const pips=d=>`<span class="talk-pips" aria-hidden="true">${[1,2,3].map(i=>`<i class="${i<=DEPTH_N[d]?'is-on':''}"></i>`).join('')}</span>`;
+function talkHTML(){
+  const r=relOf(rel), cur=drawn[drawn.length-1];
+  const chip=(attr,val,label,on)=>`<button class="feed-chip" ${attr}="${val}" type="button" aria-pressed="${on}">${esc(label)}</button>`;
+  const left=talkPool().length, layers=Math.min(3,Math.max(0,left-1));
+  const rc=x=>`--rc:var(${relOf(x).color});--rc2:var(${relOf(x).color2||relOf(x).color})`;
+  /* 토스 연말 카드처럼: 뒤에 색이 다른 카드 두 장이 비껴 겹치고, 앞면은 보석 색 면 + 그림 뒤로 번지는 빛 */
+  const card=cur?(()=>{ const cr=relOf(cur.r), tp=topicOf(cur,drawn.length); return `<div class="talk-show${landing?' is-landing':''}" style="--rc:var(${tp.color});--rc2:var(${tp.color2})"><span class="talk-show-back is-a" aria-hidden="true"></span><span class="talk-show-back is-b" aria-hidden="true"></span>`
+      +`<article class="talk-card is-${cur.d}" aria-live="polite"><span class="talk-glow" aria-hidden="true"></span>`
+      +`<div class="talk-card-corner"><span class="talk-card-depth">${pips(cur.d)}${esc(TC.DEPTH[cur.d])}</span><span class="talk-card-no">No.${String(drawn.length).padStart(2,'0')}</span></div>`
+      +`<p class="talk-card-rel">${esc(cr.label)}에게 묻기</p>`
+      +`<h3 class="talk-q">${esc(qOf(cur))}</h3>`
+      +`<div class="talk-card-art"><img class="art3d" src="assets/illust/${tp.art}.png" alt="" width="256" height="256" decoding="async"></div>`
+      +`<div class="talk-ex"><p class="talk-ex-title">이렇게 답해도 좋아요</p><ul>${exOf(cur).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`
+      +`<p class="talk-tip">${esc(TC.TIP[cur.d])}</p>`
+      +'<div class="talk-card-actions"><button class="talk-copy" data-talk-copy type="button">질문 복사</button></div>'
+      +'<p class="game-status" role="status"></p></article></div>'; })():'';
+  const back=(cls,inner)=>`<span class="talk-glow" aria-hidden="true"></span><span class="talk-back-face"><img class="art3d" src="assets/illust/${r.art}.png" alt="" width="256" height="256" decoding="async">${inner}</span>`;
+  const stack=cur
+    ?`<button class="talk-more${shuffling?' is-shuffling':''}" data-talk-draw type="button" style="${rc(rel)}">`
+      +`<span class="talk-mini" aria-hidden="true">${Array.from({length:Math.min(2,layers)},(_,i)=>`<span class="talk-mini-card" style="--i:${i+1}"></span>`).join('')}<span class="talk-mini-card talk-stack-top"></span></span>`
+      +`<span class="talk-more-text"><b>한 장 더 뽑기</b><small>${esc(r.label)} 카드 ${left}장 남았어요</small></span></button>`
+    :`<div class="talk-stack${shuffling?' is-shuffling':''}" style="${rc(rel)}">`
+      +Array.from({length:layers},(_,i)=>`<span class="talk-stack-card" style="--i:${layers-i}" aria-hidden="true"></span>`).join('')
+      +`<button class="talk-stack-top" data-talk-draw type="button" aria-label="${esc(r.label)} 대화 카드 한 장 뽑기, 남은 카드 ${left}장">`
+      +back('',`<span class="talk-back-title">${esc(r.label)}</span><span class="talk-back-sub">대화 카드 ${left}장</span>`)
+      +'</button></div><p class="talk-stack-hint">카드를 누르거나 위로 밀어서 한 장 뽑아요</p>';
+  const past=drawn.slice(0,-1).reverse().slice(0,10);
+  return '<section class="talk-draw" aria-label="대화 카드">'
+    +'<div class="pf-rel-bar"><p class="pf-rel-title" id="pfRelTitle">누구와 이야기해요?</p>'
+    +`<div class="shelf-rail feed-chip-row" role="group" aria-labelledby="pfRelTitle">${TC.RELS.map(x=>chip('data-talk-rel',x.k,x.label,x.k===rel)).join('')}</div></div>`
+    +`<div class="ui-chips talk-depths" role="group" aria-label="질문 깊이">${[['all','전부'],...Object.entries(TC.DEPTH)].map(([k,l])=>chip('data-talk-depth',k,l,k===depth)).join('')}</div>`
+    +card+stack
+    +(past.length?`<div class="talk-past"><h3 class="talk-past-title">앞에서 뽑은 카드</h3><ol>${past.map(c=>`<li><span>${esc(relOf(c.r).label)} · ${esc(TC.DEPTH[c.d])}</span>${esc(qOf(c))}</li>`).join('')}</ol></div>`:'')
+    +'</section>';
+}
+const reduceMotion=()=>window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+function renderTalk(){
+  render(); landing=false; shuffling=false;
+}
+function doDraw(){
+  if(busy) return;
+  const top=document.querySelector('#playFeed .talk-stack-top');
+  drawTalk();
+  if(navigator.userActivation?.hasBeenActive){ try{ navigator.vibrate?.(12); }catch(err){} } /* 폰에서 살짝 진동 */
+  const land=()=>{ busy=false; landing=true; renderTalk(); const c=document.querySelector('#playFeed .talk-card'); c?.scrollIntoView({block:'nearest',behavior:reduceMotion()?'auto':'smooth'}); document.querySelector('#playFeed .talk-stack-top')?.focus({preventScroll:true}); };
+  if(reduceMotion()||!top){ land(); return; }
+  busy=true; top.classList.add('is-drawing');
+  setTimeout(land,240);
+}
+/* 위로 밀어서 뽑기: 맨 위 카드를 손가락 따라 들어 올리고, 충분히 올리면 뽑는다 */
+let drag=null;
+document.addEventListener('pointerdown',e=>{
+  const top=e.target.closest('#playFeed .talk-stack .talk-stack-top'); if(!top||busy) return;
+  drag={top,y:e.clientY,dy:0,moved:false};
+});
+document.addEventListener('pointermove',e=>{
+  if(!drag) return;
+  drag.dy=Math.min(0,e.clientY-drag.y);
+  if(drag.dy<-6) drag.moved=true;
+  if(drag.moved) drag.top.style.transform=`translateY(${drag.dy}px) rotate(${drag.dy/24}deg)`;
+});
+document.addEventListener('pointerup',()=>{
+  if(!drag) return;
+  const d=drag; drag=null;
+  if(!d.moved) return;
+  d.top.dataset.dragged='1'; /* 이어서 오는 click은 무시 */
+  if(d.dy<-48){ d.top.style.transform=''; doDraw(); }
+  else d.top.style.transform='';
+});
+document.addEventListener('pointercancel',()=>{ if(drag){ drag.top.style.transform=''; drag=null; } });
+const tabsHTML=()=>TC?`<div class="play-tabs" role="group" aria-label="같이 보기">${[['talk','대화 카드'],['play','놀이']].map(([k,l])=>`<button class="${mode===k?'active':''}" data-play-mode="${k}" type="button" aria-pressed="${mode===k}">${l}</button>`).join('')}</div>`:'';
 
 /* ---------- 링크 보내기 · 복사 ---------- */
 async function shareLink(title,text,url,status){
@@ -163,7 +275,7 @@ function recvHTML(){
 function render(fresh){
   const box=document.getElementById('playFeed'); if(!box) return;
   if(fresh || !deck.length) newDeck();
-  box.innerHTML=recvHTML()+`<div class="deck-stage" id="deckStage">${stageHTML()}</div>`;
+  box.innerHTML=tabsHTML()+(mode==='talk'?talkHTML():recvHTML()+`<div class="deck-stage" id="deckStage">${stageHTML()}</div>`);
 }
 function renderStage(){
   const st=document.getElementById('deckStage'); if(!st){ render(); return; }
@@ -182,6 +294,16 @@ function answered(card,btn,attr){
   card.querySelectorAll(`[data-${attr}]`).forEach(b=>{ b.classList.toggle('is-picked',b===btn); b.setAttribute('aria-pressed',String(b===btn)); });
 }
 document.getElementById('page-community')?.addEventListener('click',e=>{
+  /* 분할 탭 · 대화 카드 */
+  const md=e.target.closest('[data-play-mode]');
+  if(md){ mode=md.dataset.playMode; render(); document.querySelector(`#playFeed [data-play-mode="${mode}"]`)?.focus({preventScroll:true}); return; }
+  const tr=e.target.closest('[data-talk-rel]');
+  if(tr){ rel=tr.dataset.talkRel; try{ localStorage.setItem(REL_KEY,rel); }catch(err){} drawn=[]; shuffling=true; renderTalk(); const on=document.querySelector(`#playFeed [data-talk-rel="${rel}"]`); on?.focus({preventScroll:true}); on?.scrollIntoView({inline:'center',block:'nearest'}); return; }
+  const td=e.target.closest('[data-talk-depth]');
+  if(td){ depth=td.dataset.talkDepth; drawn=[]; shuffling=true; renderTalk(); document.querySelector(`#playFeed [data-talk-depth="${depth}"]`)?.focus({preventScroll:true}); return; }
+  const dr=e.target.closest('[data-talk-draw]');
+  if(dr){ if(dr.dataset.dragged){ delete dr.dataset.dragged; return; } doDraw(); return; }
+  if(e.target.closest('[data-talk-copy]')){ const cur=drawn[drawn.length-1]; if(cur) copyText(qOf(cur),document.querySelector('#playFeed .talk-card .game-status')); return; }
   const fl=e.target.closest('[data-pf-filter]');
   if(fl){ filter=fl.dataset.pfFilter; render(true); return; }
   if(e.target.closest('[data-deck-new]')){ filter='all'; render(true); return; }
@@ -243,15 +365,16 @@ if(openCommunity) window.showCommunityPage=function(...args){ openCommunity(...a
 const PLAY_FILTER={scene:'pick',guess:'guess',pair:'pair',talk:'talk'};
 window.openPlay=function(k,push=true){
   if(k==='card'){ showSharePage(); return; }
-  filter=PLAY_FILTER[k]||'all';
+  filter=PLAY_FILTER[k]||'all'; mode='play';
   openCommunity?.(false); render(true);
   if(push) history.replaceState(null,'','#community');
 };
 function route(){
   const m=location.hash.match(/^#pair=(.+)$/);
-  if(m){ const d=decodePair(m[1]); if(d){ recv=d; recvPick=null; filter='all'; openCommunity?.(false); render(true); } return; }
+  if(m){ const d=decodePair(m[1]); if(d){ recv=d; recvPick=null; filter='all'; mode='play'; openCommunity?.(false); render(true); } return; }
   const p=location.hash.match(/^#play-(scene|guess|pair|talk)$/);
   if(p) window.openPlay(p[1],false);
+  if(location.hash==='#play-cards' && TC){ mode='talk'; openCommunity?.(false); render(); history.replaceState(null,'','#community'); }
 }
 window.addEventListener('hashchange',route);
 render(true);
