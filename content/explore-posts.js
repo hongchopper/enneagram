@@ -73,7 +73,17 @@ const KINDS=[
   {k:'grow',cat:'성장',pic:'growth',h3:['성장을 돕는 방법','성장 행동'],
     title:(N)=>`${N}를 위한 이번 주 성장 행동`,lead:()=>'크게 바꾸지 않아도 돼요. 이번 주 한 번 해볼 작은 행동부터요.'},
   {k:'growtalk',cat:'성장',pic:'growtalk',h3:['성장 대화'],
-    title:(N)=>`${N}와 나누면 좋은 대화`,lead:()=>'스스로에게, 또 가까운 사람과 나눠 볼 질문이에요.'}
+    title:(N)=>`${N}와 나누면 좋은 대화`,lead:()=>'스스로에게, 또 가까운 사람과 나눠 볼 질문이에요.'},
+  /* 마음 들여다보기 (2026-10-08): 핸드북 소제목이 아니라 새로 쓴 글. 본문은 content/type-posts-inner.js.
+     유형별 사진이 없어서 종류 사진 하나를 같이 쓴다 (own) */
+  {k:'defense',cat:'핵심 패턴',pic:'signals',own:true,h3:[],note:'care',
+    title:(N)=>`${N}의 방어기제`,lead:()=>'마음이 스스로를 지키려고 켜는 장치를 쉬운 말로 풀어 봐요.'},
+  {k:'selfimage',cat:'핵심 패턴',pic:'traits',own:true,h3:[],
+    title:(N)=>`${N}의 자아상`,lead:()=>'나는 이런 사람이라고 믿는 마음속 그림을 살펴봐요.'},
+  {k:'fixmind',cat:'핵심 패턴',pic:'fixation',own:true,h3:[],
+    title:(N)=>`${N}의 생각 고착`,lead:()=>'생각이 자꾸 돌아가 머무는 자리와 빠지기 쉬운 유혹을 살펴봐요.'},
+  {k:'stages',cat:'성장',pic:'levels',own:true,h3:[],note:'care',
+    title:(N)=>`${N}의 단계별 상태`,lead:()=>'빛남, 연마 중, 흐려짐. 누구나 오르내리는 세 구간이에요.'}
 ];
 
 /* 기초(ov)·비교(cmp) 화면을 글로: 본문은 index.html 패널에서 읽는다 */

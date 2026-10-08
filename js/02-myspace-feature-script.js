@@ -373,7 +373,7 @@
     if(mobileTitle) mobileTitle.textContent='나의 공간';
     if(push) history.replaceState(null,'',`#myspace-${key}`);
     if(typeof closeShellMenu==='function') closeShellMenu();
-    renderDashboard(); renderMonthReport(); renderMyLog();
+    renderDashboard(); renderMyLog(); renderMyStats(); renderMyPatterns();
     document.getElementById('page-myspace')?.scrollTo({top:0});
   };
 
@@ -952,6 +952,8 @@
       mid:{signs:['편하게 지내지만 내 목표는 흐릿해요','중요한 일보다 쉬운 일부터 해요','남의 계획에 맞추는 게 편해요'],acts:['이번 달 목표 1개 적고 첫 단계 하기','모임에서 내 의견 먼저 1번 말하기','하루 첫 1시간은 가장 중요한 일 하기'],prays:['주신 삶의 방향을 알고, 그 길로 한 걸음 걷게 해주세요.','평화를 지키는 것이 마음을 숨기는 것이 아니라 진실하게 함께하는 것이 되게 해주세요.']},
       high:{signs:['내 의견을 말하며 남도 품어요','할 일을 하면서도 평안해요','사람들을 하나로 모아요'],acts:['아침마다 할 일 1개와 기도제목 1개 정하기','주 1회 ‘요즘 나는 무엇을 원하나?’ 적기','갈등 있는 사람들 사이에서 말 이어주기','불안한 사람 곁을 지켜주기'],prays:['갈등을 덮지 않고 회복시키는, 화평케 하는 사람이 되게 해주세요.','주신 자리에서 깨어 있는 사람이 되게 해주세요.']}}
   };
+  /* 유형 탐구 '기도제목' 글(js/10)이 같은 기도제목 · 말씀을 읽는다 (2026-10-08). 읽기만 한다 */
+  window.POLISH_PRAYERS=POLISH_STATE_TYPE;
   let polishState='mid'; /* 처음에는 가장 많은 사람이 해당하는 '연마 중'. 상태를 살펴본 결과가 있으면 그 구간으로 */
   let polishStatePicked=false; /* 빠르게 고르기 칩을 직접 누른 뒤에는 결과 구간으로 되돌리지 않는다 */
 
@@ -1113,7 +1115,7 @@
     if(mobileTitle) mobileTitle.textContent='분석 노트';
     if(push) history.replaceState(null,'','#state');
     if(typeof closeShellMenu==='function') closeShellMenu();
-    renderDashboard(); renderExperiments(); renderNoteRecent(); /* 보석 상태 · 이번 주 해볼 것 · 쌓인 분석 */
+    renderDashboard(); renderExperiments(); renderStateWish(); renderNoteRecent(); /* 보석 상태 · 이번 주 해볼 것 · 소원과 기도 · 쌓인 분석 */
     document.getElementById('page-state')?.scrollTo({top:0});
     if(opts.check && diaryMyType()) startStateCheck();
   };
@@ -1139,22 +1141,108 @@
       :'';
     host.hidden=!recs.length;
   }
-  /* 나의 공간 '이달의 리포트' (2026-10-07): 이번 달 이야기에서 자주 나온 것. 두 번 넘게 나온 것만 '자주'로 본다 */
-  function renderMonthReport(){
-    const host=g('myMonth'); if(!host) return;
-    const now=new Date(), mon=now.getMonth()+1;
-    const recs=readReflections().filter(r=>{ const d=new Date(r.createdAt); return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth(); });
-    const top=list=>{ const t=list[0]; return t&&t[1]>=2?t[0]:''; };
-    const cat=top(aggregateCategories(recs)), emo=top(aggregateEmotions(recs)), mot=top(aggregateMotives(recs));
-    const done=experimentItems().filter(i=>i.done && (i.updatedAt||'').slice(0,7)===now.toISOString().slice(0,7)).length;
-    const t=diaryMyType(), lastState=t&&stateData()?lastStateCheck(t):null;
-    const rows=[['이야기한 장면',`${recs.length}개`],['자주 나온 장면',cat?catLabel(cat):''],['자주 느낀 감정',emo],['지키려 한 것',mot],['해 본 행동',done?`${done}개`:''],['요즘 보석 상태',lastState?STATE_LABEL[lastState.band]:'']].filter(([,v])=>v);
-    host.innerHTML=`<h2 class="my-log-title" id="myMonthTitle">${mon}월의 나</h2>`
-      +(recs.length>=2
-        ?`<dl class="my-month-rows">${rows.map(([k,v])=>`<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>`
-          +'<p class="my-month-note">두 번 넘게 나온 것만 적었어요. 판정이 아니라 이번 달 이야기에서 보인 흐름이에요.</p>'
-        :`<p class="my-month-note">이번 달 이야기가 두 개 넘게 쌓이면 ${mon}월의 나를 정리해 드려요. 지금 ${recs.length}개예요.</p><button class="ui-btn ui-btn-secondary" data-state-go="write" type="button">이야기 시작하기</button>`);
+  /* 나의 공간 '통계 요약' · '찾은 패턴' (2026-10-08, 다이어리 앱들의 통계 요약 · 패턴 찾기 방식)
+     통계: 이번 달 이야기 수(지난달과 비교) · 연속으로 이야기한 날 · 해 본 행동 · 자주 느낀 감정 막대 · 자주 이야기한 장면 막대.
+           이번 달 이야기가 두 개 미만이면 지금까지 전체로 본다.
+     패턴: 근거가 충분할 때만 한 문장씩 (장면×감정, 감정×지키려 한 것, 요일, '다음엔' 실천, 장면 게임 여유/지친 날).
+           문장마다 근거(몇 개 중 몇 개)를 같이 적는다. 판정이 아니라 기록에서 보인 흐름 */
+  const WEEKDAY=['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];
+  const sameMonth=(d,y,m)=>d.getFullYear()===y && d.getMonth()===m;
+  function barsHTML(rows,label){
+    const max=Math.max(...rows.map(r=>r[1]),1);
+    return `<ul class="my-bars" aria-label="${esc(label)}">${rows.map(([k,n])=>`<li><span class="my-bar-name">${esc(k)}</span><span class="my-bar-track"><span class="my-bar-fill" style="width:${Math.round(n/max*100)}%"></span></span><span class="my-bar-n">${n}번</span></li>`).join('')}</ul>`;
   }
+  function streakDays(recs){
+    const days=new Set(recs.map(r=>{ const d=new Date(r.createdAt); return isNaN(d)?'':dayKeyOf(d); }));
+    const d=new Date(); d.setHours(0,0,0,0);
+    if(!days.has(dayKeyOf(d))) d.setDate(d.getDate()-1);
+    let n=0; while(days.has(dayKeyOf(d))){ n++; d.setDate(d.getDate()-1); }
+    return n;
+  }
+  /* 기록이 모자랄 때 (2026-10-08): 빈 안내 대신 '예시' 데이터로 같은 모양을 미리 보여준다.
+     예시는 옅게 그리고 화면 읽기에서 빼며(aria-hidden), 위에 '예시' 표시와 '기록하면 이렇게 보여요' 한 줄, 아래에 시작 버튼 */
+  function sampleHTML(note,body,cta){
+    return `<div class="my-sample-head"><span class="my-sample-tag">예시</span><p>${esc(note)}</p></div>`
+      +`<div class="my-sample" aria-hidden="true">${body}</div>`
+      +(cta||'');
+  }
+  const tileHTML=(n,label,sub)=>`<div class="my-tile"><b>${n}</b><span>${esc(label)}</span>${sub?`<small>${esc(sub)}</small>`:''}</div>`;
+  /* 유형별 지친 날 쪽 (통합·비통합 화살표의 비통합 방향). 예시 문장에만 쓴다 */
+  const STRESS_TO={1:4,2:8,3:9,4:2,5:7,6:3,7:1,8:5,9:6};
+  function renderMyStats(){
+    const host=g('myStats'); if(!host) return;
+    const all=readReflections(), now=new Date(), y=now.getFullYear(), m=now.getMonth();
+    const month=all.filter(r=>sameMonth(new Date(r.createdAt),y,m));
+    const prev=all.filter(r=>sameMonth(new Date(r.createdAt),m?y:y-1,m?m-1:11));
+    const useMonth=month.length>=2, base=useMonth?month:all;
+    const title=useMonth?`${m+1}월 한눈에`:'지금까지 한눈에';
+    if(base.length<2){
+      host.innerHTML=`<h2 class="my-log-title" id="myStatsTitle">${m+1}월 한눈에</h2>`
+        +sampleHTML(`이야기를 기록하면 이렇게 보여요. 두 개부터 시작해요 (지금 ${all.length}개).`,
+          '<div class="my-tiles">'+tileHTML(7,'이야기','지난달 +2')+tileHTML('3일','연속 기록','')+tileHTML(2,'해 본 행동','')+'</div>'
+          +`<h3 class="my-sub">자주 느낀 감정</h3>${barsHTML([['불안',4],['서운함',3],['뿌듯함',2]],'예시 감정')}`
+          +`<h3 class="my-sub">자주 이야기한 장면</h3>${barsHTML([['일',3],['사람 사이',2],['가족',1]],'예시 장면')}`,
+          '<button class="ui-btn ui-btn-secondary" data-state-go="write" type="button">이야기 시작하기</button>');
+      return;
+    }
+    const diff=month.length-prev.length;
+    const doneMonth=experimentItems().filter(i=>i.done && (i.updatedAt||'').slice(0,7)===now.toISOString().slice(0,7)).length;
+    const emo=aggregateEmotions(base).slice(0,5), cat=aggregateCategories(base).slice(0,4).map(([k,n])=>[catLabel(k),n]);
+    const tile=tileHTML;
+    host.innerHTML=`<h2 class="my-log-title" id="myStatsTitle">${title}</h2>`
+      +'<div class="my-tiles">'
+      +tile(base.length,'이야기',useMonth&&prev.length?(diff>0?`지난달 +${diff}`:diff<0?`지난달 −${-diff}`:'지난달과 같아요'):'')
+      +tile(`${streakDays(all)}일`,'연속 기록','')
+      +tile(doneMonth,'해 본 행동','')
+      +'</div>'
+      +(emo.length?`<h3 class="my-sub">자주 느낀 감정</h3>${barsHTML(emo,'자주 느낀 감정')}`:'')
+      +(cat.length?`<h3 class="my-sub">자주 이야기한 장면</h3>${barsHTML(cat,'자주 이야기한 장면')}`:'');
+  }
+  /* 장면 게임 값(js/11)은 이 파일보다 늦게 읽혀서, js/11이 다 읽힌 뒤 이걸 불러 숫자 칸 · 패턴을 다시 그린다 */
+  window.refreshMySpaceScene=()=>{ renderMyLog(); renderMyPatterns(); };
+  function renderMyPatterns(){
+    const host=g('myPatterns'); if(!host) return;
+    const all=readReflections(), found=[];
+    const icon=k=>typeof uiIcon==='function'?`<span class="icon-tile">${uiIcon(k)}</span>`:'';
+    /* 1) 장면 × 감정: 같은 장면 이야기가 세 개 넘고, 그중 절반 넘게 같은 감정 */
+    aggregateCategories(all).filter(([,n])=>n>=3).forEach(([k,n])=>{
+      const e=aggregateEmotions(all.filter(r=>r.category===k))[0];
+      if(e && e[1]>=2 && e[1]/n>=0.5) found.push(['diary',`‘${catLabel(k)}’ 장면에서는 ‘${e[0]}’${josa(e[0],'을','를')} 자주 느꼈어요`,`${catLabel(k)} 이야기 ${n}개 중 ${e[1]}개`]);
+    });
+    /* 2) 감정 × 지키려 한 것: 가장 많은 감정(세 번 넘게)과 함께 가장 자주 고른 것 */
+    const topE=aggregateEmotions(all)[0];
+    if(topE && topE[1]>=3){
+      const mo=aggregateMotives(all.filter(r=>(r.emotions||[]).includes(topE[0])))[0];
+      if(mo && mo[1]>=2) found.push(['core',`‘${topE[0]}’${josa(topE[0],'을','를')} 느낄 때, 그 밑엔 ‘${mo[0]}’${josa(mo[0],'을','를')} 지키고 싶은 마음이 있었어요`,`${topE[0]} ${topE[1]}번 중 ${mo[1]}번`]);
+    }
+    /* 3) 요일: 이야기가 다섯 개 넘고, 한 요일에 40% 넘게 몰림 */
+    if(all.length>=5){
+      const c=Array(7).fill(0); all.forEach(r=>{ const d=new Date(r.createdAt); if(!isNaN(d)) c[d.getDay()]++; });
+      const best=c.indexOf(Math.max(...c));
+      if(c[best]>=3 && c[best]/all.length>=0.4) found.push(['read',`${WEEKDAY[best]}에 이야기가 많아요. 그날 마음이 바빠지는 이유가 있을지도 몰라요`,`이야기 ${all.length}개 중 ${c[best]}개`]);
+    }
+    /* 4) '다음엔' 실천: 다음엔을 적은 이야기가 세 개 넘을 때 해봤어요 비율 */
+    const withNext=all.filter(r=>(r.next||'').trim());
+    if(withNext.length>=3){
+      const st=readExperiments().status, done=withNext.filter(r=>st[r.id]?.done).length;
+      found.push(['polish',done?`‘다음엔’에 적은 행동을 ${done}번 직접 해봤어요`:'‘다음엔’에 적어 둔 행동이 아직 기다리고 있어요. 작은 것 하나부터 해 볼까요?',`다음엔 ${withNext.length}개 중 ${done}개`]);
+    }
+    /* 5) 장면 게임: 여유 있을 때와 지친 날 각각 세 번 넘게 고르고, 기운 유형이 다를 때 */
+    const mt=window.sceneMoodTops?.();
+    if(mt && mt.calm && mt.tired && mt.calm.of>=3 && mt.tired.of>=3 && mt.calm.t!==mt.tired.t)
+      found.push(['quiz',`여유 있을 땐 ${mt.calm.t}번 ${TYPES[mt.calm.t].name}, 지친 날엔 ${mt.tired.t}번 ${TYPES[mt.tired.t].name} 쪽 반응을 자주 골랐어요`,`장면 반응 ${mt.total}번`]);
+    const list=rows=>`<ul class="my-patterns">${rows.map(([ic,line,meta])=>`<li>${icon(ic)}<div><p>${esc(line)}</p><small>${esc(meta)}</small></div></li>`).join('')}</ul>`;
+    const t=diaryMyType()||6, tt=STRESS_TO[t];
+    host.innerHTML='<h2 class="my-log-title" id="myPatternsTitle">찾은 패턴</h2>'
+      +(found.length
+        ?list(found)+'<p class="my-month-note">판정이 아니라 지금까지의 기록에서 보인 흐름이에요. 기록이 쌓이면 바뀔 수 있어요.</p>'
+        :sampleHTML(`기록이 쌓이면 반복되는 흐름을 이렇게 찾아 드려요. 같은 장면 이야기가 세 개쯤 모이면 보이기 시작해요 (지금 ${all.length}개).`,
+          list([['diary','‘일’ 장면에서는 ‘불안’을 자주 느꼈어요','일 이야기 4개 중 3개'],
+            ['core','‘서운함’을 느낄 때, 그 밑엔 ‘인정’을 지키고 싶은 마음이 있었어요','서운함 3번 중 2번'],
+            ['quiz',`여유 있을 땐 ${t}번 ${TYPES[t].name}, 지친 날엔 ${tt}번 ${TYPES[tt].name} 쪽 반응을 자주 골랐어요`,'장면 반응 12번']]),
+          '<div class="my-sample-actions"><button class="ui-btn ui-btn-secondary" data-state-go="write" type="button">이야기 시작하기</button><button class="ui-btn ui-btn-ghost" data-mylog-go="community" type="button">장면 게임 하기</button></div>'));
+  }
+
   /* 나의 공간 '쌓인 나' (2026-10-07 두 번째): 홈 '오늘' 줄 목록과 같은 모양이라 두 화면이 비슷해 보여서, 프로필처럼 바꿨다.
      숫자 세 칸(쌓인 분석 · 해본 것 · 장면 반응, 누르면 그곳으로) + 보석 상태 변화 줄(최근 여섯 번, 왼쪽이 예전) */
   function renderMyLog(){
@@ -1175,12 +1263,15 @@
           ?`<ol class="my-state-line" style="${typeof gemVars==='function'?gemVars(t):''}">${line.map(r=>`<li class="is-${r.band}"><span class="my-state-dot" aria-hidden="true"></span><b>${esc(STATE_LABEL[r.band])}</b><small>${esc(stateDay(r.at))}</small></li>`).join('')}</ol>`
             +'<p class="my-states-note">빛남 · 연마 중 · 흐려짐은 판정이 아니라 그때의 나를 살펴본 기록이에요.</p>'
             +'<button class="my-profile-link" data-mylog-go="state" type="button">다시 살펴보기</button>'
-          :'<p class="my-states-note">20문항으로 살펴보면 여기에 그때그때의 보석 상태가 쌓여요.</p><button class="my-profile-link" data-mylog-go="state" type="button">처음 살펴보기</button>')
+          :sampleHTML('20문항으로 살펴볼 때마다 그때의 보석 상태가 이렇게 이어져요.',
+            `<ol class="my-state-line" style="${typeof gemVars==='function'?gemVars(t):''}">${[['high','7월'],['mid','8월'],['low','9월'],['mid','10월']].map(([b,d])=>`<li class="is-${b}"><span class="my-state-dot"></span><b>${esc(STATE_LABEL[b])}</b><small>${d}</small></li>`).join('')}</ol>`,
+            '<button class="my-profile-link" data-mylog-go="state" type="button">처음 살펴보기</button>'))
         +'</section>';
     }
     host.innerHTML=html;
   }
-  g('myLog')?.addEventListener('click',e=>{
+  /* 숫자 칸 · 상태 변화 · 예시 미리보기의 버튼이 같이 쓴다 */
+  g('page-myspace')?.addEventListener('click',e=>{
     const b=e.target.closest('[data-mylog-go]'); if(!b) return;
     const k=b.dataset.mylogGo;
     if(k==='state') showStatePage();
@@ -1217,7 +1308,7 @@
   }
   /* 보석 닦기 다시 정리 (2026-10-05): 컨셉 하나 — "이번 주 작은 행동 하나를 고르고, 해보고, 체크한다".
      설명형 콘텐츠(1분 연습 · 신호 목록 · 고칠 점 · 키워드)는 유형 탐구 글로 넘기고, 여기는 고르기와 담기만 남긴다.
-     화면: 내 보석 카드(이번 주 방향) → ① 지금 상태에 맞는 행동 담기 → ② 해보기로 한 것(아래 정적 영역) → ③ 소원과 기도.
+     화면: 내 보석 카드(이번 주 방향) → 지금 상태에 맞는 행동 담기. 해볼 것 목록과 소원과 기도는 분석 노트 첫 화면에 있다 (2026-10-08).
      2026-10-07: 상태를 자세히 살펴보는 20문항과 결과는 '내 상태 > 살펴보기'로 옮겼다. 여기서는 살펴본 상태를 기본으로 빠르게 고르기만 */
   function polishPicksHTML(t,have){
     const [key,label,lead]=POLISH_STATES.find(([k])=>k===polishState);
@@ -1278,6 +1369,12 @@
       +(prayers.length?`<ul class="wish-list">${prayers.map(row).join('')}</ul>`:'')
       +'</section>';
   }
+  /* 분석 노트 '소원과 기도' (2026-10-08): 보석 닦기 안쪽 화면 맨 아래에 숨어 있던 것을 분석 노트 '이번 주 해볼 것' 아래로 꺼냈다.
+     기도제목 추천은 보석 닦기에서 고른 상태(polishState)를 그대로 쓴다 */
+  function renderStateWish(){
+    const host=g('stateWish'); if(!host) return;
+    host.innerHTML=polishWishHTML(diaryMyType());
+  }
   function renderPolish(){
     const host=g('polishApp'); if(!host) return;
     const t=diaryMyType();
@@ -1288,7 +1385,7 @@
     if(!t){
       host.innerHTML=`<section class="polish-hero is-find"><span class="polish-hero-gems" aria-hidden="true">${[2,5,7].map(gem).join('')}</span>`
         +'<strong class="polish-hero-title">내 보석을 먼저 찾아볼까요?</strong><p class="polish-hero-desc">유형을 알면 내 보석에 맞는 행동을 골라 줄 수 있어요.</p>'
-        +'<button class="ui-btn ui-btn-primary" data-polish-check type="button">간편 검사하기</button></section>'+flow+polishPicksHTML(null,new Set())+polishWishHTML(null);
+        +'<button class="ui-btn ui-btn-primary" data-polish-check type="button">간편 검사하기</button></section>'+flow+polishPicksHTML(null,new Set());
       return;
     }
     const p=POLISH.practice[t], have=new Set(readExperiments().custom.map(x=>x.text));
@@ -1298,7 +1395,7 @@
       +`<strong class="polish-hero-title">${esc(p.direction)}</strong><span class="polish-hero-desc">이번 주에 닦을 방향이에요.</span></section>`;
     const last=lastStateCheck(t);
     if(last && !polishStatePicked) polishState=last.band;
-    host.innerHTML=hero+flow+polishPicksHTML(t,have)+polishWishHTML(t);
+    host.innerHTML=hero+flow+polishPicksHTML(t,have);
   }
   /* state: 핸드북 '요즘 나는 어떤가요?'에서 고른 상태(low·mid·high)로 열 때.
      opts.check: 예전 주소 호환. 상태 문항은 이제 '내 상태 > 살펴보기'에서 한다 */
@@ -1320,20 +1417,22 @@
     const add=e.target.closest('[data-polish-add]');
     if(add){ const t=diaryMyType(); addCustomExperiment(add.dataset.polishAdd,`보석 닦기 · ${t}번${add.dataset.polishSrc?' · '+add.dataset.polishSrc:''}`); renderPolish(); renderExperiments(); return; }
     const st=e.target.closest('[data-polish-state]');
-    if(st){ polishState=st.dataset.polishState; polishStatePicked=true; renderPolish(); document.querySelector(`#polishApp [data-polish-state="${polishState}"]`)?.focus(); return; }
+    if(st){ polishState=st.dataset.polishState; polishStatePicked=true; renderPolish(); renderStateWish(); document.querySelector(`#polishApp [data-polish-state="${polishState}"]`)?.focus(); return; }
     if(e.target.closest('[data-polish-check]') && typeof showCheckTarget==='function') showCheckTarget('quick');
-    const pa=e.target.closest('[data-pray-add]');
-    if(pa){ addWish('prayer',pa.dataset.prayAdd); renderPolish(); return; }
-    const wd=e.target.closest('[data-wish-done]');
-    if(wd){ const d=readWishes(); const it=d.items.find(x=>x.id===wd.dataset.wishDone); if(it){ it.done=true; it.doneAt=new Date().toISOString(); writeWishes(d); } renderPolish(); return; }
-    const wx=e.target.closest('[data-wish-del]');
-    if(wx){ const d=readWishes(); d.items=d.items.filter(x=>x.id!==wx.dataset.wishDel); writeWishes(d); renderPolish(); }
   });
-  g('polishApp')?.addEventListener('submit',e=>{
+  g('stateWish')?.addEventListener('click',e=>{
+    const pa=e.target.closest('[data-pray-add]');
+    if(pa){ addWish('prayer',pa.dataset.prayAdd); renderStateWish(); return; }
+    const wd=e.target.closest('[data-wish-done]');
+    if(wd){ const d=readWishes(); const it=d.items.find(x=>x.id===wd.dataset.wishDone); if(it){ it.done=true; it.doneAt=new Date().toISOString(); writeWishes(d); } renderStateWish(); return; }
+    const wx=e.target.closest('[data-wish-del]');
+    if(wx){ const d=readWishes(); d.items=d.items.filter(x=>x.id!==wx.dataset.wishDel); writeWishes(d); renderStateWish(); }
+  });
+  g('stateWish')?.addEventListener('submit',e=>{
     const form=e.target.closest('[data-wish-form]'); if(!form) return;
     e.preventDefault();
     const kind=form.dataset.wishForm, input=form.querySelector('input');
-    if(addWish(kind,input.value)){ renderPolish(); document.querySelector(`#polishApp [data-wish-form="${kind}"] input`)?.focus(); }
+    if(addWish(kind,input.value)){ renderStateWish(); document.querySelector(`#stateWish [data-wish-form="${kind}"] input`)?.focus(); }
   });
   g('polishApp')?.addEventListener('change',e=>{
     const box=e.target.closest('[data-polish-pray]');

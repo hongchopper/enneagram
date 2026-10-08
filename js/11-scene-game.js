@@ -209,8 +209,15 @@ window.sceneSummary=function(){
   const top=Object.entries(c).sort((a,b)=>b[1]-a[1]||a[0]-b[0])[0];
   return {title:scenes()[sceneIdx]?.title||'',picks:picks.length,top:top?Number(top[0]):0};
 };
+/* 나의 공간 '찾은 패턴' (js/02): 여유 있을 때 · 지친 날 따로 가장 많이 고른 유형과 그 수 */
+window.sceneMoodTops=function(){
+  const {picks}=load();
+  const top=state=>{ const c={}; picks.filter(p=>p.state===state).forEach(p=>c[p.t]=(c[p.t]||0)+1); const e=Object.entries(c).sort((a,b)=>b[1]-a[1]||a[0]-b[0])[0]; return e?{t:Number(e[0]),n:e[1],of:picks.filter(p=>p.state===state).length}:null; };
+  return {total:picks.length,calm:top('calm'),tired:top('tired')};
+};
 /* 홈은 js/00이 먼저 그려서 js/02 · 10 · 11 값이 없었다. 마지막 파일인 여기서 다시 그린다 */
 if(typeof renderHomeShelves==='function') renderHomeShelves(getHomeProfile());
+window.refreshMySpaceScene?.(); /* 나의 공간 장면 반응 수 · 패턴도 */
 
 /* 받은 링크 #scene=<장면>-<친구가 고른 유형> */
 function route(){ const m=location.hash.match(/^#scene=(\d+)-([1-9])$/); if(m) showSceneShare(Number(m[1]),Number(m[2])); return !!m; }

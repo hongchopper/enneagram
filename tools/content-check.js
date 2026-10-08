@@ -5,7 +5,9 @@
 const fs=require('fs');
 global.window={};
 eval(fs.readFileSync('content/explore-posts.js','utf8'));
+eval(fs.readFileSync('content/mbti-posts.js','utf8'));
 eval(fs.readFileSync('content/type-posts.js','utf8'));
+eval(fs.readFileSync('content/type-posts-inner.js','utf8'));
 const posts={...window.EXPLORE_TEXT};
 for(const a of window.EXPLORE_DATA.ARTICLES) posts[a.id]=a;
 

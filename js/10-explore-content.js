@@ -21,7 +21,7 @@ const mix=ids=>[...ids].sort((a,b)=>keyOf(a)-keyOf(b));
 const POSTS=new Map();
 D.KINDS.forEach(kd=>{
   /* 사진은 글마다 다르게: assets/photos/posts/<종류>-<번호>.jpg */
-  for(let t=1;t<=9;t++) POSTS.set(`${kd.k}-${t}`,{id:`${kd.k}-${t}`,src:'hb',kind:kd.k,t,cat:kd.cat,pic:`posts/${kd.k}-${t}`,note:kd.note,h3:kd.h3,
+  for(let t=1;t<=9;t++) POSTS.set(`${kd.k}-${t}`,{id:`${kd.k}-${t}`,src:'hb',kind:kd.k,t,cat:kd.cat,pic:kd.own?kd.pic:`posts/${kd.k}-${t}`,note:kd.note,h3:kd.h3,
     title:kd.title(N(t),t,NAME[t]),lead:kd.lead(N(t),t)});
 });
 D.PAGES.forEach(p=>POSTS.set(p.id,{...p}));
@@ -38,6 +38,42 @@ homeVsPairs().forEach(v=>{
   POSTS.set(id,{id,src:'vs',a,b,cat:'헷갈리는 유형',pic:`posts/${id}`,meta:`${a}번 vs ${b}번 · 헷갈리는 유형`,
     title:`${a}번 vs ${b}번, ${hook.replace(", "," ")}`,lead:v.same,same:v.same,diff:v.diff,ask:VS_ASK,try:VS_TRY});
 });
+/* 기도제목 글 (2026-10-08): 보석 닦기의 유형별 · 상태별 기도제목과 말씀(js/02 POLISH_PRAYERS)을 유형마다 한 편으로.
+   같은 데이터를 읽기만 해서, 보석 닦기에서 고치면 여기도 같이 바뀐다 */
+const PRAY=window.POLISH_PRAYERS||null;
+if(PRAY) for(let t=1;t<=9;t++){
+  const P=PRAY[t]; if(!P) continue;
+  const name=N(t), eul=(c=>c>=0xAC00&&c<=0xD7A3&&(c-0xAC00)%28?'을':'를')(name.charCodeAt(name.length-1));
+  const li=a=>(a||[]).map(x=>`<li>${esc(x)}</li>`).join('');
+  POSTS.set(`pray-${t}`,{id:`pray-${t}`,src:'art',kind:'pray',t,cat:'기도제목',pic:'polish',
+    title:`${name}${eul} 위한 기도제목`,
+    lead:`“${P.low?.signs?.[0]||''}” 그런 날에도, 빛나는 날에도 꺼내 읽을 기도예요.`,
+    body:`<h2>지칠 때</h2><ul>${li(P.low?.prays)}</ul><h2>다듬는 중일 때</h2><ul>${li(P.mid?.prays)}</ul><h2>빛날 때</h2><ul>${li(P.high?.prays)}</ul>`
+      +`<h2>함께 읽는 말씀</h2><p>${esc(P.verse||'')}</p>`,
+    ask:['세 묶음 가운데 지금 내 마음에 가장 가까운 기도는 무엇인가요?'],
+    try:'마음에 닿는 기도 하나를 분석 노트 ‘소원과 기도’에 담아 보기'});
+}
+/* 주제 태그 (2026-10-08): 글마다 주제를 여러 개. 분류(cat)는 그대로 두고 tags에 더한다.
+   종류(KINDS)별로 붙이는 것 + 글 id로 붙이는 것. 필터 패널은 TAG_GROUPS 순서로 묶어 보여준다 */
+const KIND_TAGS={
+  traits:['유형 이해'],strengths:['유형 이해'],motive:['유형 이해'],immature:['유형 이해'],confused:['헷갈리는 유형'],
+  theme:['핵심 패턴'],auto:['핵심 패턴'],childhood:['핵심 패턴','가족'],groups:['핵심 패턴'],wings:['핵심 패턴'],
+  fixation:['핵심 패턴','죄성(유혹)'],
+  defense:['방어기제','핵심 패턴'],selfimage:['동일시하는 패턴','핵심 패턴'],fixmind:['핵심 패턴','죄성(유혹)'],stages:['성장'],
+  relemo:['관계'],talk:['관계'],praise:['관계'],conflict:['관계'],
+  levels:['성장'],signals:['성장'],integration:['성장'],gifts:['성장','영성'],growself:['성장'],grow:['성장'],growtalk:['성장','관계'],
+  decide:['일상생활'],energy:['일상생활'],money:['시간','돈','일상생활'],
+  love:['사랑'],parenting:['양육','부모','자녀','가족'],
+  work:['일','회사에서 일할 때','어울리는 직업'],interview:['일','취업 준비'],lead:['리더십','일'],
+  mbti:['MBTI'],pray:['기도제목','영성']
+};
+const ID_TAGS={
+  'a-mbti':['MBTI'],'r-mbti9':['MBTI'],'r-money':['돈'],'r-love':['사랑'],'r-marriage':['사랑','가족'],'r-fight':['사랑','관계'],
+  'r-career':['일','어울리는 직업'],'r-doctor':['일','어울리는 직업'],'r-team':['일','리더십','관계'],
+  'r-sport':['일상생활'],'r-recover':['일상생활'],'r-joy':['일상생활'],'a-tired':['일상생활'],'a-other':['관계'],'r-seen':['관계'],
+  'r-steady':['성장'],'r-books':['성장'],'a-next':['성장','일상생활']
+};
+POSTS.forEach(p=>{ p.tags=new Set([p.cat,...(KIND_TAGS[p.kind]||[]),...(ID_TAGS[p.id]||[]),...(p.src==='vs'?['헷갈리는 유형','비교']:[])].filter(Boolean)); });
 /* 피드에만 있는 바로가기 카드 (글이 아니라 기능 화면으로) */
 const GO={'go-diary':{title:'오늘 있었던 장면 하나 이야기하기',cat:'분석 노트',pic:'diary'},'go-polish':{title:'이번 주에 해볼 작은 행동 고르기',cat:'보석 닦기',pic:'polish'}};
 
@@ -67,22 +103,117 @@ function card(id){
 const rail=(ids,wide)=>`<div class="shelf-rail feed-post-rail${wide?' is-wide':''}">${ids.map(card).join('')}</div>`;
 const section=(key,title,inner)=>`<section class="feed-collection" aria-labelledby="fc-${key}"><h2 class="explore-hub-sub" id="fc-${key}">${title}</h2>${inner}</section>`;
 
-/* ---------- 필터: 유형 칩 + 주제 태그 (하나씩 고른다) ---------- */
-const TAGS=['처음이라면','헷갈리는 유형','유형 이해','핵심 패턴','관계','사랑과 가족','생활','일','성장','마음 돌보기','비교'];
-const filter={t:0,tag:''};
+/* ---------- 필터 (2026-10-08): 유형 칩 줄(탭) 대신 '필터' 버튼 → 아래에서 올라오는 패널에서 유형 · 주제를 여러 개 고른다 ----------
+   고른 것은 위 줄에 칩으로 남고(× 로 빼기), 아무것도 안 골랐을 때는 그 자리에 자주 쓰는 빠른 필터(내 유형 · 처음이라면 · 헷갈리는 유형 · 관계)를 둔다.
+   유형은 그 유형 글(두 유형 비교 글은 둘 중 하나라도), 주제는 글 분류. 유형끼리 · 주제끼리는 '또는', 유형과 주제 사이는 '그리고' */
+const TAG_GROUPS=[
+  ['삶의 장면',['일','취업 준비','회사에서 일할 때','어울리는 직업','리더십','관계','사랑','가족','부모','자녀','양육','일상생활','시간','돈']],
+  ['마음 들여다보기',['성장','방어기제','동일시하는 패턴','죄성(유혹)','기도제목','영성','핵심 패턴','마음 돌보기']],
+  ['유형 알아보기',['처음이라면','유형 이해','헷갈리는 유형','비교','MBTI']]
+];
+/* 글이 하나도 없는 주제는 패널에 보이지 않는다 (예: 아직 쓰지 않은 주제) */
+const TAGS=TAG_GROUPS.flatMap(([,l])=>l).filter(g=>[...POSTS.values()].some(p=>p.tags.has(g)));
+const filter={types:new Set(),tags:new Set()};
+const isFiltering=()=>filter.types.size>0||filter.tags.size>0;
+const typesOf=p=>p.src==='vs'?[p.a,p.b]:p.t?[p.t]:p.types||[]; /* MBTI 글(content/mbti-posts.js)은 자주 보이는 번호들 */
+const matches=(p,fl=filter)=>(!fl.types.size||typesOf(p).some(t=>fl.types.has(t)))&&(!fl.tags.size||[...fl.tags].some(g=>p.tags.has(g)));
+const matchIds=(fl=filter)=>[...POSTS.values()].filter(p=>matches(p,fl)).map(p=>p.id);
 function filterHTML(){
-  const chip=(attr,val,label,on)=>`<button class="feed-chip" ${attr}="${val}" type="button" aria-pressed="${on}">${esc(label)}</button>`;
-  return `<div class="feed-filters"><div class="shelf-rail feed-chip-row" role="group" aria-label="유형으로 보기">${chip('data-filter-type',0,'전체 유형',!filter.t)}${[1,2,3,4,5,6,7,8,9].map(t=>chip('data-filter-type',t,N(t),filter.t===t)).join('')}</div>`
-    +'</div>';
+  const n=filter.types.size+filter.tags.size;
+  const chip=(attr,val,label,on,extra='')=>`<button class="feed-chip" ${attr}="${esc(String(val))}" type="button" aria-pressed="${on}"${extra}>${label}</button>`;
+  let row;
+  if(n){
+    row=[...filter.types].sort((x,y)=>x-y).map(t=>chip('data-filter-remove',`t:${t}`,`${esc(N(t))} <span aria-hidden="true">×</span>`,true,` aria-label="${esc(N(t))} 필터 빼기"`)).join('')
+      +[...filter.tags].map(g=>chip('data-filter-remove',`g:${g}`,`#${esc(g)} <span aria-hidden="true">×</span>`,true,` aria-label="${esc(g)} 필터 빼기"`)).join('')
+      +'<button class="feed-more explore-filter-clear" data-filter-clear type="button">초기화</button>';
+  }else{
+    const t=myType();
+    row=(t?chip('data-filter-quick',`t:${t}`,`내 유형 · ${esc(N(t))}`,false):'')
+      +['처음이라면','헷갈리는 유형','관계','성장'].map(g=>chip('data-filter-quick',`g:${g}`,`#${esc(g)}`,false)).join('');
+  }
+  return `<div class="feed-filters"><div class="explore-filter-bar">`
+    +`<button class="explore-filter-btn${n?' is-on':''}" data-filter-open type="button" aria-haspopup="dialog" aria-controls="exploreFilterSheet">`
+    +`<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>필터${n?` <b>${n}</b>`:''}</button>`
+    +`<div class="shelf-rail feed-chip-row explore-filter-row" role="group" aria-label="${n?'고른 필터':'빠른 필터'}">${row}</div></div></div>`;
 }
 function filteredHTML(){
-  const ids=[...POSTS.values()].filter(p=>(!filter.t||p.t===filter.t)&&(!filter.tag||p.cat===filter.tag)).map(p=>p.id);
-  const label=[filter.t?N(filter.t):'',filter.tag?'#'+filter.tag:''].filter(Boolean).join(' · ');
-  if(!ids.length) return `<p class="feed-empty">${esc(label)}에 맞는 글이 아직 없어요. 다른 유형이나 주제를 골라 보세요.</p>`;
+  const ids=feedList;
+  const label=[...[...filter.types].sort((x,y)=>x-y).map(N),...[...filter.tags].map(g=>'#'+g)].join(' · ');
+  if(!ids.length) return `<p class="feed-empty">${esc(label)}에 맞는 글이 아직 없어요. 필터를 하나 빼 보세요.</p>`;
   return section('filtered',`${esc(label)} 글 ${ids.length}편`,`<div class="feed-post-grid" id="feedAll">${ids.slice(0,12).map(card).join('')}</div>`
     +'<div class="feed-sentinel" aria-hidden="true"></div>');
 }
-window.setExploreFilter=(f)=>{ Object.assign(filter,f); };
+/* 다른 화면(유형 카드 '글 보기' · 글의 #태그)에서 부르는 예전 모양 {t, tag}도 받는다 */
+window.setExploreFilter=(f)=>{
+  filter.types=new Set(f.t?[Number(f.t)]:[]);
+  filter.tags=new Set(f.tag?[f.tag]:[]);
+};
+
+/* ---------- 필터 패널 (아래에서 올라오는 시트). 고르는 동안은 draft, 'N편 보기'를 눌러야 적용 ---------- */
+let draft=null, sheetOpener=null;
+function sheetHTML(){
+  const n=matchIds(draft).length;
+  const chip=(attr,val,label,on)=>`<button class="feed-chip" ${attr}="${esc(String(val))}" type="button" aria-pressed="${on}">${esc(label)}</button>`;
+  return '<div class="xf-backdrop" data-xf-close></div>'
+    +'<div class="xf-panel" role="dialog" aria-modal="true" aria-labelledby="xfTitle">'
+    +'<div class="xf-head"><h2 class="xf-title" id="xfTitle">필터</h2><button class="xf-close" data-xf-close type="button" aria-label="필터 닫기">×</button></div>'
+    +'<div class="xf-body">'
+    +`<h3 class="xf-sub">유형 <small>여러 개 고를 수 있어요</small></h3><div class="xf-chips">${[1,2,3,4,5,6,7,8,9].map(t=>chip('data-xf-type',t,N(t),draft.types.has(t))).join('')}</div>`
+    +TAG_GROUPS.map(([label,list])=>{ const l=list.filter(g=>TAGS.includes(g)); return l.length?`<h3 class="xf-sub">${esc(label)}</h3><div class="xf-chips">${l.map(g=>chip('data-xf-tag',g,g,draft.tags.has(g))).join('')}</div>`:''; }).join('')
+    +'</div>'
+    +`<div class="xf-foot"><button class="ui-btn ui-btn-ghost" data-xf-reset type="button">초기화</button>`
+    +`<button class="ui-btn ui-btn-primary" data-xf-apply type="button">${n?`${n}편 보기`:'맞는 글이 없어요'}</button></div></div>`;
+}
+function sheetEl(){
+  let el=document.getElementById('exploreFilterSheet');
+  if(!el){ el=document.createElement('div'); el.id='exploreFilterSheet'; el.className='xf-sheet'; el.hidden=true; document.body.appendChild(el); el.addEventListener('click',onSheetClick); }
+  return el;
+}
+function openSheet(opener){
+  draft={types:new Set(filter.types),tags:new Set(filter.tags)};
+  sheetOpener=opener||null;
+  const el=sheetEl(); el.innerHTML=sheetHTML(); el.hidden=false;
+  document.getElementById('page-explore')?.classList.add('is-sheet-open');
+  el.querySelector('.xf-close')?.focus();
+}
+function closeSheet(){
+  const el=document.getElementById('exploreFilterSheet'); if(!el || el.hidden) return;
+  el.hidden=true; draft=null;
+  document.getElementById('page-explore')?.classList.remove('is-sheet-open');
+  (document.querySelector('#exploreFeed [data-filter-open]')||sheetOpener)?.focus();
+}
+function redrawSheet(focusSel){
+  const el=sheetEl(), y=el.querySelector('.xf-body')?.scrollTop||0;
+  el.innerHTML=sheetHTML();
+  const body=el.querySelector('.xf-body'); if(body) body.scrollTop=y;
+  if(focusSel) el.querySelector(focusSel)?.focus();
+}
+function applyFilter(){
+  const y=document.querySelector('#exploreFeed .feed-filters')?.getBoundingClientRect().top;
+  window.renderExploreFeed();
+  if(y<0) document.querySelector('#exploreFeed .feed-filters')?.scrollIntoView({block:'start'});
+}
+function onSheetClick(e){
+  if(e.target.closest('[data-xf-close]')){ closeSheet(); return; }
+  const ty=e.target.closest('[data-xf-type]'), tg=e.target.closest('[data-xf-tag]');
+  if(ty){ const t=Number(ty.dataset.xfType); draft.types.has(t)?draft.types.delete(t):draft.types.add(t); redrawSheet(`[data-xf-type="${t}"]`); return; }
+  if(tg){ const g=tg.dataset.xfTag; draft.tags.has(g)?draft.tags.delete(g):draft.tags.add(g); redrawSheet(`[data-xf-tag="${CSS.escape(g)}"]`); return; }
+  if(e.target.closest('[data-xf-reset]')){ draft={types:new Set(),tags:new Set()}; redrawSheet('[data-xf-reset]'); return; }
+  if(e.target.closest('[data-xf-apply]')){
+    filter.types=draft.types; filter.tags=draft.tags; closeSheet(); applyFilter();
+    document.querySelector('#exploreFeed [data-filter-open]')?.focus({preventScroll:true}); /* 목록을 새로 그려서 버튼도 새것 */
+  }
+}
+document.addEventListener('keydown',e=>{
+  const el=document.getElementById('exploreFilterSheet'); if(!el || el.hidden) return;
+  if(e.key==='Escape'){ closeSheet(); return; }
+  if(e.key==='Tab'){ /* 패널 안에서만 돌게 */
+    const f=[...el.querySelectorAll('.xf-panel button')]; if(!f.length) return;
+    if(e.shiftKey && document.activeElement===f[0]){ e.preventDefault(); f[f.length-1].focus(); }
+    else if(!e.shiftKey && document.activeElement===f[f.length-1]){ e.preventDefault(); f[0].focus(); }
+  }
+});
+
 
 /* ---------- 피드 ---------- */
 /* 오늘의 글: 유형이 있으면 내 유형 글 중 하나, 없으면 처음 오는 사람을 위한 글. 홈 '오늘 읽을 글'도 같은 글로 시작 */
@@ -101,7 +232,7 @@ let allOrder=null;
 window.renderExploreFeed=function(){
   const box=document.getElementById('exploreFeed');
   if(!box) return;
-  if(filter.t||filter.tag){ feedList=[...POSTS.values()].filter(p=>(!filter.t||p.t===filter.t)&&(!filter.tag||p.cat===filter.tag)).map(p=>p.id); feedShown=12; box.innerHTML=filterHTML()+filteredHTML(); watchSentinel(); return; }
+  if(isFiltering()){ feedList=matchIds(); feedShown=12; box.innerHTML=filterHTML()+filteredHTML(); watchSentinel(); return; }
   const t=myType(), vs=homeVsPairs();
   const kinds=D.KINDS.map(k=>k.k);
   const heroId=todayPostId(t);
@@ -121,6 +252,9 @@ window.renderExploreFeed=function(){
   html+=section('people','사람 사이에서 우리는',railOnce(['a-other','r-seen','cmp-hornevian',...pick(['talk','conflict','relemo','praise'],8,2)]));
   html+=section('love','연애할 때, 가족일 때',railOnce(['r-love','r-fight','r-marriage',...pick(['love','parenting'],8,3)]));
   html+=section('work','일하고 돈 쓸 때',railOnce(['r-money','r-career','cmp-harmonic','r-team','r-doctor',...pick(['work','money','lead','interview','decide','energy'],9,4)]));
+  /* MBTI 글 (2026-10-08): MBTI 16가지 · 네 글자 축. 내 유형이 있으면 그 번호가 자주 보이는 MBTI 글부터 */
+  const mx=[...POSTS.values()].filter(x=>x.cat==='MBTI'&&x.src==='art'&&x.types).sort((a,b)=>(t&&b.types.includes(t))-(t&&a.types.includes(t))).map(x=>x.id);
+  html+=section('mbti','MBTI랑 겹쳐 보면',rail(mx.filter(id=>!seen.has(id)&&seen.add(id)).slice(0,12)));
   html+=section('variation','같은 번호, 다른 사람',railOnce(['r-rare',...pick(['wings','groups','mbti','motive','strengths'],9,5)]));
   html+=section('tired','지칠 때 꺼내 읽는 글',railOnce(['a-tired','r-recover','r-joy','r-sport','ov-growth',...pick(['immature','integration','signals','levels'],7,6)])
     +'<p class="feed-care">여기 있는 내용은 성격 패턴을 이해하기 위한 것이지, 마음 상태를 진단하는 것이 아니에요. 힘든 마음이 여러 날 이어진다면 믿을 수 있는 사람이나 전문가에게 이야기해보세요.'
@@ -403,14 +537,16 @@ function onClick(e){
   }
   if(e.target.closest('[data-post-back]')){ showExploreHub(); return; }
   if(e.target.closest('[data-quiz-check]')){ showCheckTarget('quick'); return; }
-  const ft=e.target.closest('[data-filter-type]'), fg=e.target.closest('[data-filter-tag]');
-  if(ft||fg){
-    if(ft) filter.t=Number(ft.dataset.filterType); else filter.tag=fg.dataset.filterTag;
-    const y=document.querySelector('#exploreFeed .feed-filters')?.getBoundingClientRect().top;
-    window.renderExploreFeed();
-    if(y<0) document.querySelector('#exploreFeed .feed-filters')?.scrollIntoView({block:'start'});
-    return;
+  const fo=e.target.closest('[data-filter-open]');
+  if(fo){ openSheet(fo); return; }
+  const fr=e.target.closest('[data-filter-remove], [data-filter-quick]');
+  if(fr){
+    const [k,v]=(fr.dataset.filterRemove||fr.dataset.filterQuick).split(/:(.*)/s);
+    const set=k==='t'?filter.types:filter.tags, val=k==='t'?Number(v):v;
+    if(fr.dataset.filterRemove) set.delete(val); else set.add(val);
+    applyFilter(); return;
   }
+  if(e.target.closest('[data-filter-clear]')){ filter.types=new Set(); filter.tags=new Set(); applyFilter(); return; }
   const tt=e.target.closest('[data-tag-type]'), tc=e.target.closest('[data-tag-cat]');
   if(tt||tc){ window.setExploreFilter(tt?{t:Number(tt.dataset.tagType),tag:''}:{t:0,tag:tc.dataset.tagCat}); showExploreHub(); return; }
 
