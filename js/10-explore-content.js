@@ -57,7 +57,7 @@ if(PRAY) for(let t=1;t<=9;t++){
    종류(KINDS)별로 붙이는 것 + 글 id로 붙이는 것. 필터 패널은 TAG_GROUPS 순서로 묶어 보여준다 */
 const KIND_TAGS={
   traits:['유형 이해'],strengths:['유형 이해'],motive:['유형 이해'],immature:['유형 이해'],confused:['헷갈리는 유형'],
-  theme:['핵심 패턴'],auto:['핵심 패턴'],childhood:['핵심 패턴','가족'],groups:['핵심 패턴'],wings:['핵심 패턴'],
+  theme:['핵심 패턴'],auto:['핵심 패턴'],childhood:['핵심 패턴','가족'],groups:['핵심 패턴','먼저 반응하는 곳','원하는 걸 얻는 방식','문제 앞에서'],wings:['핵심 패턴'],
   fixation:['핵심 패턴','죄성(유혹)'],
   defense:['방어기제','핵심 패턴'],selfimage:['동일시하는 패턴','핵심 패턴'],fixmind:['핵심 패턴','죄성(유혹)'],stages:['성장'],
   relemo:['관계'],talk:['관계'],praise:['관계'],conflict:['관계'],
@@ -68,12 +68,15 @@ const KIND_TAGS={
   mbti:['MBTI'],pray:['기도제목','영성']
 };
 const ID_TAGS={
+  /* 세 가지 묶음 (2026-10-08): 세 중심 · 호니비언 · 하모닉을 다루는 기존 글. 새 글은 content/group-posts.js의 tags */
+  'ov-centers':['먼저 반응하는 곳'],'cmp-centers':['먼저 반응하는 곳'],'r-recover':['먼저 반응하는 곳'],'r-team':['먼저 반응하는 곳'],'r-sport':['먼저 반응하는 곳'],
+  'cmp-hornevian':['원하는 걸 얻는 방식'],'cmp-harmonic':['문제 앞에서'],
   'a-mbti':['MBTI'],'r-mbti9':['MBTI'],'r-money':['돈'],'r-love':['사랑'],'r-marriage':['사랑','가족'],'r-fight':['사랑','관계'],
   'r-career':['일','어울리는 직업'],'r-doctor':['일','어울리는 직업'],'r-team':['일','리더십','관계'],
   'r-sport':['일상생활'],'r-recover':['일상생활'],'r-joy':['일상생활'],'a-tired':['일상생활'],'a-other':['관계'],'r-seen':['관계'],
   'r-steady':['성장'],'r-books':['성장'],'a-next':['성장','일상생활']
 };
-POSTS.forEach(p=>{ p.tags=new Set([p.cat,...(KIND_TAGS[p.kind]||[]),...(ID_TAGS[p.id]||[]),...(p.src==='vs'?['헷갈리는 유형','비교']:[])].filter(Boolean)); });
+POSTS.forEach(p=>{ p.tags=new Set([p.cat,...(Array.isArray(p.tags)?p.tags:[]),...(KIND_TAGS[p.kind]||[]),...(ID_TAGS[p.id]||[]),...(p.src==='vs'?['헷갈리는 유형','비교']:[])].filter(Boolean)); });
 /* 피드에만 있는 바로가기 카드 (글이 아니라 기능 화면으로) */
 const GO={'go-diary':{title:'오늘 있었던 장면 하나 이야기하기',cat:'분석 노트',pic:'diary'},'go-polish':{title:'이번 주에 해볼 작은 행동 고르기',cat:'보석 닦기',pic:'polish'}};
 
@@ -109,6 +112,8 @@ const section=(key,title,inner)=>`<section class="feed-collection" aria-labelled
 const TAG_GROUPS=[
   ['삶의 장면',['일','취업 준비','회사에서 일할 때','어울리는 직업','리더십','관계','사랑','가족','부모','자녀','양육','일상생활','시간','돈']],
   ['마음 들여다보기',['성장','방어기제','동일시하는 패턴','죄성(유혹)','기도제목','영성','핵심 패턴','마음 돌보기']],
+  /* 세 중심 · 호니비언 · 하모닉. 태그는 쉬운 말, 용어는 글 본문에서 */
+  ['세 가지 묶음',['먼저 반응하는 곳','원하는 걸 얻는 방식','문제 앞에서']],
   ['유형 알아보기',['처음이라면','유형 이해','헷갈리는 유형','비교','MBTI']]
 ];
 /* 글이 하나도 없는 주제는 패널에 보이지 않는다 (예: 아직 쓰지 않은 주제) */
@@ -255,6 +260,9 @@ window.renderExploreFeed=function(){
   /* MBTI 글 (2026-10-08): MBTI 16가지 · 네 글자 축. 내 유형이 있으면 그 번호가 자주 보이는 MBTI 글부터 */
   const mx=[...POSTS.values()].filter(x=>x.cat==='MBTI'&&x.src==='art'&&x.types).sort((a,b)=>(t&&b.types.includes(t))-(t&&a.types.includes(t))).map(x=>x.id);
   html+=section('mbti','MBTI랑 겹쳐 보면',rail(mx.filter(id=>!seen.has(id)&&seen.add(id)).slice(0,12)));
+  /* 세 가지 묶음 (2026-10-08, content/group-posts.js): 세 중심 · 호니비언 · 하모닉 */
+  /* 묶음마다 전체 보기 → 세 그룹 순서 그대로 */
+  html+=section('groups','세 가지 묶음으로 보면',rail(['g-centers','g-gut','g-heart','g-head','g-horn','g-assert','g-withdrawn','g-compliant','g-harm','g-positive','g-competent','g-reactive'].filter(id=>!seen.has(id)&&seen.add(id))));
   html+=section('variation','같은 번호, 다른 사람',railOnce(['r-rare',...pick(['wings','groups','mbti','motive','strengths'],9,5)]));
   html+=section('tired','지칠 때 꺼내 읽는 글',railOnce(['a-tired','r-recover','r-joy','r-sport','ov-growth',...pick(['immature','integration','signals','levels'],7,6)])
     +'<p class="feed-care">여기 있는 내용은 성격 패턴을 이해하기 위한 것이지, 마음 상태를 진단하는 것이 아니에요. 힘든 마음이 여러 날 이어진다면 믿을 수 있는 사람이나 전문가에게 이야기해보세요.'
