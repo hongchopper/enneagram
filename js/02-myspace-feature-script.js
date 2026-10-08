@@ -1256,15 +1256,25 @@
       +stat(recs.length?'records':'write',recs.length,'쌓인 분석')
       +stat('practice',done,'해본 것')
       +stat('community',sc.picks,'장면 반응')+'</div>';
+    /* 보석 상태 변화 (2026-10-08): 점 높이로 보는 작은 꺾은선. 위 빛남 · 가운데 연마 중 · 아래 흐려짐, 아래 줄에 상태 이름과 날짜 */
+    const STATE_Y={high:8,mid:20,low:32};
+    const stateChart=items=>{
+      const n=items.length, x=i=>((i+0.5)/n*100).toFixed(2);
+      return `<div class="my-state-chart" style="${typeof gemVars==='function'?gemVars(t):''}">`
+        +'<div class="my-state-axis" aria-hidden="true"><span>빛남</span><span>연마 중</span><span>흐려짐</span></div>'
+        +`<div class="my-state-plot" aria-hidden="true"><svg viewBox="0 0 100 40" preserveAspectRatio="none"><polyline points="${items.map((r,i)=>`${x(i)},${STATE_Y[r.band]}`).join(' ')}"/></svg>`
+        +items.map((r,i)=>`<span class="my-state-dot is-${r.band}" style="left:${x(i)}%;top:${STATE_Y[r.band]/40*100}%"></span>`).join('')+'</div>'
+        +`<ol class="my-state-line">${items.map(r=>`<li class="is-${r.band}"><b>${esc(STATE_LABEL[r.band])}</b><small>${esc(r.day)}</small></li>`).join('')}</ol></div>`;
+    };
     if(t){
       const line=checks.slice(0,6).reverse();
       html+='<section class="my-states" aria-labelledby="myStatesTitle"><h2 class="my-log-title" id="myStatesTitle">보석 상태 변화</h2>'
         +(line.length
-          ?`<ol class="my-state-line" style="${typeof gemVars==='function'?gemVars(t):''}">${line.map(r=>`<li class="is-${r.band}"><span class="my-state-dot" aria-hidden="true"></span><b>${esc(STATE_LABEL[r.band])}</b><small>${esc(stateDay(r.at))}</small></li>`).join('')}</ol>`
+          ?stateChart(line.map(r=>({band:r.band,day:stateDay(r.at)})))
             +'<p class="my-states-note">빛남 · 연마 중 · 흐려짐은 판정이 아니라 그때의 나를 살펴본 기록이에요.</p>'
             +'<button class="my-profile-link" data-mylog-go="state" type="button">다시 살펴보기</button>'
           :sampleHTML('20문항으로 살펴볼 때마다 그때의 보석 상태가 이렇게 이어져요.',
-            `<ol class="my-state-line" style="${typeof gemVars==='function'?gemVars(t):''}">${[['high','7월'],['mid','8월'],['low','9월'],['mid','10월']].map(([b,d])=>`<li class="is-${b}"><span class="my-state-dot"></span><b>${esc(STATE_LABEL[b])}</b><small>${d}</small></li>`).join('')}</ol>`,
+            stateChart([['high','7월'],['mid','8월'],['low','9월'],['mid','10월']].map(([band,day])=>({band,day}))),
             '<button class="my-profile-link" data-mylog-go="state" type="button">처음 살펴보기</button>'))
         +'</section>';
     }
