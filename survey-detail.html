@@ -48,8 +48,8 @@
   .progress-bar { height: 100%; width: 0; background: var(--primary); border-radius: 999px; transition: width 240ms ease; }
 
   .q { padding: 20px 0; border-bottom: 1px solid var(--border); scroll-margin-top: 80px; }
-  .q-no { display: block; margin-bottom: 4px; font-size: 13px; font-weight: 600; color: var(--text-sub); }
   .q-text { margin: 0 0 12px; font-size: 16px; font-weight: 500; }
+  .q-no { font-weight: 700; color: var(--primary); }
   .scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 0; padding: 0; border: 0; }
   .scale label { position: relative; cursor: pointer; }
   .scale input { position: absolute; opacity: 0; width: 1px; height: 1px; }
@@ -164,7 +164,7 @@
     9: { name: '평화주의자', desc: '편안함과 조화를 유지하고 싶은 사람' }
   };
   var PER_PAGE = 15;
-  var STORE = 'enneagram-detail-test-v1';
+  var STORE = 'enneagram-detail-test-v2';
 
   var ALL = [];
   Object.keys(DATA).forEach(function (t) {
@@ -182,8 +182,24 @@
     return a;
   }
 
+  function mixedOrder() {
+    var pools = {};
+    Object.keys(DATA).forEach(function (t) {
+      pools[t] = shuffle(ALL.filter(function (q) { return String(q.type) === t; }).map(function (q) { return q.id; }));
+    });
+    var order = [];
+    var last = null;
+    for (var round = 0; round < 15; round++) {
+      var types = shuffle(Object.keys(pools));
+      if (types[0] === last) types.push(types.shift());
+      types.forEach(function (t) { order.push(pools[t].pop()); });
+      last = types[types.length - 1];
+    }
+    return order;
+  }
+
   function fresh() {
-    return { order: shuffle(ALL.map(function (q) { return q.id; })), answers: {}, page: 0, done: false };
+    return { order: mixedOrder(), answers: {}, page: 0, done: false };
   }
 
   // 저장된 진행 상황 (문항 순서·답·페이지). 못 읽으면 새로 시작
@@ -216,13 +232,13 @@
     var start = state.page * PER_PAGE;
     box.innerHTML = pageIds().map(function (id, i) {
       var q = BY_ID[id];
+      var n = start + i;
       var picked = state.answers[id];
       var scale = [1, 2, 3, 4, 5].map(function (v) {
-        return '<label><input type="radio" name="' + id + '" value="' + v + '"' + (picked === v ? ' checked' : '') + ' aria-label="' + v + '점"><span>' + v + '</span></label>';
+        return '<label><input type="radio" name="q' + n + '" value="' + v + '"' + (picked === v ? ' checked' : '') + ' aria-label="' + v + '점"><span>' + v + '</span></label>';
       }).join('');
-      return '<div class="q" id="q-' + id + '">' +
-        '<span class="q-no">' + (start + i + 1) + ' / ' + ALL.length + '</span>' +
-        '<p class="q-text">' + esc(q.text) + '</p>' +
+      return '<div class="q" id="q' + n + '">' +
+        '<p class="q-text"><span class="q-no">' + (n + 1) + '.</span> ' + esc(q.text) + '</p>' +
         '<fieldset class="scale">' + scale + '</fieldset>' +
         '<div class="scale-ends"><span>전혀 그렇지 않다</span><span>매우 그렇다</span></div>' +
         '</div>';
@@ -243,14 +259,14 @@
   }
 
   box.addEventListener('change', function (e) {
-    var id = e.target.name;
+    var id = state.order[Number(e.target.name.slice(1))];
     state.answers[id] = Number(e.target.value);
     save();
     updateProgress();
     // 다음 안 푼 문항으로 내려간다
     var ids = pageIds();
     var rest = ids.slice(ids.indexOf(id) + 1).filter(function (x) { return !state.answers[x]; });
-    if (rest.length) document.getElementById('q-' + rest[0]).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (rest.length) document.getElementById('q' + state.order.indexOf(rest[0])).scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
   prev.addEventListener('click', function () {
