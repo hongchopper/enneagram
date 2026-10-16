@@ -143,6 +143,14 @@
   .score-row.is-top .score-fill { background: var(--primary); }
   .score-num { width: 48px; text-align: right; font-size: 13px; color: var(--text-sub); }
 
+  .confuse { margin: 0 0 32px; padding: 16px; border: 1px solid var(--border); border-radius: 20px; }
+  .confuse h3 { margin-bottom: 12px; }
+  .confuse-row { margin: 0 0 12px; font-size: 15px; color: var(--text-sub); }
+  .confuse-row:last-child { margin-bottom: 0; }
+  .confuse-row b { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: var(--text-sub); }
+  .confuse-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .confuse-chips span { padding: 4px 12px; border-radius: 999px; background: var(--primary-soft); color: var(--primary); font-size: 13px; font-weight: 600; }
+
   .result-note { margin: 0 0 32px; padding: 16px; border-radius: 12px; background: var(--fill); font-size: 15px; color: var(--text-sub); }
 </style>
 </head>
@@ -238,6 +246,12 @@
       <p class="result-desc" id="result-desc"></p>
     </div>
 
+    <div class="confuse" id="confuse">
+      <h3>헷갈릴 수 있는 유형</h3>
+      <div class="confuse-row"><b id="confuse-self-label"></b><div class="confuse-chips" id="confuse-self"></div></div>
+      <div class="confuse-row"><b id="confuse-by-label"></b><div class="confuse-chips" id="confuse-by"></div></div>
+    </div>
+
     <div class="result-block">
       <h3>예상 유형 순위</h3>
       <p>질문 1 묶음과 질문 2 묶음의 체크 비율을 더해 아홉 유형의 순위를 매겼어요.</p>
@@ -274,6 +288,18 @@
     7: { name: '열정가', desc: '자유롭고 즐거운 가능성을 찾는 사람' },
     8: { name: '도전자', desc: '강하게 주도하고 통제력을 갖고 싶은 사람' },
     9: { name: '평화주의자', desc: '편안함과 조화를 유지하고 싶은 사람' }
+  };
+  // 헷갈리기 쉬운 유형: self = 이 유형이 자기 유형으로 착각하기 쉬운 유형, by = 이 유형으로 착각하기 쉬운 유형
+  var CONFUSE = {
+    1: { self: [4, 5, 6], by: [3, 6, 7] },
+    2: { self: [1, 4, 7], by: [6, 7, 9] },
+    3: { self: [1, 5, 8], by: [7, 8, 9] },
+    4: { self: [1, 2, 9], by: [1, 5, 6] },
+    5: { self: [1, 4, 6], by: [1, 3, 9] },
+    6: { self: [1, 4, 8], by: [1, 2, 5] },
+    7: { self: [2, 3, 4], by: [2, 3, 9] },
+    8: { self: [4, 6, 7], by: [3, 6, 7] },
+    9: { self: [2, 4, 5], by: [2, 6, 7] }
   };
   var GROUPS = { q1: ['A', 'B', 'C'], q2: ['1', '2', '3'] };
 
@@ -353,6 +379,15 @@
     document.getElementById('result-desc').textContent = ties.length > 1
       ? '점수가 같은 유형이 있어요. 아래 설명을 읽고 더 와닿는 쪽을 찾아보세요.'
       : TYPES[top.type].desc;
+
+    var c = CONFUSE[top.type];
+    var chips = function (arr) {
+      return arr.map(function (n) { return '<span>' + n + '번 ' + TYPES[n].name + '</span>'; }).join('');
+    };
+    document.getElementById('confuse-self-label').textContent = top.type + '번이 자기 유형으로 착각하기 쉬운 유형';
+    document.getElementById('confuse-self').innerHTML = chips(c.self);
+    document.getElementById('confuse-by-label').textContent = top.type + '번으로 착각하기 쉬운 유형';
+    document.getElementById('confuse-by').innerHTML = chips(c.by);
 
     document.getElementById('rank-list').innerHTML = list.map(function (it) {
       var cls = it.rank === 1 ? 'is-top' : it.score === 0 ? 'is-zero' : '';
