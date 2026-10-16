@@ -104,7 +104,7 @@
   .submit-note[hidden] { display: none; }
 
   .result[hidden] { display: none; }
-  .result-top { text-align: center; padding: 16px 0 32px; }
+  .result-top { text-align: center; padding: 16px 0 24px; }
   .result-badge {
     width: 72px; height: 72px; margin: 0 auto 12px;
     display: grid; place-items: center;
@@ -115,42 +115,19 @@
   .result-kicker { margin: 0; font-size: 15px; color: var(--text-sub); }
   .result-top h2 { margin: 4px 0 8px; font-size: 28px; font-weight: 700; line-height: 1.3; }
   .result-desc { margin: 0; font-size: 16px; }
-  .result h3 { margin: 0 0 4px; font-size: 18px; font-weight: 700; }
-  .result-block { margin: 0 0 32px; }
-  .result-block > p { margin: 0 0 12px; font-size: 13px; color: var(--text-sub); }
+  .btn-secondary { margin-top: 12px; background: var(--bg); color: var(--text); border: 1px solid var(--border); text-decoration: none; }
+  .btn-secondary:hover { border-color: var(--primary-light); }
+  .detail-note { margin: 8px 0 0; text-align: center; font-size: 13px; color: var(--text-sub); }
 
-  .rank-list { margin: 0; padding: 0; list-style: none; }
-  .rank-list li { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid var(--border); }
-  .rank-no { flex: none; width: 40px; font-size: 13px; font-weight: 600; color: var(--text-sub); }
-  .rank-body { flex: 1; min-width: 0; }
-  .rank-name { display: flex; justify-content: space-between; gap: 8px; font-size: 16px; font-weight: 600; }
-  .rank-pct { font-size: 13px; font-weight: 600; color: var(--text-sub); }
-  .rank-desc { display: block; font-size: 13px; color: var(--text-sub); }
-  .rank-track { margin-top: 6px; height: 6px; border-radius: 999px; background: var(--fill); overflow: hidden; }
-  .rank-fill { height: 100%; border-radius: 999px; background: var(--primary-light); }
-  .rank-list li.is-top .rank-no,
-  .rank-list li.is-top .rank-pct { color: var(--primary); }
-  .rank-list li.is-top .rank-fill { background: var(--primary); }
-  .rank-list li.is-zero { color: var(--text-faint); }
-  .rank-list li.is-zero .rank-name { font-weight: 500; }
-
-  .score-q { margin-bottom: 16px; }
-  .score-label { font-size: 13px; font-weight: 600; color: var(--text-sub); margin-bottom: 8px; }
-  .score-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; font-size: 15px; }
-  .score-row b { width: 16px; font-weight: 700; }
-  .score-track { flex: 1; height: 8px; border-radius: 999px; background: var(--fill); overflow: hidden; }
-  .score-fill { height: 100%; border-radius: 999px; background: var(--primary-light); }
-  .score-row.is-top .score-fill { background: var(--primary); }
-  .score-num { width: 48px; text-align: right; font-size: 13px; color: var(--text-sub); }
-
-  .confuse { margin: 0 0 32px; padding: 16px; border: 1px solid var(--border); border-radius: 20px; }
-  .confuse h3 { margin-bottom: 12px; }
-  .confuse-row { margin: 0 0 12px; font-size: 15px; color: var(--text-sub); }
-  .confuse-row:last-child { margin-bottom: 0; }
-  .confuse-row b { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: var(--text-sub); }
-  .confuse-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-  .confuse-chips span { padding: 4px 12px; border-radius: 999px; background: var(--primary-soft); color: var(--primary); font-size: 13px; font-weight: 600; }
-
+  .top3 { margin: 0 0 24px; padding: 16px; border: 1px solid var(--border); border-radius: 20px; }
+  .top3 h3 { margin: 0 0 4px; font-size: 18px; font-weight: 700; }
+  .top3 > p { margin: 0 0 8px; font-size: 13px; color: var(--text-sub); }
+  .top3 ol { margin: 0; padding: 0; list-style: none; }
+  .top3 li { display: flex; gap: 12px; align-items: baseline; padding: 12px 0; border-top: 1px solid var(--border); }
+  .top3-no { flex: none; width: 40px; font-size: 13px; font-weight: 700; color: var(--text-sub); }
+  .top3 li:first-child .top3-no { color: var(--primary); }
+  .top3 b { display: block; font-size: 16px; font-weight: 600; }
+  .top3 span.top3-desc { display: block; font-size: 13px; color: var(--text-sub); }
   .result-note { margin: 0 0 32px; padding: 16px; border-radius: 12px; background: var(--fill); font-size: 15px; color: var(--text-sub); }
 </style>
 </head>
@@ -246,27 +223,17 @@
       <p class="result-desc" id="result-desc"></p>
     </div>
 
-    <div class="confuse" id="confuse">
-      <h3>헷갈릴 수 있는 유형</h3>
-      <div class="confuse-row"><b id="confuse-self-label"></b><div class="confuse-chips" id="confuse-self"></div></div>
-      <div class="confuse-row"><b id="confuse-by-label"></b><div class="confuse-chips" id="confuse-by"></div></div>
-    </div>
-
-    <div class="result-block">
+    <div class="top3">
       <h3>예상 유형 순위</h3>
-      <p>질문 1 묶음과 질문 2 묶음의 체크 비율을 더해 아홉 유형의 순위를 매겼어요.</p>
-      <ol class="rank-list" id="rank-list"></ol>
-    </div>
-
-    <div class="result-block">
-      <h3>묶음별 체크 비율</h3>
-      <p>묶음마다 문장 수가 달라서 개수 대신 비율로 비교해요.</p>
-      <div id="score"></div>
+      <p>2·3순위는 1순위와 헷갈릴 수 있는 유형이에요. 설명을 읽고 더 와닿는 쪽을 찾아보세요.</p>
+      <ol id="top3"></ol>
     </div>
 
     <p class="result-note">이 결과는 정답이 아니라 나를 살펴보는 단서예요. 행동보다 ‘왜 그렇게 했는지’가 나와 맞는지 확인해보세요.</p>
 
     <button type="button" class="btn btn-primary" id="retry">다시 하기</button>
+    <a class="btn btn-secondary" href="survey-detail.html">상세 검사 하기</a>
+    <p class="detail-note">1~9번 유형 문항 135개를 섞어서, 문항마다 1~5점으로 답해요.</p>
   </section>
 </main>
 
@@ -288,18 +255,6 @@
     7: { name: '열정가', desc: '자유롭고 즐거운 가능성을 찾는 사람' },
     8: { name: '도전자', desc: '강하게 주도하고 통제력을 갖고 싶은 사람' },
     9: { name: '평화주의자', desc: '편안함과 조화를 유지하고 싶은 사람' }
-  };
-  // 헷갈리기 쉬운 유형: self = 이 유형이 자기 유형으로 착각하기 쉬운 유형, by = 이 유형으로 착각하기 쉬운 유형
-  var CONFUSE = {
-    1: { self: [4, 5, 6], by: [3, 6, 7] },
-    2: { self: [1, 4, 7], by: [6, 7, 9] },
-    3: { self: [1, 5, 8], by: [7, 8, 9] },
-    4: { self: [1, 2, 9], by: [1, 5, 6] },
-    5: { self: [1, 4, 6], by: [1, 3, 9] },
-    6: { self: [1, 4, 8], by: [1, 2, 5] },
-    7: { self: [2, 3, 4], by: [2, 3, 9] },
-    8: { self: [4, 6, 7], by: [3, 6, 7] },
-    9: { self: [2, 4, 5], by: [2, 6, 7] }
   };
   var GROUPS = { q1: ['A', 'B', 'C'], q2: ['1', '2', '3'] };
 
@@ -377,40 +332,14 @@
       ? ties.map(function (it) { return it.type + '번'; }).join(' · ') + '에 가까워요'
       : top.type + '번 ' + TYPES[top.type].name + '에 가까워요';
     document.getElementById('result-desc').textContent = ties.length > 1
-      ? '점수가 같은 유형이 있어요. 아래 설명을 읽고 더 와닿는 쪽을 찾아보세요.'
+      ? '점수가 같은 유형이 있어요: ' + ties.map(function (it) { return it.type + '번 ' + TYPES[it.type].name; }).join(', ')
       : TYPES[top.type].desc;
 
-    var c = CONFUSE[top.type];
-    var chips = function (arr) {
-      return arr.map(function (n) { return '<span>' + n + '번 ' + TYPES[n].name + '</span>'; }).join('');
-    };
-    document.getElementById('confuse-self-label').textContent = top.type + '번이 자기 유형으로 착각하기 쉬운 유형';
-    document.getElementById('confuse-self').innerHTML = chips(c.self);
-    document.getElementById('confuse-by-label').textContent = top.type + '번으로 착각하기 쉬운 유형';
-    document.getElementById('confuse-by').innerHTML = chips(c.by);
-
-    document.getElementById('rank-list').innerHTML = list.map(function (it) {
-      var cls = it.rank === 1 ? 'is-top' : it.score === 0 ? 'is-zero' : '';
-      return '<li class="' + cls + '">' +
-        '<span class="rank-no">' + it.rank + '위</span>' +
-        '<div class="rank-body">' +
-          '<span class="rank-name"><span>' + it.type + '번 ' + TYPES[it.type].name + '</span><span class="rank-pct">' + it.score + '%</span></span>' +
-          '<span class="rank-desc">' + TYPES[it.type].desc + ' · ' + it.a + ' + ' + it.b + '</span>' +
-          '<div class="rank-track"><div class="rank-fill" style="width:' + it.score + '%"></div></div>' +
-        '</div></li>';
-    }).join('');
-
-    function bestOf(t, groups) {
-      return groups.reduce(function (best, g) { return t[g].ratio > t[best].ratio ? g : best; }, groups[0]);
-    }
-    document.getElementById('score').innerHTML = [['질문 1', t1, GROUPS.q1], ['질문 2', t2, GROUPS.q2]].map(function (row) {
-      var best = bestOf(row[1], row[2]);
-      return '<div class="score-q"><div class="score-label">' + row[0] + '</div>' + row[2].map(function (g) {
-        var s = row[1][g];
-        return '<div class="score-row' + (g === best ? ' is-top' : '') + '"><b>' + g + '</b>' +
-          '<div class="score-track"><div class="score-fill" style="width:' + Math.round(s.ratio * 100) + '%"></div></div>' +
-          '<span class="score-num">' + s.on + ' / ' + s.total + '</span></div>';
-      }).join('') + '</div>';
+    var ranked = list;
+    // 1~3순위 (점수가 같으면 같은 순위)
+    document.getElementById('top3').innerHTML = ranked.slice(0, 3).map(function (it) {
+      return '<li><span class="top3-no">' + it.rank + '순위</span><div><b>' + it.type + '번 ' + TYPES[it.type].name + '</b>' +
+        '<span class="top3-desc">' + TYPES[it.type].desc + '</span></div></li>';
     }).join('');
 
     form.hidden = true;
