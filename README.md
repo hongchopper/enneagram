@@ -6,8 +6,6 @@
 
 <p align="center">
   9가지 유형을 보석으로 만나고, 오늘의 장면을 이야기하며 반복되는 내 패턴을 알아차리는 모바일 웹 서비스
-  <br><br>
-  <a href="https://hongchopper.github.io/enneagram/"><b>사이트 바로 가기 →</b></a>
 </p>
 
 ---
